@@ -390,3 +390,144 @@ Claude Code 的自研 Ink 内核提供了五层防闪烁保护：
 - `QWEN_CODE_LEGACY_ERASE_LINES=1`：禁用所有 stdout 拦截优化（已有）
 - `QWEN_CODE_LEGACY_RENDERING=1`：新增，禁用同步输出 + 节流
 - 不支持 DECSET 2026 的终端：序列被静默忽略，零风险
+
+## 6. PR 审计摘要（窄屏重复输出 + 大量空白行）
+
+> 本节总结本轮窄屏 TUI 修复中哪些修改真正解决了问题，哪些修改更像辅助性收敛，以及当前是否建议回退部分改动。
+
+### 6.1 本 PR 已解决的问题
+
+| 问题 | 现象 | 根因 | 对应解法 |
+| --- | --- | --- | --- |
+| 窄屏流式输出重复 | Mermaid / 表格 / 结构化文本在窄屏下反复打印旧行 | live pending 与 Static 的边界过早切分，旧内容被再次卷入滚动区 | `useGeminiStream.ts` 中延迟 `safe-split`、分离 `displayBuffer/fullBuffer`、重叠与归一化处理 |
+| 大量空白行持续累积 | 响应过程中空白区域不断向上堆积 | pending 预览直接消费原始流式空白，切片后空白继续进入 live 区 | `useGeminiStream.ts` 折叠 display buffer 连续空白；`ConversationMessages.tsx` 在切片前后裁剪边界空白 |
+| 结构化内容预览不稳定 | 未闭合代码块、表格、Markdown 结构导致预览抖动 | preview 直接消费未稳定的结构尾部 | `ConversationMessages.tsx` 去除 unclosed fence/table/unstable suffix 与不完整尾行 |
+| 工具过程被 waiting placeholder 吞掉 | 模型没吐出正文时，只看到 `Generating response...`，看不到工具调用 | waiting 分支短路整个 pending 区 | `MainContent.tsx` / `HistoryItemDisplay.tsx` 让 placeholder 仅作用于空 assistant，不吞掉 `tool_group` 等其他 pending 项 |
+| answer 已开始流但 UI 仍卡在 waiting | 已有可显示 token，界面仍停留在 `Generating response...` | waiting 状态绑定了 preview 启发式裁剪结果 | 新增 `hasRenderablePendingAssistantSignal()`，将“可渲染信号”与 preview height/suffix heuristics 解耦 |
+| 窄屏开始阶段大白屏 | 顶部空很久，`Generating response...` 和 loading 主要出现在输入框上方 | waiting/live 反馈主要落在底部 Composer，而不是主消息区 | `MainContent.tsx` 明确主消息区顶部对齐；`Composer.tsx` 在超窄 responding 场景 suppress 底部 loading indicator |
+
+### 6.2 真正有效的修改
+
+#### A. 流式缓冲与切分策略
+
+核心文件：`packages/cli/src/ui/hooks/useGeminiStream.ts`
+
+这些改动对“重复输出”修复最关键：
+
+- 将用于渲染的 `displayBuffer` 与用于重叠/恢复判断的 `fullBuffer` 分离
+- 在超窄终端下延迟 `safe-split`，避免 live 尾巴过早被提升到 `Static`
+- 在 display buffer 层折叠连续空白行
+- 在 chunk 合并前后做重叠与归一化处理，减少旧内容再次进入 scrollback
+
+#### B. pending preview 进入 Ink 前的规范化
+
+核心文件：`packages/cli/src/ui/components/messages/ConversationMessages.tsx`
+
+这些改动对“结构重复 + 大量空白行”修复有效：
+
+- 在 `Text` wrap 前先做 visual-height slicing
+- 去除未闭合代码块、未闭合表格、结构化尾巴和不完整尾行
+- 在切片前后裁剪前导/尾随空白行
+
+#### C. waiting 状态与 preview 启发式解耦
+
+核心文件：
+
+- `packages/cli/src/ui/components/MainContent.tsx`
+- `packages/cli/src/ui/components/HistoryItemDisplay.tsx`
+- `packages/cli/src/ui/components/messages/ConversationMessages.tsx`
+
+本轮新增的 `hasRenderablePendingAssistantSignal()` 是白屏收敛的关键转折点。它让 UI 不再依赖 preview slicing 的结果来判断“assistant 是否已经开始有可展示内容”。
+
+#### D. 主消息区与 Composer 的职责重新划分
+
+核心文件：
+
+- `packages/cli/src/ui/components/MainContent.tsx`
+- `packages/cli/src/ui/components/Composer.tsx`
+
+这是最终解决“窄屏长白屏体感”的关键补刀：
+
+- `MainContent` 改成明确的全高、顶部对齐列容器
+- 在超窄宽度（当前实现为 responding 且 `<=30` 列）下，`Composer` 不再用底部 `LoadingIndicator` 主导 waiting 反馈
+- waiting/live 的视觉重心重新回到主消息区
+
+### 6.3 作用有限但建议保留的修改
+
+以下改动不是单独的决定性修复，但与主链协同后仍有价值，当前不建议回退：
+
+1. **pending blank-line collapse**
+   - 单独看不足以解决大白屏
+   - 但能显著降低空白行在 live buffer 中继续放大的概率
+
+2. **切片后的 boundary blank trimming**
+   - 更像防御性清理
+   - 对最终体感改善不如 waiting/live 职责调整大，但能减少尾部脏数据进入 Ink
+
+3. **tool_group 与 placeholder 并存**
+   - 主要修 correctness，不是最终白屏根因
+   - 但能保证工具输出不被错误隐藏
+
+4. **`previousAssistantText` 基线修正**
+   - 去掉人工插入的 `\n`
+   - 虽然改动小，但能避免后续重复检测和结构边界判断被伪造换行污染
+
+### 6.4 作用不大、可后续精简的修改
+
+以下项目前看收益有限，但不建议为了缩小 diff 现在就回退：
+
+1. **`DefaultAppLayout.tsx` 外层 `flexGrow` 包装**
+   - 当前 `MainContent.tsx` 已显式 `flexGrow={1}`
+   - 外层包装可能偏冗余，可在后续 cleanup commit 中单独评估
+
+2. **部分调试埋点**
+   - 本轮定位问题时很有用，且受 `QWEN_STREAM_DEBUG` 控制
+   - 如果后续需要做“生产清爽化”清理，可单独缩减
+
+3. **超窄阈值分散**
+   - 当前同时存在 `<=20`（ultra narrow）与 `<=30`（composer suppress）两类阈值
+   - 行为已验证有效，但阈值体系可以后续统一整理
+
+### 6.5 是否建议回退部分修改
+
+当前结论：**不建议在本 PR 中大面积回退。**
+
+原因不是“所有改动都同等重要”，而是本次问题的闭环依赖于两条链路同时成立：
+
+1. **上游流式文本先被规范化**
+   - 去重
+   - 延迟切分
+   - 限高
+   - 去空白
+
+2. **下游 waiting/live 呈现职责重新划清**
+   - placeholder 不再吞掉其他 pending
+   - waiting 不再绑定 preview heuristics
+   - 窄屏时底部 composer 不再制造主要白洞
+
+如果仅为了缩小 diff 回退其中任一条主链，容易重新引入：
+
+- 窄屏重复输出
+- 空白行放大
+- `Generating response...` 长时间卡住
+- 工具输出被 waiting 状态遮蔽
+
+更稳妥的策略是：
+
+- **本 PR 保留当前有效修复**
+- 后续如需精简，再单独提交一轮 cleanup，只收冗余布局包装、阈值整理、调试埋点收敛
+
+### 6.6 审计结论
+
+本轮修复最终有效，不是因为某一个局部 tweak，而是因为同时完成了：
+
+- `useGeminiStream.ts` 与 `ConversationMessages.tsx` 的**流式文本规范化**
+- `MainContent.tsx`、`HistoryItemDisplay.tsx`、`Composer.tsx` 的**waiting/live 职责重构**
+
+前者解决“重复”和“真空白行”，后者解决“窄屏长白屏体感”。
+
+经真实窄屏手工验证与 deterministic capture 交叉确认，本 PR 已闭环解决：
+
+- 窄屏重复输出
+- 大量空白行持续堆积
+- 开始阶段等待态与正文区分不清导致的长白屏体感
