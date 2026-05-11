@@ -1,0 +1,20 @@
+{
+  "repoRoot": "/Users/gawain/Documents/codebase/opensource/qwen-code-table-wrap-ansi-highlight",
+  "outputDir": "/tmp/qwen-table-wrap-ansi/fixed",
+  "requestCount": 2,
+  "rawBytes": 27866,
+  "finalScreenLines": 30,
+  "continuationOccurrences": 1,
+  "coloredContinuationOccurrences": 1,
+  "uncoloredContinuationOccurrences": 0,
+  "continuationForegrounds": [
+    "38;2;137;189;205"
+  ],
+  "finalScreenWrappedTableName": true,
+  "pass": true,
+  "expectedPass": true,
+  "screenshots": [
+    "/tmp/qwen-table-wrap-ansi/fixed/table-inline-code-wrap.png",
+    "/tmp/qwen-table-wrap-ansi/fixed/table-inline-code-wrap-full.png"
+  ]
+}
