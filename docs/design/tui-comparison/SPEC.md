@@ -1,5 +1,7 @@
 # TUI Comparison — 调研规范
 
+> **执行细节见 [RUNBOOK.md](./RUNBOOK.md)**：agent 驱动 agent 运行 + 录屏 + 度量的可执行 Runbook（一键复现命令、新增 agent/prompt 的 checklist、已知坑与处理）。
+
 本调研的**真实出发点**是：qwen-code 的 TUI 当前存在三个具体痛点 ——
 1. **信息密度太低**（同一屏幕承载的有效信息少）
 2. **纵向空间使用率低**（大量空行、留白、空面板占用了 vertical real estate）

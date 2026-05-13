@@ -51,6 +51,10 @@
 7. `inventory/<agent>.md` × 5 —— 每 agent 的 A/B/C/D/E/F 类完整 inventory
 8. `inventory/<agent>/matrix/<P>/response.png` × 28 —— 每 cell 真 PTY 截图
 
+复现路径（想自己重跑一遍录制 + 度量）：
+- [`RUNBOOK.md`](./RUNBOOK.md) —— agent 驱动 agent 运行 + 录屏的可执行 Runbook（含一键复现命令、新增 agent/prompt checklist、已知坑）
+- [`SPEC.md`](./SPEC.md) —— 调研规范（三阶段流程、Phase 1 必填类别 A-F）
+
 ## 目录布局
 
 ```
