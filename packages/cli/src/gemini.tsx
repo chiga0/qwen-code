@@ -248,9 +248,30 @@ export async function startInteractiveUI(
       ? installSynchronizedOutput(process.stdout)
       : () => {};
 
+  // Create remote input watcher if --input-file is specified.
+  // This enables bidirectional sync: an external process writes JSONL
+  // commands to this file, and the TUI processes them as user messages.
+  let remoteInputWatcher: RemoteInputWatcher | null = null;
+  const inputFile = config.getInputFile?.();
+  if (inputFile) {
+    try {
+      remoteInputWatcher = new RemoteInputWatcher(inputFile);
+    } catch (err) {
+      debugLogger.error('Failed to initialize remote input watcher:', err);
+      writeStderrLine(
+        `Warning: remote input disabled — ${err instanceof Error ? err.message : String(err)}`,
+      );
+    }
+  }
+
   // Create dual output bridge if --json-fd or --json-file is specified.
   // Errors are caught so a bad fd/path degrades gracefully instead of
   // preventing the TUI from launching.
+  //
+  // Keep this after RemoteInputWatcher construction so the session_start
+  // handshake means the input sidecar is already watching. Otherwise a web
+  // client can submit immediately after seeing session_start and race ahead
+  // of the watcher.
   let dualOutputBridge: DualOutputBridge | null = null;
   const jsonFd = config.getJsonFd?.();
   const jsonFile = config.getJsonFile?.();
@@ -273,22 +294,6 @@ export async function startInteractiveUI(
     writeStderrLine(
       `Warning: dual output disabled — ${err instanceof Error ? err.message : String(err)}`,
     );
-  }
-
-  // Create remote input watcher if --input-file is specified.
-  // This enables bidirectional sync: an external process writes JSONL
-  // commands to this file, and the TUI processes them as user messages.
-  let remoteInputWatcher: RemoteInputWatcher | null = null;
-  const inputFile = config.getInputFile?.();
-  if (inputFile) {
-    try {
-      remoteInputWatcher = new RemoteInputWatcher(inputFile);
-    } catch (err) {
-      debugLogger.error('Failed to initialize remote input watcher:', err);
-      writeStderrLine(
-        `Warning: remote input disabled — ${err instanceof Error ? err.message : String(err)}`,
-      );
-    }
   }
 
   // Drain the early-captured input exactly once, before any React rendering.

@@ -306,6 +306,18 @@ export interface CLIControlPermissionRequest {
   blocked_path: string | null;
 }
 
+export interface CLIControlRichWidgetRequest {
+  subtype: 'rich_widget';
+  widget_id: string;
+  kind: 'select' | 'multi_select' | 'form' | 'approval' | 'diff';
+  title: string;
+  payload: unknown;
+  anchor?: {
+    type: 'cursor';
+    marker?: string;
+  };
+}
+
 /**
  * Wire format for SDK MCP server config in initialization request.
  * The actual Server instance stays in the SDK process.
@@ -415,6 +427,7 @@ export interface CLIControlGetContextUsageRequest {
 export type ControlRequestPayload =
   | CLIControlInterruptRequest
   | CLIControlPermissionRequest
+  | CLIControlRichWidgetRequest
   | CLIControlInitializeRequest
   | CLIControlSetPermissionModeRequest
   | CLIHookCallbackRequest

@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { useCallback, useContext, useMemo, useState } from 'react';
+import { useCallback, useContext, useId, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import {
   AuthType,
@@ -24,6 +24,7 @@ import { UIStateContext, type UIState } from '../contexts/UIStateContext.js';
 import { useSettings } from '../contexts/SettingsContext.js';
 import { getPersistScopeForModelSelection } from '../../config/modelProvidersScope.js';
 import { t } from '../../i18n/index.js';
+import { useRichSelectWidget } from '../../richInteraction/hooks.js';
 
 function formatModalities(modalities?: InputModalities): string {
   if (!modalities) return t('text-only');
@@ -490,6 +491,62 @@ export function ModelDialog({
   );
 
   const hasModels = MODEL_OPTIONS.length > 0;
+  const modelWidgetId = useId();
+  const richModelOptions = useMemo(
+    () =>
+      MODEL_OPTIONS.map((option, index) => {
+        const entry = availableModelEntries[index];
+        const details: string[] = [];
+        if (entry?.model.description) {
+          details.push(entry.model.description);
+        }
+        if (entry?.isRuntime) {
+          details.push('Runtime model');
+        }
+        if (entry?.authType === AuthType.QWEN_OAUTH && !entry.isRuntime) {
+          details.push(t('Discontinued — switch to Coding Plan or API Key'));
+        }
+        if (entry) {
+          details.push(
+            `${t('Modality')}: ${formatModalities(entry.model.modalities)}`,
+          );
+          details.push(
+            `${t('Context Window')}: ${formatContextWindow(
+              entry.model.contextWindowSize,
+            )}`,
+          );
+          if (entry.authType !== AuthType.QWEN_OAUTH) {
+            details.push(`Base URL: ${entry.model.baseUrl ?? t('(default)')}`);
+            details.push(`API Key: ${entry.model.envKey ?? t('(not set)')}`);
+          }
+        }
+
+        return {
+          key: option.key,
+          value: option.value,
+          label: entry
+            ? `[${entry.authType}] ${entry.model.label}${
+                entry.isRuntime ? ' (Runtime)' : ''
+              }`
+            : option.key,
+          description: details.join(' | '),
+          disabled: entry?.authType === AuthType.QWEN_OAUTH && !entry.isRuntime,
+        };
+      }),
+    [MODEL_OPTIONS, availableModelEntries],
+  );
+  const richModelWidgetActive = useRichSelectWidget({
+    widgetId: `model-dialog:${modelWidgetId}`,
+    title: t('Select Model'),
+    isFocused: hasModels,
+    initialIndex,
+    items: richModelOptions,
+    onSelect: handleSelect,
+  });
+
+  if (richModelWidgetActive) {
+    return <></>;
+  }
 
   return (
     <Box

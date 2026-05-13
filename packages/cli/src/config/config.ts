@@ -168,6 +168,7 @@ export interface CliArgs {
   jsonFile?: string | undefined;
   jsonSchema?: string | undefined;
   inputFile?: string | undefined;
+  richTerminal?: boolean | undefined;
 }
 
 /** 4 MiB — well above any real schema, well below an accidental
@@ -597,6 +598,12 @@ export async function parseArguments(): Promise<CliArgs> {
           description:
             'File path for receiving remote input commands (bidirectional sync). ' +
             'An external process writes JSONL commands; the TUI watches and processes them.',
+        })
+        .option('rich-terminal', {
+          type: 'boolean',
+          description:
+            'Emit rich terminal widget control events on the dual-output JSON channel. ' +
+            'Requires --json-file or --json-fd and keeps the normal TUI on stdout.',
         })
         .option('continue', {
           alias: 'c',
@@ -1468,6 +1475,8 @@ export async function loadCliConfig(
     jsonFile: argv.jsonFile ?? settings.dualOutput?.jsonFile,
     jsonSchema: resolveJsonSchemaArg(argv.jsonSchema),
     inputFile: argv.inputFile ?? settings.dualOutput?.inputFile,
+    richTerminal:
+      argv.richTerminal ?? process.env['QWEN_RICH_TERMINAL'] === '1',
     // Precedence: explicit CLI flag > settings file > default(true).
     // NOTE: do NOT set a yargs default for `chat-recording`, otherwise argv will
     // always be true and the settings file can never disable recording.

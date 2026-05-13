@@ -9,6 +9,9 @@ import { AskUserQuestionDialog } from './AskUserQuestionDialog.js';
 import type { ToolAskUserQuestionConfirmationDetails } from '@qwen-code/qwen-code-core';
 import { ToolConfirmationOutcome } from '@qwen-code/qwen-code-core';
 import { renderWithProviders } from '../../../test-utils/render.js';
+import { RichInteractionContext } from '../../../richInteraction/RichInteractionContext.js';
+import type { RichInteractionBridge } from '../../../richInteraction/RichInteractionBridge.js';
+import type { RichWidgetResponse } from '../../../richInteraction/types.js';
 
 const wait = (ms = 50) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -39,6 +42,24 @@ const createConfirmationDetails = (
 });
 
 describe('<AskUserQuestionDialog />', () => {
+  const createRichBridge = () => {
+    let onResponse:
+      | ((response: RichWidgetResponse) => void | Promise<void>)
+      | undefined;
+    const bridge = {
+      isConnected: true,
+      openWidget: vi.fn(({ onResponse: nextOnResponse }) => {
+        onResponse = nextOnResponse;
+        return 'rich-request-1';
+      }),
+      closeWidget: vi.fn(),
+    } as unknown as RichInteractionBridge;
+    return {
+      bridge,
+      respond: async (response: RichWidgetResponse) => onResponse?.(response),
+    };
+  };
+
   describe('rendering', () => {
     it('renders single question with options', () => {
       const details = createConfirmationDetails();
@@ -147,6 +168,61 @@ describe('<AskUserQuestionDialog />', () => {
       expect(output).toContain('[ ]');
       expect(output).toContain('Space: Toggle');
       expect(output).toContain('Enter: Confirm');
+    });
+
+    it('emits a rich form widget and resolves through the original confirm callback', async () => {
+      const onConfirm = vi.fn();
+      const details = createConfirmationDetails();
+      const rich = createRichBridge();
+
+      const { lastFrame, unmount } = renderWithProviders(
+        <RichInteractionContext.Provider value={rich.bridge}>
+          <AskUserQuestionDialog
+            confirmationDetails={details}
+            onConfirm={onConfirm}
+          />
+        </RichInteractionContext.Provider>,
+      );
+      await wait();
+
+      const frame = lastFrame() ?? '';
+      expect(frame).not.toContain('Red');
+      expect(frame).not.toContain('Type something...');
+      expect(rich.bridge.openWidget).toHaveBeenCalledWith(
+        expect.objectContaining({
+          widget: expect.objectContaining({
+            widget_id: 'ask-user-question:Question',
+            kind: 'form',
+            title: 'Question',
+            payload: expect.objectContaining({
+              fields: [
+                expect.objectContaining({
+                  id: '0',
+                  label: 'Color',
+                  type: 'select',
+                  options: [
+                    expect.objectContaining({ label: 'Red', value: 'Red' }),
+                    expect.objectContaining({ label: 'Blue', value: 'Blue' }),
+                    expect.objectContaining({ label: 'Green', value: 'Green' }),
+                  ],
+                }),
+              ],
+            }),
+          }),
+        }),
+      );
+
+      await rich.respond({
+        request_id: 'rich-request-1',
+        values: { answers: { 0: 'Blue' } },
+      });
+
+      expect(onConfirm).toHaveBeenCalledWith(
+        ToolConfirmationOutcome.ProceedOnce,
+        { answers: { 0: 'Blue' } },
+      );
+      unmount();
+      expect(rich.bridge.closeWidget).toHaveBeenCalledWith('rich-request-1');
     });
   });
 

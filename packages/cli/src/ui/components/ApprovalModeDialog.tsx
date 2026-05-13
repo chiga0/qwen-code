@@ -5,17 +5,21 @@
  */
 
 import type React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 import { ApprovalMode, APPROVAL_MODES } from '@qwen-code/qwen-code-core';
 import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
 import type { LoadedSettings } from '../../config/settings.js';
 import { SettingScope } from '../../config/settings.js';
-import { getScopeMessageForSetting } from '../../utils/dialogScopeUtils.js';
+import {
+  getScopeItems,
+  getScopeMessageForSetting,
+} from '../../utils/dialogScopeUtils.js';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { ScopeSelector } from './shared/ScopeSelector.js';
 import { t } from '../../i18n/index.js';
+import { useRichFormWidget } from '../../richInteraction/hooks.js';
 
 interface ApprovalModeDialogProps {
   /** Callback function when an approval mode is selected */
@@ -63,11 +67,15 @@ export function ApprovalModeDialog({
   );
 
   // Generate approval mode items with inline descriptions
-  const modeItems = APPROVAL_MODES.map((mode) => ({
-    label: `${mode} - ${formatModeDescription(mode)}`,
-    value: mode,
-    key: mode,
-  }));
+  const modeItems = useMemo(
+    () =>
+      APPROVAL_MODES.map((mode) => ({
+        label: `${mode} - ${formatModeDescription(mode)}`,
+        value: mode,
+        key: mode,
+      })),
+    [],
+  );
 
   // Find the index of the current mode
   const initialModeIndex = modeItems.findIndex(
@@ -108,6 +116,57 @@ export function ApprovalModeDialog({
     },
     { isActive: true },
   );
+
+  const richApprovalFields = useMemo(
+    () => [
+      {
+        id: 'approvalMode',
+        label: t('Approval Mode'),
+        type: 'select' as const,
+        value: modeItems[safeInitialModeIndex]?.value ?? ApprovalMode.DEFAULT,
+        options: modeItems.map((item) => ({
+          label: item.value,
+          value: item.value,
+          description: formatModeDescription(item.value),
+        })),
+      },
+      {
+        id: 'scope',
+        label: t('Apply To'),
+        type: 'select' as const,
+        value: selectedScope,
+        options: getScopeItems().map((item) => ({
+          label: t(item.label),
+          value: item.value,
+        })),
+      },
+    ],
+    [modeItems, safeInitialModeIndex, selectedScope],
+  );
+
+  const richApprovalDialogActive = useRichFormWidget({
+    widgetId: 'approval-mode-dialog',
+    title: t('Approval Mode'),
+    isFocused: true,
+    reservedRows: 12,
+    fields: richApprovalFields,
+    onSubmit: (values) => {
+      const selectedMode =
+        typeof values['approvalMode'] === 'string'
+          ? (values['approvalMode'] as ApprovalMode)
+          : highlightedMode;
+      const scope =
+        typeof values['scope'] === 'string'
+          ? (values['scope'] as SettingScope)
+          : selectedScope;
+      onSelect(selectedMode, scope);
+    },
+    onCancel: () => onSelect(undefined, selectedScope),
+  });
+
+  if (richApprovalDialogActive) {
+    return <></>;
+  }
 
   // Generate scope message for approval mode setting
   const otherScopeModifiedMessage = getScopeMessageForSetting(

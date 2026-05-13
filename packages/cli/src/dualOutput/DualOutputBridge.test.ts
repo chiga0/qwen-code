@@ -187,6 +187,58 @@ describe('DualOutputBridge', () => {
       });
     });
 
+    it('routes rich widget requests through the control plane', async () => {
+      bridge = new DualOutputBridge(config, { filePath: target });
+      bridge.emitRichWidgetRequest('rich-1', {
+        subtype: 'rich_widget',
+        widget_id: 'widget-1',
+        kind: 'select',
+        title: 'Choose model',
+        payload: {
+          options: [
+            { label: 'qwen-plus', value: 'qwen-plus' },
+            { label: 'qwen-max', value: 'qwen-max' },
+          ],
+        },
+        anchor: { type: 'cursor' },
+      });
+      bridge.emitRichWidgetClose('rich-1', 'widget-1');
+      await bridge.shutdown();
+
+      const lines = readJsonl(target);
+      const request = lines.find(
+        (l) =>
+          l['type'] === 'control_request' &&
+          (l['request'] as { subtype?: string })?.subtype === 'rich_widget',
+      );
+      const cancel = lines.find((l) => l['type'] === 'control_cancel_request');
+      const close = lines.find(
+        (l) => l['type'] === 'system' && l['subtype'] === 'rich_widget_close',
+      );
+      expect(request).toMatchObject({
+        type: 'control_request',
+        request_id: 'rich-1',
+        request: {
+          subtype: 'rich_widget',
+          widget_id: 'widget-1',
+          kind: 'select',
+          title: 'Choose model',
+        },
+      });
+      expect(cancel).toMatchObject({
+        type: 'control_cancel_request',
+        request_id: 'rich-1',
+      });
+      expect(close).toMatchObject({
+        type: 'system',
+        subtype: 'rich_widget_close',
+        data: {
+          request_id: 'rich-1',
+          widget_id: 'widget-1',
+        },
+      });
+    });
+
     it('reports isConnected=false after shutdown and silently drops further events', async () => {
       bridge = new DualOutputBridge(config, { filePath: target });
       await bridge.shutdown();

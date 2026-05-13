@@ -67,6 +67,56 @@ describe('RemoteInputWatcher', () => {
     expect(handler).toHaveBeenCalledWith('req-7', true);
   });
 
+  it('dispatches rich_widget_response immediately', async () => {
+    watcher = new RemoteInputWatcher(inputFile);
+    const handler = vi.fn();
+    watcher.setRichWidgetResponseHandler(handler);
+
+    fs.appendFileSync(
+      inputFile,
+      JSON.stringify({
+        type: 'rich_widget_response',
+        request_id: 'rich-1',
+        widget_id: 'widget-1',
+        selectedIndex: 1,
+        values: { model: 'qwen-max' },
+      }) + '\n',
+    );
+
+    await watcher.checkForNewInput();
+    expect(handler).toHaveBeenCalledWith({
+      request_id: 'rich-1',
+      widget_id: 'widget-1',
+      selectedIndex: 1,
+      values: { model: 'qwen-max' },
+    });
+  });
+
+  it('normalizes generic control_response commands for rich widgets', async () => {
+    watcher = new RemoteInputWatcher(inputFile);
+    const handler = vi.fn();
+    watcher.setRichWidgetResponseHandler(handler);
+
+    fs.appendFileSync(
+      inputFile,
+      JSON.stringify({
+        type: 'control_response',
+        response: {
+          subtype: 'success',
+          request_id: 'rich-2',
+          response: { decision: 'accepted' },
+        },
+      }) + '\n',
+    );
+
+    await watcher.checkForNewInput();
+    expect(handler).toHaveBeenCalledWith({
+      request_id: 'rich-2',
+      action: undefined,
+      response: { decision: 'accepted' },
+    });
+  });
+
   it('retries queued submits when the TUI signals it has become idle', async () => {
     watcher = new RemoteInputWatcher(inputFile);
 

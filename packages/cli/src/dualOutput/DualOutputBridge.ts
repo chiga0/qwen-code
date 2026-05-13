@@ -20,6 +20,7 @@ import type {
 import { createDebugLogger } from '@qwen-code/qwen-code-core';
 import type { Part } from '@google/genai';
 import { StreamJsonOutputAdapter } from '../nonInteractive/io/index.js';
+import type { RichWidgetRequest } from '../richInteraction/types.js';
 
 const debugLogger = createDebugLogger('DUAL_OUTPUT');
 
@@ -39,7 +40,9 @@ export const SUPPORTED_EVENTS = [
   'stream_event',
   'result',
   'control_request',
+  'control_request.rich_widget',
   'control_response',
+  'control_cancel_request',
 ] as const;
 
 /**
@@ -49,8 +52,9 @@ export const SUPPORTED_EVENTS = [
  *
  * History:
  *   1 — initial release (session_start, session_end, full stream-json).
+ *   2 — rich terminal widget control_request subtype and cancel events.
  */
-export const DUAL_OUTPUT_PROTOCOL_VERSION = 1;
+export const DUAL_OUTPUT_PROTOCOL_VERSION = 2;
 
 /**
  * Optional metadata wired into the `session_start` capability handshake.
@@ -273,6 +277,30 @@ export class DualOutputBridge {
       this.adapter.emitControlError(requestId, message);
     } catch (err) {
       debugLogger.error('DualOutput emitControlError error:', err);
+      this.active = false;
+    }
+  }
+
+  emitRichWidgetRequest(requestId: string, request: RichWidgetRequest): void {
+    if (!this.active) return;
+    try {
+      this.adapter.emitRichWidgetRequest(requestId, request);
+    } catch (err) {
+      debugLogger.error('DualOutput emitRichWidgetRequest error:', err);
+      this.active = false;
+    }
+  }
+
+  emitRichWidgetClose(requestId: string, widgetId?: string): void {
+    if (!this.active) return;
+    try {
+      this.adapter.emitControlCancelRequest(requestId);
+      this.adapter.emitSystemMessage('rich_widget_close', {
+        request_id: requestId,
+        widget_id: widgetId,
+      });
+    } catch (err) {
+      debugLogger.error('DualOutput emitRichWidgetClose error:', err);
       this.active = false;
     }
   }

@@ -5,10 +5,12 @@
  */
 
 import type React from 'react';
+import { isValidElement, useId } from 'react';
 import { Text, Box } from 'ink';
 import { theme } from '../../semantic-colors.js';
 import { BaseSelectionList } from './BaseSelectionList.js';
 import type { SelectionListItem } from '../../hooks/useSelectionList.js';
+import { useRichSelectWidget } from '../../../richInteraction/hooks.js';
 
 export interface DescriptiveRadioSelectItem<T> extends SelectionListItem<T> {
   title: React.ReactNode;
@@ -34,6 +36,26 @@ export interface DescriptiveRadioButtonSelectProps<T> {
   maxItemsToShow?: number;
   /** Gap (in rows) between each item. */
   itemGap?: number;
+  /** Disable rich terminal sidecar emission for callers that emit a richer widget themselves. */
+  suppressRichWidget?: boolean;
+  /** Title shown by rich terminal frontends. */
+  richWidgetTitle?: string;
+}
+
+function plainTextFromNode(node: React.ReactNode): string {
+  if (node === null || node === undefined || typeof node === 'boolean') {
+    return '';
+  }
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node);
+  }
+  if (Array.isArray(node)) {
+    return node.map(plainTextFromNode).join('');
+  }
+  if (isValidElement<{ children?: React.ReactNode }>(node)) {
+    return plainTextFromNode(node.props.children);
+  }
+  return '';
 }
 
 /**
@@ -51,7 +73,29 @@ export function DescriptiveRadioButtonSelect<T>({
   showScrollArrows = false,
   maxItemsToShow = 10,
   itemGap = 0,
+  suppressRichWidget = false,
+  richWidgetTitle = 'Select an option',
 }: DescriptiveRadioButtonSelectProps<T>): React.JSX.Element {
+  const widgetId = useId();
+  const richWidgetActive = useRichSelectWidget({
+    widgetId: `descriptive-radio-select:${widgetId}`,
+    title: richWidgetTitle,
+    isFocused: isFocused && !suppressRichWidget,
+    initialIndex,
+    items: items.map((item) => ({
+      key: item.key,
+      label: plainTextFromNode(item.title) || item.key,
+      description: plainTextFromNode(item.description),
+      value: item.value,
+      disabled: item.disabled,
+    })),
+    onSelect,
+  });
+
+  if (richWidgetActive) {
+    return <></>;
+  }
+
   return (
     <BaseSelectionList<T, DescriptiveRadioSelectItem<T>>
       items={items}

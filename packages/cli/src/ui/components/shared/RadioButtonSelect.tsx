@@ -5,10 +5,12 @@
  */
 
 import type React from 'react';
+import { useId } from 'react';
 import { Text } from 'ink';
 import { theme } from '../../semantic-colors.js';
 import { BaseSelectionList } from './BaseSelectionList.js';
 import type { SelectionListItem } from '../../hooks/useSelectionList.js';
+import { useRichSelectWidget } from '../../../richInteraction/hooks.js';
 
 /**
  * Represents a single option for the RadioButtonSelect.
@@ -41,6 +43,10 @@ export interface RadioButtonSelectProps<T> {
   maxItemsToShow?: number;
   /** Whether to show numbers next to items. */
   showNumbers?: boolean;
+  /** Disable rich terminal sidecar emission for callers that emit a richer widget themselves. */
+  suppressRichWidget?: boolean;
+  /** Title shown by rich terminal frontends. */
+  richWidgetTitle?: string;
 }
 
 /**
@@ -58,7 +64,28 @@ export function RadioButtonSelect<T>({
   showScrollArrows = false,
   maxItemsToShow = 10,
   showNumbers = true,
+  suppressRichWidget = false,
+  richWidgetTitle = 'Select an option',
 }: RadioButtonSelectProps<T>): React.JSX.Element {
+  const widgetId = useId();
+  const richWidgetActive = useRichSelectWidget({
+    widgetId: `radio-select:${widgetId}`,
+    title: richWidgetTitle,
+    isFocused: isFocused && !suppressRichWidget,
+    initialIndex,
+    items: items.map((item) => ({
+      key: item.key,
+      label: item.label,
+      value: item.value,
+      disabled: item.disabled,
+    })),
+    onSelect,
+  });
+
+  if (richWidgetActive) {
+    return <></>;
+  }
+
   return (
     <BaseSelectionList<T, RadioSelectItem<T>>
       items={items}

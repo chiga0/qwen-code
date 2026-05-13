@@ -278,6 +278,18 @@ export interface CLIControlPermissionRequest {
   blocked_path: string | null;
 }
 
+export interface CLIControlRichWidgetRequest {
+  subtype: 'rich_widget';
+  widget_id: string;
+  kind: 'select' | 'multi_select' | 'form' | 'approval' | 'diff';
+  title: string;
+  payload: unknown;
+  anchor?: {
+    type: 'cursor';
+    marker?: string;
+  };
+}
+
 export enum AuthProviderType {
   DYNAMIC_DISCOVERY = 'dynamic_discovery',
   GOOGLE_CREDENTIALS = 'google_credentials',
@@ -391,6 +403,7 @@ export interface CLIControlGetContextUsageRequest {
 export type ControlRequestPayload =
   | CLIControlInterruptRequest
   | CLIControlPermissionRequest
+  | CLIControlRichWidgetRequest
   | CLIControlInitializeRequest
   | CLIControlSetPermissionModeRequest
   | CLIHookCallbackRequest
@@ -595,6 +608,7 @@ export enum ControlRequestType {
 
   // PermissionController requests
   CAN_USE_TOOL = 'can_use_tool',
+  RICH_WIDGET = 'rich_widget',
   SET_PERMISSION_MODE = 'set_permission_mode',
 
   // MCPController requests

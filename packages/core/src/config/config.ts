@@ -542,6 +542,11 @@ export interface ConfigParameters {
    * watches it to process messages as if the user typed them.
    */
   inputFile?: string;
+  /**
+   * Enables rich terminal sidecar widgets for compatible terminal frontends.
+   * The regular Ink/ANSI terminal UI remains authoritative and visible.
+   */
+  richTerminal?: boolean;
   /** Model providers configuration grouped by authType */
   modelProvidersConfig?: ModelProvidersConfig;
   /** Multi-agent collaboration settings (Arena, Team, Swarm) */
@@ -781,6 +786,7 @@ export class Config {
   private readonly jsonFile: string | undefined;
   private readonly jsonSchema: Record<string, unknown> | undefined;
   private readonly inputFile: string | undefined;
+  private readonly richTerminal: boolean;
   private readonly defaultFileEncoding: FileEncodingType | undefined;
   private readonly enableManagedAutoMemory: boolean;
   private readonly enableManagedAutoDream: boolean;
@@ -941,6 +947,7 @@ export class Config {
     this.jsonFile = params.jsonFile;
     this.jsonSchema = params.jsonSchema;
     this.inputFile = params.inputFile;
+    this.richTerminal = params.richTerminal ?? false;
     this.defaultFileEncoding = params.defaultFileEncoding;
     this.storage = new Storage(this.targetDir);
     this.inputFormat = params.inputFormat ?? InputFormat.TEXT;
@@ -1490,10 +1497,7 @@ export class Config {
     // sidecar that happens to share the outgoing session id —
     // mirrors kimi-cli PR #2082's "write only when a session is
     // established for this process" rule.
-    if (
-      this.runtimeStatusEnabled &&
-      previousSessionId !== this.sessionId
-    ) {
+    if (this.runtimeStatusEnabled && previousSessionId !== this.sessionId) {
       const oldPath = this.storage.getRuntimeStatusPath(previousSessionId);
       const newPath = this.storage.getRuntimeStatusPath(this.sessionId);
       const cliVersion = this.cliVersion ?? null;
@@ -2581,6 +2585,10 @@ export class Config {
    */
   getInputFile(): string | undefined {
     return this.inputFile;
+  }
+
+  getRichTerminal(): boolean {
+    return this.richTerminal;
   }
 
   /**

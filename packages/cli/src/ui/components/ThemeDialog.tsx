@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 import {
@@ -18,10 +18,14 @@ import { DiffRenderer } from './messages/DiffRenderer.js';
 import { colorizeCode } from '../utils/CodeColorizer.js';
 import type { LoadedSettings } from '../../config/settings.js';
 import { SettingScope } from '../../config/settings.js';
-import { getScopeMessageForSetting } from '../../utils/dialogScopeUtils.js';
+import {
+  getScopeItems,
+  getScopeMessageForSetting,
+} from '../../utils/dialogScopeUtils.js';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { ScopeSelector } from './shared/ScopeSelector.js';
 import { t } from '../../i18n/index.js';
+import { useRichFormWidget } from '../../richInteraction/hooks.js';
 
 interface ThemeDialogProps {
   /** Callback function when a theme is selected */
@@ -53,39 +57,45 @@ export function ThemeDialog({
   >(settings.merged.ui?.theme || AUTO_THEME_NAME);
 
   // Generate theme items filtered by selected scope
-  const customThemes =
-    selectedScope === SettingScope.User
-      ? settings.user.settings.ui?.customThemes || {}
-      : settings.merged.ui?.customThemes || {};
-  const builtInThemes = themeManager
-    .getAvailableThemes()
-    .filter((theme) => theme.type !== 'custom');
-  const customThemeNames = Object.keys(customThemes);
-  const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-  // Generate theme items with "Auto" at the top
-  const themeItems = [
-    {
-      label: t('Auto (detect terminal theme)'),
-      value: AUTO_THEME_NAME,
-      themeNameDisplay: t('Auto'),
-      themeTypeDisplay: t('Auto'),
-      key: AUTO_THEME_NAME,
-    },
-    ...builtInThemes.map((theme) => ({
-      label: theme.name,
-      value: theme.name,
-      themeNameDisplay: theme.name,
-      themeTypeDisplay: capitalize(theme.type),
-      key: theme.name,
-    })),
-    ...customThemeNames.map((name) => ({
-      label: name,
-      value: name,
-      themeNameDisplay: name,
-      themeTypeDisplay: t('Custom'),
-      key: name,
-    })),
-  ];
+  const themeItems = useMemo(() => {
+    const customThemes =
+      selectedScope === SettingScope.User
+        ? settings.user.settings.ui?.customThemes || {}
+        : settings.merged.ui?.customThemes || {};
+    const builtInThemes = themeManager
+      .getAvailableThemes()
+      .filter((theme) => theme.type !== 'custom');
+    const customThemeNames = Object.keys(customThemes);
+    const capitalize = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+    return [
+      {
+        label: t('Auto (detect terminal theme)'),
+        value: AUTO_THEME_NAME,
+        themeNameDisplay: t('Auto'),
+        themeTypeDisplay: t('Auto'),
+        key: AUTO_THEME_NAME,
+      },
+      ...builtInThemes.map((theme) => ({
+        label: theme.name,
+        value: theme.name,
+        themeNameDisplay: theme.name,
+        themeTypeDisplay: capitalize(theme.type),
+        key: theme.name,
+      })),
+      ...customThemeNames.map((name) => ({
+        label: name,
+        value: name,
+        themeNameDisplay: name,
+        themeTypeDisplay: t('Custom'),
+        key: name,
+      })),
+    ];
+  }, [
+    selectedScope,
+    settings.merged.ui?.customThemes,
+    settings.user.settings.ui?.customThemes,
+  ]);
 
   // Find the index of the selected theme, but only if it exists in the list
   const initialThemeIndex = themeItems.findIndex(
@@ -130,6 +140,57 @@ export function ThemeDialog({
     },
     { isActive: true },
   );
+
+  const richThemeFields = useMemo(
+    () => [
+      {
+        id: 'themeName',
+        label: t('Theme'),
+        type: 'select' as const,
+        value: themeItems[safeInitialThemeIndex]?.value ?? AUTO_THEME_NAME,
+        options: themeItems.map((item) => ({
+          label: item.label,
+          value: item.value,
+          description: item.themeTypeDisplay,
+        })),
+      },
+      {
+        id: 'scope',
+        label: t('Apply To'),
+        type: 'select' as const,
+        value: selectedScope,
+        options: getScopeItems().map((item) => ({
+          label: t(item.label),
+          value: item.value,
+        })),
+      },
+    ],
+    [safeInitialThemeIndex, selectedScope, themeItems],
+  );
+
+  const richThemeDialogActive = useRichFormWidget({
+    widgetId: 'theme-dialog',
+    title: t('Select Theme'),
+    isFocused: true,
+    reservedRows: 14,
+    fields: richThemeFields,
+    onSubmit: (values) => {
+      const themeName =
+        typeof values['themeName'] === 'string'
+          ? values['themeName']
+          : highlightedThemeName || AUTO_THEME_NAME;
+      const scope =
+        typeof values['scope'] === 'string'
+          ? (values['scope'] as SettingScope)
+          : selectedScope;
+      onSelect(themeName, scope);
+    },
+    onCancel: () => onSelect(undefined, selectedScope),
+  });
+
+  if (richThemeDialogActive) {
+    return <></>;
+  }
 
   // Generate scope message for theme setting
   const otherScopeModifiedMessage = getScopeMessageForSetting(

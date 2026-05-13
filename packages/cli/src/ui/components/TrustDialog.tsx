@@ -13,6 +13,7 @@ import { theme } from '../semantic-colors.js';
 import { RadioButtonSelect } from './shared/RadioButtonSelect.js';
 import { relaunchApp } from '../../utils/processUtils.js';
 import { type UseHistoryManagerReturn } from '../hooks/useHistoryManager.js';
+import { useRichSelectWidget } from '../../richInteraction/hooks.js';
 
 interface TrustDialogProps {
   onExit: () => void;
@@ -69,6 +70,19 @@ export function TrustDialog({
     (item) => item.value === currentTrustLevel,
   );
   const initialIndex = index === -1 ? 0 : index;
+
+  const richTrustDialogActive = useRichSelectWidget({
+    widgetId: 'trust-dialog',
+    title: 'Modify Trust Level',
+    isFocused: !needsRestart,
+    items: TRUST_LEVEL_ITEMS,
+    initialIndex,
+    onSelect: updateTrustLevel,
+  });
+
+  if (richTrustDialogActive) {
+    return <></>;
+  }
 
   return (
     <>

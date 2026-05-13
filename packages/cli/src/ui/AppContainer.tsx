@@ -160,6 +160,8 @@ import { useContextualTips } from './hooks/useContextualTips.js';
 import { getTipHistory } from '../services/tips/index.js';
 import { useRemoteInput } from '../remoteInput/RemoteInputContext.js';
 import { useDualOutput } from '../dualOutput/DualOutputContext.js';
+import { RichInteractionBridge } from '../richInteraction/RichInteractionBridge.js';
+import { RichInteractionContext } from '../richInteraction/RichInteractionContext.js';
 import {
   requestConsentInteractive,
   requestConsentOrFail,
@@ -1029,6 +1031,14 @@ export const AppContainer = (props: AppContainerProps) => {
   // When an external process writes a command to the input-file,
   // the watcher calls submitQuery as if the user typed it in the TUI.
   const remoteInput = useRemoteInput();
+  const dualOutput = useDualOutput();
+  const richInteraction = useMemo(() => {
+    if (!dualOutput || !dualOutput.isConnected || !config.getRichTerminal()) {
+      return null;
+    }
+    return new RichInteractionBridge(dualOutput, writeRaw);
+  }, [config, dualOutput, writeRaw]);
+
   useEffect(() => {
     if (!remoteInput) return;
     remoteInput.setSubmitFn((text: string) => submitQuery(text));
@@ -1043,6 +1053,16 @@ export const AppContainer = (props: AppContainerProps) => {
     }
   }, [remoteInput, streamingState]);
 
+  useEffect(() => {
+    if (!remoteInput) return;
+    remoteInput.setRichWidgetResponseHandler((response) => {
+      void richInteraction?.resolveWidgetResponse(response);
+    });
+    return () => {
+      remoteInput.setRichWidgetResponseHandler(() => {});
+    };
+  }, [remoteInput, richInteraction]);
+
   // Dual-output tool-confirmation bridge.
   //
   // When a tool call enters awaiting_approval we emit a `control_request`
@@ -1051,7 +1071,6 @@ export const AppContainer = (props: AppContainerProps) => {
   // `confirmation_response` written to --input-file) wins; we always emit
   // a `control_response` mirroring the final decision so observers stay in
   // sync.
-  const dualOutput = useDualOutput();
   const confirmRequestMap = useRef(new Map<string, string>()); // requestId → callId
   const confirmCallIdMap = useRef(new Map<string, string>()); // callId → requestId
   const confirmEmitted = useRef(new Set<string>());
@@ -2804,9 +2823,11 @@ export const AppContainer = (props: AppContainerProps) => {
             <CompactModeProvider value={compactModeValue}>
               <RenderModeProvider value={renderModeValue}>
                 <TerminalOutputProvider value={writeRaw}>
-                  <ShellFocusContext.Provider value={isFocused}>
-                    <App />
-                  </ShellFocusContext.Provider>
+                  <RichInteractionContext.Provider value={richInteraction}>
+                    <ShellFocusContext.Provider value={isFocused}>
+                      <App />
+                    </ShellFocusContext.Provider>
+                  </RichInteractionContext.Provider>
                 </TerminalOutputProvider>
               </RenderModeProvider>
             </CompactModeProvider>

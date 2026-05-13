@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { useState } from 'react';
+import { useLayoutEffect, useState } from 'react';
 import { Box, Text } from 'ink';
 import {
   type ToolAskUserQuestionConfirmationDetails,
@@ -16,6 +16,8 @@ import { theme } from '../../semantic-colors.js';
 import { useKeypress } from '../../hooks/useKeypress.js';
 import { TextInput } from '../shared/TextInput.js';
 import { t } from '../../../i18n/index.js';
+import { useRichInteraction } from '../../../richInteraction/RichInteractionContext.js';
+import { normalizeAnswersFromResponse } from '../../../richInteraction/hooks.js';
 
 interface AskUserQuestionDialogProps {
   confirmationDetails: ToolAskUserQuestionConfirmationDetails;
@@ -45,6 +47,42 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
   const [customInputChecked, setCustomInputChecked] = useState<
     Record<number, boolean>
   >({});
+  const richInteraction = useRichInteraction();
+  const richDialogActive = Boolean(richInteraction && isFocused);
+
+  useLayoutEffect(() => {
+    if (!richInteraction || !richDialogActive) return;
+    const requestId = richInteraction.openWidget({
+      widget: {
+        widget_id: `ask-user-question:${confirmationDetails.title}`,
+        kind: 'form',
+        title: confirmationDetails.title,
+        anchor: { type: 'cursor', reservedRows: 12 },
+        payload: {
+          questions: confirmationDetails.questions,
+          fields: confirmationDetails.questions.map((question, index) => ({
+            id: String(index),
+            label: question.header,
+            type: question.multiSelect ? 'multi_select' : 'select',
+            options: question.options.map((option) => ({
+              label: option.label,
+              value: option.label,
+              description: option.description,
+            })),
+          })),
+          metadata: confirmationDetails.metadata,
+        },
+      },
+      onResponse: (response) => {
+        if (response.action === 'cancel' || response.action === 'dismiss') {
+          return onConfirm(ToolConfirmationOutcome.Cancel);
+        }
+        const answers = normalizeAnswersFromResponse(response);
+        return onConfirm(ToolConfirmationOutcome.ProceedOnce, { answers });
+      },
+    });
+    return () => richInteraction.closeWidget(requestId);
+  }, [confirmationDetails, onConfirm, richDialogActive, richInteraction]);
 
   const hasMultipleQuestions = confirmationDetails.questions.length > 1;
   const totalTabs = hasMultipleQuestions
@@ -275,8 +313,12 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
         return;
       }
     },
-    { isActive: isFocused },
+    { isActive: isFocused && !richDialogActive },
   );
+
+  if (richDialogActive) {
+    return null;
+  }
 
   // Submit tab (for multiple questions)
   if (isSubmitTab) {

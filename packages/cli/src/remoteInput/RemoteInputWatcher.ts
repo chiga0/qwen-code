@@ -7,6 +7,7 @@
 import { createReadStream, watchFile, unwatchFile, statSync } from 'node:fs';
 import { createInterface } from 'node:readline';
 import { createDebugLogger } from '@qwen-code/qwen-code-core';
+import type { RichWidgetResponse } from '../richInteraction/types.js';
 
 const debugLogger = createDebugLogger('REMOTE_INPUT');
 
@@ -21,12 +22,44 @@ const debugLogger = createDebugLogger('REMOTE_INPUT');
  */
 export type RemoteInputCommand =
   | { type: 'submit'; text: string }
-  | { type: 'confirmation_response'; request_id: string; allowed: boolean };
+  | { type: 'confirmation_response'; request_id: string; allowed: boolean }
+  | RichWidgetResponseCommand
+  | GenericControlResponseCommand;
+
+export type RichWidgetResponseCommand = {
+  type: 'rich_widget_response';
+} & RichWidgetResponse;
+
+export type GenericControlResponseCommand =
+  | {
+      type: 'control_response';
+      request_id: string;
+      response?: unknown;
+      action?: RichWidgetResponse['action'];
+      values?: RichWidgetResponse['values'];
+      value?: RichWidgetResponse['value'];
+      selectedIndex?: RichWidgetResponse['selectedIndex'];
+      selectedIndices?: RichWidgetResponse['selectedIndices'];
+      decision?: RichWidgetResponse['decision'];
+    }
+  | {
+      type: 'control_response';
+      response: {
+        subtype?: string;
+        request_id: string;
+        response?: unknown;
+        error?: unknown;
+      };
+    };
 
 /**
  * Callback invoked when a `confirmation_response` command is read.
  */
 export type ConfirmationHandler = (requestId: string, allowed: boolean) => void;
+
+export type RichWidgetResponseHandler = (
+  response: RichWidgetResponse,
+) => void | Promise<void>;
 
 /**
  * Callback type for submitting a query from remote input.
@@ -47,6 +80,7 @@ export type SubmitFn = (
 export class RemoteInputWatcher {
   private submitFn: SubmitFn | null = null;
   private confirmationHandler: ConfirmationHandler | null = null;
+  private richWidgetResponseHandler: RichWidgetResponseHandler | null = null;
   private queue: Array<Extract<RemoteInputCommand, { type: 'submit' }>> = [];
   private processing = false;
   private active = true;
@@ -78,6 +112,10 @@ export class RemoteInputWatcher {
    */
   setConfirmationHandler(fn: ConfirmationHandler): void {
     this.confirmationHandler = fn;
+  }
+
+  setRichWidgetResponseHandler(fn: RichWidgetResponseHandler): void {
+    this.richWidgetResponseHandler = fn;
   }
 
   /**
@@ -155,6 +193,20 @@ export class RemoteInputWatcher {
             `RemoteInput: confirmation_response for ${cmd.request_id} (allowed=${cmd.allowed})`,
           );
           this.confirmationHandler?.(cmd.request_id, cmd.allowed);
+        } else if (this.isRichWidgetResponseCommand(cmd)) {
+          const response = this.normalizeRichWidgetResponse(cmd);
+          debugLogger.debug(
+            `RemoteInput: rich_widget_response for ${response.request_id}`,
+          );
+          void this.richWidgetResponseHandler?.(response);
+        } else if (this.isGenericControlResponseCommand(cmd)) {
+          const response = this.normalizeControlResponse(cmd);
+          if (response) {
+            debugLogger.debug(
+              `RemoteInput: control_response for ${response.request_id}`,
+            );
+            void this.richWidgetResponseHandler?.(response);
+          }
         } else if (
           cmd &&
           cmd.type === 'submit' &&
@@ -184,6 +236,69 @@ export class RemoteInputWatcher {
         resolve();
       });
     });
+  }
+
+  private isRichWidgetResponseCommand(
+    cmd: unknown,
+  ): cmd is RichWidgetResponseCommand {
+    return (
+      Boolean(cmd) &&
+      typeof cmd === 'object' &&
+      (cmd as { type?: unknown }).type === 'rich_widget_response' &&
+      typeof (cmd as { request_id?: unknown }).request_id === 'string'
+    );
+  }
+
+  private isGenericControlResponseCommand(
+    cmd: unknown,
+  ): cmd is GenericControlResponseCommand {
+    if (!cmd || typeof cmd !== 'object') return false;
+    const record = cmd as {
+      type?: unknown;
+      request_id?: unknown;
+      response?: unknown;
+    };
+    if (record.type !== 'control_response') return false;
+    if (typeof record.request_id === 'string') return true;
+    if (!record.response || typeof record.response !== 'object') return false;
+    return (
+      typeof (record.response as { request_id?: unknown }).request_id ===
+      'string'
+    );
+  }
+
+  private normalizeRichWidgetResponse(
+    cmd: RichWidgetResponseCommand,
+  ): RichWidgetResponse {
+    const { type: _type, ...response } = cmd;
+    return response;
+  }
+
+  private normalizeControlResponse(
+    cmd: GenericControlResponseCommand,
+  ): RichWidgetResponse | null {
+    if ('request_id' in cmd && typeof cmd.request_id === 'string') {
+      return {
+        request_id: cmd.request_id,
+        action: cmd.action,
+        value: cmd.value,
+        values: cmd.values,
+        selectedIndex: cmd.selectedIndex,
+        selectedIndices: cmd.selectedIndices,
+        decision: cmd.decision,
+        response: cmd.response,
+      };
+    }
+
+    const nested = cmd.response as Record<string, unknown>;
+    if (!nested || typeof nested !== 'object') return null;
+    const requestId = nested['request_id'];
+    if (typeof requestId !== 'string') return null;
+    return {
+      request_id: requestId,
+      action: nested['subtype'] === 'error' ? 'cancel' : undefined,
+      response: nested['response'] ?? nested['error'],
+    };
   }
 
   private async processQueue(): Promise<void> {

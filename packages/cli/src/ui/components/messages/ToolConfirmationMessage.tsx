@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useState } from 'react';
 import { Box, Text } from 'ink';
 import { DiffRenderer } from './DiffRenderer.js';
 import { RenderInline } from '../../utils/InlineMarkdownRenderer.js';
@@ -30,6 +30,12 @@ import { useSettings } from '../../contexts/SettingsContext.js';
 import { theme } from '../../semantic-colors.js';
 import { t } from '../../../i18n/index.js';
 import { AskUserQuestionDialog } from './AskUserQuestionDialog.js';
+import { useRichInteraction } from '../../../richInteraction/RichInteractionContext.js';
+import { confirmationOutcomeFromResponse } from '../../../richInteraction/hooks.js';
+import type {
+  RichWidgetOption,
+  RichWidgetRequestPayload,
+} from '../../../richInteraction/types.js';
 
 // Cap the body height of inline subagent approval banners so a
 // multi-line command can't dominate the screen. MaxSizedBox renders
@@ -82,24 +88,121 @@ export const ToolConfirmationMessage: React.FC<
     };
   }, [config]);
 
-  const handleConfirm = async (outcome: ToolConfirmationOutcome) => {
-    // Call onConfirm before resolving the IDE diff so that the CLI outcome
-    // (e.g. ProceedAlways) is processed first.  resolveDiffFromCli would
-    // otherwise trigger the scheduler's ideConfirmation .then() handler
-    // with ProceedOnce, racing with the intended CLI outcome.
-    onConfirm(outcome);
+  const handleConfirm = useCallback(
+    async (outcome: ToolConfirmationOutcome) => {
+      // Call onConfirm before resolving the IDE diff so that the CLI outcome
+      // (e.g. ProceedAlways) is processed first.  resolveDiffFromCli would
+      // otherwise trigger the scheduler's ideConfirmation .then() handler
+      // with ProceedOnce, racing with the intended CLI outcome.
+      onConfirm(outcome);
+
+      if (confirmationDetails.type === 'edit') {
+        if (config.getIdeMode() && isDiffingEnabled) {
+          const cliOutcome =
+            outcome === ToolConfirmationOutcome.Cancel
+              ? 'rejected'
+              : 'accepted';
+          await ideClient?.resolveDiffFromCli(
+            confirmationDetails.filePath,
+            cliOutcome,
+          );
+        }
+      }
+    },
+    [config, confirmationDetails, ideClient, isDiffingEnabled, onConfirm],
+  );
+
+  const richInteraction = useRichInteraction();
+  const richConfirmationActive = Boolean(
+    richInteraction &&
+      isFocused &&
+      confirmationDetails.type !== 'ask_user_question' &&
+      !(confirmationDetails.type === 'edit' && confirmationDetails.isModifying),
+  );
+  useLayoutEffect(() => {
+    if (!richInteraction || !richConfirmationActive) return;
+
+    const choices: RichWidgetOption[] = [
+      {
+        label: t('Yes, allow once'),
+        value: ToolConfirmationOutcome.ProceedOnce,
+      },
+      {
+        label: t('Allow always'),
+        value: ToolConfirmationOutcome.ProceedAlways,
+      },
+      { label: t('No'), value: ToolConfirmationOutcome.Cancel },
+    ];
+    const payload: RichWidgetRequestPayload = { choices };
+    let kind: 'approval' | 'diff' = 'approval';
+    let title = confirmationDetails.title || t('Do you want to proceed?');
 
     if (confirmationDetails.type === 'edit') {
-      if (config.getIdeMode() && isDiffingEnabled) {
-        const cliOutcome =
-          outcome === ToolConfirmationOutcome.Cancel ? 'rejected' : 'accepted';
-        await ideClient?.resolveDiffFromCli(
-          confirmationDetails.filePath,
-          cliOutcome,
-        );
-      }
+      kind = 'diff';
+      title = t('Apply this change?');
+      payload.diff = confirmationDetails.fileDiff;
+      payload.fileName = confirmationDetails.fileName;
+      payload.filePath = confirmationDetails.filePath;
+      payload.metadata = { type: 'edit' };
+    } else if (confirmationDetails.type === 'exec') {
+      payload.body = confirmationDetails.command;
+      payload.metadata = {
+        type: 'exec',
+        rootCommand: confirmationDetails.rootCommand,
+      };
+    } else if (confirmationDetails.type === 'plan') {
+      payload.body = confirmationDetails.plan;
+      payload.metadata = {
+        type: 'plan',
+        prePlanMode: confirmationDetails.prePlanMode,
+      };
+      choices.unshift({
+        label: t('Restore previous mode'),
+        value: ToolConfirmationOutcome.RestorePrevious,
+      });
+    } else if (confirmationDetails.type === 'info') {
+      payload.body = confirmationDetails.prompt;
+      payload.metadata = { type: 'info', urls: confirmationDetails.urls ?? [] };
+    } else if (confirmationDetails.type === 'mcp') {
+      payload.metadata = {
+        type: 'mcp',
+        serverName: confirmationDetails.serverName,
+        toolName: confirmationDetails.toolName,
+        toolDisplayName: confirmationDetails.toolDisplayName,
+      };
+    } else {
+      return;
     }
-  };
+
+    const requestId = richInteraction.openWidget({
+      widget: {
+        widget_id: `tool-confirmation:${confirmationDetails.type}:${title}`,
+        kind,
+        title,
+        anchor: {
+          type: 'cursor',
+          reservedRows: confirmationDetails.type === 'edit' ? 28 : 12,
+        },
+        payload,
+      },
+      onResponse: (response) => {
+        const outcome = confirmationOutcomeFromResponse(response);
+        if (outcome === 'cancel' || response.action === 'cancel') {
+          return handleConfirm(ToolConfirmationOutcome.Cancel);
+        }
+        if (outcome) {
+          return handleConfirm(outcome);
+        }
+        return undefined;
+      },
+    });
+    return () => richInteraction.closeWidget(requestId);
+  }, [
+    confirmationDetails,
+    handleConfirm,
+    richConfirmationActive,
+    richInteraction,
+  ]);
 
   const isTrustedFolder = config.isTrustedFolder();
 
@@ -114,6 +217,10 @@ export const ToolConfirmationMessage: React.FC<
   );
 
   const handleSelect = (item: ToolConfirmationOutcome) => handleConfirm(item);
+
+  if (richConfirmationActive) {
+    return null;
+  }
 
   let bodyContent: React.ReactNode | null = null; // Removed contextDisplay here
   let question: string;
@@ -508,6 +615,8 @@ export const ToolConfirmationMessage: React.FC<
           items={renderedOptions}
           onSelect={handleSelect}
           isFocused={isFocused}
+          suppressRichWidget
+          richWidgetTitle={renderedQuestion}
         />
       </Box>
     </Box>

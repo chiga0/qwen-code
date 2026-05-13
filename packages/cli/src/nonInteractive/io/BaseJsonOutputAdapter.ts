@@ -30,6 +30,7 @@ import type {
   CLIUserMessage,
   ContentBlock,
   ControlMessage,
+  CLIControlRichWidgetRequest,
   ExtendedUsage,
   TextBlock,
   ThinkingBlock,
@@ -1134,6 +1135,26 @@ export abstract class BaseJsonOutputAdapter {
         request_id: requestId,
         error: errorMessage,
       },
+    };
+    this.emitControlMessageImpl(message);
+  }
+
+  emitRichWidgetRequest(
+    requestId: string,
+    request: CLIControlRichWidgetRequest,
+  ): void {
+    const message: ControlMessage = {
+      type: 'control_request',
+      request_id: requestId,
+      request,
+    };
+    this.emitControlMessageImpl(message);
+  }
+
+  emitControlCancelRequest(requestId: string): void {
+    const message: ControlMessage = {
+      type: 'control_cancel_request',
+      request_id: requestId,
     };
     this.emitControlMessageImpl(message);
   }

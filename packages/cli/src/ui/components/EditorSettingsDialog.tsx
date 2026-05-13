@@ -5,7 +5,7 @@
  */
 
 import type React from 'react';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { Box, Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 import {
@@ -24,6 +24,8 @@ import {
 } from '@qwen-code/qwen-code-core';
 import { useKeypress } from '../hooks/useKeypress.js';
 import { t } from '../../i18n/index.js';
+import { getScopeItems } from '../../utils/dialogScopeUtils.js';
+import { useRichFormWidget } from '../../richInteraction/hooks.js';
 
 const debugLogger = createDebugLogger('EDITOR_SETTINGS_DIALOG');
 
@@ -55,8 +57,10 @@ export function EditorSettingsDialog({
     { isActive: true },
   );
 
-  const editorItems: EditorDisplay[] =
-    editorSettingsManager.getAvailableEditorDisplays();
+  const editorItems: EditorDisplay[] = useMemo(
+    () => editorSettingsManager.getAvailableEditorDisplays(),
+    [],
+  );
 
   const currentPreference =
     settings.forScope(selectedScope).settings.general?.preferredEditor;
@@ -86,6 +90,57 @@ export function EditorSettingsDialog({
   const handleScopeHighlight = (scope: SettingScope) => {
     setSelectedScope(scope);
   };
+
+  const richEditorFields = useMemo(
+    () => [
+      {
+        id: 'editor',
+        label: t('Editor'),
+        type: 'select' as const,
+        value: editorItems[editorIndex]?.type ?? 'not_set',
+        options: editorItems.map((item) => ({
+          label: item.name,
+          value: item.type,
+          disabled: item.disabled,
+        })),
+      },
+      {
+        id: 'scope',
+        label: t('Apply To'),
+        type: 'select' as const,
+        value: selectedScope,
+        options: getScopeItems().map((item) => ({
+          label: t(item.label),
+          value: item.value,
+        })),
+      },
+    ],
+    [editorIndex, editorItems, selectedScope],
+  );
+
+  const richEditorDialogActive = useRichFormWidget({
+    widgetId: 'editor-settings-dialog',
+    title: t('Select Editor'),
+    isFocused: true,
+    reservedRows: 12,
+    fields: richEditorFields,
+    onSubmit: (values) => {
+      const editor =
+        typeof values['editor'] === 'string'
+          ? (values['editor'] as EditorType | 'not_set')
+          : 'not_set';
+      const scope =
+        typeof values['scope'] === 'string'
+          ? (values['scope'] as SettingScope)
+          : selectedScope;
+      onSelect(editor === 'not_set' ? undefined : editor, scope);
+    },
+    onCancel: onExit,
+  });
+
+  if (richEditorDialogActive) {
+    return <></>;
+  }
 
   let otherScopeModifiedMessage = '';
   const otherScope =

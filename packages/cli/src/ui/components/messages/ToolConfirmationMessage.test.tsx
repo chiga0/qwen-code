@@ -11,14 +11,91 @@ import type {
   ToolCallConfirmationDetails,
   Config,
 } from '@qwen-code/qwen-code-core';
+import { ToolConfirmationOutcome } from '@qwen-code/qwen-code-core';
 import { renderWithProviders } from '../../../test-utils/render.js';
 import type { LoadedSettings } from '../../../config/settings.js';
+import { RichInteractionContext } from '../../../richInteraction/RichInteractionContext.js';
+import type { RichInteractionBridge } from '../../../richInteraction/RichInteractionBridge.js';
+import type { RichWidgetResponse } from '../../../richInteraction/types.js';
+
+const wait = (ms = 50) => new Promise((resolve) => setTimeout(resolve, ms));
 
 describe('ToolConfirmationMessage', () => {
   const mockConfig = {
     isTrustedFolder: () => true,
     getIdeMode: () => false,
   } as unknown as Config;
+
+  const createRichBridge = () => {
+    let onResponse:
+      | ((response: RichWidgetResponse) => void | Promise<void>)
+      | undefined;
+    const bridge = {
+      isConnected: true,
+      openWidget: vi.fn(({ onResponse: nextOnResponse }) => {
+        onResponse = nextOnResponse;
+        return 'rich-request-1';
+      }),
+      closeWidget: vi.fn(),
+    } as unknown as RichInteractionBridge;
+    return {
+      bridge,
+      respond: async (response: RichWidgetResponse) => onResponse?.(response),
+    };
+  };
+
+  it('emits a rich diff widget and routes the response through onConfirm', async () => {
+    const onConfirm = vi.fn();
+    const rich = createRichBridge();
+    const confirmationDetails: ToolCallConfirmationDetails = {
+      type: 'edit',
+      title: 'Confirm Edit',
+      fileName: 'test.txt',
+      filePath: '/test.txt',
+      fileDiff: '--- a/test.txt\n+++ b/test.txt\n@@\n-a\n+b',
+      originalContent: 'a',
+      newContent: 'b',
+      onConfirm,
+    };
+
+    const { lastFrame, unmount } = renderWithProviders(
+      <RichInteractionContext.Provider value={rich.bridge}>
+        <ToolConfirmationMessage
+          confirmationDetails={confirmationDetails}
+          config={mockConfig}
+          availableTerminalHeight={30}
+          contentWidth={80}
+        />
+      </RichInteractionContext.Provider>,
+    );
+    await wait();
+
+    const frame = lastFrame() ?? '';
+    expect(frame).not.toContain('Yes, allow once');
+    expect(frame).not.toContain('No, suggest changes');
+    expect(rich.bridge.openWidget).toHaveBeenCalledWith(
+      expect.objectContaining({
+        widget: expect.objectContaining({
+          kind: 'diff',
+          title: 'Apply this change?',
+          payload: expect.objectContaining({
+            diff: confirmationDetails.fileDiff,
+            fileName: 'test.txt',
+            filePath: '/test.txt',
+          }),
+        }),
+      }),
+    );
+
+    await rich.respond({
+      request_id: 'rich-request-1',
+      decision: 'accepted',
+    });
+
+    expect(onConfirm).toHaveBeenCalledWith(ToolConfirmationOutcome.ProceedOnce);
+    unmount();
+    expect(rich.bridge.closeWidget).toHaveBeenCalledWith('rich-request-1');
+  });
 
   it('should not display urls if prompt and url are the same', () => {
     const confirmationDetails: ToolCallConfirmationDetails = {
