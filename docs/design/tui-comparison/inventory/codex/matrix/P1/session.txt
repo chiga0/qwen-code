@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Use /skills to list available skills
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Working (0s • esc to interrupt)
+
+
+› Use /skills to list available skills
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+› Use /skills to list available skills
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+› Use /skills to list available skills
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=7,215 input=6,992 (+ 29,440 cached) output=223 (reasoning 113)
+To continue this session, run codex resume 019e1af1-254c-7cc0-8f9a-10d3092a239a
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=7,215 input=6,992 (+ 29,440 cached) output=223 (reasoning 113)
+To continue this session, run codex resume 019e1af1-254c-7cc0-8f9a-10d3092a239a
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› List the files in this directory using a tool, then summarize this project in one short sentence.
+
+
+• Explored
+  └ List ls -la
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• Files: README.md, index.js, package.json.
+
+  This is a tiny Node.js sandbox fixture with a README, package metadata, and an entry script.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=7,215 input=6,992 (+ 29,440 cached) output=223 (reasoning 113)
+To continue this session, run codex resume 019e1af1-254c-7cc0-8f9a-10d3092a239a
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

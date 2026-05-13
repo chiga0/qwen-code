@@ -1,0 +1,1171 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "What is the tech stack of this project?"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                                   ● Tip Use /rename to rename the current session
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  List the files in this directory using a tool, then summarize this
+                                     ┃  project in one short sentence.
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                                   ● Tip Use /rename to rename the current session
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "What is the tech stack of this project?"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                                   ● Tip Use /rename to rename the current session
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project summary after listing files
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            13,132 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+  ┃  Let me use the read tool to list the directory contents.                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and
+  ┃  all three files. Let me provide a concise summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.1K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project summary after listing files
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            13,132 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+  ┃  Let me use the read tool to list the directory contents.                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and
+  ┃  all three files. Let me provide a concise summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.1K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project summary after listing files
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            13,132 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+  ┃  Let me use the read tool to list the directory contents.                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and
+  ┃  all three files. Let me provide a concise summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.1K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project summary after listing files
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            13,132 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+  ┃  Let me use the read tool to list the directory contents.                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and
+  ┃  all three files. Let me provide a concise summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.1K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃
+
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project. Let me use the read tool to list the
+  ┃  directory contents.
+
+     → Read .
+
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and all three files. Let me provide a concise
+  ┃  summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃
+  ┃
+  ┃
+  ┃  Build · Qwen3.6 Max Preview IdeaLab
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                                                            13.1K  ctrl+p commands
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃
+
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project. Let me use the read tool to list the
+  ┃  directory contents.
+
+     → Read .
+
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and all three files. Let me provide a concise
+  ┃  summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃
+  ┃
+  ┃
+  ┃  Build · Qwen3.6 Max Preview IdeaLab
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                                                            13.1K  ctrl+p commands
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃
+
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project. Let me use the read tool to list the
+  ┃  directory contents.
+
+     → Read .
+
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and all three files. Let me provide a concise
+  ┃  summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃
+  ┃
+  ┃
+  ┃  Build · Qwen3.6 Max Preview IdeaLab
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                                                            13.1K  ctrl+p commands
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃
+
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project. Let me use the read tool to list the
+  ┃  directory contents.
+
+     → Read .
+
+  ┃  Thinking: Let me read these files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+     → Read index.js
+
+  ┃  Thinking: The user wants me to list files and summarize the project. I've read the directory and all three files. Let me provide a concise
+  ┃  summary.
+
+     Files: index.js, package.json, README.md
+
+     A minimal 3-file fixture project used for TUI (Terminal UI) comparison testing.
+
+     ▣  Build · Qwen3.6 Max Preview · 19.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃
+  ┃
+  ┃
+  ┃  Build · Qwen3.6 Max Preview IdeaLab
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                                                            13.1K  ctrl+p commands
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project summary after listing files
+  Continue  opencode -s ses_1e4ce36f2ffeElnHepXGyb4sir
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project summary after listing files
+  Continue  opencode -s ses_1e4ce36f2ffeElnHepXGyb4sir
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project summary after listing files
+  Continue  opencode -s ses_1e4ce36f2ffeElnHepXGyb4sir
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

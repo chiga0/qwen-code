@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+✻ Nucleating…
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  esc to interrupt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+⏺ JavaScript Event Loop
+
+  The event loop coordinates synchronous code, microtasks, and macrotasks.
+
+  1. Run synchronous code on the call stack until empty.
+  2. Drain all microtasks (Promises, queueMicrotask).
+  3. Process one macrotask (setTimeout, I/O), then repeat.
+
+  console.log('A');
+  queueMicrotask(() => console.log('B'));
+  setTimeout(() => console.log('C'), 0);
+  console.log('D');
+
+  ┌───────────┬───────────────┬──────────┐
+  │   Phase   │  Example API  │ Priority │
+  ├───────────┼───────────────┼──────────┤
+  │ Sync      │ function call │ Highest  │
+  ├───────────┼───────────────┼──────────┤
+  │ Microtask │ Promise.then  │ Medium   │
+  ├───────────┼───────────────┼──────────┤
+  │ Macrotask │ setTimeout    │ Lowest   │
+  └───────────┴───────────────┴──────────┘
+
+  Output order: A, D, B, C.
+
+✻ Crunched for 5s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+Resume this session with:
+claude --resume fa670580-bc3a-4ea3-9485-747f0d420a8c
+>
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

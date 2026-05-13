@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                           ● Tip Set agent temperature from 0.0 (focused) to 1.0 (creative)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Write a Python function that computes the nth Fibonacci number using
+                                     ┃  memoization. Include exactly 2 short lines of explanation before the
+                                     ┃  code. No usage examples.
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                           ● Tip Set agent temperature from 0.0 (focused) to 1.0 (creative)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                           ● Tip Set agent temperature from 0.0 (focused) to 1.0 (creative)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Memoized Fibonacci function in
+  ┃  Write a Python function that computes the nth Fibonacci number using memoization. Include exactly      Python
+  ┃  2 short lines of explanation before the code. No usage examples.
+  ┃                                                                                                         Context
+                                                                                                            12,599 tokens
+  ┃  Thinking: The user wants a Python function to compute the nth Fibonacci number using memoization,      0% used
+  ┃  with exactly 2 short lines of explanation before the code and no usage examples.                       $0.00 spent
+
+     Memoization caches previously computed Fibonacci values to avoid redundant recursive calls.            LSP
+     This reduces time complexity from O(2^n) to O(n).                                                      LSPs are disabled
+     def fibonacci(n, memo={}):
+         if n in memo:
+             return memo[n]
+         if n <= 1:
+             return n
+         memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo)
+         return memo[n]
+
+     ▣  Build · Qwen3.6 Max Preview · 24.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.6K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Memoized Fibonacci function in
+  ┃  Write a Python function that computes the nth Fibonacci number using memoization. Include exactly      Python
+  ┃  2 short lines of explanation before the code. No usage examples.
+  ┃                                                                                                         Context
+                                                                                                            12,599 tokens
+  ┃  Thinking: The user wants a Python function to compute the nth Fibonacci number using memoization,      0% used
+  ┃  with exactly 2 short lines of explanation before the code and no usage examples.                       $0.00 spent
+
+     Memoization caches previously computed Fibonacci values to avoid redundant recursive calls.            LSP
+     This reduces time complexity from O(2^n) to O(n).                                                      LSPs are disabled
+     def fibonacci(n, memo={}):
+         if n in memo:
+             return memo[n]
+         if n <= 1:
+             return n
+         memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo)
+         return memo[n]
+
+     ▣  Build · Qwen3.6 Max Preview · 24.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.6K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Memoized Fibonacci function in
+  ┃  Write a Python function that computes the nth Fibonacci number using memoization. Include exactly      Python
+  ┃  2 short lines of explanation before the code. No usage examples.
+  ┃                                                                                                         Context
+                                                                                                            12,599 tokens
+  ┃  Thinking: The user wants a Python function to compute the nth Fibonacci number using memoization,      0% used
+  ┃  with exactly 2 short lines of explanation before the code and no usage examples.                       $0.00 spent
+
+     Memoization caches previously computed Fibonacci values to avoid redundant recursive calls.            LSP
+     This reduces time complexity from O(2^n) to O(n).                                                      LSPs are disabled
+     def fibonacci(n, memo={}):
+         if n in memo:
+             return memo[n]
+         if n <= 1:
+             return n
+         memo[n] = fibonacci(n - 1, memo) + fibonacci(n - 2, memo)
+         return memo[n]
+
+     ▣  Build · Qwen3.6 Max Preview · 24.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.6K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Memoized Fibonacci function in Python
+  Continue  opencode -s ses_1e4f9d586ffeGXL1uHQT504Mi1
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Memoized Fibonacci function in Python
+  Continue  opencode -s ses_1e4f9d586ffeGXL1uHQT504Mi1
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Memoized Fibonacci function in Python
+  Continue  opencode -s ses_1e4f9d586ffeGXL1uHQT504Mi1
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

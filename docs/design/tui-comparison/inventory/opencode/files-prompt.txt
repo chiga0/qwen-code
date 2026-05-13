@@ -1,0 +1,955 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> cd /Users/gawain/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox && clear
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix broken tests"
+                                     ┃
+                                     ┃  Build · DeepSeek v4 Pro IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix broken tests"
+                                     ┃
+                                     ┃  Build · DeepSeek v4 Pro IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  List the files in this directory and summarize this project in one
+                                     ┃  short sentence
+                                     ┃
+                                     ┃  Build · DeepSeek v4 Pro IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix broken tests"
+                                     ┃
+                                     ┃  Build · DeepSeek v4 Pro IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                             ● Tip Permission doom_loop prevents infinite tool call loops
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Directory listing and project
+  ┃  List the files in this directory and summarize this project in one short sentence                      summary
+  ┃
+                                                                                                            Context
+  ┃  Thinking: The user wants me to list files in the current directory and summarize the project in        12,189 tokens
+  ┃  one short sentence. Let me read the directory and also quickly check the project structure.            0% used
+                                                                                                            $0.00 spent
+     → Read ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison
+                                                                                                            LSP
+     {"error":{"message":"The reasoning_content in the thinking mode must be passed back to the API.",      LSPs are disabled
+     "type":"invalid_request_error","param":null,"code":"invalid_request_error"}}
+
+     ▣  Build · DeepSeek v4 Pro · 8.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · DeepSeek v4 Pro IdeaLab                                                                        sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.2K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Directory listing and project
+  ┃  List the files in this directory and summarize this project in one short sentence                      summary
+  ┃
+                                                                                                            Context
+  ┃  Thinking: The user wants me to list files in the current directory and summarize the project in        12,189 tokens
+  ┃  one short sentence. Let me read the directory and also quickly check the project structure.            0% used
+                                                                                                            $0.00 spent
+     → Read ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison
+                                                                                                            LSP
+     {"error":{"message":"The reasoning_content in the thinking mode must be passed back to the API.",      LSPs are disabled
+     "type":"invalid_request_error","param":null,"code":"invalid_request_error"}}
+
+     ▣  Build · DeepSeek v4 Pro · 8.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · DeepSeek v4 Pro IdeaLab                                                                        sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.2K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Directory listing and project
+  ┃  List the files in this directory and summarize this project in one short sentence                      summary
+  ┃
+                                                                                                            Context
+  ┃  Thinking: The user wants me to list files in the current directory and summarize the project in        12,189 tokens
+  ┃  one short sentence. Let me read the directory and also quickly check the project structure.            0% used
+                                                                                                            $0.00 spent
+     → Read ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison
+                                                                                                            LSP
+     {"error":{"message":"The reasoning_content in the thinking mode must be passed back to the API.",      LSPs are disabled
+     "type":"invalid_request_error","param":null,"code":"invalid_request_error"}}
+
+     ▣  Build · DeepSeek v4 Pro · 8.6s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · DeepSeek v4 Pro IdeaLab                                                                        sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.2K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Directory listing and project summary
+  Continue  opencode -s ses_1e8f87734ffe1ANDHsqSRs50us
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Directory listing and project summary
+  Continue  opencode -s ses_1e8f87734ffe1ANDHsqSRs50us
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Directory listing and project summary
+  Continue  opencode -s ses_1e8f87734ffe1ANDHsqSRs50us
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

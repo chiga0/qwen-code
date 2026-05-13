@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+✳ Doodling…
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  esc to interrupt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Use parallel sub-agents to separately count how many .md files and how many .ts files exist in this directory tree. Then return both counts in a
+  single sentence.
+
+⏺ 2 Explore agents finished (ctrl+o to expand)
+   ├ Count .md files · 1 tool use · 79.4k tokens
+   │ ⎿  Done
+   └ Count .ts files · 1 tool use · 79.4k tokens
+     ⎿  Done
+
+⏺ There is 1 .md file and 0 .ts files in this directory tree.
+
+✻ Cooked for 36s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ list the .md file path
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+Resume this session with:
+claude --resume 774ac03e-710c-4a8c-966e-d78f55b0d7d9
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

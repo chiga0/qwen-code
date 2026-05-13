@@ -1,0 +1,1063 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> List the files in this directory using a tool, then summarize this project in one short sentence. ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 看看 index.js 的内容
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 看看 index.js 的内容
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 看看 index.js 的内容
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> M ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> M ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> M ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+────────────────────────────────────────────────────────────────────────────────
+> qwen -m qwen3.6-max-preview
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.11-preview.0)                        │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  提示： 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  ✦ The user wants me to list the files in the current working directory and summarize the project. Let me check the memory notes - the user
+    language preference says to respond in Chinese. But wait, there's also the output language preference that says I MUST always respond in
+    English. Let me check... The output-language.md says "You MUST always respond in English regardless of the user's input language." However, the
+    user language preference memory says the user prefers Chinese. This is a conflict.
+
+    The output-language.md is a system-level directive that says "MUST always respond in English." But the user memory says the user prefers
+    Chinese. I think the output-language.md takes precedence since it's a system rule. However, the memory was saved more recently (12 days ago
+    vs. unknown date for output-language.md).
+
+    Actually, looking more carefully at the output-language.md, it says this is a mandatory requirement. The user memory is 12 days old. But the
+    system rule says "This is a mandatory requirement, not a preference." So I should follow the system rule and respond in English.
+
+    Let me list the directory and summarize the project.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ListFiles .                                                                                                                               │
+  │                                                                                                                                              │
+  │    Listed 3 item(s)                                                                                                                          │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The directory contains 3 files: index.js, package.json, and README.md. Let me quickly read them to understand the project and provide a summary.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  ReadFile package.json                                                                                                                     │
+  │                                                                                                                                              │
+  │ ✓  ReadFile README.md                                                                                                                        │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ The project is a minimal fixture for TUI comparison testing, with just three files.
+
+  ✦ Files in this directory:
+     - index.js
+     - package.json
+     - README.md
+
+    Summary: A minimal test fixture used for TUI comparison benchmarking — just three deterministic files with no real functionality.
+
+  > /quit
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+────────────────────────────────────────────────────────────────────────────────

@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                             ● Tip Set "share": "disabled" to prevent any session sharing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Write a brief markdown tutorial about the JavaScript event loop. Use
+                                     ┃  one ## heading, one ordered list of 3 steps, one fenced code block
+                                     ┃  with exactly 4 lines, and one markdown table with 3 rows. Keep total
+                                     ┃  response under 30 lines.
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                             ● Tip Set "share": "disabled" to prevent any session sharing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                             ● Tip Set "share": "disabled" to prevent any session sharing
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         JavaScript event loop tutorial with
+  ┃  Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered       list, code, table
+  ┃  list of 3 steps, one fenced code block with exactly 4 lines, and one markdown table with 3 rows.
+  ┃  Keep total response under 30 lines.                                                                    Context
+  ┃                                                                                                         12,730 tokens
+                                                                                                            0% used
+  ┃  Thinking: The user wants a brief markdown tutorial about the JavaScript event loop with specific       $0.00 spent
+  ┃  formatting requirements:
+  ┃  - One ## heading                                                                                       LSP
+  ┃  - One ordered list of 3 steps                                                                          LSPs are disabled
+  ┃  - One fenced code block with exactly 4 lines
+  ┃  - One markdown table with 3 rows
+  ┃  - Total response under 30 lines
+  ┃
+  ┃  Let me craft this concisely.
+
+     Understanding the JavaScript Event Loop
+
+     The event loop enables JavaScript's non-blocking I/O model by continuously checking the call stack
+     and task queues.
+
+     1. Synchronous code executes on the call stack first
+     2. Completed async callbacks move from the task queue to the stack
+     3. Microtasks (Promises) always run before macrotasks (setTimeout)
+     console.log('A');
+     setTimeout(() => console.log('B'), 0);
+     Promise.resolve().then(() => console.log('C'));
+     // Output: A → C → B
+     ┌────────────────────────────┬──────────────────────────────────────────┬─────────────────────────┐
+     │Queue Type                  │Examples                                  │Priority                 │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Microtask                   │Promises, queueMicrotask                  │High                     │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Macrotask                   │setTimeout, setInterval                   │Low                      │
+     └────────────────────────────┴──────────────────────────────────────────┴─────────────────────────┘
+
+     ▣  Build · Qwen3.6 Max Preview · 26.0s
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.7K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         JavaScript event loop tutorial with
+  ┃  Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered       list, code, table
+  ┃  list of 3 steps, one fenced code block with exactly 4 lines, and one markdown table with 3 rows.
+  ┃  Keep total response under 30 lines.                                                                    Context
+  ┃                                                                                                         12,730 tokens
+                                                                                                            0% used
+  ┃  Thinking: The user wants a brief markdown tutorial about the JavaScript event loop with specific       $0.00 spent
+  ┃  formatting requirements:
+  ┃  - One ## heading                                                                                       LSP
+  ┃  - One ordered list of 3 steps                                                                          LSPs are disabled
+  ┃  - One fenced code block with exactly 4 lines
+  ┃  - One markdown table with 3 rows
+  ┃  - Total response under 30 lines
+  ┃
+  ┃  Let me craft this concisely.
+
+     Understanding the JavaScript Event Loop
+
+     The event loop enables JavaScript's non-blocking I/O model by continuously checking the call stack
+     and task queues.
+
+     1. Synchronous code executes on the call stack first
+     2. Completed async callbacks move from the task queue to the stack
+     3. Microtasks (Promises) always run before macrotasks (setTimeout)
+     console.log('A');
+     setTimeout(() => console.log('B'), 0);
+     Promise.resolve().then(() => console.log('C'));
+     // Output: A → C → B
+     ┌────────────────────────────┬──────────────────────────────────────────┬─────────────────────────┐
+     │Queue Type                  │Examples                                  │Priority                 │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Microtask                   │Promises, queueMicrotask                  │High                     │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Macrotask                   │setTimeout, setInterval                   │Low                      │
+     └────────────────────────────┴──────────────────────────────────────────┴─────────────────────────┘
+
+     ▣  Build · Qwen3.6 Max Preview · 26.0s
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.7K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         JavaScript event loop tutorial with
+  ┃  Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered       list, code, table
+  ┃  list of 3 steps, one fenced code block with exactly 4 lines, and one markdown table with 3 rows.
+  ┃  Keep total response under 30 lines.                                                                    Context
+  ┃                                                                                                         12,730 tokens
+                                                                                                            0% used
+  ┃  Thinking: The user wants a brief markdown tutorial about the JavaScript event loop with specific       $0.00 spent
+  ┃  formatting requirements:
+  ┃  - One ## heading                                                                                       LSP
+  ┃  - One ordered list of 3 steps                                                                          LSPs are disabled
+  ┃  - One fenced code block with exactly 4 lines
+  ┃  - One markdown table with 3 rows
+  ┃  - Total response under 30 lines
+  ┃
+  ┃  Let me craft this concisely.
+
+     Understanding the JavaScript Event Loop
+
+     The event loop enables JavaScript's non-blocking I/O model by continuously checking the call stack
+     and task queues.
+
+     1. Synchronous code executes on the call stack first
+     2. Completed async callbacks move from the task queue to the stack
+     3. Microtasks (Promises) always run before macrotasks (setTimeout)
+     console.log('A');
+     setTimeout(() => console.log('B'), 0);
+     Promise.resolve().then(() => console.log('C'));
+     // Output: A → C → B
+     ┌────────────────────────────┬──────────────────────────────────────────┬─────────────────────────┐
+     │Queue Type                  │Examples                                  │Priority                 │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Microtask                   │Promises, queueMicrotask                  │High                     │
+     ├────────────────────────────┼──────────────────────────────────────────┼─────────────────────────┤
+     │Macrotask                   │setTimeout, setInterval                   │Low                      │
+     └────────────────────────────┴──────────────────────────────────────────┴─────────────────────────┘
+
+     ▣  Build · Qwen3.6 Max Preview · 26.0s
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  12.7K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   JavaScript event loop tutorial with list, code, t…
+  Continue  opencode -s ses_1e4f79bb9ffe4h7AonCk5eySIC
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   JavaScript event loop tutorial with list, code, t…
+  Continue  opencode -s ses_1e4f79bb9ffe4h7AonCk5eySIC
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   JavaScript event loop tutorial with list, code, t…
+  Continue  opencode -s ses_1e4f79bb9ffe4h7AonCk5eySIC
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

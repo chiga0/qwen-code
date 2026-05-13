@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in
+  that output. ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.7% 上下文已用
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.7% 上下文已用
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.7% 上下文已用
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.7% 上下文已用
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.7% 上下文已用
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Run `ls -laR /usr/share | head -200` using a shell tool, then in one sentence tell me roughly how many directories appear in that output.
+
+  ✦ The user wants me to run a shell command and then analyze the output. Let me run ls -laR /usr/share | head -200 first.
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │ ✓  Shell ls -laR /usr/share | head -200 (List /usr/share recursively, first 200 lines)                                                       │
+  │                                                                                                                                              │
+  │    ... first 195 lines hidden ...                                                                                                            │
+  │    -r--r--r--   1 root  wheel     1269 Apr  6 16:10 get-printer-description-attributes.test                                                  │
+  │    -r--r--r--   1 root  wheel      607 Apr  6 16:10 get-printers-printer-id.test                                                             │
+  │    -r--r--r--   1 root  wheel      422 Apr  6 16:10 get-printers.test                                                                        │
+  │    -r--r--r--   1 root  wheel      519 Apr  6 16:10 get-subscriptions.test                                                                   │
+  │    -r--r--r--   1 root  wheel   132354 Apr  6 16:10 gray.jpg                                                                                 │
+  ╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  ✦ Let me count the directories in the output. I need to look for lines that start with /usr/share/...: which indicate directory headers. Let me
+    count them:
+
+     1. /usr/share (total 8 line - not a header from ls -laR, but the first directory is /usr/share)
+     2. /usr/share/ans2_dummy_dir
+     3. /usr/share/com.apple.languageassetd
+     4. /usr/share/com.apple.languageassetd/_CodeSignature
+     5. /usr/share/CoreDuetDaemonConfig.bundle
+     6. /usr/share/CoreDuetDaemonConfig.bundle/Contents
+     7. /usr/share/CoreDuetDaemonConfig.bundle/Contents/_CodeSignature
+     8. /usr/share/cracklib
+     9. /usr/share/CSI
+     10. /usr/share/cups
+     11. /usr/share/cups/banners
+     12. /usr/share/cups/data
+     13. /usr/share/cups/drv
+     14. /usr/share/cups/examples
+     15. /usr/share/cups/ipptool
+
+    So that's 15 directories in the first 200 lines.
+
+  ✦ 在输出的前 200 行中，大约出现了 15 个目录（通过 ls -laR 递归列出时每个 dirname: 标题行对应一个目录）。
+
+  > /quit
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │                                                                                                  │
+────────────────────────────────────────────────────────────────────────────────

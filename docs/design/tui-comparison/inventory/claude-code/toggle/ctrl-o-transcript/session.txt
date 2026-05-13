@@ -1,0 +1,1063 @@
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+✢ Gallivanting…
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  esc to interrupt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Worked for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Worked for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Worked for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+⏺ Bash(ls -la)
+  ⎿  total 24
+     drwxr-xr-x@ 5 gawain  staff  160 May 11 20:29 .
+     drwxr-xr-x@ 3 gawain  staff   96 May 11 20:29 ..
+     -rw-r--r--@ 1 gawain  staff   41 May 11 20:29 index.js
+     -rw-r--r--@ 1 gawain  staff   89 May 11 20:29 package.json
+     -rw-r--r--@ 1 gawain  staff   79 May 11 20:29 README.md
+
+⏺ Read(/Users/gawain/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox/README.md)
+  ⎿  Read 4 lines
+
+                                                                                                                    03:47 PM claude-opus-4-7
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Sautéed for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Showing detailed transcript · ctrl+o to toggle · ctrl+e to show all                                                                       verbose
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+⏺ Bash(ls -la)
+  ⎿  total 24
+     drwxr-xr-x@ 5 gawain  staff  160 May 11 20:29 .
+     drwxr-xr-x@ 3 gawain  staff   96 May 11 20:29 ..
+     -rw-r--r--@ 1 gawain  staff   41 May 11 20:29 index.js
+     -rw-r--r--@ 1 gawain  staff   89 May 11 20:29 package.json
+     -rw-r--r--@ 1 gawain  staff   79 May 11 20:29 README.md
+
+⏺ Read(/Users/gawain/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox/README.md)
+  ⎿  Read 4 lines
+
+                                                                                                                    03:47 PM claude-opus-4-7
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Sautéed for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Showing detailed transcript · ctrl+o to toggle · ctrl+e to show all                                                                       verbose
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+⏺ Bash(ls -la)
+  ⎿  total 24
+     drwxr-xr-x@ 5 gawain  staff  160 May 11 20:29 .
+     drwxr-xr-x@ 3 gawain  staff   96 May 11 20:29 ..
+     -rw-r--r--@ 1 gawain  staff   41 May 11 20:29 index.js
+     -rw-r--r--@ 1 gawain  staff   89 May 11 20:29 package.json
+     -rw-r--r--@ 1 gawain  staff   79 May 11 20:29 README.md
+
+⏺ Read(/Users/gawain/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox/README.md)
+  ⎿  Read 4 lines
+
+                                                                                                                    03:47 PM claude-opus-4-7
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Sautéed for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Showing detailed transcript · ctrl+o to toggle · ctrl+e to show all                                                                       verbose
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Cogitated for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Cogitated for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ List the files in this directory using a tool, then summarize this project in one short sentence.
+
+  Read 1 file, listed 1 directory (ctrl+o to expand)
+
+⏺ A minimal three-file Node fixture (index.js, package.json, README.md) used as a deterministic sandbox for TUI comparison runs.
+
+✻ Cogitated for 20s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ show me what's in index.js
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

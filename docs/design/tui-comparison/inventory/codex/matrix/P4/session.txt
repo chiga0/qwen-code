@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Explain this codebase
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• Working (0s • esc to interrupt)
+
+
+› Explain this codebase
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+
+
+› Explain this codebase
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+
+
+› Explain this codebase
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+
+
+› Explain this codebase
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+Token usage: total=7,057 input=6,420 (+ 11,648 cached) output=637 (reasoning 516)
+To continue this session, run codex resume 019e1af7-c9d0-7410-9f82-396dd42394ba
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+Token usage: total=7,057 input=6,420 (+ 11,648 cached) output=637 (reasoning 516)
+To continue this session, run codex resume 019e1af7-c9d0-7410-9f82-396dd42394ba
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: Try the Codex App. Run 'codex app' or visit https://chatgpt.com/codex?app-landing-page=true
+
+
+› Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+  exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+
+• ## JavaScript Event Loop
+
+  1. Run synchronous code on the call stack first.
+  2. Queue async callbacks when their work is ready.
+  3. When the stack is empty, run microtasks before regular tasks.
+
+  console.log("start");
+  setTimeout(() => console.log("timer"), 0);
+  Promise.resolve().then(() => console.log("microtask"));
+  console.log("end");
+
+  | Part | Purpose |
+  |---|---|
+  | Call stack | Runs synchronous code |
+  | Microtasks | Promise callbacks |
+  | Tasks | Timers and events |
+Token usage: total=7,057 input=6,420 (+ 11,648 cached) output=637 (reasoning 516)
+To continue this session, run codex resume 019e1af7-c9d0-7410-9f82-396dd42394ba
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

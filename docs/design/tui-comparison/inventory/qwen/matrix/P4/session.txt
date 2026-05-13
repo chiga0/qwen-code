@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced
+  code block with exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines. ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a brief markdown tutorial about the JavaScript event loop. Use one ## heading, one ordered list of 3 steps, one fenced code block with
+    exactly 4 lines, and one markdown table with 3 rows. Keep total response under 30 lines.
+
+  ✦ The user wants a brief markdown tutorial about the JavaScript event loop with specific formatting requirements:
+
+     1. One ## heading
+     2. One ordered list of 3 steps
+     3. One fenced code block with exactly 4 lines
+     4. One markdown table with 3 rows
+     5. Total response under 30 lines
+
+    Let me construct this carefully, respecting the user's language preference for Chinese from memory, but the output-language.md says to always
+    respond in English. Let me check — the output-language.md says "You MUST always respond in English regardless of the user's input language."
+    But there's a memory saying the user prefers Chinese. The output-language.md takes precedence since it says "This is a mandatory requirement,
+    not a preference."
+
+    Wait, but there's a conflict. The memory says user prefers Chinese. The output-language.md says always English. The memory is 12 days old. Let
+     me follow what's most recent/authoritative. The output-language.md says "MUST always respond in English." The memory says user prefers
+    Chinese but it's 12 days old. The output-language.md seems like the overriding instruction.
+
+    However, the user's message is in English ("Write a brief markdown tutorial..."), so I'll respond in English.
+
+    Let me construct the tutorial:
+
+    JavaScript Event Loop 简述
+
+     1. ...
+     2. ...
+     3. ...
+
+    Code block with exactly 4 lines:
+
+     1 console.log('1');
+     2 setTimeout(() => console.log('2'), 0);
+     3 Promise.resolve().then(() => console.log('3'));
+     4 console.log('4');
+
+    Table with 3 rows (header + 3 data rows would be 4 rows total, or maybe they mean 3 data rows + header = 4 rows). Let me re-read: "one
+    markdown table with 3 rows" — I'll interpret this as 3 data rows plus a header row.
+
+    Let me count total lines:
+
+────────────────────────────────────────────────────────────────────────────────

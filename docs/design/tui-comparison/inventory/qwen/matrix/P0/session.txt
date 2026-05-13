@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> Reply in English with exactly one sentence introducing yourself. Do not use any tools. ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Reply in English with exactly one sentence introducing yourself. Do not use any tools.
+
+  ✦ The user has set up context for our chat. They've shared several memory items, and the key instruction is to "Reply in English with exactly one
+    sentence introducing yourself. Do not use any tools."
+
+    However, there's a conflict: one memory says "User prefers to communicate in Chinese" and "Always respond in Chinese unless the user
+    explicitly requests another language." But the user's direct instruction here is "Reply in English with exactly one sentence introducing
+    yourself." The direct instruction from the user overrides the memory, so I should respond in English.
+
+    Also, there's a .qwen/output-language.md that says "You MUST always respond in English regardless of the user's input language." This is a
+    mandatory requirement. So English it is.
+
+    Let me introduce myself in exactly one sentence.
+
+  ✦ I'm Qwen Code, an interactive CLI agent from Alibaba Group, here to help you with software engineering tasks in your qwen-code project.
+
+  > /quit
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │                                                                                                  │
+  │  Qwen Code 正在关闭，再见！                                                                      │
+  │                                                                                                  │
+  │  交互摘要                                                                                        │
+  │  会话 ID：                   7463fce9-6d7e-4a9e-8367-03ce22035133                                │
+  │  工具调用：                  0 ( ✓ 0 x 0 )                                                       │
+  │  成功率：                    0.0%                                                                │
+  │                                                                                                  │
+  │  性能                                                                                            │
+  │  总耗时：                    39.2s                                                               │
+  │  智能体活跃时间：            24.5s                                                               │
+  │    » API 时间：              24.5s (100.0%)                                                      │
+  │    » 工具时间：              0s (0.0%)                                                           │
+  │                                                                                                  │
+  │                                                                                                  │
+  │  模型使用情况                         请求数  输入 token 数  输出 token 数                       │
+  │  ─────────────────────────────────────────────────────────────────────────                       │
+  │  DeepSeek/deepseek-v4-pro                  3          1,062            346                       │
+  │  deepseek-v4-pro                           1         22,044            189                       │
+  │                                                                                                  │
+  │  节省亮点： 22,016 (95.3%) 从缓存载入 token ，降低了成本                                         │
+  │                                                                                                  │
+  │  » 提示：要查看完整的令牌明细，请运行 `/stats model`                                             │
+────────────────────────────────────────────────────────────────────────────────

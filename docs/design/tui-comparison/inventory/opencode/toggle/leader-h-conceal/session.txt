@@ -1,0 +1,1171 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  List the files in this directory using a tool, then summarize this
+                                     ┃  project in one short sentence.
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "Fix a TODO in the codebase"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+                                                                                                            $0.00 spent
+     → Read .
+                                                                                                            LSP
+  ┃  Thinking: The user wants me to list the files in the current directory and then summarize the          LSPs are disabled
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  Thinking: The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+                                                                                                            $0.00 spent
+     → Read .
+                                                                                                            LSP
+  ┃  Thinking: The user wants me to list the files in the current directory and then summarize the          LSPs are disabled
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  Thinking: The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+                                                                                                            $0.00 spent
+     → Read .
+                                                                                                            LSP
+  ┃  Thinking: The user wants me to list the files in the current directory and then summarize the          LSPs are disabled
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  Thinking: The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  Thinking: The user wants me to list files in the current directory and then summarize the project.     0% used
+                                                                                                            $0.00 spent
+     → Read .
+                                                                                                            LSP
+  ┃  Thinking: The user wants me to list the files in the current directory and then summarize the          LSPs are disabled
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  Thinking: The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  _Thinking:_ The user wants me to list files in the current directory and then summarize the            0% used
+  ┃  project.                                                                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  _Thinking:_ The user wants me to list the files in the current directory and then summarize the
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  _Thinking:_ The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  _Thinking:_ The user wants me to list files in the current directory and then summarize the            0% used
+  ┃  project.                                                                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  _Thinking:_ The user wants me to list the files in the current directory and then summarize the
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  _Thinking:_ The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  _Thinking:_ The user wants me to list files in the current directory and then summarize the            0% used
+  ┃  project.                                                                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  _Thinking:_ The user wants me to list the files in the current directory and then summarize the
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  _Thinking:_ The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+
+  ┃                                                                                                         Project files listing and summary
+  ┃  List the files in this directory using a tool, then summarize this project in one short sentence.
+  ┃                                                                                                         Context
+                                                                                                            12,977 tokens
+  ┃  _Thinking:_ The user wants me to list files in the current directory and then summarize the            0% used
+  ┃  project.                                                                                               $0.00 spent
+
+     → Read .                                                                                               LSP
+                                                                                                            LSPs are disabled
+  ┃  _Thinking:_ The user wants me to list the files in the current directory and then summarize the
+  ┃  project. Let me read the files to understand what this project is about.
+
+     → Read README.md
+     → Read package.json
+
+  ┃  _Thinking:_ The user wants me to summarize this project in one short sentence. Based on the README
+  ┃  and package.json, this is a small fixture/sandbox project used for TUI comparison runs.
+
+     A tiny fixture project for TUI comparison runs.
+
+     ▣  Build · Qwen3.6 Max Preview · 14.3s
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  13.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project files listing and summary
+  Continue  opencode -s ses_1e4d1c027ffek0llszpntKz0LD
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project files listing and summary
+  Continue  opencode -s ses_1e4d1c027ffek0llszpntKz0LD
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Project files listing and summary
+  Continue  opencode -s ses_1e4d1c027ffek0llszpntKz0LD
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

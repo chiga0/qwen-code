@@ -1,0 +1,685 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+
+
+                                                                                                                                    ? for shortcuts
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Shift+Tab to accept edits
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ >   Type your message or @path/to/file
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ workspace (/directory)                                                                    branch                      sandbox               /model
+ ~/.../qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/out/_smoke    worktree-tui-comparison     no sandbox    gemini-2.5-pro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+
+
+                                                                                                                                    ? for shortcuts
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Shift+Tab to accept edits
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ >   Type your message or @path/to/file
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ workspace (/directory)                                                                    branch                      sandbox               /model
+ ~/.../qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/out/_smoke    worktree-tui-comparison     no sandbox    gemini-2.5-pro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+
+
+                                                                                                                                    ? for shortcuts
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Shift+Tab to accept edits
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ >   Type your message or @path/to/file
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ workspace (/directory)                                                                    branch                      sandbox               /model
+ ~/.../qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/out/_smoke    worktree-tui-comparison     no sandbox    gemini-2.5-pro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+
+ Press Ctrl+C again to exit.
+                                                                                                                                    ? for shortcuts
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Shift+Tab to accept edits
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ >   Type your message or @path/to/file
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ workspace (/directory)                                                                    branch                      sandbox               /model
+ ~/.../qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/out/_smoke    worktree-tui-comparison     no sandbox    gemini-2.5-pro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+
+ Press Ctrl+C again to exit.
+                                                                                                                                    ? for shortcuts
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ Shift+Tab to accept edits
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ >   Type your message or @path/to/file
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+ workspace (/directory)                                                                    branch                      sandbox               /model
+ ~/.../qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/out/_smoke    worktree-tui-comparison     no sandbox    gemini-2.5-pro
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> gemini
+
+ ▝▜▄     Gemini CLI v0.41.2
+   ▝▜▄
+  ▗▟▀    Authenticated with gemini-api-key /auth
+ ▝▀
+
+
+Tips for getting started:
+1. Create GEMINI.md files to customize your interactions
+2. /help for more information
+3. Ask coding questions, edit code or run commands
+4. Be specific for the best results
+▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄
+ > /quit
+▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+╭──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│                                                                                                                                                  │
+│  Agent powering down. Goodbye!                                                                                                                   │
+│                                                                                                                                                  │
+│  Interaction Summary                                                                                                                             │
+│  Session ID:                 6022858e-87ec-41cb-98e2-c7ff242630d7                                                                                │
+│  Tool Calls:                 0 ( ✓ 0 x 0 )                                                                                                       │
+│  Success Rate:               0.0%                                                                                                                │
+│                                                                                                                                                  │
+│  Performance                                                                                                                                     │
+│  Wall Time:                  5.6s                                                                                                                │
+│  Agent Active:               0s                                                                                                                  │
+│    » API Time:               0s (0.0%)                                                                                                           │
+│    » Tool Time:              0s (0.0%)                                                                                                           │
+│                                                                                                                                                  │
+│  To resume this session: gemini --resume 6022858e-87ec-41cb-98e2-c7ff242630d7                                                                    │
+╰──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

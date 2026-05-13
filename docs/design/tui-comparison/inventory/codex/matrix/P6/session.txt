@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Run /review on my current changes
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• Working (0s • esc to interrupt)
+
+
+› Run /review on my current changes
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+› Run /review on my current changes
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+› Run /review on my current changes
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+› Run /review on my current changes
+
+  gpt-5.5 xhigh · ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=6,981 input=6,842 (+ 29,440 cached) output=139
+To continue this session, run codex resume 019e1afd-8595-7b20-9b3d-d1c728f9d54e
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=6,981 input=6,842 (+ 29,440 cached) output=139
+To continue this session, run codex resume 019e1afd-8595-7b20-9b3d-d1c728f9d54e
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> codex
+╭────────────────────────────────────────────────────╮
+│ >_ OpenAI Codex (v0.130.0)                         │
+│                                                    │
+│ model:     gpt-5.5 xhigh   /model to change        │
+│ directory: ~/Documents/codebase/…/fixtures/sandbox │
+╰────────────────────────────────────────────────────╯
+
+  Tip: New Use /fast to enable our fastest inference with increased plan usage.
+
+
+› Try to read the file at /tmp/file-that-does-not-exist-xyz-12345.txt using a tool, then explain what went wrong in one sentence.
+
+
+• I’ll check the path directly and report the failure succinctly.
+
+• Explored
+  └ Read file-that-does-not-exist-xyz-12345.txt
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+• The tool failed because /tmp/file-that-does-not-exist-xyz-12345.txt does not exist.
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+Token usage: total=6,981 input=6,842 (+ 29,440 cached) output=139
+To continue this session, run codex resume 019e1afd-8595-7b20-9b3d-d1c728f9d54e
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

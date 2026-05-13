@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation
+  before the code. No usage examples. ​
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+>   输入您的消息或 @ 文件路径
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 对比下不带缓存的版本
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 对比下不带缓存的版本
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 对比下不带缓存的版本
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  按 ? 查看快捷键                                                                                                                  2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 对比下不带缓存的版本
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+> 对比下不带缓存的版本
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  再次按 Ctrl+C 退出                                                                                                               2.2% 上下文已用
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> qwen
+
+   ▄▄▄▄▄▄  ▄▄     ▄▄ ▄▄▄▄▄▄▄ ▄▄▄    ▄▄   ┌──────────────────────────────────────────────────────────┐
+  ██╔═══██╗██║    ██║██╔════╝████╗  ██║  │ >_ Qwen Code (v0.15.10)                                  │
+  ██║   ██║██║ █╗ ██║█████╗  ██╔██╗ ██║  │                                                          │
+  ██║▄▄ ██║██║███╗██║██╔══╝  ██║╚██╗██║  │ API Key | DeepSeek/deepseek-v4-pro (/model to change)    │
+  ╚██████╔╝╚███╔███╔╝███████╗██║ ╚████║  │ ~/.../docs/design/tui-comparison/fixtures/sandbox        │
+   ╚══▀▀═╝  ╚══╝╚══╝ ╚══════╝╚═╝  ╚═══╝  └──────────────────────────────────────────────────────────┘
+
+  Tips: 试试 /insight，从聊天记录中生成个性化洞察。
+
+  > Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+No
+     usage examples.
+
+  ✦ The user wants a Python function for Fibonacci with memoization, with exactly 2 short lines of explanation before the code, no usage examples.
+    They prefer Chinese, but the request is about code output - I should respond in Chinese as per the language preference memory.
+
+    Wait, but there's a conflicting memory: the output-language.md says "You MUST always respond in English regardless of the user's input
+    language." Let me check the system prompt again: "## Rule: You MUST always respond in English regardless of the user's input language. This is
+     a mandatory requirement, not a preference."
+
+    So I must respond in English. The language preference memory says Chinese, but the output-language.md rule says English is mandatory. The
+    system prompt rules override memories. I'll respond in English.
+
+    The user wants: exactly 2 short lines of explanation, then the code. No usage examples.
+
+  ✦ Memoization caches intermediate results to avoid exponential recursion overhead. Each fib(n) is computed at most once.
+
+     1 def fib(n: int, memo: dict[int, int] | None = None) -> int:
+     2     if memo is None:
+     3         memo = {}
+     4     if n <= 1:
+     5         return n
+     6     if n not in memo:
+     7         memo[n] = fib(n - 1, memo) + fib(n - 2, memo)
+     8     return memo[n]
+
+  > /quit
+
+  ╭──────────────────────────────────────────────────────────────────────────────────────────────────╮
+  │                                                                                                  │
+  │  Qwen Code 正在关闭，再见！                                                                      │
+  │                                                                                                  │
+  │  交互摘要                                                                                        │
+  │  会话 ID：                   0ed7e90f-ec1c-4103-971f-d4ee5019816e                                │
+  │  工具调用：                  0 ( ✓ 0 x 0 )                                                       │
+  │  成功率：                    0.0%                                                                │
+  │                                                                                                  │
+  │  性能                                                                                            │
+  │  总耗时：                    1m 13s                                                              │
+  │  智能体活跃时间：            1m 7s                                                               │
+  │    » API 时间：              1m 7s (100.0%)                                                      │
+────────────────────────────────────────────────────────────────────────────────

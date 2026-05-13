@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "What is the tech stack of this project?"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Run `ls -laR /usr/share | head -200` using a shell tool, then in one
+                                     ┃  sentence tell me roughly how many directories appear in that output.
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                                                                        ▄
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▄ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+                                                       ▀  ▀ ▀  ▀ ▀▀▀▀ ▀  ▀ ▀    ▀  ▀ ▀  ▀ ▀▀▀▀
+                                                       ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+
+                                     ┃
+                                     ┃  Ask anything... "What is the tech stack of this project?"
+                                     ┃
+                                     ┃  Build · Qwen3.6 Max Preview IdeaLab
+                                     ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                     tab agents  ctrl+p commands
+
+
+
+                                         ● Tip Tool definitions can invoke scripts written in Python, Go, etc
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox:worktree-tui-     1.14.48
+  comparison
+
+────────────────────────────────────────────────────────────────────────────────
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 swift
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tabset                                                  Estimating directories in ls -laR /
+  ┃  drwxr-xr-x   44 root  wheel  1408 Apr  6 16:10 terminfo                                                usr/share
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 thermald.bundle
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tokenizer                                               Context
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 ucupdate                                                19,971 tokens
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 vim                                                     0% used
+  ┃  drwxr-xr-x   69 root  wheel  2208 Apr  6 16:10 zoneinfo.default                                        $0.00 spent
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 zsh
+  ┃                                                                                                         LSP
+  ┃  That's 43 lines starting with "drwx" in the top-level listing.                                         LSPs are disabled
+  ┃
+  ┃  Then in subdirectory listings:
+  ┃  /usr/share/ans2_dummy_dir: 2 (., ..)
+  ┃  /usr/share/com.apple.languageassetd: 3 (., .., _CodeSignature)
+  ┃  /usr/share/com.apple.languageassetd/_CodeSignature: 2 (., ..)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle: 3 (., .., Contents)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents: 3 (., .., CodeSignature)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents/CodeSignature: 2 (., ..)
+  ┃  /usr/share/cracklib: 2 (., ..)
+  ┃  /usr/share/CSI: 2 (., ..)
+  ┃  /usr/share/cups: 12 (., .., banners, data, drv, examples, ipptool, mime, model, ppdc, profiles,
+  ┃  templates)
+  ┃  /usr/share/cups/banners: 2 (., ..)
+  ┃  /usr/share/cups/data: 2 (., ..)
+  ┃  /usr/share/cups/drv: 2 (., ..)
+  ┃  /usr/share/cups/examples: 2 (., ..)
+  ┃  /usr/share/cups/ipptool: 2 (., ..)
+  ┃
+  ┃  So total drwx lines: 43 + 2 + 3 + 2 + 3 + 3 + 2 + 2 + 12 + 2 + 2 + 2 + 2 + 2 = 82
+  ┃
+  ┃  But many of those are . and .. entries. If we count unique directories (excluding . and ..):
+  ┃  - Top level: 41 actual directories
+  ┃  - _CodeSignature: 2 (one under languageassetd, one under CoreDuet)
+  ┃  - Contents: 1
+  ┃  - cups subdirs: 10 (banners, data, drv, examples, ipptool, mime, model, ppdc, profiles, templates)
+  ┃
+  ┃  Total unique directories shown: ~54
+  ┃
+  ┃  Roughly about 50-55 unique directories appear in the output.
+
+     Roughly 55 unique directories appear in that output (or about 82 if you count the . and .. entries)
+     .
+
+     ▣  Build · Qwen3.6 Max Preview · 1m 11s
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  20.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 swift
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tabset                                                  Estimating directories in ls -laR /
+  ┃  drwxr-xr-x   44 root  wheel  1408 Apr  6 16:10 terminfo                                                usr/share
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 thermald.bundle
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tokenizer                                               Context
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 ucupdate                                                19,971 tokens
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 vim                                                     0% used
+  ┃  drwxr-xr-x   69 root  wheel  2208 Apr  6 16:10 zoneinfo.default                                        $0.00 spent
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 zsh
+  ┃                                                                                                         LSP
+  ┃  That's 43 lines starting with "drwx" in the top-level listing.                                         LSPs are disabled
+  ┃
+  ┃  Then in subdirectory listings:
+  ┃  /usr/share/ans2_dummy_dir: 2 (., ..)
+  ┃  /usr/share/com.apple.languageassetd: 3 (., .., _CodeSignature)
+  ┃  /usr/share/com.apple.languageassetd/_CodeSignature: 2 (., ..)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle: 3 (., .., Contents)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents: 3 (., .., CodeSignature)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents/CodeSignature: 2 (., ..)
+  ┃  /usr/share/cracklib: 2 (., ..)
+  ┃  /usr/share/CSI: 2 (., ..)
+  ┃  /usr/share/cups: 12 (., .., banners, data, drv, examples, ipptool, mime, model, ppdc, profiles,
+  ┃  templates)
+  ┃  /usr/share/cups/banners: 2 (., ..)
+  ┃  /usr/share/cups/data: 2 (., ..)
+  ┃  /usr/share/cups/drv: 2 (., ..)
+  ┃  /usr/share/cups/examples: 2 (., ..)
+  ┃  /usr/share/cups/ipptool: 2 (., ..)
+  ┃
+  ┃  So total drwx lines: 43 + 2 + 3 + 2 + 3 + 3 + 2 + 2 + 12 + 2 + 2 + 2 + 2 + 2 = 82
+  ┃
+  ┃  But many of those are . and .. entries. If we count unique directories (excluding . and ..):
+  ┃  - Top level: 41 actual directories
+  ┃  - _CodeSignature: 2 (one under languageassetd, one under CoreDuet)
+  ┃  - Contents: 1
+  ┃  - cups subdirs: 10 (banners, data, drv, examples, ipptool, mime, model, ppdc, profiles, templates)
+  ┃
+  ┃  Total unique directories shown: ~54
+  ┃
+  ┃  Roughly about 50-55 unique directories appear in the output.
+
+     Roughly 55 unique directories appear in that output (or about 82 if you count the . and .. entries)
+     .
+
+     ▣  Build · Qwen3.6 Max Preview · 1m 11s
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  20.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 swift
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tabset                                                  Estimating directories in ls -laR /
+  ┃  drwxr-xr-x   44 root  wheel  1408 Apr  6 16:10 terminfo                                                usr/share
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 thermald.bundle
+  ┃  drwxr-xr-x    6 root  wheel   192 Apr  6 16:10 tokenizer                                               Context
+  ┃  drwxr-xr-x    3 root  wheel    96 Apr  6 16:10 ucupdate                                                19,971 tokens
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 vim                                                     0% used
+  ┃  drwxr-xr-x   69 root  wheel  2208 Apr  6 16:10 zoneinfo.default                                        $0.00 spent
+  ┃  drwxr-xr-x    4 root  wheel   128 Apr  6 16:10 zsh
+  ┃                                                                                                         LSP
+  ┃  That's 43 lines starting with "drwx" in the top-level listing.                                         LSPs are disabled
+  ┃
+  ┃  Then in subdirectory listings:
+  ┃  /usr/share/ans2_dummy_dir: 2 (., ..)
+  ┃  /usr/share/com.apple.languageassetd: 3 (., .., _CodeSignature)
+  ┃  /usr/share/com.apple.languageassetd/_CodeSignature: 2 (., ..)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle: 3 (., .., Contents)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents: 3 (., .., CodeSignature)
+  ┃  /usr/share/CoreDuetDaemonConfig.bundle/Contents/CodeSignature: 2 (., ..)
+  ┃  /usr/share/cracklib: 2 (., ..)
+  ┃  /usr/share/CSI: 2 (., ..)
+  ┃  /usr/share/cups: 12 (., .., banners, data, drv, examples, ipptool, mime, model, ppdc, profiles,
+  ┃  templates)
+  ┃  /usr/share/cups/banners: 2 (., ..)
+  ┃  /usr/share/cups/data: 2 (., ..)
+  ┃  /usr/share/cups/drv: 2 (., ..)
+  ┃  /usr/share/cups/examples: 2 (., ..)
+  ┃  /usr/share/cups/ipptool: 2 (., ..)
+  ┃
+  ┃  So total drwx lines: 43 + 2 + 3 + 2 + 3 + 3 + 2 + 2 + 12 + 2 + 2 + 2 + 2 + 2 = 82
+  ┃
+  ┃  But many of those are . and .. entries. If we count unique directories (excluding . and ..):
+  ┃  - Top level: 41 actual directories
+  ┃  - _CodeSignature: 2 (one under languageassetd, one under CoreDuet)
+  ┃  - Contents: 1
+  ┃  - cups subdirs: 10 (banners, data, drv, examples, ipptool, mime, model, ppdc, profiles, templates)
+  ┃
+  ┃  Total unique directories shown: ~54
+  ┃
+  ┃  Roughly about 50-55 unique directories appear in the output.
+
+     Roughly 55 unique directories appear in that output (or about 82 if you count the . and .. entries)
+     .
+
+     ▣  Build · Qwen3.6 Max Preview · 1m 11s
+
+  ┃                                                                                                         ~/Documents/codebase/opensource/qwen-
+  ┃                                                                                                         code/.claude/worktrees/tui-comparison/
+  ┃                                                                                                         docs/design/tui-comparison/fixtures/
+  ┃  Build · Qwen3.6 Max Preview IdeaLab                                                                    sandbox:worktree-tui-comparison
+  ╹▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀
+                                                                                  20.0K  ctrl+p commands    • OpenCode 1.14.48
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Estimating directories in ls -laR /usr/share
+  Continue  opencode -s ses_1e4fcb691ffeuZbhdztxlQSU2s
+
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Estimating directories in ls -laR /usr/share
+  Continue  opencode -s ses_1e4fcb691ffeuZbhdztxlQSU2s
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> /Users/gawain/.opencode/bin/opencode -m idealab/qwen3.6-max-preview
+                                   ▄
+  █▀▀█ █▀▀█ █▀▀█ █▀▀▄ █▀▀▀ █▀▀█ █▀▀█ █▀▀█
+  █  █ █  █ █▀▀▀ █  █ █    █  █ █  █ █▀▀▀
+  ▀▀▀▀ █▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀ ▀▀▀▀
+
+  Session   Estimating directories in ls -laR /usr/share
+  Continue  opencode -s ses_1e4fcb691ffeuZbhdztxlQSU2s
+
+>
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────

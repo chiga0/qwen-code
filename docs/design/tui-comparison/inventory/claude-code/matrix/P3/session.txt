@@ -1,0 +1,901 @@
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts                                                                                                                ◉ xhigh · /effort
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+✶ Finagling…
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  esc to interrupt
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  ? for shortcuts
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
+> claude
+ ▐▛███▜▌   Claude Code v2.1.139
+▝▜█████▛▘  Opus 4.7 (1M context) · Claude Max
+  ▘▘ ▝▝    ~/Documents/codebase/opensource/qwen-code/.claude/worktrees/tui-comparison/docs/design/tui-comparison/fixtures/sandbox
+
+❯ Write a Python function that computes the nth Fibonacci number using memoization. Include exactly 2 short lines of explanation before the code.
+  No usage examples.
+
+⏺ Here's a recursive Fibonacci function with memoization via functools.lru_cache. The cache stores prior results so each n is computed only once,
+  giving O(n) time.
+
+  from functools import lru_cache
+
+  @lru_cache(maxsize=None)
+  def fib(n: int) -> int:
+      if n < 2:
+          return n
+      return fib(n - 1) + fib(n - 2)
+
+✻ Cooked for 4s
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+❯
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+  Press Ctrl-C again to exit
+
+Resume this session with:
+claude --resume 9b561138-e495-41b5-887c-33ff8fcb0a34
+>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+────────────────────────────────────────────────────────────────────────────────
