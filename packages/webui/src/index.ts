@@ -17,7 +17,12 @@ import './styles/components.css';
 // Daemon UI bindings
 export {
   DaemonSessionProvider,
+  DaemonWebChat,
+  DaemonWebTerminal,
+  createDaemonWebFixtureEvents,
+  daemonBlocksToChatMessages,
   daemonTranscriptToUnifiedMessages,
+  loadDaemonWebFixture,
   useDaemonActions,
   useDaemonConnection,
   useDaemonPendingPermissions,
@@ -31,6 +36,8 @@ export type {
   DaemonConnectionStatus,
   DaemonSessionContextValue,
   DaemonSessionProviderProps,
+  DaemonWebChatProps,
+  DaemonWebTerminalProps,
 } from './daemon/index';
 
 // Context

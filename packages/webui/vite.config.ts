@@ -54,6 +54,7 @@ export default defineConfig({
       external: [
         '@qwen-code/sdk',
         '@qwen-code/sdk/daemon',
+        '@xterm/xterm',
         'react',
         'react-dom',
         'react/jsx-runtime',
@@ -62,6 +63,7 @@ export default defineConfig({
         globals: {
           '@qwen-code/sdk': 'QwenCodeSdk',
           '@qwen-code/sdk/daemon': 'QwenCodeSdkDaemon',
+          '@xterm/xterm': 'Xterm',
           react: 'React',
           'react-dom': 'ReactDOM',
           'react/jsx-runtime': 'ReactJSXRuntime',

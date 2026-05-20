@@ -1,0 +1,210 @@
+/**
+ * @license
+ * Copyright 2025 Qwen Team
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+.daemon-web-chat {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  height: 100%;
+  min-height: 0;
+  color: var(--app-primary-foreground, #f3f0e8);
+  background: var(--app-primary-background, #151512);
+}
+
+.daemon-web-chat__scroll {
+  min-height: 0;
+  overflow: hidden;
+}
+
+.daemon-web-chat__viewer {
+  height: 100%;
+  background: var(--app-primary-background, #151512);
+}
+
+.daemon-web-chat__viewer .chat-viewer-messages {
+  padding: 22px min(36px, 4vw);
+}
+
+.daemon-web-permission-tray {
+  display: grid;
+  gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--app-input-border, #3a3830);
+  background: #19170f;
+}
+
+.daemon-web-permission-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 14px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid #7c5f1d;
+  border-radius: var(--corner-radius-medium, 6px);
+  background: #211b0d;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 28%);
+}
+
+.daemon-web-permission-card strong {
+  display: block;
+  margin-top: -4px;
+  line-height: 1.35;
+}
+
+.daemon-web-eyebrow {
+  margin: 0 0 10px;
+  color: #8bb8ff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.daemon-web-permission-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.daemon-web-permission-options button {
+  display: grid;
+  gap: 1px;
+  min-width: 120px;
+  max-width: 220px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid var(--app-input-border, #3a3830);
+  border-radius: var(--corner-radius-medium, 6px);
+  color: var(--app-primary-foreground, #f3f0e8);
+  background: #25241f;
+  text-align: left;
+}
+
+.daemon-web-permission-options small {
+  color: var(--app-secondary-foreground, #a7a093);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.daemon-web-action-error {
+  padding: 8px 14px;
+  border-top: 1px solid #7f1d1d;
+  color: #fecaca;
+  background: #450a0a;
+  font-size: 12px;
+}
+
+.daemon-web-composer {
+  padding: 12px 14px 14px;
+  border-top: 1px solid var(--app-input-border, #3a3830);
+  background: var(--app-secondary-background, #181815);
+}
+
+.daemon-web-composer__box {
+  display: grid;
+  gap: 8px;
+  max-width: 980px;
+  margin: 0 auto;
+  padding: 9px;
+  border: 1px solid var(--app-input-border, #3a3830);
+  border-radius: 8px;
+  background: var(--app-input-background, #0e0e0c);
+  box-shadow: 0 10px 30px rgb(0 0 0 / 18%);
+}
+
+.daemon-web-composer textarea {
+  width: 100%;
+  min-height: 56px;
+  max-height: 180px;
+  resize: vertical;
+  border: 0;
+  color: var(--app-primary-foreground, #f3f0e8);
+  background: transparent;
+  font: inherit;
+}
+
+.daemon-web-composer textarea:focus {
+  outline: 0;
+}
+
+.daemon-web-composer__footer,
+.daemon-web-quick-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.daemon-web-composer__footer {
+  justify-content: space-between;
+}
+
+.daemon-web-quick-actions button,
+.daemon-web-primary {
+  min-height: 34px;
+  padding: 0 14px;
+  border: 1px solid var(--app-input-border, #3a3830);
+  border-radius: var(--corner-radius-medium, 6px);
+  color: var(--app-primary-foreground, #f3f0e8);
+  background: #25241f;
+  font: inherit;
+}
+
+.daemon-web-primary {
+  color: #062016;
+  background: #6ee7b7;
+  border-color: #6ee7b7;
+  font-weight: 700;
+}
+
+.daemon-web-quick-actions button:disabled,
+.daemon-web-primary:disabled,
+.daemon-web-composer textarea:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.daemon-web-terminal {
+  display: grid;
+  grid-template-rows: 1fr auto;
+  height: 100%;
+  min-height: 0;
+  padding: 16px;
+}
+
+.daemon-web-terminal__surface {
+  min-height: 0;
+  overflow: hidden;
+  border: 1px solid var(--app-input-border, #3a3830);
+  border-radius: var(--corner-radius-medium, 6px);
+  background: #050608;
+  box-shadow: 0 18px 50px rgb(0 0 0 / 28%);
+}
+
+.daemon-web-terminal__surface .xterm {
+  height: 100%;
+  padding: 12px;
+}
+
+.daemon-web-terminal__hint {
+  padding-top: 8px;
+  color: var(--app-secondary-foreground, #a7a093);
+  font-size: 12px;
+}
+
+@media (max-width: 820px) {
+  .daemon-web-permission-card {
+    grid-template-columns: 1fr;
+  }
+
+  .daemon-web-permission-options {
+    justify-content: stretch;
+  }
+
+  .daemon-web-permission-options button {
+    max-width: none;
+  }
+}

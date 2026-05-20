@@ -19,3 +19,16 @@ export {
   type DaemonSessionProviderProps,
 } from './DaemonSessionProvider.js';
 export { daemonTranscriptToUnifiedMessages } from './transcriptAdapter.js';
+export { daemonBlocksToChatMessages } from './chatMessages.js';
+export {
+  createDaemonWebFixtureEvents,
+  loadDaemonWebFixture,
+} from './fixtures.js';
+export {
+  DaemonWebChat,
+  type DaemonWebChatProps,
+} from './components/DaemonWebChat.js';
+export {
+  DaemonWebTerminal,
+  type DaemonWebTerminalProps,
+} from './components/DaemonWebTerminal.js';

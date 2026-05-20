@@ -4443,10 +4443,9 @@ export const defaultSpawnChannelFactory: ChannelFactory = async (
   // stderr at the transport level.
   //
   // Note: spawning `process.execPath` only works when the entry script can
-  // be loaded by raw Node. In dev (e.g. `npm run dev` via `tsx`) the entry
-  // is a `.ts` file Node can't run; users should `npm run build` before
-  // `qwen serve` or set `process.execPath` to a tsx-aware shim. Stage 1
-  // accepts this — the daemon is meant for built deployments.
+  // be loaded by raw Node. In dev, `scripts/dev.js` exports
+  // `QWEN_DEV_TSX_CMD` so the ACP child can use the same tsx-aware runtime as
+  // the daemon parent. Built deployments keep using raw Node.
   // Pass through the daemon's full environment to the child, scrubbing
   // ONLY daemon-internal secrets (see SCRUBBED_CHILD_ENV_KEYS at module
   // scope). An earlier version used an allowlist, but that broke the
@@ -4502,7 +4501,14 @@ export const defaultSpawnChannelFactory: ChannelFactory = async (
   // `.github/codeql/codeql-config.yml` query exclusion. Both are
   // out of scope for a code-only PR; flagging here for the human
   // reviewer.
-  const child = spawn(process.execPath, [cliEntry, '--acp'], {
+  const devTsxCmd = process.env['QWEN_DEV_TSX_CMD'];
+  const shouldUseDevTsx =
+    process.env['DEV'] === 'true' &&
+    typeof devTsxCmd === 'string' &&
+    devTsxCmd.length > 0 &&
+    /\.(?:ts|tsx)$/.test(cliEntry);
+  const childCommand = shouldUseDevTsx ? devTsxCmd : process.execPath;
+  const child = spawn(childCommand, [cliEntry, '--acp'], {
     cwd: workspaceCwd,
     // Pipe stderr (was: 'inherit') so we can prefix each line with
     // the spawn's pid + workspace, making per-session crash output

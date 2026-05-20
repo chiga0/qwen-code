@@ -120,6 +120,7 @@ const tsxCmd = existsSync(localTsxCmd)
   : isWin
     ? 'tsx.cmd'
     : 'tsx';
+env.QWEN_DEV_TSX_CMD = tsxCmd;
 const tsxArgs = [cliEntry, ...process.argv.slice(2)];
 
 const child = spawn(tsxCmd, tsxArgs, {
