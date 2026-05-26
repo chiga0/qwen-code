@@ -170,6 +170,130 @@ function App() {
 }
 ```
 
+## Daemon Providers
+
+The package provides two React providers for connecting to `qwen serve` (ACP daemon). They are split by **lifecycle axis**:
+
+- **`DaemonSessionProvider`** — per-conversation (session-scoped): SSE connection, transcript store, prompt/cancel/model/approval-mode/permission actions.
+- **`DaemonWorkspaceProvider`** — per-workspace (outlives sessions): MCP, skills, tools, memory, agents, files, providers.
+
+### Architecture
+
+```
+<DaemonWorkspaceProvider>          ← owns DaemonClient + capabilities
+  useWorkspaceMcp / useWorkspaceAgents / useWorkspaceMemory / ...
+  ├── <DaemonSessionProvider>      ← owns session + SSE + transcript store
+  │     useDaemonTranscriptBlocks / useDaemonActions / useDaemonConnection / ...
+  │     ├── <ChatPanel />          ← pure consumer (renders blocks as markdown)
+  │     └── <TerminalPanel />      ← pure consumer (renders blocks as terminal text)
+```
+
+### Single-mode usage (only a chat or only a terminal)
+
+```tsx
+import {
+  DaemonSessionProvider,
+  DaemonWorkspaceProvider,
+  useDaemonTranscriptBlocks,
+  useDaemonActions,
+  useDaemonConnection,
+} from '@qwen-code/webui';
+
+function App() {
+  return (
+    <DaemonWorkspaceProvider baseUrl="http://127.0.0.1:4170" token={token}>
+      <DaemonSessionProvider
+        baseUrl="http://127.0.0.1:4170"
+        token={token}
+        autoReconnect
+      >
+        <ChatView />
+      </DaemonSessionProvider>
+    </DaemonWorkspaceProvider>
+  );
+}
+
+function ChatView() {
+  const blocks = useDaemonTranscriptBlocks();
+  const { sendPrompt, cancel } = useDaemonActions();
+  const { status, sessionId, currentModel } = useDaemonConnection();
+  // render blocks, handle input...
+}
+```
+
+### Dual-mode usage (chat + terminal share one session)
+
+When chat and terminal are in the **same React app on the same session**, wrap both views with a **single** `<DaemonSessionProvider>`. Both panels share one SSE connection, one transcript store, and one `clientId` — intra-app sync is zero-latency with no duplicate state.
+
+```tsx
+<DaemonWorkspaceProvider baseUrl={baseUrl} token={token}>
+  <DaemonSessionProvider baseUrl={baseUrl} token={token} autoReconnect>
+    <ChatPanel /> {/* useDaemonTranscriptBlocks() → daemonBlockToMarkdown */}
+    <TerminalPanel />{' '}
+    {/* useDaemonTranscriptBlocks() → transcriptBlockToTerminalText */}
+  </DaemonSessionProvider>
+</DaemonWorkspaceProvider>
+```
+
+Do NOT nest multiple `<DaemonSessionProvider>` for the same session — that creates two SSE connections, two stores, and potential state divergence.
+
+### Session hooks
+
+| Hook                                  | Returns                                                                                                              |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `useDaemonTranscriptBlocks()`         | `readonly DaemonTranscriptBlock[]`                                                                                   |
+| `useDaemonTranscriptState()`          | Full `DaemonTranscriptState` (blocks + metadata)                                                                     |
+| `useDaemonActions()`                  | `{ sendPrompt, cancel, setModel, setApprovalMode, respondToPermission, listSessions, loadSession, newSession, ... }` |
+| `useDaemonConnection()`               | `{ status, sessionId, currentModel, currentMode, commands, skills, models, tokenCount, contextWindow }`              |
+| `useDaemonPromptStatus()`             | `'idle' \| 'waiting' \| 'streaming'`                                                                                 |
+| `useDaemonPendingPermissions()`       | Unresolved permission blocks                                                                                         |
+| `useDaemonPendingPermissionRequest()` | First pending permission mapped to UI-ready shape                                                                    |
+| `useDaemonStreamingState()`           | `'idle' \| 'waiting' \| 'responding' \| 'thinking'`                                                                  |
+| `useDaemonTodoLists()`                | All todo/plan lists from tool blocks                                                                                 |
+| `useDaemonActiveTodoList()`           | Latest todo list with active items                                                                                   |
+
+### Workspace hooks
+
+Require an ancestor `<DaemonWorkspaceProvider>`:
+
+| Hook                          | Description                       |
+| ----------------------------- | --------------------------------- |
+| `useDaemonMcp(options?)`      | MCP server list + restart + tools |
+| `useDaemonSkills(options?)`   | Available skills (read-only)      |
+| `useDaemonTools(options?)`    | Workspace tools + enable/disable  |
+| `useDaemonMemory(options?)`   | Memory files + read/write         |
+| `useDaemonAgents(options?)`   | Agent CRUD                        |
+| `useDaemonSessions(options?)` | Session list + switch             |
+| `useDaemonGlob()`             | `globWorkspace(pattern, opts)`    |
+
+All resource hooks accept `{ autoLoad?: boolean, enabled?: boolean }` and return `{ data, loading, error, reload }`.
+
+### Props
+
+**`DaemonSessionProviderProps`:**
+
+| Prop                  | Type      | Default  | Description                                            |
+| --------------------- | --------- | -------- | ------------------------------------------------------ |
+| `baseUrl`             | `string`  | required | Daemon HTTP base URL                                   |
+| `token`               | `string?` | —        | Bearer token                                           |
+| `workspaceCwd`        | `string?` | —        | Override workspace path (uses capabilities if omitted) |
+| `initialSessionId`    | `string?` | —        | Restore a specific session on mount                    |
+| `clientId`            | `string?` | —        | Override stable client ID (auto-generated if omitted)  |
+| `autoConnect`         | `boolean` | `true`   | Connect on mount                                       |
+| `autoReconnect`       | `boolean` | `true`   | Auto-reconnect on disconnect                           |
+| `reconnectDelayMs`    | `number`  | `1000`   | Initial reconnect backoff                              |
+| `maxReconnectDelayMs` | `number`  | `10000`  | Max reconnect backoff                                  |
+| `suppressOwnUserEcho` | `boolean` | `true`   | Suppress own user message echoes                       |
+
+**`DaemonWorkspaceProviderProps`:**
+
+| Prop           | Type      | Default  | Description                             |
+| -------------- | --------- | -------- | --------------------------------------- |
+| `baseUrl`      | `string`  | required | Daemon HTTP base URL                    |
+| `token`        | `string?` | —        | Bearer token                            |
+| `workspaceCwd` | `string?` | —        | Override workspace path                 |
+| `autoConnect`  | `boolean` | `true`   | Connect and fetch capabilities on mount |
+
 ## Components
 
 ### UI Components
