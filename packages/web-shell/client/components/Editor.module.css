@@ -27,6 +27,14 @@
   color: var(--warning-color);
 }
 
+.prefixAutoEdit {
+  color: var(--warning-color);
+}
+
+.prefixYolo {
+  color: var(--error-color);
+}
+
 .shellMode .borderTop,
 .shellMode .borderBottom {
   background: var(--warning-color);

@@ -6,13 +6,7 @@ import {
   useCallback,
   useState,
 } from 'react';
-import {
-  EditorView,
-  keymap,
-  placeholder,
-  ViewPlugin,
-  ViewUpdate,
-} from '@codemirror/view';
+import { EditorView, keymap, placeholder } from '@codemirror/view';
 import { EditorState, Compartment, Prec } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import {
@@ -126,6 +120,8 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   const workspaceActionsRef = useRef(workspace?.actions);
   workspaceActionsRef.current = workspace?.actions;
   const [shellMode, setShellMode] = useState(false);
+  const shellModeRef = useRef(shellMode);
+  shellModeRef.current = shellMode;
   const [searchMode, setSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMatches, setSearchMatches] = useState<string[]>([]);
@@ -135,6 +131,9 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   const [pastedImages, setPastedImages] = useState<PromptImage[]>([]);
   const pastedImagesRef = useRef<PromptImage[]>([]);
 
+  const promptHistory = useInputHistory();
+  const shellHistory = useInputHistory('qwen-web-shell-command-history');
+
   const {
     push,
     navigateUp,
@@ -142,7 +141,7 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
     reset,
     getReverseMatches,
     resetSearch,
-  } = useInputHistory();
+  } = promptHistory;
   const historyActionsRef = useRef({
     push,
     navigateUp,
@@ -159,6 +158,8 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
     getReverseMatches,
     resetSearch,
   };
+  const shellHistoryActionsRef = useRef(shellHistory);
+  shellHistoryActionsRef.current = shellHistory;
   pastedImagesRef.current = pastedImages;
 
   useEffect(() => {
@@ -168,13 +169,19 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       const text = (textOverride ?? view.state.doc.toString()).trim();
       if (!text) return true;
       const images = pastedImagesRef.current;
+      const isShellMode = shellModeRef.current;
       const accepted = onSubmitRef.current(
-        text,
+        isShellMode ? `!${text}` : text,
         images.length > 0 ? [...images] : undefined,
       );
       if (accepted === false) return true;
-      historyActionsRef.current.push(text);
-      historyActionsRef.current.reset();
+      if (isShellMode) {
+        shellHistoryActionsRef.current.push(text);
+        shellHistoryActionsRef.current.reset();
+      } else {
+        historyActionsRef.current.push(text);
+        historyActionsRef.current.reset();
+      }
       setPastedImages([]);
       view.dispatch({
         changes: { from: 0, to: view.state.doc.length, insert: '' },
@@ -208,6 +215,10 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       {
         key: 'Escape',
         run: () => {
+          if (shellModeRef.current) {
+            setShellMode(false);
+            return true;
+          }
           if (queuedMessagesRef.current.length === 0) return false;
           return onClearQueuedMessagesRef.current?.() ?? false;
         },
@@ -221,6 +232,16 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         run: (view) => {
           if (completionStatus(view.state) === 'active') return false;
           if (view.state.doc.lines > 1) return false;
+          if (shellModeRef.current) {
+            const current = view.state.doc.toString();
+            const prev = shellHistoryActionsRef.current.navigateUp(current);
+            if (prev === null) return true;
+            view.dispatch({
+              changes: { from: 0, to: view.state.doc.length, insert: prev },
+              selection: { anchor: prev.length },
+            });
+            return true;
+          }
           if (queuedMessagesRef.current.length > 0) {
             const queuedText = onPopQueuedMessagesRef.current?.();
             if (queuedText) {
@@ -250,6 +271,15 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         run: (view) => {
           if (completionStatus(view.state) === 'active') return false;
           if (view.state.doc.lines > 1) return false;
+          if (shellModeRef.current) {
+            const next = shellHistoryActionsRef.current.navigateDown();
+            if (next === null) return true;
+            view.dispatch({
+              changes: { from: 0, to: view.state.doc.length, insert: next },
+              selection: { anchor: next.length },
+            });
+            return true;
+          }
           const next = historyActionsRef.current.navigateDown();
           if (next === null) {
             return onFocusActiveAgentsRef.current?.() ?? false;
@@ -268,9 +298,12 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
           searchDraftRef.current = query;
           setSearchMode(true);
           setSearchQuery(query);
-          setSearchMatches(historyActionsRef.current.getReverseMatches(query));
+          const history = shellModeRef.current
+            ? shellHistoryActionsRef.current
+            : historyActionsRef.current;
+          setSearchMatches(history.getReverseMatches(query));
           setSearchActiveIndex(0);
-          historyActionsRef.current.resetSearch();
+          history.resetSearch();
           setTimeout(() => searchInputRef.current?.focus(), 0);
           return true;
         },
@@ -287,17 +320,6 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         },
       },
     ]);
-
-    const shellModeDetector = ViewPlugin.fromClass(
-      class {
-        update(update: ViewUpdate) {
-          if (update.docChanged) {
-            const text = update.state.doc.toString();
-            setShellMode(text.startsWith('!'));
-          }
-        }
-      },
-    );
 
     const slashCompletionRestarter = EditorView.updateListener.of((update) => {
       if (!update.docChanged || completionStatus(update.state) === 'active') {
@@ -349,9 +371,16 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         editableCompartment.of(EditorView.editable.of(true)),
         inputHighlight,
         inputHighlightTheme,
-        shellModeDetector,
         slashCompletionRestarter,
         EditorView.inputHandler.of((view, from, to, insert) => {
+          if (
+            insert === '!' &&
+            view.state.doc.toString() === '' &&
+            completionStatus(view.state) !== 'active'
+          ) {
+            setShellMode((value) => !value);
+            return true;
+          }
           if (
             insert === '?' &&
             view.state.doc.toString() === '' &&
@@ -521,6 +550,11 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       if (!view || view.hasFocus) return;
 
       event.preventDefault();
+      if (event.key === '!' && view.state.doc.toString() === '') {
+        setShellMode((value) => !value);
+        view.focus();
+        return;
+      }
       const selection = view.state.selection.main;
       view.dispatch({
         changes: { from: selection.from, to: selection.to, insert: event.key },
@@ -602,7 +636,10 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       setSearchQuery('');
       setSearchMatches([]);
       setSearchActiveIndex(0);
-      historyActionsRef.current.resetSearch();
+      const history = shellModeRef.current
+        ? shellHistoryActionsRef.current
+        : historyActionsRef.current;
+      history.resetSearch();
       viewRef.current?.focus();
     },
     [replaceEditorText],
@@ -616,16 +653,22 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       const text = match.trim();
       if (!text) return;
       const images = pastedImagesRef.current;
+      const isShellMode = shellModeRef.current;
       const accepted = onSubmitRef.current(
-        text,
+        isShellMode ? `!${text}` : text,
         images.length > 0 ? [...images] : undefined,
       );
       if (accepted === false) {
         replaceEditorText(match);
         return;
       }
-      historyActionsRef.current.push(text);
-      historyActionsRef.current.reset();
+      if (isShellMode) {
+        shellHistoryActionsRef.current.push(text);
+        shellHistoryActionsRef.current.reset();
+      } else {
+        historyActionsRef.current.push(text);
+        historyActionsRef.current.reset();
+      }
       setPastedImages([]);
       replaceEditorText('');
     },
@@ -674,9 +717,12 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
     const q = e.target.value;
     setSearchQuery(q);
-    setSearchMatches(historyActionsRef.current.getReverseMatches(q));
+    const history = shellModeRef.current
+      ? shellHistoryActionsRef.current
+      : historyActionsRef.current;
+    setSearchMatches(history.getReverseMatches(q));
     setSearchActiveIndex(0);
-    historyActionsRef.current.resetSearch();
+    history.resetSearch();
   };
 
   const modeClass = getModeClass(currentMode, shellMode);
@@ -694,6 +740,25 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   const visibleSearchMatches = searchMatches.slice(
     visibleSearchStart,
     visibleSearchStart + 6,
+  );
+  const prefixClass = [
+    styles.prefix,
+    shellMode
+      ? styles.prefixShell
+      : currentMode === 'yolo'
+        ? styles.prefixYolo
+        : currentMode === 'auto-edit'
+          ? styles.prefixAutoEdit
+          : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+  const prefixContent = shellMode ? (
+    '!'
+  ) : currentMode === 'yolo' ? (
+    '*'
+  ) : (
+    <PromptChevron />
   );
 
   return (
@@ -765,11 +830,7 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         </div>
       )}
       <div className={styles.line}>
-        <span
-          className={`${styles.prefix} ${shellMode ? styles.prefixShell : ''}`}
-        >
-          {shellMode ? '!' : <PromptChevron />}
-        </span>
+        <span className={prefixClass}>{prefixContent}</span>
         <div ref={containerRef} className={styles.wrapper} />
       </div>
       <div className={styles.borderBottom} />

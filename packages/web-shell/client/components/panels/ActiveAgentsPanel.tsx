@@ -147,7 +147,7 @@ export const ActiveAgentsPanel = forwardRef<
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
       event.stopPropagation();
-      if (expanded && selectedIndex > 0) {
+      if (selectedIndex > 0) {
         setSelectedIndex((index) => Math.max(index - 1, 0));
       } else {
         onReturnToInput?.();

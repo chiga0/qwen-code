@@ -139,9 +139,12 @@ export function isSafeImageSrc(url: string | undefined): boolean {
 }
 
 function MermaidBlock({ code }: { code: string }) {
+  const { t } = useI18n();
   const appTheme = useTheme();
   const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'diagram' | 'code'>('diagram');
+  const [copied, setCopied] = useState(false);
   const mermaidTheme = appTheme === 'light' ? 'default' : 'dark';
 
   useEffect(() => {
@@ -183,6 +186,16 @@ function MermaidBlock({ code }: { code: string }) {
     };
   }, [code, mermaidTheme]);
 
+  const handleCopy = () => {
+    navigator.clipboard.writeText(code).then(
+      () => {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000);
+      },
+      () => {},
+    );
+  };
+
   if (error) {
     return (
       <div className={styles.codeBlock}>
@@ -196,19 +209,43 @@ function MermaidBlock({ code }: { code: string }) {
     );
   }
 
-  if (!svg) {
-    return (
-      <div className={`${styles.mermaidBlock} ${styles.mermaidLoading}`}>
-        <span>Rendering diagram...</span>
-      </div>
-    );
-  }
-
   return (
-    <div
-      className={styles.mermaidBlock}
-      dangerouslySetInnerHTML={{ __html: svg }}
-    />
+    <div className={styles.codeBlock}>
+      <div className={styles.codeBlockHeader}>
+        <span className={styles.codeBlockLang}>mermaid</span>
+        <span className={styles.mermaidActions}>
+          <button
+            className={styles.codeBlockCopy}
+            onClick={() =>
+              setViewMode(viewMode === 'diagram' ? 'code' : 'diagram')
+            }
+          >
+            {viewMode === 'diagram'
+              ? t('mermaid.viewCode')
+              : t('mermaid.viewDiagram')}
+          </button>
+          <button className={styles.codeBlockCopy} onClick={handleCopy}>
+            {copied ? t('code.copied') : t('code.copy')}
+          </button>
+        </span>
+      </div>
+      {viewMode === 'code' ? (
+        <pre className={`${styles.codeBlockContent} ${styles.codeBlockPlain}`}>
+          <code>{code}</code>
+        </pre>
+      ) : !svg ? (
+        <div
+          className={`${styles.mermaidBlock} ${styles.mermaidLoading} ${styles.mermaidInline}`}
+        >
+          <span>{t('mermaid.rendering')}</span>
+        </div>
+      ) : (
+        <div
+          className={`${styles.mermaidBlock} ${styles.mermaidInline}`}
+          dangerouslySetInnerHTML={{ __html: svg }}
+        />
+      )}
+    </div>
   );
 }
 
@@ -220,6 +257,7 @@ function CodeBlock({
   children: string;
 }) {
   const { t } = useI18n();
+  const appTheme = useTheme();
   const [html, setHtml] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
 
@@ -227,6 +265,8 @@ function CodeBlock({
   const lang = match?.[1] || '';
   const code = String(children).replace(/\n$/, '');
   const resolvedLang = SUPPORTED_LANGUAGES.has(lang) ? lang : 'text';
+  const shikiTheme =
+    appTheme === 'light' ? 'github-light-default' : 'github-dark-default';
 
   useEffect(() => {
     if (lang === 'mermaid' || resolvedLang === 'text') {
@@ -239,7 +279,7 @@ function CodeBlock({
     const timer = setTimeout(() => {
       codeToHtml(code, {
         lang: resolvedLang as BundledLanguage,
-        theme: 'github-dark-default',
+        theme: shikiTheme,
       })
         .then((result) => {
           if (!cancelled) setHtml(result);
@@ -253,7 +293,7 @@ function CodeBlock({
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [code, lang, resolvedLang]);
+  }, [code, lang, resolvedLang, shikiTheme]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(code).then(

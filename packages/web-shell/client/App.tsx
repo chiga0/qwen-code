@@ -85,6 +85,16 @@ export interface WebShellProps {
   language?: 'en' | 'zh-CN' | 'zh' | 'zh-cn';
   /** Called when `/language ui` changes the web-shell UI language. */
   onLanguageChange?: (language: WebShellLanguage) => void;
+  /** Additional CSS class name appended to the root element. */
+  className?: string;
+  /** Inline styles applied to the root element. */
+  style?: React.CSSProperties;
+  /** Called when connection status changes (idle/connecting/connected/disconnected/error). */
+  onConnectionChange?: (status: string) => void;
+  /** Called when prompt status changes (idle/waiting/responding). */
+  onStreamingStateChange?: (state: DaemonStreamingState) => void;
+  /** Called when a critical error occurs (auth failure, session gone, etc). */
+  onError?: (error: Error) => void;
 }
 
 function replaceSessionUrl(sessionId: string): void {
@@ -233,6 +243,11 @@ export function App({
   onThemeChange,
   language: providedLanguage,
   onLanguageChange,
+  className: externalClassName,
+  style: externalStyle,
+  onConnectionChange,
+  onStreamingStateChange,
+  onError,
 }: WebShellProps = {}) {
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
@@ -479,6 +494,20 @@ export function App({
   useEffect(() => {
     streamingStateRef.current = streamingState;
   }, [streamingState]);
+
+  useEffect(() => {
+    onStreamingStateChange?.(streamingState);
+  }, [streamingState, onStreamingStateChange]);
+
+  useEffect(() => {
+    onConnectionChange?.(connection.status);
+  }, [connection.status, onConnectionChange]);
+
+  useEffect(() => {
+    if (connection.error) {
+      onError?.(new Error(connection.error));
+    }
+  }, [connection.error, onError]);
 
   useEffect(() => {
     if (connection.currentModel) {
@@ -1050,164 +1079,186 @@ export function App({
     );
   }, [connection.commands, connection.skills, t]);
 
-  const appClassName = `${styles.app} ${
-    selectedTheme === 'light' ? styles.themeLight : styles.themeDark
-  }`;
+  const appClassName = [
+    styles.app,
+    selectedTheme === 'light' ? styles.themeLight : styles.themeDark,
+    externalClassName,
+  ]
+    .filter(Boolean)
+    .join(' ');
 
   return (
     <ThemeProvider value={selectedTheme}>
       <I18nProvider language={selectedLanguage}>
-        <div className={appClassName}>
-          {modelDialogMode ? (
-            <ModelDialog
-              mode={modelDialogMode}
-              onSelect={
-                modelDialogMode === 'fast'
-                  ? handleFastModelSelect
-                  : handleModelSelect
+        <div className={appClassName} style={externalStyle}>
+          {dialogOpen && (
+            <div className={styles.dialogOverlay}>
+              {modelDialogMode && (
+                <ModelDialog
+                  mode={modelDialogMode}
+                  onSelect={
+                    modelDialogMode === 'fast'
+                      ? handleFastModelSelect
+                      : handleModelSelect
+                  }
+                  onClose={() => setModelDialogMode(null)}
+                />
+              )}
+              {showResumeDialog && (
+                <ResumeDialog
+                  onSelect={(sessionId) => {
+                    sessionActions
+                      .loadSession(sessionId)
+                      .catch((error: unknown) => {
+                        reportError(error, 'Failed to load session');
+                      });
+                  }}
+                  onClose={() => setShowResumeDialog(false)}
+                />
+              )}
+              {showReleaseDialog && (
+                <ReleaseSessionDialog
+                  onReleased={(sessionId) => {
+                    store.dispatch([
+                      {
+                        type: 'status',
+                        text: `${t('release.released')} (${sessionId.slice(0, 8)})`,
+                      },
+                    ]);
+                  }}
+                  onError={(error) => {
+                    const reason =
+                      error instanceof Error ? error.message : String(error);
+                    store.dispatch([
+                      {
+                        type: 'error',
+                        text: t('release.failed', { reason }),
+                      },
+                    ]);
+                  }}
+                  onClose={() => setShowReleaseDialog(false)}
+                />
+              )}
+              {showModeDialog && (
+                <ApprovalModeDialog
+                  currentMode={currentMode}
+                  onSelect={handleSetMode}
+                  onClose={() => setShowModeDialog(false)}
+                />
+              )}
+              {showMcpDialog && (
+                <McpDialog onClose={() => setShowMcpDialog(false)} />
+              )}
+              {showHelpDialog && (
+                <HelpDialog
+                  commands={commands}
+                  onClose={() => setShowHelpDialog(false)}
+                />
+              )}
+              {showThemeDialog && (
+                <ThemeDialog
+                  currentTheme={selectedTheme}
+                  onSelect={handleThemeChange}
+                  onClose={() => setShowThemeDialog(false)}
+                />
+              )}
+              {showSkillsDialog && (
+                <SkillsDialog onClose={() => setShowSkillsDialog(false)} />
+              )}
+              {showToolsDialog && (
+                <ToolsDialog onClose={() => setShowToolsDialog(false)} />
+              )}
+              {memoryDialogMode && (
+                <MemoryDialog
+                  initialMode={memoryDialogMode}
+                  onMessage={(text, type = 'status') => {
+                    store.dispatch([{ type, text }]);
+                  }}
+                  onClose={() => setMemoryDialogMode(null)}
+                />
+              )}
+              {agentsDialogMode && (
+                <AgentsDialog
+                  initialMode={agentsDialogMode}
+                  onClose={() => setAgentsDialogMode(null)}
+                />
+              )}
+            </div>
+          )}
+
+          <div
+            className={
+              displayMessages.length > 0 || streamingState !== 'idle'
+                ? `${styles.content} ${styles.contentHasMessages}`
+                : styles.content
+            }
+            style={dialogOpen ? { visibility: 'hidden' } : undefined}
+          >
+            <MessageList
+              messages={displayMessages}
+              pendingApproval={pendingApproval}
+              onConfirm={handleConfirm}
+              welcomeHeader={
+                <WelcomeHeader
+                  version={WEB_SHELL_VERSION}
+                  cwd={connection.workspaceCwd || ''}
+                  currentModel={currentModel}
+                  currentMode={currentMode}
+                />
               }
-              onClose={() => setModelDialogMode(null)}
             />
-          ) : showResumeDialog ? (
-            <ResumeDialog
-              onSelect={(sessionId) => {
-                sessionActions
-                  .loadSession(sessionId)
-                  .catch((error: unknown) => {
-                    reportError(error, 'Failed to load session');
-                  });
-              }}
-              onClose={() => setShowResumeDialog(false)}
-            />
-          ) : showReleaseDialog ? (
-            <ReleaseSessionDialog
-              onReleased={(sessionId) => {
-                store.dispatch([
-                  {
-                    type: 'status',
-                    text: `${t('release.released')} (${sessionId.slice(0, 8)})`,
-                  },
-                ]);
-              }}
-              onError={(error) => {
-                const reason =
-                  error instanceof Error ? error.message : String(error);
-                store.dispatch([
-                  {
-                    type: 'error',
-                    text: t('release.failed', { reason }),
-                  },
-                ]);
-              }}
-              onClose={() => setShowReleaseDialog(false)}
-            />
-          ) : showModeDialog ? (
-            <ApprovalModeDialog
-              currentMode={currentMode}
-              onSelect={handleSetMode}
-              onClose={() => setShowModeDialog(false)}
-            />
-          ) : showMcpDialog ? (
-            <McpDialog onClose={() => setShowMcpDialog(false)} />
-          ) : showHelpDialog ? (
-            <HelpDialog
-              commands={commands}
-              onClose={() => setShowHelpDialog(false)}
-            />
-          ) : showThemeDialog ? (
-            <ThemeDialog
-              currentTheme={selectedTheme}
-              onSelect={handleThemeChange}
-              onClose={() => setShowThemeDialog(false)}
-            />
-          ) : showSkillsDialog ? (
-            <SkillsDialog onClose={() => setShowSkillsDialog(false)} />
-          ) : showToolsDialog ? (
-            <ToolsDialog onClose={() => setShowToolsDialog(false)} />
-          ) : memoryDialogMode ? (
-            <MemoryDialog
-              initialMode={memoryDialogMode}
-              onMessage={(text, type = 'status') => {
-                store.dispatch([{ type, text }]);
-              }}
-              onClose={() => setMemoryDialogMode(null)}
-            />
-          ) : agentsDialogMode ? (
-            <AgentsDialog
-              initialMode={agentsDialogMode}
-              onClose={() => setAgentsDialogMode(null)}
-            />
-          ) : (
-            <>
-              <div
-                className={
-                  displayMessages.length > 0 || streamingState !== 'idle'
-                    ? `${styles.content} ${styles.contentHasMessages}`
-                    : styles.content
-                }
-              >
-                <MessageList
-                  messages={displayMessages}
-                  pendingApproval={pendingApproval}
-                  onConfirm={handleConfirm}
-                  welcomeHeader={
-                    <WelcomeHeader
-                      version={WEB_SHELL_VERSION}
-                      cwd={connection.workspaceCwd || ''}
-                      currentModel={currentModel}
-                      currentMode={currentMode}
-                    />
+
+            <StreamingStatus />
+          </div>
+
+          <div
+            className={styles.footer}
+            style={dialogOpen ? { visibility: 'hidden' } : undefined}
+          >
+            {floatingTodos.length > 0 && (
+              <div className={styles.bottomPanels}>
+                <TodoPanel todos={floatingTodos} />
+              </div>
+            )}
+            {!shouldHideComposer && (
+              <div className={styles.composer}>
+                <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
+                <Editor
+                  ref={editorRef}
+                  onSubmit={handleSubmit}
+                  onCycleMode={handleCycleMode}
+                  onToggleShortcuts={handleToggleShortcuts}
+                  disabled={isDisabled}
+                  commands={commands}
+                  skills={connection.skills ?? []}
+                  queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
+                  onFocusActiveAgents={handleFocusActiveAgents}
+                  onPopQueuedMessages={popQueuedPromptsForEdit}
+                  onClearQueuedMessages={clearQueuedPrompts}
+                  currentMode={currentMode}
+                  placeholderText={
+                    !connected
+                      ? t('common.loading')
+                      : streamingState !== 'idle'
+                        ? t('editor.processing')
+                        : t('editor.placeholder')
                   }
                 />
-
-                <StreamingStatus />
               </div>
+            )}
+            {!shouldHideComposer &&
+              (showShortcuts ? <ShortcutsPanel /> : <StatusBar />)}
 
-              <div className={styles.footer}>
-                {floatingAgents.length > 0 && (
-                  <ActiveAgentsPanel
-                    ref={activeAgentsPanelRef}
-                    agents={floatingAgents}
-                    onReturnToInput={handleReturnToEditor}
-                  />
-                )}
-                {floatingTodos.length > 0 && (
-                  <TodoPanel todos={floatingTodos} />
-                )}
-                {!shouldHideComposer && (
-                  <div className={styles.composer}>
-                    <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
-                    <Editor
-                      ref={editorRef}
-                      onSubmit={handleSubmit}
-                      onCycleMode={handleCycleMode}
-                      onToggleShortcuts={handleToggleShortcuts}
-                      disabled={isDisabled}
-                      commands={commands}
-                      skills={connection.skills ?? []}
-                      queuedMessages={queuedPrompts.map(
-                        (prompt) => prompt.text,
-                      )}
-                      onFocusActiveAgents={handleFocusActiveAgents}
-                      onPopQueuedMessages={popQueuedPromptsForEdit}
-                      onClearQueuedMessages={clearQueuedPrompts}
-                      currentMode={currentMode}
-                      placeholderText={
-                        !connected
-                          ? t('common.loading')
-                          : streamingState !== 'idle'
-                            ? t('editor.processing')
-                            : t('editor.placeholder')
-                      }
-                    />
-                  </div>
-                )}
-
-                {!shouldHideComposer &&
-                  (showShortcuts ? <ShortcutsPanel /> : <StatusBar />)}
+            {floatingAgents.length > 0 && (
+              <div className={styles.bottomPanels}>
+                <ActiveAgentsPanel
+                  ref={activeAgentsPanelRef}
+                  agents={floatingAgents}
+                  onReturnToInput={handleReturnToEditor}
+                />
               </div>
-            </>
-          )}
+            )}
+          </div>
         </div>
       </I18nProvider>
     </ThemeProvider>
