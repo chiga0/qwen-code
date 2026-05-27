@@ -138,6 +138,15 @@ vi.mock('@qwen-code/qwen-code-core', () => ({
     getRefusedServerNames: vi.fn().mockReturnValue([]),
   })),
   MCP_BUDGET_WARN_FRACTION: 0.75,
+  DEFAULT_TOKEN_LIMIT: 1_000_000,
+  getCoreSystemPrompt: vi.fn().mockReturnValue('system prompt'),
+  uiTelemetryService: {
+    getLastPromptTokenCount: vi.fn().mockReturnValue(0),
+    getLastCachedContentTokenCount: vi.fn().mockReturnValue(0),
+  },
+  ToolNames: { SKILL: 'skill' },
+  buildSkillLlmContent: vi.fn((_baseDir: string, body: string) => body),
+  DiscoveredMCPTool: class DiscoveredMCPTool {},
   SessionService: vi.fn(),
   SESSION_TITLE_MAX_LENGTH: 200,
   tokenLimit: vi.fn().mockReturnValue(128_000),
@@ -824,6 +833,15 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
       getModel: vi.fn().mockReturnValue('m'),
       getTargetDir: vi.fn().mockReturnValue('/tmp'),
       getContentGeneratorConfig: vi.fn().mockReturnValue({}),
+      getToolRegistry: vi.fn().mockReturnValue({
+        getAllTools: vi.fn().mockReturnValue([]),
+        getFunctionDeclarations: vi.fn().mockReturnValue([]),
+      }),
+      getUserMemory: vi.fn().mockReturnValue(''),
+      getSkillManager: vi.fn().mockReturnValue({
+        listSkills: vi.fn().mockResolvedValue([]),
+      }),
+      getChatCompression: vi.fn().mockReturnValue(undefined),
       getAvailableModels: vi.fn().mockReturnValue([]),
       getModes: vi.fn().mockReturnValue([]),
       getApprovalMode: vi.fn().mockReturnValue('default'),
@@ -1442,6 +1460,10 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
       SERVE_STATUS_EXT_METHODS.sessionSupportedCommands,
       { sessionId },
     );
+    const contextUsage = await agent.extMethod(
+      SERVE_STATUS_EXT_METHODS.sessionContextUsage,
+      { sessionId, detail: true },
+    );
 
     expect(context).toMatchObject({
       v: 1,
@@ -1463,6 +1485,16 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
         },
       ],
       availableSkills: ['review'],
+    });
+    expect(contextUsage).toMatchObject({
+      v: 1,
+      sessionId,
+      workspaceCwd: '/tmp',
+      usage: {
+        modelName: 'm',
+        showDetails: true,
+      },
+      formattedText: expect.stringContaining('## Context Usage'),
     });
     expect(buildAvailableCommandsSnapshot).toHaveBeenCalledWith(innerConfig);
 

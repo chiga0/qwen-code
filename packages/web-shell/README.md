@@ -23,11 +23,11 @@ npm install @alife/dataworks-qwen-code-web-shell
 ### 基本用法
 
 ```tsx
-import { WebShell } from '@alife/dataworks-qwen-code-web-shell';
+import { WebShellWithProviders } from '@alife/dataworks-qwen-code-web-shell';
 
 export function QwenCodePanel() {
   return (
-    <WebShell
+    <WebShellWithProviders
       baseUrl="http://127.0.0.1:4170"
       token="qwen-local-4170-abc123"
       initialSessionId="838e1811-9f84-4848-9915-d9a7f01ff5c6"
@@ -41,6 +41,18 @@ export function QwenCodePanel() {
       }}
     />
   );
+}
+```
+
+如果接入方已经自己使用了 `@qwen-code/webui/daemon-react-sdk` 的
+`DaemonWorkspaceProvider` 和 `DaemonSessionProvider`，也可以只使用低层 UI
+组件：
+
+```tsx
+import { WebShell } from '@alife/dataworks-qwen-code-web-shell';
+
+function InnerPanel() {
+  return <WebShell theme="dark" language="zh-CN" />;
 }
 ```
 

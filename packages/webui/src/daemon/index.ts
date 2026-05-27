@@ -113,7 +113,13 @@ export { daemonTranscriptToUnifiedMessages } from './transcriptAdapter.js';
 export { DAEMON_APPROVAL_MODES } from '@qwen-code/sdk/daemon';
 export type {
   DaemonApprovalMode,
+  DaemonContextCategoryBreakdown,
   DaemonContextFileScope,
+  DaemonContextMemoryDetail,
+  DaemonContextSkillDetail,
+  DaemonContextToolDetail,
+  DaemonSessionContextUsage,
+  DaemonSessionContextUsageStatus,
   DaemonSessionSummary,
   DaemonWorkspaceAgentDetail,
   DaemonWorkspaceAgentSummary,

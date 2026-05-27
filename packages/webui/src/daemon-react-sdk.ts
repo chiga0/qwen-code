@@ -169,6 +169,12 @@ export type {
   DaemonPromptImage,
   /** Permission approval level: `'plan' | 'default' | 'auto-edit' | 'auto' | 'yolo'`. */
   DaemonApprovalMode,
+  DaemonContextCategoryBreakdown,
+  DaemonContextMemoryDetail,
+  DaemonContextSkillDetail,
+  DaemonContextToolDetail,
+  DaemonSessionContextUsage,
+  DaemonSessionContextUsageStatus,
   /** Options for `sendPrompt()`: optimistic message, image attachments. */
   SendPromptOptions,
 } from './daemon/index.js';

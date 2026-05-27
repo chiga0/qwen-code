@@ -12,6 +12,7 @@ import type {
   DaemonApprovalModeResult,
   DaemonAvailableCommand,
   DaemonSessionContextStatus,
+  DaemonSessionContextUsageStatus,
   DaemonSessionRecapResult,
   DaemonSessionSummary,
   DaemonSessionSupportedCommandsStatus,
@@ -177,6 +178,10 @@ export interface DaemonSessionActions {
   releaseSession(sessionId: string): Promise<void>;
   closeSession(): Promise<void>;
   refreshCommands(): Promise<void>;
+  getContext(): Promise<DaemonSessionContextStatus>;
+  getContextUsage(opts?: {
+    detail?: boolean;
+  }): Promise<DaemonSessionContextUsageStatus>;
   renameSession(displayName: string): Promise<SessionMetadataResult>;
   recapSession(): Promise<DaemonSessionRecapResult>;
 }

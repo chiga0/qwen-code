@@ -6,6 +6,7 @@
 
 import type { Dispatch, SetStateAction } from 'react';
 import type {
+  DaemonSessionContextStatus,
   DaemonSessionClient,
   DaemonSessionRecapResult,
   DaemonTranscriptStore,
@@ -380,6 +381,36 @@ export function createDaemonSessionActions({
       }));
     },
 
+    async getContext() {
+      const session = requireSessionForAction(
+        store,
+        sessionRef.current,
+        'Load context failed',
+      );
+      const context = await withActionTimeout(
+        session.context(),
+        'Load context timed out',
+      );
+      setConnection((current) => ({
+        ...current,
+        context,
+        currentMode: getModeFromSessionContext(context) ?? current.currentMode,
+      }));
+      return context;
+    },
+
+    async getContextUsage(opts) {
+      const session = requireSessionForAction(
+        store,
+        sessionRef.current,
+        'Load context usage failed',
+      );
+      return await withActionTimeout(
+        session.contextUsage(opts),
+        'Load context usage timed out',
+      );
+    },
+
     async renameSession(displayName) {
       const session = requireSessionForAction(
         store,
@@ -431,6 +462,17 @@ export function createDaemonSessionActions({
       }
     },
   };
+}
+
+function getModeFromSessionContext(
+  context: DaemonSessionContextStatus,
+): string | undefined {
+  const modes =
+    typeof context.state.modes === 'object' && context.state.modes !== null
+      ? (context.state.modes as Record<string, unknown>)
+      : undefined;
+  const mode = modes?.['currentModeId'] ?? modes?.['currentMode'];
+  return typeof mode === 'string' ? mode : undefined;
 }
 
 function requireSessionForAction(

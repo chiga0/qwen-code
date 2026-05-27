@@ -33,6 +33,14 @@ function scopeForLevel(level: string): 'workspace' | 'global' | undefined {
   return undefined;
 }
 
+function canDeleteAgent(agent: DaemonWorkspaceAgentSummary): boolean {
+  return (
+    scopeForLevel(agent.level) !== undefined &&
+    !agent.isBuiltin &&
+    agent.level !== 'extension'
+  );
+}
+
 function initialDialogMode(
   mode: AgentsDialogInitialMode,
 ): 'menu' | 'create-scope' | 'create' | 'manage' {
@@ -447,15 +455,15 @@ export function AgentsDialog({
                     {t('agent.tools')}: {detail.tools.join(', ')}
                   </div>
                 )}
-                <button
-                  className={dp('dialog-danger-button')}
-                  disabled={
-                    busy || detail.isBuiltin || detail.level === 'extension'
-                  }
-                  onClick={() => handleDelete(detail)}
-                >
-                  {busy ? t('agent.delete.loading') : t('agent.delete')}
-                </button>
+                {canDeleteAgent(detail) && (
+                  <button
+                    className={dp('dialog-danger-button')}
+                    disabled={busy}
+                    onClick={() => handleDelete(detail)}
+                  >
+                    {busy ? t('agent.delete.loading') : t('agent.delete')}
+                  </button>
+                )}
               </>
             ) : (
               <div className={dp('resume-picker-empty')}>

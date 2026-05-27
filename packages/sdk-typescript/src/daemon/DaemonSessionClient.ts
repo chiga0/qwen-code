@@ -14,6 +14,7 @@ import {
 import type {
   DaemonEvent,
   DaemonSessionContextStatus,
+  DaemonSessionContextUsageStatus,
   DaemonSessionRecapResult,
   DaemonSessionState,
   DaemonSession,
@@ -238,6 +239,16 @@ export class DaemonSessionClient {
 
   async context(): Promise<DaemonSessionContextStatus> {
     return await this.client.sessionContext(this.sessionId, this.clientId);
+  }
+
+  async contextUsage(
+    opts: { detail?: boolean } = {},
+  ): Promise<DaemonSessionContextUsageStatus> {
+    return await this.client.sessionContextUsage(
+      this.sessionId,
+      opts,
+      this.clientId,
+    );
   }
 
   async supportedCommands(): Promise<DaemonSessionSupportedCommandsStatus> {

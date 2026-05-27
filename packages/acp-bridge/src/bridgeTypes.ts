@@ -27,6 +27,7 @@ import type {
   ServeWorkspaceProvidersStatus,
   ServeWorkspaceSkillsStatus,
   ServeWorkspaceToolsStatus,
+  ServeSessionContextUsageStatus,
 } from './status.js';
 
 export interface BridgeSpawnRequest {
@@ -309,6 +310,12 @@ export interface HttpAcpBridge {
   getSessionContextStatus(
     sessionId: string,
   ): Promise<ServeSessionContextStatus>;
+
+  /** Read structured context-window usage for a live session. */
+  getSessionContextUsageStatus(
+    sessionId: string,
+    opts?: { detail?: boolean },
+  ): Promise<ServeSessionContextUsageStatus>;
 
   /** Read slash-command/skill command availability for a live session. */
   getSessionSupportedCommandsStatus(

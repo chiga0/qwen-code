@@ -51,6 +51,7 @@ import {
   DAEMON_APPROVAL_MODES,
   type DaemonApprovalMode,
 } from '@qwen-code/webui/daemon-react-sdk';
+import { serializeContextUsageMessage } from './components/messages/ContextUsageMessage';
 import type { Message, TodoItem } from './adapters/types';
 import { extractTodosFromToolCall, hasActiveTodos } from './utils/todos';
 import { ThemeProvider } from './themeContext';
@@ -625,6 +626,31 @@ export function App({
           if (cmd === 'tools') {
             setShowToolsDialog(true);
             return true;
+          }
+          if (cmd === 'context') {
+            const contextArg = text.slice(match[0].length).trim().toLowerCase();
+            if (
+              contextArg === '' ||
+              contextArg === 'detail' ||
+              contextArg === '-d'
+            ) {
+              sessionActions
+                .getContextUsage({
+                  detail: contextArg === 'detail' || contextArg === '-d',
+                })
+                .then((result) => {
+                  store.dispatch([
+                    {
+                      type: 'status',
+                      text: serializeContextUsageMessage(result),
+                    },
+                  ]);
+                })
+                .catch((error: unknown) => {
+                  reportError(error, 'Failed to load context usage');
+                });
+              return true;
+            }
           }
           if (cmd === 'memory') {
             const memoryArg = text.slice(match[0].length).trim().toLowerCase();
