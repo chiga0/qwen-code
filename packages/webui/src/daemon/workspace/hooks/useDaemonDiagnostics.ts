@@ -11,24 +11,28 @@ import type { DaemonResourceOptions } from '../types.js';
 import { useDaemonResource } from './useDaemonResource.js';
 import { useWorkspaceEventReload } from './useWorkspaceEventReload.js';
 
-export function useDaemonMemory(options: DaemonResourceOptions = {}) {
+export function useDaemonDiagnostics(options: DaemonResourceOptions = {}) {
   const workspaceActions = useDaemonWorkspaceActions();
-  const load = useCallback(
-    () => workspaceActions.loadMemoryStatus(),
+  const loadEnv = useCallback(
+    () => workspaceActions.loadEnv(),
     [workspaceActions],
   );
-  const result = useDaemonResource(load, options);
+  const loadPreflight = useCallback(
+    () => workspaceActions.loadPreflight(),
+    [workspaceActions],
+  );
+  const env = useDaemonResource(loadEnv, options);
+  const preflight = useDaemonResource(loadPreflight, options);
   const signals = useDaemonWorkspaceEventSignals();
   useWorkspaceEventReload(
-    signals?.memoryVersion,
-    result.reload,
-    options.autoLoad === true || result.data !== undefined,
+    signals?.initVersion,
+    env.reload,
+    options.autoLoad === true || env.data !== undefined,
   );
-  return {
-    ...result,
-    status: result.data,
-    files: result.data?.files ?? [],
-    readFile: workspaceActions.readWorkspaceFile,
-    writeMemory: workspaceActions.writeMemory,
-  };
+  useWorkspaceEventReload(
+    signals?.initVersion,
+    preflight.reload,
+    options.autoLoad === true || preflight.data !== undefined,
+  );
+  return { env, preflight };
 }

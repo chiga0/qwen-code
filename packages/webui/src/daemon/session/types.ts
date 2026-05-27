@@ -12,6 +12,7 @@ import type {
   DaemonApprovalModeResult,
   DaemonAvailableCommand,
   DaemonSessionContextStatus,
+  DaemonSessionRecapResult,
   DaemonSessionSummary,
   DaemonSessionSupportedCommandsStatus,
   DaemonTranscriptBlock,
@@ -46,11 +47,15 @@ export interface DaemonConnectionState {
   supportedCommands?: DaemonSessionSupportedCommandsStatus;
   context?: DaemonSessionContextStatus;
   capabilities?: DaemonCapabilities;
+  /** True while replaying buffered events after a reconnect. */
+  catchingUp?: boolean;
   error?: string;
 }
 
 export interface DaemonSessionProviderProps {
-  baseUrl: string;
+  /** Daemon base URL. Optional when nested inside DaemonWorkspaceProvider (inherited). */
+  baseUrl?: string;
+  /** Bearer token. Optional when nested inside DaemonWorkspaceProvider (inherited). */
   token?: string;
   workspaceCwd?: string;
   initialSessionId?: string;
@@ -155,6 +160,10 @@ export interface DaemonSessionActions {
     requestId: string,
     response: PermissionResponse,
   ): Promise<boolean>;
+  respondToGlobalPermission(
+    requestId: string,
+    response: PermissionResponse,
+  ): Promise<boolean>;
   submitPermission(
     requestId: string,
     optionId?: string,
@@ -163,11 +172,13 @@ export interface DaemonSessionActions {
   heartbeat(): Promise<HeartbeatResult | undefined>;
   listSessions(): Promise<DaemonSessionSummary[]>;
   loadSession(sessionId: string): Promise<void>;
+  resumeSession(sessionId: string): Promise<void>;
   newSession(): Promise<void>;
   releaseSession(sessionId: string): Promise<void>;
   closeSession(): Promise<void>;
   refreshCommands(): Promise<void>;
   renameSession(displayName: string): Promise<SessionMetadataResult>;
+  recapSession(): Promise<DaemonSessionRecapResult>;
 }
 
 export interface DaemonSessionContextValue {
@@ -177,6 +188,15 @@ export interface DaemonSessionContextValue {
   actions: DaemonSessionActions;
 }
 
+export interface DaemonWorkspaceEventSignals {
+  memoryVersion: number;
+  agentsVersion: number;
+  toolsVersion: number;
+  mcpVersion: number;
+  initVersion: number;
+  authVersion: number;
+}
+
 export interface ActivePrompt {
   controller: AbortController;
 }
@@ -184,6 +204,8 @@ export interface ActivePrompt {
 export interface PendingSessionLoad {
   id: number;
   sessionId: string;
+  mode: 'load' | 'resume';
+  timeout: ReturnType<typeof setTimeout>;
   resolve: () => void;
   reject: (error: unknown) => void;
 }

@@ -5,19 +5,29 @@
  */
 
 import { useCallback } from 'react';
-import { useDaemonActions } from '../../session/DaemonSessionProvider.js';
+import { useOptionalDaemonActions } from '../../session/DaemonSessionProvider.js';
+import { useDaemonWorkspace } from '../DaemonWorkspaceProvider.js';
 import type { DaemonResourceOptions } from '../types.js';
 import { useDaemonResource } from './useDaemonResource.js';
 
 export function useDaemonSessions(options: DaemonResourceOptions = {}) {
-  const actions = useDaemonActions();
-  const load = useCallback(() => actions.listSessions(), [actions]);
-  const result = useDaemonResource(load, options);
+  const workspace = useDaemonWorkspace();
+  const sessionActions = useOptionalDaemonActions();
+  const load = useCallback(
+    () => workspace.actions.listSessions(),
+    [workspace.actions],
+  );
+  const workspaceReady = !!workspace.workspaceCwd;
+  const result = useDaemonResource(load, {
+    ...options,
+    enabled: (options.enabled ?? true) && workspaceReady,
+  });
   return {
     ...result,
     sessions: result.data ?? [],
-    loadSession: actions.loadSession,
-    newSession: actions.newSession,
-    releaseSession: actions.releaseSession,
+    loadSession: sessionActions?.loadSession,
+    resumeSession: sessionActions?.resumeSession,
+    newSession: sessionActions?.newSession,
+    releaseSession: sessionActions?.releaseSession,
   };
 }

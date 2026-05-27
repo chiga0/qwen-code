@@ -6,11 +6,13 @@
 
 import {
   createContext,
+  type Dispatch,
   useContext,
   useEffect,
   useMemo,
   useRef,
   useState,
+  type SetStateAction,
   useSyncExternalStore,
 } from 'react';
 import {
@@ -25,6 +27,7 @@ import {
 } from '@qwen-code/sdk/daemon';
 import { createDaemonSessionActions } from './actions.js';
 import { detachDaemonClient, getStableClientId } from './clientLifecycle.js';
+import { useOptionalDaemonWorkspace } from '../workspace/DaemonWorkspaceProvider.js';
 import {
   getCurrentMode,
   mapProviderStatus,
@@ -39,6 +42,8 @@ import {
   selectDaemonStreamingState,
   selectDaemonTodoLists,
 } from './selectors.js';
+import { transcriptBlocksToDaemonMessages } from './transcriptToMessages.js';
+import type { DaemonMessage } from './messageTypes.js';
 import {
   clearPassiveAssistantDoneTimer,
   delay,
@@ -52,6 +57,7 @@ import type {
   DaemonSessionActions,
   DaemonSessionContextValue,
   DaemonSessionProviderProps,
+  DaemonWorkspaceEventSignals,
   PendingSessionLoad,
 } from './types.js';
 
@@ -72,6 +78,7 @@ export type {
   DaemonTodoList,
   DaemonTodoPriority,
   DaemonTodoStatus,
+  DaemonWorkspaceEventSignals,
   SendPromptOptions,
 } from './types.js';
 
@@ -87,7 +94,19 @@ const DaemonActionsContext = createContext<DaemonSessionActions | undefined>(
 const DaemonPromptStatusContext = createContext<DaemonPromptStatus | undefined>(
   undefined,
 );
+const DaemonWorkspaceEventSignalsContext = createContext<
+  DaemonWorkspaceEventSignals | undefined
+>(undefined);
 const TERMINAL_SESSION_HTTP_STATUSES = new Set([401, 403, 404, 410]);
+
+const INITIAL_WORKSPACE_EVENT_SIGNALS: DaemonWorkspaceEventSignals = {
+  memoryVersion: 0,
+  agentsVersion: 0,
+  toolsVersion: 0,
+  mcpVersion: 0,
+  initVersion: 0,
+  authVersion: 0,
+};
 
 /**
  * Subset of TERMINAL_SESSION_HTTP_STATUSES that represent **credential
@@ -121,6 +140,15 @@ export function DaemonSessionProvider({
   loadWarnings,
   children,
 }: DaemonSessionProviderProps) {
+  const workspace = useOptionalDaemonWorkspace();
+  const resolvedBaseUrl = baseUrl ?? workspace?.baseUrl;
+  const resolvedToken = token ?? workspace?.token;
+  const resolvedWorkspaceCwd = workspaceCwd ?? workspace?.workspaceCwd;
+  const workspaceClientRef = useRef(workspace?.client);
+  workspaceClientRef.current = workspace?.client;
+  const resolvedWorkspaceCwdRef = useRef(resolvedWorkspaceCwd);
+  resolvedWorkspaceCwdRef.current = resolvedWorkspaceCwd;
+
   const store = useMemo(() => createDaemonTranscriptStore(), []);
   const sessionRef = useRef<DaemonSessionClient | undefined>(undefined);
   const lastSessionIdRef = useRef<string | undefined>(undefined);
@@ -149,19 +177,32 @@ export function DaemonSessionProvider({
   const [restoreSessionId, setRestoreSessionId] = useState<string | undefined>(
     initialSessionId,
   );
+  const [restoreMode, setRestoreMode] = useState<'load' | 'resume'>('load');
   const [restoreSessionNonce, setRestoreSessionNonce] = useState(0);
   const [newSessionNonce, setNewSessionNonce] = useState(0);
   const [connection, setConnection] = useState<DaemonConnectionState>({
     status: autoConnect ? 'connecting' : 'idle',
   });
+  const [workspaceEventSignals, setWorkspaceEventSignals] =
+    useState<DaemonWorkspaceEventSignals>(INITIAL_WORKSPACE_EVENT_SIGNALS);
 
   useEffect(() => {
     if (!autoConnect) return undefined;
+    if (!workspaceClientRef.current && !resolvedBaseUrl) {
+      setConnection({
+        status: 'error',
+        error:
+          'DaemonSessionProvider requires a baseUrl prop or an ancestor DaemonWorkspaceProvider.',
+      });
+      return undefined;
+    }
     const abort = new AbortController();
     let disposed = false;
 
     const run = async () => {
-      const client = new DaemonClient({ baseUrl, token });
+      const client =
+        workspaceClientRef.current ??
+        new DaemonClient({ baseUrl: resolvedBaseUrl!, token: resolvedToken });
       let session: DaemonSessionClient | undefined;
       let capabilities:
         | Awaited<ReturnType<DaemonClient['capabilities']>>
@@ -172,6 +213,7 @@ export function DaemonSessionProvider({
 
       while (!disposed && !abort.signal.aborted) {
         try {
+          let isSameSessionReconnect = false;
           if (!session) {
             setConnection((current) => ({
               ...current,
@@ -184,19 +226,24 @@ export function DaemonSessionProvider({
             heartbeatSupportedRef.current =
               Array.isArray(caps.features) &&
               caps.features.includes('client_heartbeat');
-            const resolvedWorkspaceCwd = workspaceCwd ?? caps.workspaceCwd;
+            const effectWorkspaceCwd =
+              resolvedWorkspaceCwdRef.current ?? caps.workspaceCwd;
+            const restoreMethod =
+              restoreSessionId && restoreMode === 'resume'
+                ? DaemonSessionClient.resume
+                : DaemonSessionClient.load;
             const nextSession = restoreSessionId
-              ? await DaemonSessionClient.load(
+              ? await restoreMethod(
                   client,
                   restoreSessionId,
-                  { workspaceCwd: resolvedWorkspaceCwd },
+                  { workspaceCwd: effectWorkspaceCwd },
                   clientIdRef.current,
                 )
               : reconnectSessionId
                 ? await DaemonSessionClient.load(
                     client,
                     reconnectSessionId,
-                    { workspaceCwd: resolvedWorkspaceCwd },
+                    { workspaceCwd: effectWorkspaceCwd },
                     clientIdRef.current,
                   )
                 : await DaemonSessionClient.createOrAttach(
@@ -210,14 +257,14 @@ export function DaemonSessionProvider({
                         : sessionScope !== undefined
                           ? { sessionScope }
                           : {}),
-                      workspaceCwd: resolvedWorkspaceCwd,
+                      workspaceCwd: effectWorkspaceCwd,
                     },
                     clientIdRef.current,
                   );
             if (disposed || abort.signal.aborted) {
               void detachDaemonClient({
-                baseUrl,
-                token,
+                baseUrl: resolvedBaseUrl!,
+                token: resolvedToken,
                 sessionId: nextSession.sessionId,
                 clientId: nextSession.clientId,
               }).catch(() => undefined);
@@ -233,18 +280,13 @@ export function DaemonSessionProvider({
               store.reset();
             } else if (previousSessionId !== undefined) {
               store.dispatch({ type: 'assistant.done', reason: 'reconnected' });
-              // wenshao R6 (qwen3.7-max): clear the awaitingResync latch
-              // BEFORE the new SSE event loop starts. Otherwise, if the
-              // prior connection ended after `state_resync_required` set
-              // the latch, every event from the fresh stream gets dropped
-              // by `applyDaemonTranscriptEvent`'s passthrough guard —
-              // transcript stays permanently frozen even though the
-              // connection is healthy. Same-session reconnect IS the
-              // recovery path; signal it to the reducer now.
               if (store.getSnapshot().awaitingResync) {
                 store.clearAwaitingResync();
               }
             }
+            isSameSessionReconnect =
+              previousSessionId !== undefined &&
+              previousSessionId === nextSession.sessionId;
             session = nextSession;
             reconnectSessionId = session.sessionId;
             shouldCreateFreshSession = false;
@@ -305,6 +347,7 @@ export function DaemonSessionProvider({
             supportedCommands,
             context,
             capabilities,
+            catchingUp: isSameSessionReconnect || undefined,
           }));
           setPromptStatus(
             activePromptsRef.current.has(activeSession.sessionId)
@@ -314,6 +357,7 @@ export function DaemonSessionProvider({
           const pendingLoad = pendingSessionLoadRef.current;
           if (pendingLoad?.sessionId === activeSession.sessionId) {
             pendingSessionLoadRef.current = undefined;
+            clearTimeout(pendingLoad.timeout);
             pendingLoad.resolve();
           }
           if (loadWarningTexts.length > 0) {
@@ -343,19 +387,53 @@ export function DaemonSessionProvider({
                 suppressOwnUserEcho: eventOptions.suppressOwnUserEcho,
                 includeRawEvent: eventOptions.includeRawEvent,
               });
+              bumpWorkspaceEventSignals(uiEvents, setWorkspaceEventSignals);
               if (uiEvents.length > 0) {
                 setPromptStatus((current) =>
                   current === 'waiting' ? 'streaming' : current,
                 );
               }
-              store.dispatch(uiEvents);
-              if (
+              const shouldGuardAssistant =
                 !activePromptsRef.current.has(activeSession.sessionId) &&
-                hasAssistantDelta(uiEvents)
-              ) {
+                store.getSnapshot().activeAssistantBlockId != null;
+              const eventsToDispatch = shouldGuardAssistant
+                ? uiEvents.filter((e) => e.type !== 'debug')
+                : uiEvents;
+              store.dispatch(eventsToDispatch);
+              for (const uiEvent of uiEvents) {
+                if (
+                  uiEvent.type === 'prompt.cancelled' &&
+                  uiEvent.originatorClientId !== activeSession.clientId
+                ) {
+                  setPromptStatus('idle');
+                  clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
+                  activePromptsRef.current.delete(activeSession.sessionId);
+                } else if (uiEvent.type === 'session.replay_complete') {
+                  setConnection((c) => ({ ...c, catchingUp: undefined }));
+                }
+              }
+              const isObserver = !activePromptsRef.current.has(
+                activeSession.sessionId,
+              );
+              if (isObserver) {
+                const hasUserMsg = uiEvents.some(
+                  (e) => e.type === 'user.text.delta',
+                );
+                if (hasUserMsg) {
+                  setPromptStatus('waiting');
+                } else if (hasActiveGenerationSignal(uiEvents)) {
+                  setPromptStatus((current) =>
+                    current === 'idle' ? 'streaming' : current,
+                  );
+                }
+              }
+              if (isObserver && hasActiveGenerationSignal(uiEvents)) {
                 schedulePassiveAssistantDone(
                   store,
                   passiveAssistantDoneTimerRef,
+                  'passive_observer',
+                  3000,
+                  () => setPromptStatus('idle'),
                 );
               }
               if (event.type === 'state_resync_required') {
@@ -387,6 +465,7 @@ export function DaemonSessionProvider({
             // subscription can resume from DaemonSessionClient.lastEventId.
             if (sessionRef.current?.sessionId === activeSession.sessionId) {
               clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
+              setPromptStatus('idle');
               store.dispatch({
                 type: 'assistant.done',
                 reason: 'stream_ended',
@@ -427,6 +506,7 @@ export function DaemonSessionProvider({
               pendingLoad.sessionId === reconnectSessionId)
           ) {
             pendingSessionLoadRef.current = undefined;
+            clearTimeout(pendingLoad.timeout);
             pendingLoad.reject(error);
           }
           // Auth failures (401 / 403) must NOT retry even when
@@ -496,6 +576,7 @@ export function DaemonSessionProvider({
       setPromptStatus('idle');
       clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
       if (pendingSessionLoadRef.current) {
+        clearTimeout(pendingSessionLoadRef.current.timeout);
         pendingSessionLoadRef.current.reject(
           new Error('Session load interrupted by cleanup'),
         );
@@ -503,8 +584,8 @@ export function DaemonSessionProvider({
       }
       if (session?.clientId) {
         void detachDaemonClient({
-          baseUrl,
-          token,
+          baseUrl: resolvedBaseUrl!,
+          token: resolvedToken,
           sessionId: session.sessionId,
           clientId: session.clientId,
         }).catch(() => undefined);
@@ -514,14 +595,15 @@ export function DaemonSessionProvider({
   }, [
     autoConnect,
     autoReconnect,
-    baseUrl,
-    token,
+    resolvedBaseUrl,
+    resolvedToken,
     workspaceCwd,
     modelServiceId,
     sessionScope,
     maxQueued,
     store,
     restoreSessionId,
+    restoreMode,
     restoreSessionNonce,
     newSessionNonce,
   ]);
@@ -575,8 +657,8 @@ export function DaemonSessionProvider({
   const actions = useMemo<DaemonSessionActions>(
     () =>
       createDaemonSessionActions({
-        baseUrl,
-        token,
+        baseUrl: resolvedBaseUrl!,
+        token: resolvedToken,
         store,
         sessionRef,
         activePromptsRef,
@@ -588,18 +670,23 @@ export function DaemonSessionProvider({
         setConnection,
         setPromptStatus,
         setRestoreSessionId,
+        setRestoreMode,
         setRestoreSessionNonce,
         setNewSessionNonce,
       }),
-    [baseUrl, store, token],
+    [resolvedBaseUrl, store, resolvedToken],
   );
   return (
     <DaemonStoreContext.Provider value={store}>
       <DaemonConnectionContext.Provider value={connection}>
         <DaemonPromptStatusContext.Provider value={promptStatus}>
-          <DaemonActionsContext.Provider value={actions}>
-            {children}
-          </DaemonActionsContext.Provider>
+          <DaemonWorkspaceEventSignalsContext.Provider
+            value={workspaceEventSignals}
+          >
+            <DaemonActionsContext.Provider value={actions}>
+              {children}
+            </DaemonActionsContext.Provider>
+          </DaemonWorkspaceEventSignalsContext.Provider>
         </DaemonPromptStatusContext.Provider>
       </DaemonConnectionContext.Provider>
     </DaemonStoreContext.Provider>
@@ -682,6 +769,11 @@ export function useDaemonStreamingState() {
   );
 }
 
+export function useDaemonMessages(): DaemonMessage[] {
+  const blocks = useDaemonTranscriptBlocks();
+  return useMemo(() => transcriptBlocksToDaemonMessages(blocks), [blocks]);
+}
+
 export function useDaemonActions(): DaemonSessionActions {
   const actions = useContext(DaemonActionsContext);
   if (!actions) {
@@ -690,6 +782,16 @@ export function useDaemonActions(): DaemonSessionActions {
     );
   }
   return actions;
+}
+
+export function useOptionalDaemonActions(): DaemonSessionActions | undefined {
+  return useContext(DaemonActionsContext);
+}
+
+export function useDaemonWorkspaceEventSignals():
+  | DaemonWorkspaceEventSignals
+  | undefined {
+  return useContext(DaemonWorkspaceEventSignalsContext);
 }
 
 export function useDaemonPromptStatus(): DaemonPromptStatus {
@@ -712,8 +814,70 @@ export function useDaemonConnection(): DaemonConnectionState {
   return connection;
 }
 
-function hasAssistantDelta(events: ReadonlyArray<{ type: string }>): boolean {
-  return events.some((event) => event.type === 'assistant.text.delta');
+function hasActiveGenerationSignal(
+  events: ReadonlyArray<{ type: string }>,
+): boolean {
+  return events.some(
+    (event) =>
+      event.type === 'assistant.text.delta' ||
+      event.type === 'thought.text.delta' ||
+      event.type === 'tool.update',
+  );
+}
+
+function bumpWorkspaceEventSignals(
+  events: ReadonlyArray<{ type: string }>,
+  setSignals: Dispatch<SetStateAction<DaemonWorkspaceEventSignals>>,
+): void {
+  let memory = 0;
+  let agents = 0;
+  let tools = 0;
+  let mcp = 0;
+  let init = 0;
+  let auth = 0;
+
+  for (const event of events) {
+    switch (event.type) {
+      case 'workspace.memory.changed':
+        memory += 1;
+        break;
+      case 'workspace.agent.changed':
+        agents += 1;
+        break;
+      case 'workspace.tool.toggled':
+        tools += 1;
+        break;
+      case 'workspace.mcp.budget_warning':
+      case 'workspace.mcp.child_refused':
+      case 'workspace.mcp.server_restarted':
+      case 'workspace.mcp.server_restart_refused':
+        mcp += 1;
+        break;
+      case 'workspace.initialized':
+        init += 1;
+        break;
+      case 'auth.device_flow.started':
+      case 'auth.device_flow.throttled':
+      case 'auth.device_flow.authorized':
+      case 'auth.device_flow.failed':
+      case 'auth.device_flow.cancelled':
+        auth += 1;
+        break;
+      default:
+        break;
+    }
+  }
+
+  if (memory + agents + tools + mcp + init + auth === 0) return;
+
+  setSignals((current) => ({
+    memoryVersion: current.memoryVersion + memory,
+    agentsVersion: current.agentsVersion + agents,
+    toolsVersion: current.toolsVersion + tools,
+    mcpVersion: current.mcpVersion + mcp,
+    initVersion: current.initVersion + init,
+    authVersion: current.authVersion + auth,
+  }));
 }
 
 function isTerminalSessionHttpError(error: unknown): boolean {

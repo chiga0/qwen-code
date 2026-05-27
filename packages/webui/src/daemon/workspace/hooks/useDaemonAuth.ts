@@ -11,24 +11,26 @@ import type { DaemonResourceOptions } from '../types.js';
 import { useDaemonResource } from './useDaemonResource.js';
 import { useWorkspaceEventReload } from './useWorkspaceEventReload.js';
 
-export function useDaemonMemory(options: DaemonResourceOptions = {}) {
+export function useDaemonAuth(options: DaemonResourceOptions = {}) {
   const workspaceActions = useDaemonWorkspaceActions();
   const load = useCallback(
-    () => workspaceActions.loadMemoryStatus(),
+    () => workspaceActions.getAuthStatus(),
     [workspaceActions],
   );
   const result = useDaemonResource(load, options);
   const signals = useDaemonWorkspaceEventSignals();
   useWorkspaceEventReload(
-    signals?.memoryVersion,
+    signals?.authVersion,
     result.reload,
     options.autoLoad === true || result.data !== undefined,
   );
   return {
     ...result,
     status: result.data,
-    files: result.data?.files ?? [],
-    readFile: workspaceActions.readWorkspaceFile,
-    writeMemory: workspaceActions.writeMemory,
+    providers: result.data?.providers ?? [],
+    pendingDeviceFlows: result.data?.pendingDeviceFlows ?? [],
+    startDeviceFlow: workspaceActions.startDeviceFlow,
+    getDeviceFlow: workspaceActions.getDeviceFlow,
+    cancelDeviceFlow: workspaceActions.cancelDeviceFlow,
   };
 }

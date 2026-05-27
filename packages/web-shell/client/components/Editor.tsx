@@ -17,6 +17,7 @@ import {
 import { minimalSetup } from 'codemirror';
 import type { CommandInfo } from '../adapters/types';
 import type { PromptImage } from '../adapters/promptTypes';
+import { useOptionalWorkspace } from '@qwen-code/webui/daemon-react-sdk';
 import { slashCompletionSource } from '../completions/slashCompletion';
 import { createAtCompletionSource } from '../completions/atCompletion';
 import { useInputHistory } from '../hooks/useInputHistory';
@@ -26,6 +27,7 @@ import {
   inputHighlightTheme,
 } from '../extensions/inputHighlight';
 import { isEditableTarget } from '../utils/dom';
+import { PromptChevron } from './PromptChevron';
 import styles from './Editor.module.css';
 
 interface EditorProps {
@@ -39,12 +41,9 @@ interface EditorProps {
   queuedMessages?: string[];
   onPopQueuedMessages?: () => string | null;
   onClearQueuedMessages?: () => boolean;
-  prefix?: string;
   currentMode?: string;
   draftText?: string;
   draftVersion?: number;
-  daemonBaseUrl?: string;
-  daemonToken?: string;
 }
 
 const editableCompartment = new Compartment();
@@ -75,13 +74,11 @@ export function Editor({
   queuedMessages = [],
   onPopQueuedMessages,
   onClearQueuedMessages,
-  prefix = '>',
   currentMode = 'default',
   draftText,
   draftVersion,
-  daemonBaseUrl,
-  daemonToken,
 }: EditorProps) {
+  const workspace = useOptionalWorkspace();
   const { language, t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
   const viewRef = useRef<EditorView | null>(null);
@@ -105,10 +102,8 @@ export function Editor({
   onClearQueuedMessagesRef.current = onClearQueuedMessages;
   const languageRef = useRef(language);
   languageRef.current = language;
-  const daemonBaseUrlRef = useRef(daemonBaseUrl);
-  daemonBaseUrlRef.current = daemonBaseUrl;
-  const daemonTokenRef = useRef(daemonToken);
-  daemonTokenRef.current = daemonToken;
+  const workspaceActionsRef = useRef(workspace?.actions);
+  workspaceActionsRef.current = workspace?.actions;
   const [shellMode, setShellMode] = useState(false);
   const [searchMode, setSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -173,14 +168,9 @@ export function Editor({
         submitText,
         () => languageRef.current,
       ),
-      createAtCompletionSource({
-        get baseUrl() {
-          return daemonBaseUrlRef.current;
-        },
-        get token() {
-          return daemonTokenRef.current;
-        },
-      }),
+      createAtCompletionSource(
+        () => workspaceActionsRef.current?.globWorkspace,
+      ),
     ];
 
     const submitKeymap = keymap.of([
@@ -715,7 +705,7 @@ export function Editor({
         <span
           className={`${styles.prefix} ${shellMode ? styles.prefixShell : ''}`}
         >
-          {shellMode ? '!' : prefix}
+          {shellMode ? '!' : <PromptChevron />}
         </span>
         <div ref={containerRef} className={styles.wrapper} />
       </div>

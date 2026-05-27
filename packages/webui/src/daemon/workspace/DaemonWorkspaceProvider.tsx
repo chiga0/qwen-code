@@ -19,6 +19,7 @@ import type {
   DaemonWorkspaceContextValue,
   DaemonWorkspaceProviderProps,
   DaemonWorkspaceActions,
+  DaemonWorkspaceStatus,
 } from './types.js';
 
 const DaemonWorkspaceContext = createContext<
@@ -38,37 +39,59 @@ export function DaemonWorkspaceProvider({
   autoConnect = true,
   children,
 }: DaemonWorkspaceProviderProps) {
-  const [client, setClient] = useState<DaemonClient | undefined>(undefined);
+  const client = useMemo(
+    () => (autoConnect ? new DaemonClient({ baseUrl, token }) : undefined),
+    [autoConnect, baseUrl, token],
+  );
+  const clientRef = useRef<DaemonClient | undefined>(client);
+  clientRef.current = client;
+  const resolvedCwdRef = useRef<string | undefined>(workspaceCwd);
+
   const [capabilities, setCapabilities] = useState<
     DaemonCapabilities | undefined
   >(undefined);
-  const clientRef = useRef<DaemonClient | undefined>(undefined);
-  clientRef.current = client;
+  const [status, setStatus] = useState<DaemonWorkspaceStatus>(
+    autoConnect ? 'connecting' : 'idle',
+  );
+  const [error, setError] = useState<Error | undefined>(undefined);
 
   useEffect(() => {
-    if (!autoConnect) return undefined;
-    const newClient = new DaemonClient({ baseUrl, token });
-    setClient(newClient);
+    if (!client) return undefined;
+    setStatus('connecting');
+    setError(undefined);
+    setCapabilities(undefined);
 
     let disposed = false;
-    void newClient.capabilities().then((caps) => {
-      if (!disposed) setCapabilities(caps);
-    });
+    void client
+      .capabilities()
+      .then((caps) => {
+        if (!disposed) {
+          setCapabilities(caps);
+          setStatus('connected');
+        }
+      })
+      .catch((err: unknown) => {
+        if (!disposed) {
+          setError(err instanceof Error ? err : new Error(String(err)));
+          setStatus('error');
+        }
+      });
 
     return () => {
       disposed = true;
-      setClient(undefined);
     };
-  }, [autoConnect, baseUrl, token]);
+  }, [client]);
+
+  resolvedCwdRef.current = capabilities?.workspaceCwd ?? workspaceCwd;
 
   const workspaceActions = useMemo<DaemonWorkspaceActions>(
     () =>
       createDaemonWorkspaceActions({
         getClient: () => clientRef.current,
+        getWorkspaceCwd: () => resolvedCwdRef.current,
         baseUrl,
         token,
       }),
-     
     [baseUrl, token],
   );
 
@@ -79,10 +102,21 @@ export function DaemonWorkspaceProvider({
       token,
       baseUrl,
       workspaceCwd: capabilities?.workspaceCwd ?? workspaceCwd,
+      status,
+      error,
       capabilities,
       actions: workspaceActions,
     };
-  }, [client, token, baseUrl, workspaceCwd, capabilities, workspaceActions]);
+  }, [
+    client,
+    token,
+    baseUrl,
+    workspaceCwd,
+    status,
+    error,
+    capabilities,
+    workspaceActions,
+  ]);
 
   return (
     <DaemonWorkspaceContext.Provider value={contextValue}>

@@ -7,13 +7,11 @@ import {
   type KeyboardEvent as ReactKeyboardEvent,
 } from 'react';
 import { dp } from './dialogStyles';
-import type {
-  DaemonAgentMutationResult,
-  DaemonCreateAgentRequest,
-  DaemonWorkspaceAgentDetail,
-  DaemonWorkspaceAgentSummary,
-  DaemonWorkspaceAgentsStatus,
-} from '@qwen-code/sdk/daemon';
+import {
+  useAgents,
+  type DaemonWorkspaceAgentDetail,
+  type DaemonWorkspaceAgentSummary,
+} from '@qwen-code/webui/daemon-react-sdk';
 import { useDelayedGlobalKeyDown } from '../../hooks/useDelayedGlobalKeyDown';
 import { useI18n } from '../../i18n';
 
@@ -26,15 +24,6 @@ export type AgentsDialogInitialMode =
 
 interface AgentsDialogProps {
   initialMode?: AgentsDialogInitialMode;
-  listAgents: () => Promise<DaemonWorkspaceAgentsStatus>;
-  getAgent: (agentType: string) => Promise<DaemonWorkspaceAgentDetail>;
-  createAgent: (
-    req: DaemonCreateAgentRequest,
-  ) => Promise<DaemonAgentMutationResult>;
-  deleteAgent: (
-    agentType: string,
-    scope?: 'workspace' | 'global',
-  ) => Promise<void>;
   onClose: () => void;
 }
 
@@ -58,20 +47,23 @@ function initialScope(mode: AgentsDialogInitialMode): 'workspace' | 'global' {
 
 export function AgentsDialog({
   initialMode = 'menu',
-  listAgents,
-  getAgent,
-  createAgent,
-  deleteAgent,
   onClose,
 }: AgentsDialogProps) {
   const { t } = useI18n();
+  const {
+    agents,
+    loading,
+    error: agentsError,
+    reload,
+    getAgent,
+    createAgent,
+    deleteAgent,
+  } = useAgents({ autoLoad: true });
   const [mode, setMode] = useState<
     'menu' | 'create-scope' | 'create' | 'manage'
   >(() => initialDialogMode(initialMode));
-  const [agents, setAgents] = useState<DaemonWorkspaceAgentSummary[]>([]);
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [detail, setDetail] = useState<DaemonWorkspaceAgentDetail | null>(null);
-  const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
   const [name, setName] = useState('');
@@ -124,22 +116,9 @@ export function AgentsDialog({
     [scope, t],
   );
 
-  const reload = useCallback(() => {
-    setLoading(true);
-    listAgents()
-      .then((status) => {
-        setAgents(status.agents);
-        setMessage(null);
-      })
-      .catch((error: unknown) => {
-        setMessage(error instanceof Error ? error.message : String(error));
-      })
-      .finally(() => setLoading(false));
-  }, [listAgents]);
-
   useEffect(() => {
-    reload();
-  }, [reload]);
+    if (agentsError) setMessage(agentsError.message);
+  }, [agentsError]);
 
   useEffect(() => {
     if (mode !== 'manage') return;

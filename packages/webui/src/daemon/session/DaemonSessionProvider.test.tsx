@@ -21,10 +21,12 @@ import {
   useDaemonConnection,
   useDaemonPendingPermissionRequest,
   useDaemonTranscriptBlocks,
+  useDaemonWorkspaceEventSignals,
   type DaemonSessionProviderProps,
   type DaemonConnectionState,
   type DaemonSessionActions,
   type DaemonPendingPermissionRequest,
+  type DaemonWorkspaceEventSignals,
 } from './DaemonSessionProvider.js';
 
 interface MockSession {
@@ -523,6 +525,73 @@ describe('DaemonSessionProvider', () => {
     });
   });
 
+  it('exposes workspace event signals from daemon session events', async () => {
+    const session = createMockSession({
+      events: async function* workspaceEvents() {
+        yield {
+          id: 21,
+          v: 1,
+          type: 'memory_changed',
+          data: {
+            scope: 'workspace',
+            filePath: '/mock-workspace/QWEN.md',
+            mode: 'append',
+            bytesWritten: 12,
+          },
+        };
+        yield {
+          id: 22,
+          v: 1,
+          type: 'agent_changed',
+          data: {
+            change: 'updated',
+            name: 'reviewer',
+            level: 'project',
+          },
+        };
+        yield {
+          id: 23,
+          v: 1,
+          type: 'tool_toggled',
+          data: {
+            toolName: 'Bash',
+            enabled: false,
+          },
+        };
+        yield {
+          id: 24,
+          v: 1,
+          type: 'mcp_server_restarted',
+          data: {
+            serverName: 'chrome-devtools',
+            durationMs: 42,
+          },
+        };
+      },
+    });
+    sdkMocks.sessions.push(session);
+    let signals: DaemonWorkspaceEventSignals | undefined;
+
+    function Harness() {
+      signals = useDaemonWorkspaceEventSignals();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, { autoConnect: true });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(signals).toMatchObject({
+      memoryVersion: 1,
+      agentsVersion: 1,
+      toolsVersion: 1,
+      mcpVersion: 1,
+      initVersion: 0,
+      authVersion: 0,
+    });
+  });
+
   it('treats prompt abort during cancel as cancellation and keeps busy until cancel completes', async () => {
     const cancel = createDeferred<void>();
     const assistantChunk = createDeferred<void>();
@@ -880,7 +949,7 @@ describe('DaemonSessionProvider', () => {
       ]);
 
       await act(async () => {
-        vi.advanceTimersByTime(80);
+        vi.advanceTimersByTime(3000);
         await flushPromises();
       });
 

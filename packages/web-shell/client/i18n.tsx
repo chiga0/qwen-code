@@ -167,6 +167,10 @@ const EN: Messages = {
   'local.model': 'Switch model or set fast model',
   'local.new': 'Start a new conversation',
   'local.plan': 'Enter Plan mode',
+  'local.recap': 'Generate a session recap',
+  'recap.loading': 'Generating recap...',
+  'recap.empty': 'Not enough conversation context for a recap yet.',
+  'recap.failed': 'Failed to generate recap',
   'local.rename': 'Rename current session',
   'rename.empty':
     'Please enter a session name, for example /rename project debugging, or use /rename --auto.',
@@ -470,6 +474,10 @@ const ZH: Messages = {
   'local.model': '切换模型或设置 fast model',
   'local.new': '开始新对话',
   'local.plan': '进入 Plan 模式',
+  'local.recap': '生成会话摘要',
+  'recap.loading': '正在生成摘要...',
+  'recap.empty': '对话内容还不够，暂时无法生成摘要。',
+  'recap.failed': '生成摘要失败',
   'local.rename': '重命名当前会话',
   'rename.empty':
     '请输入会话名称，例如 /rename 项目调试，或使用 /rename --auto。',

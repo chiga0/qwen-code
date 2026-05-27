@@ -6,6 +6,12 @@
   margin-bottom: 8px;
 }
 
+.message pre {
+  margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
 .info {
   background: var(--info-bg);
   border: 1px solid var(--info-border);

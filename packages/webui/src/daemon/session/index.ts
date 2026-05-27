@@ -7,9 +7,12 @@
 export {
   DaemonSessionProvider,
   useDaemonActions,
+  useOptionalDaemonActions,
+  useDaemonWorkspaceEventSignals,
   useDaemonActiveTodoList,
   useDaemonConnection,
   useDaemonLatestTodoList,
+  useDaemonMessages,
   useDaemonPendingPermissionRequest,
   useDaemonPendingPermissions,
   useDaemonPromptStatus,
@@ -37,6 +40,7 @@ export type {
   DaemonTodoList,
   DaemonTodoPriority,
   DaemonTodoStatus,
+  DaemonWorkspaceEventSignals,
   SendPromptOptions,
 } from './types.js';
 export {
@@ -55,3 +59,18 @@ export {
 } from './selectors.js';
 export type { DaemonStreamingState } from './selectors.js';
 export { toDaemonPromptContent } from './promptContent.js';
+export { transcriptBlocksToDaemonMessages } from './transcriptToMessages.js';
+export type {
+  DaemonMessage,
+  DaemonAssistantMessage,
+  DaemonMessageToolCall,
+  DaemonMessageToolCallContent,
+  DaemonMessageToolCallStatus,
+  DaemonMessageToolKind,
+  DaemonMessageToolCallLocation,
+  DaemonMessageTodoItem,
+  DaemonPlanMessage,
+  DaemonSystemMessage,
+  DaemonToolGroupMessage,
+  DaemonUserMessage,
+} from './messageTypes.js';

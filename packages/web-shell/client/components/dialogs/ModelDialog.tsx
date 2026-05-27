@@ -1,24 +1,23 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { dp } from './dialogStyles';
-import type { ModelInfo } from '../../adapters/types';
+import { useConnection } from '@qwen-code/webui/daemon-react-sdk';
 import { useDelayedGlobalKeyDown } from '../../hooks/useDelayedGlobalKeyDown';
 import { useI18n } from '../../i18n';
 
 interface ModelDialogProps {
   mode?: 'main' | 'fast';
-  currentModel: string;
-  availableModels: ModelInfo[];
   onSelect: (modelId: string) => void;
   onClose: () => void;
 }
 
 export function ModelDialog({
   mode = 'main',
-  currentModel,
-  availableModels,
   onSelect,
   onClose,
 }: ModelDialogProps) {
+  const connection = useConnection();
+  const currentModel = connection.currentModel ?? '';
+  const availableModels = connection.models ?? [];
   const { t } = useI18n();
   const isFastMode = mode === 'fast';
   const [selectedIdx, setSelectedIdx] = useState(() => {

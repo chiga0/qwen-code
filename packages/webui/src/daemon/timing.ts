@@ -75,11 +75,13 @@ export function schedulePassiveAssistantDone(
   timerRef: TimerRef,
   reason: string = 'replay',
   delayMs: number = 80,
+  onDone?: () => void,
 ): void {
   clearPassiveAssistantDoneTimer(timerRef);
   timerRef.current = setTimeout(() => {
     timerRef.current = undefined;
     if (!store.getSnapshot().activeAssistantBlockId) return;
     store.dispatch({ type: 'assistant.done', reason });
+    onDone?.();
   }, delayMs);
 }

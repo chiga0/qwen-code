@@ -1,4 +1,5 @@
-import { memo, useEffect, useState, useRef, type ReactNode } from 'react';
+import { memo, useEffect, useState, type ReactNode } from 'react';
+import { useTheme } from '../../themeContext';
 import ReactMarkdown from 'react-markdown';
 import type { Components } from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -67,7 +68,7 @@ export function sanitizeSvg(svg: string): string {
 
   doc
     .querySelectorAll(
-      'script, foreignObject, iframe, object, embed, link, style, ' +
+      'script, iframe, object, embed, link, ' +
         'animate, set, animateTransform, animateMotion, ' +
         'image, feImage, mpath',
     )
@@ -138,24 +139,27 @@ export function isSafeImageSrc(url: string | undefined): boolean {
 }
 
 function MermaidBlock({ code }: { code: string }) {
-  const containerRef = useRef<HTMLDivElement>(null);
+  const appTheme = useTheme();
   const [svg, setSvg] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const mermaidTheme = appTheme === 'light' ? 'default' : 'dark';
 
   useEffect(() => {
     let cancelled = false;
+    setSvg(null);
+    setError(null);
     const timer = setTimeout(() => {
       import('mermaid').then(async (mod) => {
         if (cancelled) return;
         const mermaid = mod.default;
         mermaid.initialize({
           startOnLoad: false,
-          theme: 'dark',
-          securityLevel: 'strict',
+          theme: mermaidTheme,
+          securityLevel: 'loose',
         });
         try {
           const id = `mermaid-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
-          const { svg: rendered } = await mermaid.render(id, code);
+          const { svg: rendered } = await mermaid.render(id, code.trim());
           const safeSvg = sanitizeSvg(rendered);
           if (!cancelled) {
             if (safeSvg) {
@@ -177,7 +181,7 @@ function MermaidBlock({ code }: { code: string }) {
       cancelled = true;
       clearTimeout(timer);
     };
-  }, [code]);
+  }, [code, mermaidTheme]);
 
   if (error) {
     return (
@@ -202,7 +206,6 @@ function MermaidBlock({ code }: { code: string }) {
 
   return (
     <div
-      ref={containerRef}
       className={styles.mermaidBlock}
       dangerouslySetInnerHTML={{ __html: svg }}
     />

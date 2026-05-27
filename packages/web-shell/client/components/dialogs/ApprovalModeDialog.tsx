@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { dp } from './dialogStyles';
-import { DAEMON_APPROVAL_MODES } from '@qwen-code/sdk/daemon';
+import { DAEMON_APPROVAL_MODES } from '@qwen-code/webui/daemon-react-sdk';
 import { useDelayedGlobalKeyDown } from '../../hooks/useDelayedGlobalKeyDown';
 import { useI18n } from '../../i18n';
 

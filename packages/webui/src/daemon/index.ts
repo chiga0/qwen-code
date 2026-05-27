@@ -11,6 +11,7 @@ export {
   useDaemonActiveTodoList,
   useDaemonConnection,
   useDaemonLatestTodoList,
+  useDaemonMessages,
   useDaemonPendingPermissionRequest,
   useDaemonPendingPermissions,
   useDaemonPromptStatus,
@@ -20,6 +21,7 @@ export {
   useDaemonTranscriptBlocks,
   useDaemonTranscriptState,
   useDaemonTranscriptStore,
+  useDaemonWorkspaceEventSignals,
   extractDaemonTodosFromToolBlock,
   hasDaemonActiveTodos,
   isDaemonSubAgentToolBlock,
@@ -33,25 +35,39 @@ export {
   selectDaemonTodoLists,
   selectDaemonTranscriptStreamingState,
   toDaemonPromptContent,
+  transcriptBlocksToDaemonMessages,
 } from './session/index.js';
 export type {
   DaemonCommandInfo,
   DaemonConnectionState,
   DaemonConnectionStatus,
+  DaemonMessage,
+  DaemonAssistantMessage,
+  DaemonMessageToolCall,
+  DaemonMessageToolCallContent,
+  DaemonMessageToolCallStatus,
+  DaemonMessageToolKind,
+  DaemonMessageToolCallLocation,
+  DaemonMessageTodoItem,
   DaemonModelInfo,
   DaemonPendingPermissionRequest,
   DaemonPermissionOptionKind,
   DaemonPermissionRequestOption,
+  DaemonPlanMessage,
   DaemonPromptImage,
   DaemonPromptStatus,
   DaemonSessionActions,
   DaemonSessionContextValue,
   DaemonSessionProviderProps,
+  DaemonSystemMessage,
   DaemonTodoItem,
   DaemonTodoList,
   DaemonTodoPriority,
   DaemonTodoStatus,
+  DaemonToolGroupMessage,
   DaemonStreamingState,
+  DaemonUserMessage,
+  DaemonWorkspaceEventSignals,
   SendPromptOptions,
 } from './session/index.js';
 
@@ -62,6 +78,9 @@ export {
   useDaemonWorkspaceActions,
   useOptionalDaemonWorkspace,
   useDaemonAgents,
+  useDaemonAuth,
+  useDaemonDiagnostics,
+  useDaemonFiles,
   useDaemonGlob,
   useDaemonMcp,
   useDaemonMemory,
@@ -71,15 +90,37 @@ export {
   useDaemonTools,
 } from './workspace/index.js';
 export type {
+  DaemonDirectoryEntry,
+  DaemonDirectoryListing,
+  DaemonFileStat,
   DaemonGlobOptions,
   DaemonGlobResult,
   DaemonResourceOptions,
   DaemonWorkspaceActions,
   DaemonWorkspaceContextValue,
   DaemonWorkspaceProviderProps,
+  DaemonWorkspaceStatus,
   ResourceResult,
   ResourceState,
 } from './workspace/index.js';
 
 // ── Shared (daemon → webui bridge) ─────────────────────────────────
 export { daemonTranscriptToUnifiedMessages } from './transcriptAdapter.js';
+
+// ── Re-exported SDK types/constants for UI consumers ──────────────
+// These allow web-shell and other UI packages to depend only on
+// @qwen-code/webui without importing @qwen-code/sdk/daemon directly.
+export { DAEMON_APPROVAL_MODES } from '@qwen-code/sdk/daemon';
+export type {
+  DaemonApprovalMode,
+  DaemonContextFileScope,
+  DaemonSessionSummary,
+  DaemonWorkspaceAgentDetail,
+  DaemonWorkspaceAgentSummary,
+  DaemonWorkspaceMcpServerStatus,
+  DaemonWorkspaceMcpToolStatus,
+  DaemonWorkspaceMcpToolsStatus,
+  DaemonWorkspaceMemoryFile,
+  DaemonWorkspaceSkillStatus,
+  DaemonWorkspaceToolStatus,
+} from '@qwen-code/sdk/daemon';

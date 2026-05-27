@@ -6,20 +6,36 @@
 
 import type { DaemonClient } from '@qwen-code/sdk/daemon';
 import { withActionTimeout } from '../timing.js';
-import type { DaemonWorkspaceActions } from './types.js';
+import type {
+  DaemonDirectoryListing,
+  DaemonFileStat,
+  DaemonWorkspaceActions,
+} from './types.js';
 
 export interface CreateDaemonWorkspaceActionsArgs {
   getClient: () => DaemonClient | undefined;
+  getWorkspaceCwd: () => string | undefined;
   baseUrl: string;
   token?: string;
 }
 
 export function createDaemonWorkspaceActions({
   getClient,
+  getWorkspaceCwd,
   baseUrl,
   token,
 }: CreateDaemonWorkspaceActionsArgs): DaemonWorkspaceActions {
   return {
+    async listSessions() {
+      const client = requireClient(getClient, 'List sessions failed');
+      const cwd = getWorkspaceCwd();
+      if (!cwd) return [];
+      return withActionTimeout(
+        client.listWorkspaceSessions(cwd),
+        'List sessions timed out',
+      );
+    },
+
     async loadMcpStatus() {
       const client = requireClient(getClient, 'Load MCP status failed');
       return withActionTimeout(
@@ -176,6 +192,123 @@ export function createDaemonWorkspaceActions({
       return withActionTimeout(
         client.workspaceProviders(),
         'Load providers timed out',
+      );
+    },
+
+    async readFileBytes(filePath, opts) {
+      const client = requireClient(getClient, 'Read file bytes failed');
+      return withActionTimeout(
+        client.readWorkspaceFileBytes(filePath, opts ?? {}),
+        'Read file bytes timed out',
+      );
+    },
+
+    async writeFile(req) {
+      const client = requireClient(getClient, 'Write file failed');
+      return withActionTimeout(
+        client.writeWorkspaceFile(req),
+        'Write file timed out',
+      );
+    },
+
+    async editFile(req) {
+      const client = requireClient(getClient, 'Edit file failed');
+      return withActionTimeout(
+        client.editWorkspaceFile(req),
+        'Edit file timed out',
+      );
+    },
+
+    async stat(filePath) {
+      requireClient(getClient, 'Stat file failed');
+      const url = createDaemonRequestUrl(baseUrl, '/stat');
+      url.searchParams.set('path', filePath);
+      const res = await withActionTimeout(
+        fetch(serializeDaemonRequestUrl(url, baseUrl), {
+          headers: createDaemonHeaders(token),
+        }),
+        'Stat file timed out',
+      );
+      if (!res.ok) {
+        throw new Error(await readDaemonError(res, 'GET /stat'));
+      }
+      return (await res.json()) as DaemonFileStat;
+    },
+
+    async listDirectory(dirPath) {
+      requireClient(getClient, 'List directory failed');
+      const url = createDaemonRequestUrl(baseUrl, '/list');
+      url.searchParams.set('path', dirPath);
+      const res = await withActionTimeout(
+        fetch(serializeDaemonRequestUrl(url, baseUrl), {
+          headers: createDaemonHeaders(token),
+        }),
+        'List directory timed out',
+      );
+      if (!res.ok) {
+        throw new Error(await readDaemonError(res, 'GET /list'));
+      }
+      return (await res.json()) as DaemonDirectoryListing;
+    },
+
+    async loadEnv() {
+      const client = requireClient(getClient, 'Load env failed');
+      return withActionTimeout(client.workspaceEnv(), 'Load env timed out');
+    },
+
+    async loadPreflight() {
+      const client = requireClient(getClient, 'Load preflight failed');
+      return withActionTimeout(
+        client.workspacePreflight(),
+        'Load preflight timed out',
+      );
+    },
+
+    async initWorkspace(opts) {
+      const client = requireClient(getClient, 'Init workspace failed');
+      return withActionTimeout(
+        client.initWorkspace(opts),
+        'Init workspace timed out',
+      );
+    },
+
+    async updateAgent(agentType, req, scope) {
+      const client = requireClient(getClient, 'Update agent failed');
+      return withActionTimeout(
+        client.updateWorkspaceAgent(agentType, req, scope ? { scope } : {}),
+        'Update agent timed out',
+      );
+    },
+
+    async startDeviceFlow(providerId) {
+      const client = requireClient(getClient, 'Start device flow failed');
+      return withActionTimeout(
+        client.startDeviceFlow({ providerId }),
+        'Start device flow timed out',
+      );
+    },
+
+    async getDeviceFlow(deviceFlowId, opts) {
+      const client = requireClient(getClient, 'Get device flow failed');
+      return withActionTimeout(
+        client.getDeviceFlow(deviceFlowId, opts),
+        'Get device flow timed out',
+      );
+    },
+
+    async cancelDeviceFlow(deviceFlowId) {
+      const client = requireClient(getClient, 'Cancel device flow failed');
+      return withActionTimeout(
+        client.cancelDeviceFlow(deviceFlowId),
+        'Cancel device flow timed out',
+      );
+    },
+
+    async getAuthStatus() {
+      const client = requireClient(getClient, 'Get auth status failed');
+      return withActionTimeout(
+        client.getAuthStatus(),
+        'Get auth status timed out',
       );
     },
   };

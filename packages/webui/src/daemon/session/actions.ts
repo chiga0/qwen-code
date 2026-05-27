@@ -7,7 +7,9 @@
 import type { Dispatch, SetStateAction } from 'react';
 import type {
   DaemonSessionClient,
+  DaemonSessionRecapResult,
   DaemonTranscriptStore,
+  PermissionResponse,
 } from '@qwen-code/sdk/daemon';
 import { detachDaemonClient } from './clientLifecycle.js';
 import { mapSupportedCommands } from './mappers.js';
@@ -43,6 +45,7 @@ export interface CreateDaemonSessionActionsArgs {
   setConnection: Dispatch<SetStateAction<DaemonConnectionState>>;
   setPromptStatus: Dispatch<SetStateAction<DaemonPromptStatus>>;
   setRestoreSessionId: Dispatch<SetStateAction<string | undefined>>;
+  setRestoreMode: Dispatch<SetStateAction<'load' | 'resume'>>;
   setRestoreSessionNonce: Dispatch<SetStateAction<number>>;
   setNewSessionNonce: Dispatch<SetStateAction<number>>;
 }
@@ -61,6 +64,7 @@ export function createDaemonSessionActions({
   setConnection,
   setPromptStatus,
   setRestoreSessionId,
+  setRestoreMode,
   setRestoreSessionNonce,
   setNewSessionNonce,
 }: CreateDaemonSessionActionsArgs): DaemonSessionActions {
@@ -252,13 +256,24 @@ export function createDaemonSessionActions({
     async loadSession(sessionId) {
       const loadId = pendingSessionLoadIdRef.current + 1;
       pendingSessionLoadIdRef.current = loadId;
-      pendingSessionLoadRef.current?.reject(
-        new Error('Session load superseded by a newer request'),
-      );
+      if (pendingSessionLoadRef.current) {
+        clearTimeout(pendingSessionLoadRef.current.timeout);
+        pendingSessionLoadRef.current.reject(
+          new Error('Session load superseded by a newer request'),
+        );
+      }
       const loadPromise = new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          if (pendingSessionLoadRef.current?.id === loadId) {
+            pendingSessionLoadRef.current = undefined;
+            reject(new Error('Session load timed out'));
+          }
+        }, 30_000);
         pendingSessionLoadRef.current = {
           id: loadId,
           sessionId,
+          mode: 'load',
+          timeout,
           resolve,
           reject,
         };
@@ -266,6 +281,41 @@ export function createDaemonSessionActions({
       setPromptStatus('idle');
       clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
       store.reset();
+      setRestoreMode('load');
+      setRestoreSessionId(sessionId);
+      setRestoreSessionNonce((nonce) => nonce + 1);
+      return loadPromise;
+    },
+
+    async resumeSession(sessionId) {
+      const loadId = pendingSessionLoadIdRef.current + 1;
+      pendingSessionLoadIdRef.current = loadId;
+      if (pendingSessionLoadRef.current) {
+        clearTimeout(pendingSessionLoadRef.current.timeout);
+        pendingSessionLoadRef.current.reject(
+          new Error('Session resume superseded by a newer request'),
+        );
+      }
+      const loadPromise = new Promise<void>((resolve, reject) => {
+        const timeout = setTimeout(() => {
+          if (pendingSessionLoadRef.current?.id === loadId) {
+            pendingSessionLoadRef.current = undefined;
+            reject(new Error('Session resume timed out'));
+          }
+        }, 30_000);
+        pendingSessionLoadRef.current = {
+          id: loadId,
+          sessionId,
+          mode: 'resume',
+          timeout,
+          resolve,
+          reject,
+        };
+      });
+      setPromptStatus('idle');
+      clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
+      store.reset();
+      setRestoreMode('resume');
       setRestoreSessionId(sessionId);
       setRestoreSessionNonce((nonce) => nonce + 1);
       return loadPromise;
@@ -274,8 +324,13 @@ export function createDaemonSessionActions({
     async newSession() {
       setPromptStatus('idle');
       clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
-      pendingSessionLoadRef.current?.reject(new Error('New session requested'));
-      pendingSessionLoadRef.current = undefined;
+      if (pendingSessionLoadRef.current) {
+        clearTimeout(pendingSessionLoadRef.current.timeout);
+        pendingSessionLoadRef.current.reject(
+          new Error('New session requested'),
+        );
+        pendingSessionLoadRef.current = undefined;
+      }
       store.reset();
       setRestoreSessionId(undefined);
       setNewSessionNonce((nonce) => nonce + 1);
@@ -335,6 +390,45 @@ export function createDaemonSessionActions({
         session.updateMetadata({ displayName }),
         'Rename session timed out',
       );
+    },
+
+    async recapSession(): Promise<DaemonSessionRecapResult> {
+      const session = requireSessionForAction(
+        store,
+        sessionRef.current,
+        'Recap session failed',
+      );
+      try {
+        return await withActionTimeout(
+          session.recap(),
+          'Recap session timed out',
+        );
+      } catch (error) {
+        throw dispatchActionError(store, 'Recap session failed', error);
+      }
+    },
+
+    async respondToGlobalPermission(
+      requestId: string,
+      response: PermissionResponse,
+    ): Promise<boolean> {
+      const session = requireSessionForAction(
+        store,
+        sessionRef.current,
+        'Global permission response failed',
+      );
+      try {
+        return await withActionTimeout(
+          session.client.respondToPermission(requestId, response),
+          'Global permission response timed out',
+        );
+      } catch (error) {
+        throw dispatchActionError(
+          store,
+          'Global permission response failed',
+          error,
+        );
+      }
     },
   };
 }

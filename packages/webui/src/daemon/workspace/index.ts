@@ -11,17 +11,24 @@ export {
   useOptionalDaemonWorkspace,
 } from './DaemonWorkspaceProvider.js';
 export type {
+  DaemonDirectoryEntry,
+  DaemonDirectoryListing,
+  DaemonFileStat,
   DaemonGlobOptions,
   DaemonGlobResult,
   DaemonResourceOptions,
   DaemonWorkspaceActions,
   DaemonWorkspaceContextValue,
   DaemonWorkspaceProviderProps,
+  DaemonWorkspaceStatus,
   ResourceResult,
   ResourceState,
 } from './types.js';
 export {
   useDaemonAgents,
+  useDaemonAuth,
+  useDaemonDiagnostics,
+  useDaemonFiles,
   useDaemonGlob,
   useDaemonMcp,
   useDaemonMemory,

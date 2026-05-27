@@ -55,6 +55,7 @@ export function getLocalCommands(t: Translate): CommandInfo[] {
       description: t('local.agents'),
       argumentHint: 'manage|create user|create project',
     },
+    { name: 'recap', description: t('local.recap') },
     { name: 'clear', description: t('local.clear') },
     { name: 'new', description: t('local.new') },
     { name: 'reset', description: t('local.reset') },
