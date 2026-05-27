@@ -20,6 +20,7 @@ import {
   useDaemonActions,
   useDaemonConnection,
   useDaemonPendingPermissionRequest,
+  useDaemonStreamingState,
   useDaemonTranscriptBlocks,
   useDaemonWorkspaceEventSignals,
   type DaemonSessionProviderProps,
@@ -956,6 +957,71 @@ describe('DaemonSessionProvider', () => {
       expect(blocks).toMatchObject([
         { kind: 'assistant', text: 'passive', streaming: false },
       ]);
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it('finishes replayed assistant streaming when replay completes', async () => {
+    vi.useFakeTimers();
+    try {
+      const session = createMockSession({
+        events: async function* replayEvents(
+          opts: { signal?: AbortSignal } = {},
+        ) {
+          yield {
+            id: 9,
+            v: 1,
+            type: 'session_update',
+            data: {
+              update: {
+                sessionUpdate: 'agent_message_chunk',
+                content: { type: 'text', text: 'replayed' },
+              },
+            },
+          };
+          yield {
+            v: 1,
+            type: 'replay_complete',
+            data: { lastEventId: 9, replayedCount: 1 },
+          };
+          await new Promise<void>((resolve) => {
+            if (opts.signal?.aborted) {
+              resolve();
+              return;
+            }
+            opts.signal?.addEventListener('abort', () => resolve(), {
+              once: true,
+            });
+          });
+        },
+      });
+      sdkMocks.sessions.push(session);
+      let blocks: readonly DaemonTranscriptBlock[] = [];
+      let streamingState: ReturnType<typeof useDaemonStreamingState> = 'idle';
+
+      function Harness() {
+        blocks = useDaemonTranscriptBlocks();
+        streamingState = useDaemonStreamingState();
+        return null;
+      }
+
+      await renderWithProvider(<Harness />, { autoConnect: true });
+      await act(async () => {
+        await flushPromises();
+      });
+
+      expect(streamingState).toBe('idle');
+      expect(blocks).toMatchObject([
+        { kind: 'assistant', text: 'replayed', streaming: false },
+      ]);
+
+      await act(async () => {
+        vi.advanceTimersByTime(3000);
+        await flushPromises();
+      });
+
+      expect(streamingState).toBe('idle');
     } finally {
       vi.useRealTimers();
     }

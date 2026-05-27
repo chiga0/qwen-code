@@ -410,6 +410,16 @@ export function DaemonSessionProvider({
                   activePromptsRef.current.delete(activeSession.sessionId);
                 } else if (uiEvent.type === 'session.replay_complete') {
                   setConnection((c) => ({ ...c, catchingUp: undefined }));
+                  if (!activePromptsRef.current.has(activeSession.sessionId)) {
+                    clearPassiveAssistantDoneTimer(
+                      passiveAssistantDoneTimerRef,
+                    );
+                    store.dispatch({
+                      type: 'assistant.done',
+                      reason: 'replay_complete',
+                    });
+                    setPromptStatus('idle');
+                  }
                 }
               }
               const isObserver = !activePromptsRef.current.has(
