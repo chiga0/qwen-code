@@ -10,12 +10,13 @@ import {
 } from '@qwen-code/webui/daemon-react-sdk';
 import { extractPendingPermission } from './adapters/transcriptAdapter';
 import { MessageList } from './components/MessageList';
-import { Editor } from './components/Editor';
+import { Editor, type EditorHandle } from './components/Editor';
 import type { PromptImage } from './adapters/promptTypes';
 import { StatusBar } from './components/StatusBar';
 import { ShortcutsPanel } from './components/ShortcutsPanel';
 import { StreamingStatus } from './components/StreamingStatus';
 import { TodoPanel } from './components/panels/TodoPanel';
+import { ActiveAgentsPanel } from './components/panels/ActiveAgentsPanel';
 import { WelcomeHeader } from './components/WelcomeHeader';
 import { ModelDialog } from './components/dialogs/ModelDialog';
 import { ApprovalModeDialog } from './components/dialogs/ApprovalModeDialog';
@@ -52,7 +53,7 @@ import {
   type DaemonApprovalMode,
 } from '@qwen-code/webui/daemon-react-sdk';
 import { serializeContextUsageMessage } from './components/messages/ContextUsageMessage';
-import type { Message, TodoItem } from './adapters/types';
+import type { ACPToolCall, Message, TodoItem } from './adapters/types';
 import { extractTodosFromToolCall, hasActiveTodos } from './utils/todos';
 import { ThemeProvider } from './themeContext';
 import styles from './App.module.css';
@@ -65,6 +66,12 @@ interface QueuedPrompt {
   id: number;
   text: string;
   images?: PromptImage[];
+}
+
+interface LocalRecapMessage {
+  anchorAfterId?: string;
+  anchorIndex: number;
+  message: Message;
 }
 
 export interface WebShellProps {
@@ -138,6 +145,26 @@ function getFloatingTodos(messages: readonly Message[]): TodoItem[] {
     }
   }
   return [];
+}
+
+function isAgentTool(tool: ACPToolCall): boolean {
+  const name = tool.toolName.toLowerCase();
+  return (
+    name === 'agent' || name === 'task' || Boolean(tool.args?.subagent_type)
+  );
+}
+
+function isActiveTool(tool: ACPToolCall): boolean {
+  return tool.status === 'pending' || tool.status === 'in_progress';
+}
+
+function getFloatingAgents(messages: readonly Message[]): ACPToolCall[] {
+  return messages.flatMap((message) => {
+    if (message.role !== 'tool_group') return [];
+    return message.tools.filter(
+      (tool) => isAgentTool(tool) && isActiveTool(tool),
+    );
+  });
 }
 
 function translateCopyMessage(
@@ -233,6 +260,28 @@ export function App({
   );
 
   const messages = useMessages();
+  const [recapMessage, setRecapMessage] = useState<LocalRecapMessage | null>(
+    null,
+  );
+  const nextRecapMessageIdRef = useRef(1);
+  const activeSessionIdRef = useRef(connection.sessionId);
+  const displayMessages = useMemo(() => {
+    if (!recapMessage) return messages;
+    const anchorIndex = recapMessage.anchorAfterId
+      ? messages.findIndex(
+          (message) => message.id === recapMessage.anchorAfterId,
+        )
+      : -1;
+    const index =
+      anchorIndex >= 0
+        ? anchorIndex + 1
+        : Math.min(recapMessage.anchorIndex, messages.length);
+    return [
+      ...messages.slice(0, index),
+      recapMessage.message,
+      ...messages.slice(index),
+    ];
+  }, [messages, recapMessage]);
   const messageBlocks = useAnimationFrameValue(blocks);
   const pendingApproval = useMemo(
     () => extractPendingPermission(messageBlocks),
@@ -240,6 +289,9 @@ export function App({
   );
   const shouldHideComposer = pendingApproval !== null;
   const floatingTodos = useMemo(() => getFloatingTodos(messages), [messages]);
+  const floatingAgents = useMemo(() => getFloatingAgents(messages), [messages]);
+  const activeAgentsPanelRef = useRef<HTMLDivElement>(null);
+  const editorRef = useRef<EditorHandle>(null);
   const streamingState = useStreamingState();
   const streamingStateRef = useRef<DaemonStreamingState>(streamingState);
   const connected = connection.status === 'connected';
@@ -287,6 +339,58 @@ export function App({
     },
     [store],
   );
+
+  useEffect(() => {
+    activeSessionIdRef.current = connection.sessionId;
+    setRecapMessage(null);
+  }, [connection.sessionId]);
+
+  const runVisibleRecap = useCallback(() => {
+    const messageId = `local-recap-${nextRecapMessageIdRef.current++}`;
+    const anchorIndex = messages.length;
+    const anchorAfterId = messages.at(-1)?.id;
+    const sessionId = connection.sessionId;
+    setRecapMessage({
+      anchorAfterId,
+      anchorIndex,
+      message: {
+        id: messageId,
+        role: 'system',
+        content: `※ recap: ${t('recap.loading')}`,
+        variant: 'info',
+      },
+    });
+    sessionActions.recapSession().then(
+      (result) => {
+        if (activeSessionIdRef.current !== sessionId) return;
+        setRecapMessage({
+          anchorAfterId,
+          anchorIndex,
+          message: {
+            id: messageId,
+            role: 'system',
+            content: result.recap
+              ? `※ recap: ${result.recap}`
+              : t('recap.empty'),
+            variant: 'info',
+          },
+        });
+      },
+      (error: unknown) => {
+        if (activeSessionIdRef.current !== sessionId) return;
+        setRecapMessage({
+          anchorAfterId,
+          anchorIndex,
+          message: {
+            id: messageId,
+            role: 'system',
+            content: formatError(error, t('recap.failed')),
+            variant: 'error',
+          },
+        });
+      },
+    );
+  }, [connection.sessionId, messages, sessionActions, t]);
 
   useEffect(() => {
     queuedPromptsRef.current = queuedPrompts;
@@ -757,20 +861,7 @@ export function App({
             return true;
           }
           if (cmd === 'recap') {
-            sessionActions.recapSession().then(
-              (result) => {
-                if (result.recap) {
-                  store.dispatch([
-                    { type: 'status', text: `※ recap: ${result.recap}` },
-                  ]);
-                } else {
-                  store.dispatch([{ type: 'status', text: t('recap.empty') }]);
-                }
-              },
-              (error: unknown) => {
-                reportError(error, t('recap.failed'));
-              },
-            );
+            runVisibleRecap();
             return true;
           }
         }
@@ -806,6 +897,7 @@ export function App({
       messages,
       onLanguageChange,
       reportError,
+      runVisibleRecap,
       selectedLanguage,
       t,
     ],
@@ -860,6 +952,23 @@ export function App({
       reportError(error, 'Failed to cancel request');
     });
   }, [sessionActions, reportError]);
+
+  const handleFocusActiveAgents = useCallback((): boolean => {
+    if (floatingAgents.length === 0) return false;
+    editorRef.current?.blur();
+    window.setTimeout(() => {
+      activeAgentsPanelRef.current?.focus({ preventScroll: true });
+    }, 0);
+    return true;
+  }, [floatingAgents.length]);
+
+  const handleReturnToEditor = useCallback((text?: string) => {
+    if (text) {
+      editorRef.current?.insertText(text);
+      return;
+    }
+    editorRef.current?.focus();
+  }, []);
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -1032,13 +1141,13 @@ export function App({
             <>
               <div
                 className={
-                  messages.length > 0 || streamingState !== 'idle'
+                  displayMessages.length > 0 || streamingState !== 'idle'
                     ? `${styles.content} ${styles.contentHasMessages}`
                     : styles.content
                 }
               >
                 <MessageList
-                  messages={messages}
+                  messages={displayMessages}
                   pendingApproval={pendingApproval}
                   onConfirm={handleConfirm}
                   welcomeHeader={
@@ -1055,6 +1164,13 @@ export function App({
               </div>
 
               <div className={styles.footer}>
+                {floatingAgents.length > 0 && (
+                  <ActiveAgentsPanel
+                    ref={activeAgentsPanelRef}
+                    agents={floatingAgents}
+                    onReturnToInput={handleReturnToEditor}
+                  />
+                )}
                 {floatingTodos.length > 0 && (
                   <TodoPanel todos={floatingTodos} />
                 )}
@@ -1062,6 +1178,7 @@ export function App({
                   <div className={styles.composer}>
                     <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
                     <Editor
+                      ref={editorRef}
                       onSubmit={handleSubmit}
                       onCycleMode={handleCycleMode}
                       onToggleShortcuts={handleToggleShortcuts}
@@ -1071,6 +1188,7 @@ export function App({
                       queuedMessages={queuedPrompts.map(
                         (prompt) => prompt.text,
                       )}
+                      onFocusActiveAgents={handleFocusActiveAgents}
                       onPopQueuedMessages={popQueuedPromptsForEdit}
                       onClearQueuedMessages={clearQueuedPrompts}
                       currentMode={currentMode}

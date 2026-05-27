@@ -326,6 +326,13 @@ export function McpDialog({ onClose }: McpDialogProps) {
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>
           {view === 'servers'
             ? t('mcp.title')

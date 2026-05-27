@@ -173,6 +173,13 @@ export function ModelDialog({
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>
           {isFastMode ? t('model.setFast') : t('model.switch')}
         </span>

@@ -102,19 +102,32 @@ export function transcriptBlocksToDaemonMessages(
         const toolBlock = block as DaemonToolTranscriptBlock;
         const toolCall = daemonToolBlockToToolCall(toolBlock);
         const activeSubAgent = getActiveSubAgent(subAgentStack);
+        const parentSubAgent = toolCall.parentToolCallId
+          ? findSubAgent(subAgentStack, toolCall.parentToolCallId)
+          : undefined;
 
-        if (activeSubAgent && isAgentCompletion(toolCall)) {
+        if (
+          activeSubAgent &&
+          activeSubAgent.callId === toolCall.callId &&
+          isAgentCompletion(toolCall)
+        ) {
           mergeToolCall(activeSubAgent, toolCall);
           subAgentStack.pop();
           break;
         }
 
-        if (activeSubAgent) {
-          activeSubAgent.subTools ||= [];
-          activeSubAgent.subTools.push(toolCall);
+        if (parentSubAgent) {
+          appendSubTool(parentSubAgent, toolCall);
           if (isSubAgentToolCall(toolCall) && !isAgentCompletion(toolCall)) {
             subAgentStack.push({ tool: toolCall });
           }
+          break;
+        }
+
+        const isImplicitTopLevelSubAgent =
+          isSubAgentToolCall(toolCall) && !toolCall.parentToolCallId;
+        if (activeSubAgent && !isImplicitTopLevelSubAgent) {
+          appendSubTool(activeSubAgent, toolCall);
           break;
         }
 
@@ -217,6 +230,25 @@ function getActiveSubAgent(
   stack: ActiveSubAgent[],
 ): DaemonMessageToolCall | undefined {
   return stack[stack.length - 1]?.tool;
+}
+
+function findSubAgent(
+  stack: ActiveSubAgent[],
+  toolCallId: string,
+): DaemonMessageToolCall | undefined {
+  for (let i = stack.length - 1; i >= 0; i--) {
+    const tool = stack[i]?.tool;
+    if (tool?.callId === toolCallId) return tool;
+  }
+  return undefined;
+}
+
+function appendSubTool(
+  parent: DaemonMessageToolCall,
+  toolCall: DaemonMessageToolCall,
+): void {
+  parent.subTools ||= [];
+  parent.subTools.push(toolCall);
 }
 
 function closeCompletedSubAgentsBefore(
@@ -335,6 +367,7 @@ function daemonToolBlockToToolCall(
     kind: inferToolKind(block.toolName, block.toolKind),
     rawOutput: block.rawOutput ?? block.details,
     args: block.rawInput as Record<string, unknown> | undefined,
+    parentToolCallId: block.parentToolCallId,
     startTime: block.createdAt,
     endTime:
       block.status === 'completed' || block.status === 'failed'

@@ -73,6 +73,13 @@ export function ThemeDialog({
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>{t('theme.title')}</span>
         <span className={dp('resume-picker-count')}>
           {t('theme.current', { theme: currentTheme })}

@@ -303,6 +303,13 @@ export function HelpDialog({ commands, onClose }: HelpDialogProps) {
   return (
     <div className={`${dp('resume-picker')} ${styles.dialog}`}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>{t('help.title')}</span>
         <span className={dp('resume-picker-count')}>
           {t('help.commandCount', { count: commands.length })}

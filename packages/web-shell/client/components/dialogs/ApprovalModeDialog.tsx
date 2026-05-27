@@ -71,6 +71,13 @@ export function ApprovalModeDialog({
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>
           {t('local.approvalMode')}
         </span>

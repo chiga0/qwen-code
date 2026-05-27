@@ -38,6 +38,14 @@ const EN: Messages = {
   'agent.selectAction': 'Select an action',
   'agent.tools': 'tools',
   'agents.title': 'Agents',
+  'activeAgents.collapseHint': 'Enter/Space collapse',
+  'activeAgents.footer':
+    'From input: ↓ focus agents · ↑/↓ move · Enter/Space details · Esc back to input · Home/End jump',
+  'activeAgents.moreAbove': (v) => `^ ${v?.count ?? 0} more above`,
+  'activeAgents.openHint': 'Enter/Space for details',
+  'activeAgents.title': (v) =>
+    `Active agents (${v?.visible ?? 0}/${v?.total ?? 0})`,
+  'activeAgents.tools': (v) => `${v?.count ?? 0} tools`,
   'approval.execQuestion': (v) => `Allow execution of: '${v?.tool ?? ''}'?`,
   'approval.changeQuestion': 'Apply this change?',
   'common.back': 'back',
@@ -380,6 +388,14 @@ const ZH: Messages = {
   'agent.selectAction': '选择操作',
   'agent.tools': '工具',
   'agents.title': 'Agents',
+  'activeAgents.collapseHint': 'Enter/Space 收起',
+  'activeAgents.footer':
+    '输入框按 ↓ 聚焦 agents · ↑/↓ 切换 · Enter/Space 查看详情 · Esc 返回输入框 · Home/End 跳转',
+  'activeAgents.moreAbove': (v) => `^ 上方还有 ${v?.count ?? 0} 个`,
+  'activeAgents.openHint': 'Enter/Space 查看详情',
+  'activeAgents.title': (v) =>
+    `活跃 agents (${v?.visible ?? 0}/${v?.total ?? 0})`,
+  'activeAgents.tools': (v) => `${v?.count ?? 0} 个工具`,
   'approval.execQuestion': (v) => `允许执行：'${v?.tool ?? ''}'？`,
   'approval.changeQuestion': '应用此更改？',
   'common.back': '返回',

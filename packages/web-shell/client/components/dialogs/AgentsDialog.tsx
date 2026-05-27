@@ -295,6 +295,13 @@ export function AgentsDialog({
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>{t('agents.title')}</span>
         <span className={dp('resume-picker-count')}>
           {t('agent.count', { count: agents.length })}

@@ -361,6 +361,13 @@ export function MemoryDialog({
   return (
     <div className={dp('resume-picker')}>
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>{title}</span>
         <span className={dp('resume-picker-count')}>
           {status

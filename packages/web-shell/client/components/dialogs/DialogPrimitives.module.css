@@ -17,6 +17,27 @@
   padding: 8px 12px;
 }
 
+.resume-picker-back {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
+  font-size: 14px;
+  padding: 0;
+  flex-shrink: 0;
+}
+
+.resume-picker-back:hover {
+  color: var(--text-primary);
+  background: var(--bg-tertiary);
+}
+
 .resume-picker-title {
   font-weight: 700;
   color: var(--text-primary);

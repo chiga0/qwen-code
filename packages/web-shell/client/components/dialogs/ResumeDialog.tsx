@@ -141,6 +141,13 @@ export function ResumeDialog({ onSelect, onClose }: ResumeDialogProps) {
     <div className={dp('resume-picker')}>
       {/* Header */}
       <div className={dp('resume-picker-header')}>
+        <button
+          className={dp('resume-picker-back')}
+          onClick={onClose}
+          title="Back"
+        >
+          ←
+        </button>
         <span className={dp('resume-picker-title')}>{t('resume.title')}</span>
         {searchQuery && (
           <span className={dp('resume-picker-count')}>

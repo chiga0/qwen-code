@@ -203,6 +203,51 @@ describe('transcriptBlocksToDaemonMessages', () => {
     });
   });
 
+  it('keeps parallel top-level subagents as sibling tool messages', () => {
+    const messages = transcriptBlocksToDaemonMessages([
+      toolBlock('agent-1', 'agent-call-1', 'in_progress', 10, {
+        title: 'Agent: Correctness review agent',
+        toolName: 'agent',
+        rawInput: { subagent_type: 'general-purpose' },
+      }),
+      toolBlock('agent-2', 'agent-call-2', 'in_progress', 20, {
+        title: 'Agent: Security review agent',
+        toolName: 'agent',
+        rawInput: { subagent_type: 'general-purpose' },
+      }),
+      toolBlock('agent-3', 'agent-call-3', 'in_progress', 30, {
+        title: 'Agent: Performance review agent',
+        toolName: 'agent',
+        rawInput: { subagent_type: 'general-purpose' },
+      }),
+    ]);
+
+    expect(messages).toHaveLength(3);
+    expect(messages).toMatchObject([
+      {
+        role: 'tool_group',
+        tools: [{ callId: 'agent-call-1' }],
+      },
+      {
+        role: 'tool_group',
+        tools: [{ callId: 'agent-call-2' }],
+      },
+      {
+        role: 'tool_group',
+        tools: [{ callId: 'agent-call-3' }],
+      },
+    ]);
+    expect(
+      messages[0]?.role === 'tool_group' && messages[0].tools[0],
+    ).not.toHaveProperty('subTools');
+    expect(
+      messages[1]?.role === 'tool_group' && messages[1].tools[0],
+    ).not.toHaveProperty('subTools');
+    expect(
+      messages[2]?.role === 'tool_group' && messages[2].tools[0],
+    ).not.toHaveProperty('subTools');
+  });
+
   it('merges streaming assistant chunks into one message', () => {
     const messages = transcriptBlocksToDaemonMessages([
       textBlock('a1', 'assistant', 'hello ', 1, true),

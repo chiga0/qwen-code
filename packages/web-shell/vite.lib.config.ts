@@ -56,6 +56,7 @@ export default defineConfig({
         '@qwen-code/sdk',
         /^@qwen-code\/sdk\//,
         '@qwen-code/webui',
+        /^@qwen-code\/webui\//,
         'react-markdown',
         'remark-gfm',
         'remark-math',

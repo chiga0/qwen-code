@@ -1,4 +1,11 @@
-import { useEffect, useRef, useCallback, useState } from 'react';
+import {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useCallback,
+  useState,
+} from 'react';
 import {
   EditorView,
   keymap,
@@ -9,6 +16,7 @@ import {
 import { EditorState, Compartment, Prec } from '@codemirror/state';
 import { defaultKeymap, history, historyKeymap } from '@codemirror/commands';
 import {
+  acceptCompletion,
   autocompletion,
   completionStatus,
   startCompletion,
@@ -44,6 +52,13 @@ interface EditorProps {
   currentMode?: string;
   draftText?: string;
   draftVersion?: number;
+  onFocusActiveAgents?: () => boolean;
+}
+
+export interface EditorHandle {
+  blur(): void;
+  focus(): void;
+  insertText(text: string): void;
 }
 
 const editableCompartment = new Compartment();
@@ -63,21 +78,25 @@ function getModeClass(mode: string, shellMode: boolean): string {
   }
 }
 
-export function Editor({
-  onSubmit,
-  onCycleMode,
-  onToggleShortcuts,
-  disabled = false,
-  placeholderText = 'Type a message...',
-  commands,
-  skills = [],
-  queuedMessages = [],
-  onPopQueuedMessages,
-  onClearQueuedMessages,
-  currentMode = 'default',
-  draftText,
-  draftVersion,
-}: EditorProps) {
+export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
+  {
+    onSubmit,
+    onCycleMode,
+    onToggleShortcuts,
+    disabled = false,
+    placeholderText = 'Type a message...',
+    commands,
+    skills = [],
+    queuedMessages = [],
+    onPopQueuedMessages,
+    onClearQueuedMessages,
+    currentMode = 'default',
+    draftText,
+    draftVersion,
+    onFocusActiveAgents,
+  },
+  ref,
+) {
   const workspace = useOptionalWorkspace();
   const { language, t } = useI18n();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -100,6 +119,8 @@ export function Editor({
   onPopQueuedMessagesRef.current = onPopQueuedMessages;
   const onClearQueuedMessagesRef = useRef(onClearQueuedMessages);
   onClearQueuedMessagesRef.current = onClearQueuedMessages;
+  const onFocusActiveAgentsRef = useRef(onFocusActiveAgents);
+  onFocusActiveAgentsRef.current = onFocusActiveAgents;
   const languageRef = useRef(language);
   languageRef.current = language;
   const workspaceActionsRef = useRef(workspace?.actions);
@@ -165,7 +186,6 @@ export function Editor({
       slashCompletionSource(
         () => commandsRef.current,
         () => skillsRef.current,
-        submitText,
         () => languageRef.current,
       ),
       createAtCompletionSource(
@@ -231,7 +251,9 @@ export function Editor({
           if (completionStatus(view.state) === 'active') return false;
           if (view.state.doc.lines > 1) return false;
           const next = historyActionsRef.current.navigateDown();
-          if (next === null) return false;
+          if (next === null) {
+            return onFocusActiveAgentsRef.current?.() ?? false;
+          }
           view.dispatch({
             changes: { from: 0, to: view.state.doc.length, insert: next },
             selection: { anchor: next.length },
@@ -252,6 +274,10 @@ export function Editor({
           setTimeout(() => searchInputRef.current?.focus(), 0);
           return true;
         },
+      },
+      {
+        key: 'Tab',
+        run: acceptCompletion,
       },
       {
         key: 'Shift-Tab',
@@ -520,6 +546,43 @@ export function Editor({
     viewRef.current?.focus();
   }, []);
 
+  const blur = useCallback(() => {
+    viewRef.current?.contentDOM.blur();
+  }, []);
+
+  const insertText = useCallback((text: string) => {
+    const view = viewRef.current;
+    if (!view || !text) {
+      view?.focus();
+      return;
+    }
+    const selection = view.state.selection.main;
+    view.dispatch({
+      changes: { from: selection.from, to: selection.to, insert: text },
+      selection: { anchor: selection.from + text.length },
+      scrollIntoView: true,
+    });
+    view.focus();
+    if (text === '/' || text === '@') {
+      window.setTimeout(() => {
+        const nextView = viewRef.current;
+        if (nextView && nextView.hasFocus) {
+          startCompletion(nextView);
+        }
+      }, 0);
+    }
+  }, []);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      blur,
+      focus,
+      insertText,
+    }),
+    [blur, focus, insertText],
+  );
+
   const replaceEditorText = useCallback((text: string) => {
     const view = viewRef.current;
     if (!view) return;
@@ -712,4 +775,4 @@ export function Editor({
       <div className={styles.borderBottom} />
     </div>
   );
-}
+});
