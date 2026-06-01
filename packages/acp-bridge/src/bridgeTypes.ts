@@ -79,6 +79,10 @@ export type BridgeSessionState = LoadSessionResponse | ResumeSessionResponse;
 export interface BridgeRestoredSession extends BridgeSession {
   /** ACP state returned by `session/load` / `session/resume`. */
   state: BridgeSessionState;
+  /** Event bus high watermark at restore time. */
+  lastEventId?: number;
+  /** Full replay log for client-side transcript reconstruction. */
+  replayEvents?: BridgeEvent[];
 }
 
 /** Sparse summary used by `GET /workspace/:id/sessions`. */

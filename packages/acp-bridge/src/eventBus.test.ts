@@ -737,4 +737,66 @@ describe('EventBus', () => {
       abort.abort();
     });
   });
+
+  describe('snapshotRing', () => {
+    it('returns all events when count is within ring capacity', () => {
+      const bus = new EventBus(5);
+      for (let i = 0; i < 3; i++) {
+        bus.publish({ type: 'session_update', data: { i } });
+      }
+      const snapshot = bus.snapshotRing();
+      expect(snapshot).toHaveLength(3);
+      expect(snapshot[0]!.id).toBe(1);
+      expect(snapshot[2]!.id).toBe(3);
+    });
+
+    it('returns only the last N events when count exceeds ring capacity', () => {
+      const bus = new EventBus(3);
+      for (let i = 0; i < 7; i++) {
+        bus.publish({ type: 'session_update', data: { i } });
+      }
+      const snapshot = bus.snapshotRing();
+      expect(snapshot).toHaveLength(3);
+      expect(snapshot[0]!.id).toBe(5);
+      expect(snapshot[2]!.id).toBe(7);
+    });
+
+    it('returns a defensive copy', () => {
+      const bus = new EventBus(5);
+      bus.publish({ type: 'foo', data: {} });
+      const a = bus.snapshotRing();
+      const b = bus.snapshotRing();
+      expect(a).not.toBe(b);
+      expect(a).toEqual(b);
+    });
+  });
+
+  describe('snapshotReplayLog', () => {
+    it('keeps the full replay history after the SSE ring evicts frames', () => {
+      const bus = new EventBus(3);
+      for (let i = 0; i < 7; i++) {
+        bus.publish({ type: 'session_update', data: { i } });
+      }
+
+      const ring = bus.snapshotRing();
+      const replayLog = bus.snapshotReplayLog();
+
+      expect(ring).toHaveLength(3);
+      expect(ring[0]!.id).toBe(5);
+      expect(replayLog).toHaveLength(7);
+      expect(replayLog[0]!.id).toBe(1);
+      expect(replayLog[6]!.id).toBe(7);
+    });
+
+    it('returns a defensive copy', () => {
+      const bus = new EventBus(5);
+      bus.publish({ type: 'foo', data: {} });
+
+      const a = bus.snapshotReplayLog();
+      const b = bus.snapshotReplayLog();
+
+      expect(a).not.toBe(b);
+      expect(a).toEqual(b);
+    });
+  });
 });

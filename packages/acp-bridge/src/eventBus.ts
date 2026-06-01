@@ -160,6 +160,7 @@ export class SubscriberLimitExceededError extends Error {
 export class EventBus {
   private nextId = 1;
   private readonly ring: BridgeEvent[] = [];
+  private readonly replayLog: BridgeEvent[] = [];
   private readonly subs = new Set<InternalSub>();
   private closed = false;
 
@@ -171,6 +172,22 @@ export class EventBus {
   /** Most recent id ever assigned by `publish`. 0 if no events published. */
   get lastEventId(): number {
     return this.nextId - 1;
+  }
+
+  /** Defensive copy of all events currently retained in the ring. */
+  snapshotRing(): BridgeEvent[] {
+    return this.ring.slice();
+  }
+
+  /**
+   * Defensive copy of every event published on this bus.
+   *
+   * The bounded ring is only an SSE catch-up buffer. HTTP session loads
+   * need an authoritative replay source so a refreshed UI can rebuild the
+   * full transcript even after the SSE ring has evicted older frames.
+   */
+  snapshotReplayLog(): BridgeEvent[] {
+    return this.replayLog.slice();
   }
 
   /** Snapshot of the live subscriber count. */
@@ -211,6 +228,7 @@ export class EventBus {
       ...input,
     };
     this.ring.push(event);
+    this.replayLog.push(event);
     // Eviction-by-shift is O(n) once the ring is full. At the current
     // default `ringSize=8000` (#3803 §02) the per-publish shift work
     // measures in low milliseconds on chatty sessions — still well

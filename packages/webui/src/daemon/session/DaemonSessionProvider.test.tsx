@@ -38,6 +38,7 @@ interface MockSession {
   clientId: string;
   client?: MockClient;
   lastEventId?: number;
+  replayEvents: DaemonEvent[];
   setLastEventId: (lastEventId: number | undefined) => void;
   prompt: (
     req: unknown,
@@ -1258,6 +1259,56 @@ describe('DaemonSessionProvider', () => {
     }
   });
 
+  it('keeps replay-seeded assistant streaming when no terminal replay event exists', async () => {
+    const session = createMockSession({
+      replayEvents: [
+        {
+          id: 1,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'still running' },
+            },
+          },
+        },
+      ],
+      events: async function* idleAfterReplay(
+        opts: { signal?: AbortSignal } = {},
+      ) {
+        await new Promise<void>((resolve) => {
+          if (opts.signal?.aborted) {
+            resolve();
+            return;
+          }
+          opts.signal?.addEventListener('abort', () => resolve(), {
+            once: true,
+          });
+        });
+      },
+    });
+    sdkMocks.sessions.push(session);
+    let blocks: readonly DaemonTranscriptBlock[] = [];
+    let streamingState: ReturnType<typeof useDaemonStreamingState> = 'idle';
+
+    function Harness() {
+      blocks = useDaemonTranscriptBlocks();
+      streamingState = useDaemonStreamingState();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, { autoConnect: true });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(streamingState).toBe('responding');
+    expect(blocks).toMatchObject([
+      { kind: 'assistant', text: 'still running', streaming: true },
+    ]);
+  });
+
   it('creates a fresh thread session without cancelling the previous session', async () => {
     const firstSession = createMockSession({ sessionId: 'session-a' });
     const secondSession = createMockSession({ sessionId: 'session-b' });
@@ -1475,6 +1526,36 @@ describe('DaemonSessionProvider', () => {
     await act(async () => {
       await flushPromises();
     });
+    expect(connection).toMatchObject({ sessionId: 'session-b' });
+  });
+
+  it('does not reject an in-flight session load during the cleanup between session switches', async () => {
+    sdkMocks.sessions.push(
+      createMockSession({ sessionId: 'session-a', events: createIdleEvents() }),
+      createMockSession({ sessionId: 'session-b', events: createIdleEvents() }),
+    );
+    let actions: DaemonSessionActions | undefined;
+    let connection: DaemonConnectionState | undefined;
+
+    function Harness() {
+      actions = useDaemonActions();
+      connection = useDaemonConnection();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, { autoConnect: true });
+    expect(connection).toMatchObject({ sessionId: 'session-a' });
+
+    let loadPromise!: Promise<void>;
+    act(() => {
+      loadPromise = requireActions(actions).loadSession('session-b');
+    });
+
+    await act(async () => {
+      await loadPromise;
+      await flushPromises();
+    });
+
     expect(connection).toMatchObject({ sessionId: 'session-b' });
   });
 
@@ -1934,84 +2015,11 @@ describe('DaemonSessionProvider', () => {
     ]);
   });
 
-  it('clears awaitingResync on replay_complete after ring-evicted resync', async () => {
-    const liveDelivered = createDeferred<void>();
-    const session = createMockSession({
-      lastEventId: 10,
-      events: async function* ringEvictedThenLive(
-        opts: { signal?: AbortSignal } = {},
-      ) {
-        yield {
-          v: 1,
-          type: 'state_resync_required',
-          data: {
-            reason: 'ring_evicted',
-            lastDeliveredId: 10,
-            earliestAvailableId: 12,
-          },
-        };
-        yield {
-          v: 1,
-          type: 'replay_complete',
-          data: { replayedCount: 0 },
-        };
-        yield {
-          id: 12,
-          v: 1,
-          type: 'session_update',
-          data: {
-            update: {
-              sessionUpdate: 'agent_message_chunk',
-              content: { type: 'text', text: 'live after replay' },
-            },
-          },
-        };
-        liveDelivered.resolve();
-        await new Promise<void>((resolve) => {
-          if (opts.signal?.aborted) {
-            resolve();
-            return;
-          }
-          opts.signal?.addEventListener('abort', () => resolve(), {
-            once: true,
-          });
-        });
-      },
-    });
-    sdkMocks.sessions.push(session);
-
-    let blocks: readonly DaemonTranscriptBlock[] = [];
-    let awaitingResync = false;
-    function Harness() {
-      blocks = useDaemonTranscriptBlocks();
-      awaitingResync = useDaemonTranscriptState().awaitingResync;
-      return null;
-    }
-
-    await renderWithProvider(<Harness />, { autoConnect: true });
-    await act(async () => {
-      await liveDelivered.promise;
-      await flushPromises();
-    });
-
-    expect(awaitingResync).toBe(false);
-    expect(blocks).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          kind: 'assistant',
-          text: 'live after replay',
-        }),
-      ]),
-    );
-  });
-
-  it('clears ring-evicted awaitingResync on same-session reattach', async () => {
-    const firstStreamDone = createDeferred<void>();
-    const reattachDelivered = createDeferred<void>();
+  it('triggers full reload on ring_evicted and seeds from replayEvents', async () => {
+    const secondStreamReady = createDeferred<void>();
     const firstSession = createMockSession({
-      sessionId: 'session-reattach',
       lastEventId: 10,
-      events: async function* ringEvictedThenGone() {
+      events: async function* ringEvicted() {
         yield {
           v: 1,
           type: 'state_resync_required',
@@ -2021,32 +2029,28 @@ describe('DaemonSessionProvider', () => {
             earliestAvailableId: 12,
           },
         };
-        firstStreamDone.resolve();
-        const error = new Error('session temporarily unavailable') as Error & {
-          status: number;
-        };
-        error.status = 410;
-        throw error;
       },
     });
     const secondSession = createMockSession({
-      sessionId: 'session-reattach',
-      lastEventId: 10,
-      events: async function* reattachedLive(
-        opts: { signal?: AbortSignal } = {},
-      ) {
-        yield {
+      sessionId: 'session-1',
+      replayEvents: [
+        {
           id: 12,
           v: 1,
           type: 'session_update',
           data: {
             update: {
               sessionUpdate: 'agent_message_chunk',
-              content: { type: 'text', text: 'after reattach' },
+              content: { type: 'text', text: 'from snapshot' },
             },
           },
-        };
-        reattachDelivered.resolve();
+        },
+      ],
+      lastEventId: 12,
+      events: async function* liveAfterReload(
+        opts: { signal?: AbortSignal } = {},
+      ) {
+        secondStreamReady.resolve();
         await new Promise<void>((resolve) => {
           if (opts.signal?.aborted) {
             resolve();
@@ -2075,20 +2079,7 @@ describe('DaemonSessionProvider', () => {
       maxReconnectDelayMs: 1,
     });
     await act(async () => {
-      await firstStreamDone.promise;
-      await flushPromises();
-    });
-    expect(blocks).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({
-          kind: 'error',
-          text: expect.stringContaining('State resync required'),
-        }),
-      ]),
-    );
-
-    await act(async () => {
-      await reattachDelivered.promise;
+      await secondStreamReady.promise;
       await flushPromises();
     });
 
@@ -2097,7 +2088,87 @@ describe('DaemonSessionProvider', () => {
       expect.arrayContaining([
         expect.objectContaining({
           kind: 'assistant',
-          text: 'after reattach',
+          text: 'from snapshot',
+        }),
+      ]),
+    );
+  });
+
+  it('recovers from ring_evicted followed by 410 via full reload', async () => {
+    const secondStreamReady = createDeferred<void>();
+    const firstSession = createMockSession({
+      sessionId: 'session-reattach',
+      lastEventId: 10,
+      events: async function* ringEvictedThenGone() {
+        yield {
+          v: 1,
+          type: 'state_resync_required',
+          data: {
+            reason: 'ring_evicted',
+            lastDeliveredId: 10,
+            earliestAvailableId: 12,
+          },
+        };
+      },
+    });
+    const secondSession = createMockSession({
+      sessionId: 'session-reattach',
+      replayEvents: [
+        {
+          id: 12,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'after reload' },
+            },
+          },
+        },
+      ],
+      lastEventId: 12,
+      events: async function* liveAfterReload(
+        opts: { signal?: AbortSignal } = {},
+      ) {
+        secondStreamReady.resolve();
+        await new Promise<void>((resolve) => {
+          if (opts.signal?.aborted) {
+            resolve();
+            return;
+          }
+          opts.signal?.addEventListener('abort', () => resolve(), {
+            once: true,
+          });
+        });
+      },
+    });
+    sdkMocks.sessions.push(firstSession, secondSession);
+
+    let blocks: readonly DaemonTranscriptBlock[] = [];
+    let awaitingResync = false;
+    function Harness() {
+      blocks = useDaemonTranscriptBlocks();
+      awaitingResync = useDaemonTranscriptState().awaitingResync;
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, {
+      autoConnect: true,
+      autoReconnect: true,
+      reconnectDelayMs: 1,
+      maxReconnectDelayMs: 1,
+    });
+    await act(async () => {
+      await secondStreamReady.promise;
+      await flushPromises();
+    });
+
+    expect(awaitingResync).toBe(false);
+    expect(blocks).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          kind: 'assistant',
+          text: 'after reload',
         }),
       ]),
     );
@@ -2128,9 +2199,7 @@ describe('DaemonSessionProvider', () => {
   }
 });
 
-function requireActions(
-  actions: DaemonUiSessionActions | undefined,
-): DaemonUiSessionActions {
+function requireActions<T>(actions: T | undefined): T {
   if (!actions) throw new Error('actions were not initialized');
   return actions;
 }
@@ -2141,6 +2210,7 @@ function createMockSession(opts: Partial<MockSession> = {}): MockSession {
     workspaceCwd: opts.workspaceCwd ?? '/mock-workspace',
     clientId: opts.clientId ?? 'client-1',
     lastEventId: opts.lastEventId,
+    replayEvents: opts.replayEvents ?? [],
     setLastEventId:
       opts.setLastEventId ??
       vi.fn((lastEventId: number | undefined) => {

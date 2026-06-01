@@ -176,6 +176,7 @@ export function DaemonSessionProvider({
     undefined,
   );
   const pendingSessionLoadIdRef = useRef(0);
+  const connectionEffectGenerationRef = useRef(0);
   const passiveAssistantDoneTimerRef = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined);
@@ -217,6 +218,7 @@ export function DaemonSessionProvider({
     }
     const abort = new AbortController();
     let disposed = false;
+    const effectGeneration = ++connectionEffectGenerationRef.current;
 
     const run = async () => {
       const client =
@@ -393,6 +395,39 @@ export function DaemonSessionProvider({
             );
           }
 
+          // Seed transcript from the HTTP-delivered replay log so the
+          // SSE subscription only needs to deliver incremental events.
+          // This avoids relying on the bounded SSE ring for long-session
+          // recovery after ring_evicted.
+          if (activeSession.replayEvents.length > 0) {
+            const eventOptions = eventOptionsRef.current;
+            let sawTerminalReplayEvent = false;
+            for (const replayEvent of activeSession.replayEvents) {
+              if (
+                replayEvent.type === 'turn_complete' ||
+                replayEvent.type === 'turn_error'
+              ) {
+                sawTerminalReplayEvent = true;
+                continue;
+              }
+              const normalized = normalizeDaemonEvent(replayEvent, {
+                clientId: activeSession.clientId,
+                suppressOwnUserEcho: eventOptions.suppressOwnUserEcho,
+                includeRawEvent: eventOptions.includeRawEvent,
+              });
+              if (normalized.length > 0) {
+                store.dispatch(normalized);
+              }
+            }
+            if (sawTerminalReplayEvent) {
+              store.dispatch({
+                type: 'assistant.done',
+                reason: 'replay_complete',
+              });
+            }
+            setConnection((c) => ({ ...c, catchingUp: undefined }));
+          }
+
           let sawEvent = false;
           let resyncRequested = false;
           for await (const event of activeSession.events({
@@ -511,7 +546,9 @@ export function DaemonSessionProvider({
                 if (reason === 'epoch_reset') {
                   store.reset();
                   activeSession.setLastEventId(0);
-                } else if (reason !== 'ring_evicted') {
+                } else {
+                  // ring_evicted and unknown reasons: reload session to
+                  // get a fresh snapshot + watermark via HTTP.
                   resyncRequested = true;
                   store.reset();
                   session = undefined;
@@ -650,11 +687,18 @@ export function DaemonSessionProvider({
       setPromptStatus('idle');
       clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
       if (pendingSessionLoadRef.current) {
-        clearTimeout(pendingSessionLoadRef.current.timeout);
-        pendingSessionLoadRef.current.reject(
-          new Error('Session load interrupted by cleanup'),
-        );
-        pendingSessionLoadRef.current = undefined;
+        const pendingLoad = pendingSessionLoadRef.current;
+        window.setTimeout(() => {
+          if (
+            connectionEffectGenerationRef.current !== effectGeneration ||
+            pendingSessionLoadRef.current !== pendingLoad
+          ) {
+            return;
+          }
+          clearTimeout(pendingLoad.timeout);
+          pendingSessionLoadRef.current = undefined;
+          pendingLoad.reject(new DOMException('Aborted', 'AbortError'));
+        }, 0);
       }
       if (session?.clientId) {
         void detachDaemonClient({

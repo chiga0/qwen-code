@@ -69,6 +69,23 @@ export interface EditorHandle {
 
 const editableCompartment = new Compartment();
 const placeholderCompartment = new Compartment();
+const LARGE_PASTE_CHAR_THRESHOLD = 1000;
+const LARGE_PASTE_LINE_THRESHOLD = 10;
+
+function normalizePastedText(text: string): string {
+  return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+}
+
+function isLargePaste(text: string): boolean {
+  return (
+    [...text].length > LARGE_PASTE_CHAR_THRESHOLD ||
+    text.split('\n').length > LARGE_PASTE_LINE_THRESHOLD
+  );
+}
+
+function escapeRegExp(text: string): string {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
 
 function getModeClass(mode: string, shellMode: boolean): string {
   if (shellMode) return '';
@@ -152,6 +169,8 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   const searchDraftRef = useRef('');
   const [pastedImages, setPastedImages] = useState<PromptImage[]>([]);
   const pastedImagesRef = useRef<PromptImage[]>([]);
+  const pendingPastesRef = useRef<Map<string, string>>(new Map());
+  const nextPasteIdRef = useRef(1);
 
   const promptHistory = useInputHistory();
   const shellHistory = useInputHistory('qwen-web-shell-command-history');
@@ -193,9 +212,43 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   useEffect(() => {
     if (!containerRef.current) return;
 
+    const createLargePastePlaceholder = (pasted: string) => {
+      const charCount = [...pasted].length;
+      const id = nextPasteIdRef.current++;
+      const base = `[Pasted Content ${charCount} chars]`;
+      const placeholderText = id === 1 ? base : `${base} #${id}`;
+      pendingPastesRef.current.set(placeholderText, pasted);
+      return placeholderText;
+    };
+
+    const prunePendingPastes = (docText: string) => {
+      for (const placeholderText of pendingPastesRef.current.keys()) {
+        if (!docText.includes(placeholderText)) {
+          pendingPastesRef.current.delete(placeholderText);
+        }
+      }
+      if (pendingPastesRef.current.size === 0) {
+        nextPasteIdRef.current = 1;
+      }
+    };
+
+    const expandLargePastePlaceholders = (text: string) => {
+      if (pendingPastesRef.current.size === 0) return text;
+      const placeholders = [...pendingPastesRef.current.keys()].sort(
+        (a, b) => b.length - a.length,
+      );
+      const pattern = new RegExp(placeholders.map(escapeRegExp).join('|'), 'g');
+      return text.replace(
+        pattern,
+        (placeholderText) =>
+          pendingPastesRef.current.get(placeholderText) ?? placeholderText,
+      );
+    };
+
     const submitText = (view: EditorView, textOverride?: string) => {
-      const text = (textOverride ?? view.state.doc.toString()).trim();
-      if (!text) return true;
+      const rawText = (textOverride ?? view.state.doc.toString()).trim();
+      if (!rawText) return true;
+      const text = expandLargePastePlaceholders(rawText);
       const images = pastedImagesRef.current;
       const isShellMode = shellModeRef.current;
       const accepted = onSubmitRef.current(
@@ -204,6 +257,8 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       );
       if (accepted === false) return true;
       onDismissFollowupRef.current?.();
+      pendingPastesRef.current.clear();
+      nextPasteIdRef.current = 1;
       if (isShellMode) {
         shellHistoryActionsRef.current.push(text);
         shellHistoryActionsRef.current.reset();
@@ -429,6 +484,7 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       if (!update.docChanged) {
         return;
       }
+      prunePendingPastes(update.state.doc.toString());
       const selection = update.state.selection.main;
       if (!selection.empty) return;
       const line = update.state.doc.lineAt(selection.head);
@@ -530,7 +586,30 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
               event.preventDefault();
               return true;
             }
-            return false;
+            const pasted = normalizePastedText(
+              event.clipboardData?.getData('text/plain') ?? '',
+            );
+            if (!pasted || !isLargePaste(pasted)) return false;
+
+            event.preventDefault();
+            if (
+              view.state.doc.toString() === '' &&
+              followupStateRef.current?.isVisible
+            ) {
+              onDismissFollowupRef.current?.();
+            }
+            const placeholderText = createLargePastePlaceholder(pasted);
+            const selection = view.state.selection.main;
+            view.dispatch({
+              changes: {
+                from: selection.from,
+                to: selection.to,
+                insert: placeholderText,
+              },
+              selection: { anchor: selection.from + placeholderText.length },
+              scrollIntoView: true,
+            });
+            return true;
           },
         }),
         EditorView.theme({
