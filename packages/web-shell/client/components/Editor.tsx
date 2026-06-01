@@ -484,7 +484,9 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
       if (!update.docChanged) {
         return;
       }
-      prunePendingPastes(update.state.doc.toString());
+      if (pendingPastesRef.current.size > 0) {
+        prunePendingPastes(update.state.doc.toString());
+      }
       const selection = update.state.selection.main;
       if (!selection.empty) return;
       const line = update.state.doc.lineAt(selection.head);

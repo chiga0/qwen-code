@@ -7,6 +7,7 @@
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 import type { BridgeEvent } from './eventBus.js';
+import { writeStderrLine } from './internal/stderrLine.js';
 
 export interface ReplayStore {
   append(event: BridgeEvent): void;
@@ -65,16 +66,25 @@ export class FileReplayStore implements ReplayStore {
   private readonly sessionId: string;
   private readonly filePath: string;
   private readonly deleteOnClose: boolean;
+  private readonly pendingEvents: BridgeEvent[] = [];
   private readonly fallbackEvents: BridgeEvent[] = [];
+  private stream: fs.WriteStream | undefined;
   private failed = false;
   private closed = false;
+  private warnedReadFailure = false;
+  private warnedMalformedLine = false;
 
   constructor(opts: FileReplayStoreOptions) {
     this.dir = opts.dir;
     this.sessionId = opts.sessionId;
     this.filePath = fileReplayStorePath(this.dir, this.sessionId);
     this.deleteOnClose = opts.deleteOnClose ?? true;
-    fs.mkdirSync(this.dir, { recursive: true });
+    fs.mkdirSync(this.dir, { recursive: true, mode: 0o700 });
+    try {
+      fs.chmodSync(this.dir, 0o700);
+    } catch {
+      // Best effort: the file itself is still created with 0600 below.
+    }
   }
 
   append(event: BridgeEvent): void {
@@ -83,14 +93,22 @@ export class FileReplayStore implements ReplayStore {
       this.fallbackEvents.push(event);
       return;
     }
+    this.pendingEvents.push(event);
     try {
-      fs.appendFileSync(this.filePath, `${JSON.stringify(event)}\n`, 'utf8');
-    } catch {
+      const stream = this.ensureStream();
+      stream.write(`${JSON.stringify(event)}\n`, 'utf8', (error) => {
+        if (this.failed || this.closed) return;
+        const persistedEvent = this.pendingEvents.shift();
+        if (error) {
+          if (persistedEvent) this.fallbackEvents.push(persistedEvent);
+          this.failWrites(error);
+        }
+      });
+    } catch (error) {
       // `EventBus.publish()` is a never-throw hot path. If the temporary
       // replay file becomes unavailable, preserve correctness for the current
       // process by falling back to memory for events after the failure.
-      this.failed = true;
-      this.fallbackEvents.push(event);
+      this.failWrites(error);
     }
   }
 
@@ -103,29 +121,103 @@ export class FileReplayStore implements ReplayStore {
           if (!line) continue;
           try {
             events.push(JSON.parse(line) as BridgeEvent);
-          } catch {
+          } catch (error) {
             // A malformed temp replay line should not make `/load` fail.
             // The store is best-effort runtime state; later valid lines still
             // carry useful UI history.
+            if (!this.warnedMalformedLine) {
+              this.warnedMalformedLine = true;
+              writeStderrLine(
+                `qwen serve: replay cache contains malformed JSONL for ` +
+                  `session ${JSON.stringify(this.sessionId)} at ` +
+                  `${JSON.stringify(this.filePath)}; skipping malformed line: ` +
+                  `${formatReplayStoreError(error)}`,
+              );
+            }
           }
         }
       }
-    } catch {
+    } catch (error) {
       // Fall through to whatever fallback events we still have in memory.
+      if (!this.warnedReadFailure) {
+        this.warnedReadFailure = true;
+        writeStderrLine(
+          `qwen serve: replay cache read failed for session ` +
+            `${JSON.stringify(this.sessionId)} at ${JSON.stringify(this.filePath)}; ` +
+            `using in-memory fallback only: ${formatReplayStoreError(error)}`,
+        );
+      }
     }
-    return events.concat(this.fallbackEvents);
+    return appendUniqueEvents(events, [
+      ...this.pendingEvents,
+      ...this.fallbackEvents,
+    ]);
   }
 
   close(): void {
     if (this.closed) return;
     this.closed = true;
+    this.stream?.destroy();
+    this.stream = undefined;
     if (this.deleteOnClose) {
       deleteFileReplayStore(this.dir, this.sessionId);
     }
+    this.pendingEvents.length = 0;
     this.fallbackEvents.length = 0;
+  }
+
+  private ensureStream(): fs.WriteStream {
+    if (this.stream) return this.stream;
+    const stream = fs.createWriteStream(this.filePath, {
+      flags: 'a',
+      encoding: 'utf8',
+      mode: 0o600,
+    });
+    stream.on('error', (error) => {
+      this.failWrites(error);
+    });
+    this.stream = stream;
+    return stream;
+  }
+
+  private failWrites(error: unknown): void {
+    if (this.failed || this.closed) return;
+    this.failed = true;
+    writeStderrLine(
+      `qwen serve: replay cache write failed for session ` +
+        `${JSON.stringify(this.sessionId)} at ${JSON.stringify(this.filePath)}; ` +
+        `falling back to in-memory replay: ${formatReplayStoreError(error)}`,
+    );
+    this.fallbackEvents.push(...this.pendingEvents.splice(0));
+    this.stream?.destroy();
+    this.stream = undefined;
   }
 }
 
 function safeFileSegment(value: string): string {
   return value.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
+function formatReplayStoreError(error: unknown): string {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function appendUniqueEvents(
+  persistedEvents: BridgeEvent[],
+  volatileEvents: BridgeEvent[],
+): BridgeEvent[] {
+  const out = persistedEvents.slice();
+  const seenIds = new Set(
+    persistedEvents
+      .map((event) => event.id)
+      .filter((id): id is number => typeof id === 'number'),
+  );
+  for (const event of volatileEvents) {
+    if (typeof event.id === 'number') {
+      if (seenIds.has(event.id)) continue;
+      seenIds.add(event.id);
+    }
+    out.push(event);
+  }
+  return out;
 }

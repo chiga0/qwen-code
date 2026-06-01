@@ -218,7 +218,7 @@ export function DaemonSessionProvider({
     }
     const abort = new AbortController();
     let disposed = false;
-    const effectGeneration = ++connectionEffectGenerationRef.current;
+    connectionEffectGenerationRef.current++;
 
     const run = async () => {
       const client =
@@ -235,6 +235,7 @@ export function DaemonSessionProvider({
       while (!disposed && !abort.signal.aborted) {
         try {
           let isSameSessionReconnect = false;
+          let shouldSeedReplayEvents = false;
           if (!session) {
             setConnection((current) => ({
               ...current,
@@ -311,6 +312,7 @@ export function DaemonSessionProvider({
               previousSessionId !== undefined &&
               previousSessionId === nextSession.sessionId;
             session = nextSession;
+            shouldSeedReplayEvents = true;
             reconnectSessionId = session.sessionId;
             shouldCreateFreshSession = false;
             lastSessionIdRef.current = session.sessionId;
@@ -399,17 +401,18 @@ export function DaemonSessionProvider({
           // SSE subscription only needs to deliver incremental events.
           // This avoids relying on the bounded SSE ring for long-session
           // recovery after ring_evicted.
-          if (activeSession.replayEvents.length > 0) {
+          if (shouldSeedReplayEvents && activeSession.replayEvents.length > 0) {
             const eventOptions = eventOptionsRef.current;
-            let sawTerminalReplayEvent = false;
+            let lastReplayEventWasTerminal = false;
             for (const replayEvent of activeSession.replayEvents) {
               if (
                 replayEvent.type === 'turn_complete' ||
                 replayEvent.type === 'turn_error'
               ) {
-                sawTerminalReplayEvent = true;
+                lastReplayEventWasTerminal = true;
                 continue;
               }
+              lastReplayEventWasTerminal = false;
               const normalized = normalizeDaemonEvent(replayEvent, {
                 clientId: activeSession.clientId,
                 suppressOwnUserEcho: eventOptions.suppressOwnUserEcho,
@@ -419,7 +422,8 @@ export function DaemonSessionProvider({
                 store.dispatch(normalized);
               }
             }
-            if (sawTerminalReplayEvent) {
+            activeSession.replayEvents.length = 0;
+            if (lastReplayEventWasTerminal) {
               store.dispatch({
                 type: 'assistant.done',
                 reason: 'replay_complete',
@@ -689,10 +693,7 @@ export function DaemonSessionProvider({
       if (pendingSessionLoadRef.current) {
         const pendingLoad = pendingSessionLoadRef.current;
         window.setTimeout(() => {
-          if (
-            connectionEffectGenerationRef.current !== effectGeneration ||
-            pendingSessionLoadRef.current !== pendingLoad
-          ) {
+          if (pendingSessionLoadRef.current !== pendingLoad) {
             return;
           }
           clearTimeout(pendingLoad.timeout);

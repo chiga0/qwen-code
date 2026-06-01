@@ -1286,6 +1286,7 @@ describe('DaemonSessionProvider', () => {
             once: true,
           });
         });
+        yield* [];
       },
     });
     sdkMocks.sessions.push(session);
@@ -1306,6 +1307,117 @@ describe('DaemonSessionProvider', () => {
     expect(streamingState).toBe('responding');
     expect(blocks).toMatchObject([
       { kind: 'assistant', text: 'still running', streaming: true },
+    ]);
+  });
+
+  it('does not replay-seed the same session again after a normal SSE reconnect', async () => {
+    let eventSubscriptions = 0;
+    const session = createMockSession({
+      replayEvents: [
+        {
+          id: 1,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'seeded once' },
+            },
+          },
+        },
+      ],
+      events: async function* reconnectingStream() {
+        yield* [] as DaemonEvent[];
+        eventSubscriptions++;
+      },
+    });
+    sdkMocks.sessions.push(session);
+    let blocks: readonly DaemonTranscriptBlock[] = [];
+
+    function Harness() {
+      blocks = useDaemonTranscriptBlocks();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, {
+      autoConnect: true,
+      autoReconnect: true,
+      reconnectDelayMs: 1,
+      maxReconnectDelayMs: 1,
+    });
+    await act(async () => {
+      await wait(10);
+      await flushPromises();
+    });
+
+    expect(eventSubscriptions).toBeGreaterThan(1);
+    expect(blocks.filter((block) => block.kind === 'assistant')).toMatchObject([
+      { kind: 'assistant', text: 'seeded once' },
+    ]);
+  });
+
+  it('keeps replay-seeded assistant streaming when only an earlier turn is terminal', async () => {
+    const session = createMockSession({
+      replayEvents: [
+        {
+          id: 1,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'finished turn' },
+            },
+          },
+        },
+        {
+          id: 2,
+          v: 1,
+          type: 'turn_complete',
+          data: { stopReason: 'end_turn' },
+        },
+        {
+          id: 3,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'active turn' },
+            },
+          },
+        },
+      ],
+      events: async function* idleAfterReplay(
+        opts: { signal?: AbortSignal } = {},
+      ) {
+        yield* [] as DaemonEvent[];
+        await new Promise<void>((resolve) => {
+          if (opts.signal?.aborted) {
+            resolve();
+            return;
+          }
+          opts.signal?.addEventListener('abort', () => resolve(), {
+            once: true,
+          });
+        });
+      },
+    });
+    sdkMocks.sessions.push(session);
+    let blocks: readonly DaemonTranscriptBlock[] = [];
+
+    function Harness() {
+      blocks = useDaemonTranscriptBlocks();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, { autoConnect: true });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(blocks).toMatchObject([
+      { kind: 'assistant', text: 'finished turnactive turn', streaming: true },
     ]);
   });
 
@@ -2060,6 +2172,7 @@ describe('DaemonSessionProvider', () => {
             once: true,
           });
         });
+        yield* [];
       },
     });
     sdkMocks.sessions.push(firstSession, secondSession);
@@ -2140,6 +2253,7 @@ describe('DaemonSessionProvider', () => {
             once: true,
           });
         });
+        yield* [];
       },
     });
     sdkMocks.sessions.push(firstSession, secondSession);

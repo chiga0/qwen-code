@@ -7,13 +7,13 @@
 import * as fs from 'node:fs/promises';
 import * as os from 'node:os';
 import * as path from 'node:path';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import {
   EventBus,
   EVENT_SCHEMA_VERSION,
   type BridgeEvent,
 } from './eventBus.js';
-import { FileReplayStore } from './replayStore.js';
+import { FileReplayStore, fileReplayStorePath } from './replayStore.js';
 
 async function collect(
   iter: AsyncIterable<BridgeEvent>,
@@ -824,5 +824,125 @@ describe('EventBus', () => {
         await fs.rm(dir, { recursive: true, force: true });
       }
     });
+
+    it('falls back to memory when file-backed replay writes fail', async () => {
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'event-bus-replay-'));
+      const stderrSpy = vi
+        .spyOn(process.stderr, 'write')
+        .mockImplementation(() => true);
+      try {
+        const bus = new EventBus(
+          2,
+          undefined,
+          new FileReplayStore({ dir, sessionId: 'session-write-fail' }),
+        );
+        await fs.rm(dir, { recursive: true, force: true });
+
+        bus.publish({ type: 'session_update', data: { i: 1 } });
+        bus.publish({ type: 'session_update', data: { i: 2 } });
+
+        await waitFor(() =>
+          stderrSpy.mock.calls.some((call) =>
+            String(call[0]).includes('replay cache write failed'),
+          ),
+        );
+        expect(bus.snapshotReplayLog().map((event) => event.id)).toEqual([
+          1, 2,
+        ]);
+        expect(
+          stderrSpy.mock.calls.some((call) =>
+            String(call[0]).includes('replay cache write failed'),
+          ),
+        ).toBe(true);
+        bus.close();
+      } finally {
+        stderrSpy.mockRestore();
+        await fs.rm(dir, { recursive: true, force: true });
+      }
+    });
+
+    it('skips malformed file-backed replay lines and keeps valid events', async () => {
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'event-bus-replay-'));
+      const stderrSpy = vi
+        .spyOn(process.stderr, 'write')
+        .mockImplementation(() => true);
+      try {
+        const store = new FileReplayStore({
+          dir,
+          sessionId: 'session-bad-line',
+        });
+        const filePath = fileReplayStorePath(dir, 'session-bad-line');
+        await fs.writeFile(
+          filePath,
+          [
+            JSON.stringify({ id: 1, v: 1, type: 'session_update', data: 'ok' }),
+            '{bad json',
+            JSON.stringify({
+              id: 2,
+              v: 1,
+              type: 'session_update',
+              data: 'still ok',
+            }),
+            '',
+          ].join('\n'),
+          'utf8',
+        );
+
+        expect(store.snapshot().map((event) => event.id)).toEqual([1, 2]);
+        expect(
+          stderrSpy.mock.calls.some((call) =>
+            String(call[0]).includes('malformed JSONL'),
+          ),
+        ).toBe(true);
+        store.close();
+      } finally {
+        stderrSpy.mockRestore();
+        await fs.rm(dir, { recursive: true, force: true });
+      }
+    });
+
+    it('creates file-backed replay directories and files with private permissions', async () => {
+      if (process.platform === 'win32') return;
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'event-bus-replay-'));
+      try {
+        const store = new FileReplayStore({
+          dir,
+          sessionId: 'session-private',
+        });
+        store.append({ id: 1, v: 1, type: 'session_update', data: {} });
+        const filePath = fileReplayStorePath(dir, 'session-private');
+        await waitFor(async () => {
+          await fs.access(filePath);
+          return true;
+        });
+
+        const dirMode = (await fs.stat(dir)).mode & 0o777;
+        const fileMode = (await fs.stat(filePath)).mode & 0o777;
+        expect(dirMode).toBe(0o700);
+        expect(fileMode).toBe(0o600);
+        store.close();
+      } finally {
+        await fs.rm(dir, { recursive: true, force: true });
+      }
+    });
   });
 });
+
+async function waitFor(
+  predicate: () => boolean | Promise<boolean>,
+): Promise<void> {
+  let lastError: unknown;
+  for (let i = 0; i < 20; i++) {
+    try {
+      if (await predicate()) return;
+    } catch (error) {
+      lastError = error;
+    }
+    await new Promise((resolve) => setTimeout(resolve, 5));
+  }
+  try {
+    expect(await predicate()).toBe(true);
+  } catch (error) {
+    throw lastError ?? error;
+  }
+}
