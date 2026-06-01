@@ -221,6 +221,15 @@ export interface HttpAcpBridge {
   ): Promise<void>;
 
   /**
+   * Remove the daemon replay cache for a session if it exists.
+   *
+   * Live close/kill paths normally delete the cache through EventBus.close().
+   * This hook covers persisted-session deletion, where the session may no
+   * longer have a live EventBus in memory.
+   */
+  deleteSessionReplayCache(sessionId: string): void;
+
+  /**
    * Update mutable session metadata. Currently supports `displayName` only.
    * Throws `SessionNotFoundError` for unknown ids.
    */

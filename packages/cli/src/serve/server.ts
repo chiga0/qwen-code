@@ -1435,10 +1435,13 @@ export function createServeApp(
       }
       if (!res.writable) {
         if (daemonLog) {
-          daemonLog.warn('session reaped (client disconnected before response)', {
-            sessionId: session.sessionId,
-            attached: session.attached,
-          });
+          daemonLog.warn(
+            'session reaped (client disconnected before response)',
+            {
+              sessionId: session.sessionId,
+              attached: session.attached,
+            },
+          );
         }
         if (!session.attached) {
           // `requireZeroAttaches: true` closes the BQ9tV race: if
@@ -1886,6 +1889,13 @@ export function createServeApp(
       const result = await new SessionService(boundWorkspace).removeSessions(
         closedIds,
       );
+      for (const id of [...result.removed, ...result.notFound]) {
+        // `closeSession()` deletes the replay cache for live sessions through
+        // EventBus.close(). Batch delete also handles inactive persisted
+        // sessions, so clean by id here to remove any stale replay file that
+        // no live EventBus owns anymore.
+        bridge.deleteSessionReplayCache(id);
+      }
       for (const e of result.errors) {
         const msg =
           e.error instanceof Error ? e.error.message : String(e.error);

@@ -4,12 +4,16 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import * as fs from 'node:fs/promises';
+import * as os from 'node:os';
+import * as path from 'node:path';
 import { describe, it, expect } from 'vitest';
 import {
   EventBus,
   EVENT_SCHEMA_VERSION,
   type BridgeEvent,
 } from './eventBus.js';
+import { FileReplayStore } from './replayStore.js';
 
 async function collect(
   iter: AsyncIterable<BridgeEvent>,
@@ -797,6 +801,28 @@ describe('EventBus', () => {
 
       expect(a).not.toBe(b);
       expect(a).toEqual(b);
+    });
+
+    it('can read full replay history from a file-backed store', async () => {
+      const dir = await fs.mkdtemp(path.join(os.tmpdir(), 'event-bus-replay-'));
+      try {
+        const bus = new EventBus(
+          2,
+          undefined,
+          new FileReplayStore({ dir, sessionId: 'session-a' }),
+        );
+        for (let i = 0; i < 5; i++) {
+          bus.publish({ type: 'session_update', data: { i } });
+        }
+
+        expect(bus.snapshotRing().map((event) => event.id)).toEqual([4, 5]);
+        expect(bus.snapshotReplayLog().map((event) => event.id)).toEqual([
+          1, 2, 3, 4, 5,
+        ]);
+        bus.close();
+      } finally {
+        await fs.rm(dir, { recursive: true, force: true });
+      }
     });
   });
 });

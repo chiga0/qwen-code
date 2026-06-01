@@ -19,6 +19,8 @@
  *     Aborting the supplied AbortSignal closes the iterator promptly.
  */
 
+import { InMemoryReplayStore, type ReplayStore } from './replayStore.js';
+
 export const EVENT_SCHEMA_VERSION = 1 as const;
 
 /** A single frame published on the bus. */
@@ -160,13 +162,13 @@ export class SubscriberLimitExceededError extends Error {
 export class EventBus {
   private nextId = 1;
   private readonly ring: BridgeEvent[] = [];
-  private readonly replayLog: BridgeEvent[] = [];
   private readonly subs = new Set<InternalSub>();
   private closed = false;
 
   constructor(
     private readonly ringSize: number = DEFAULT_RING_SIZE,
     private readonly maxSubscribers: number = DEFAULT_MAX_SUBSCRIBERS,
+    private readonly replayStore: ReplayStore = new InMemoryReplayStore(),
   ) {}
 
   /** Most recent id ever assigned by `publish`. 0 if no events published. */
@@ -187,7 +189,7 @@ export class EventBus {
    * full transcript even after the SSE ring has evicted older frames.
    */
   snapshotReplayLog(): BridgeEvent[] {
-    return this.replayLog.slice();
+    return this.replayStore.snapshot();
   }
 
   /** Snapshot of the live subscriber count. */
@@ -228,7 +230,7 @@ export class EventBus {
       ...input,
     };
     this.ring.push(event);
-    this.replayLog.push(event);
+    this.replayStore.append(event);
     // Eviction-by-shift is O(n) once the ring is full. At the current
     // default `ringSize=8000` (#3803 §02) the per-publish shift work
     // measures in low milliseconds on chatty sessions — still well
@@ -568,6 +570,7 @@ export class EventBus {
     this.closed = true;
     for (const sub of this.subs) sub.queue.close();
     this.subs.clear();
+    this.replayStore.close();
   }
 }
 
