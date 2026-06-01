@@ -1416,8 +1416,49 @@ describe('DaemonSessionProvider', () => {
       await flushPromises();
     });
 
-    expect(blocks).toMatchObject([
-      { kind: 'assistant', text: 'finished turnactive turn', streaming: true },
+    expect(blocks.filter((block) => block.kind === 'assistant')).toMatchObject([
+      { kind: 'assistant', text: 'finished turn', streaming: false },
+      { kind: 'assistant', text: 'active turn', streaming: true },
+    ]);
+  });
+
+  it('finishes replay-seeded assistant when the replay tail is terminal', async () => {
+    const session = createMockSession({
+      replayEvents: [
+        {
+          id: 1,
+          v: 1,
+          type: 'session_update',
+          data: {
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: 'done turn' },
+            },
+          },
+        },
+        {
+          id: 2,
+          v: 1,
+          type: 'turn_complete',
+          data: { stopReason: 'end_turn' },
+        },
+      ],
+    });
+    sdkMocks.sessions.push(session);
+    let blocks: readonly DaemonTranscriptBlock[] = [];
+
+    function Harness() {
+      blocks = useDaemonTranscriptBlocks();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, { autoConnect: true });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(blocks.filter((block) => block.kind === 'assistant')).toMatchObject([
+      { kind: 'assistant', text: 'done turn', streaming: false },
     ]);
   });
 

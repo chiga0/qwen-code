@@ -188,8 +188,8 @@ export class EventBus {
    * need an authoritative replay source so a refreshed UI can rebuild the
    * full transcript even after the SSE ring has evicted older frames.
    */
-  snapshotReplayLog(): BridgeEvent[] {
-    return this.replayStore.snapshot();
+  async snapshotReplayLog(): Promise<BridgeEvent[]> {
+    return await this.replayStore.snapshot();
   }
 
   /** Snapshot of the live subscriber count. */

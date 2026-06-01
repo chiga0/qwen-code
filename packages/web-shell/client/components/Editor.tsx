@@ -72,11 +72,11 @@ const placeholderCompartment = new Compartment();
 const LARGE_PASTE_CHAR_THRESHOLD = 1000;
 const LARGE_PASTE_LINE_THRESHOLD = 10;
 
-function normalizePastedText(text: string): string {
+export function normalizePastedText(text: string): string {
   return text.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
 }
 
-function isLargePaste(text: string): boolean {
+export function isLargePaste(text: string): boolean {
   return (
     [...text].length > LARGE_PASTE_CHAR_THRESHOLD ||
     text.split('\n').length > LARGE_PASTE_LINE_THRESHOLD
@@ -85,6 +85,50 @@ function isLargePaste(text: string): boolean {
 
 function escapeRegExp(text: string): string {
   return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+export interface LargePastePlaceholderResult {
+  placeholderText: string;
+  nextPasteId: number;
+}
+
+export function createLargePastePlaceholder(
+  pendingPastes: Map<string, string>,
+  nextPasteId: number,
+  pasted: string,
+): LargePastePlaceholderResult {
+  const charCount = [...pasted].length;
+  const base = `[Pasted Content ${charCount} chars]`;
+  const placeholderText = nextPasteId === 1 ? base : `${base} #${nextPasteId}`;
+  pendingPastes.set(placeholderText, pasted);
+  return { placeholderText, nextPasteId: nextPasteId + 1 };
+}
+
+export function prunePendingPastes(
+  pendingPastes: Map<string, string>,
+  docText: string,
+): number | null {
+  for (const placeholderText of pendingPastes.keys()) {
+    if (!docText.includes(placeholderText)) {
+      pendingPastes.delete(placeholderText);
+    }
+  }
+  return pendingPastes.size === 0 ? 1 : null;
+}
+
+export function expandLargePastePlaceholders(
+  pendingPastes: Map<string, string>,
+  text: string,
+): string {
+  if (pendingPastes.size === 0) return text;
+  const placeholders = [...pendingPastes.keys()].sort(
+    (a, b) => b.length - a.length,
+  );
+  const pattern = new RegExp(placeholders.map(escapeRegExp).join('|'), 'g');
+  return text.replace(
+    pattern,
+    (placeholderText) => pendingPastes.get(placeholderText) ?? placeholderText,
+  );
 }
 
 function getModeClass(mode: string, shellMode: boolean): string {
@@ -212,43 +256,13 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
   useEffect(() => {
     if (!containerRef.current) return;
 
-    const createLargePastePlaceholder = (pasted: string) => {
-      const charCount = [...pasted].length;
-      const id = nextPasteIdRef.current++;
-      const base = `[Pasted Content ${charCount} chars]`;
-      const placeholderText = id === 1 ? base : `${base} #${id}`;
-      pendingPastesRef.current.set(placeholderText, pasted);
-      return placeholderText;
-    };
-
-    const prunePendingPastes = (docText: string) => {
-      for (const placeholderText of pendingPastesRef.current.keys()) {
-        if (!docText.includes(placeholderText)) {
-          pendingPastesRef.current.delete(placeholderText);
-        }
-      }
-      if (pendingPastesRef.current.size === 0) {
-        nextPasteIdRef.current = 1;
-      }
-    };
-
-    const expandLargePastePlaceholders = (text: string) => {
-      if (pendingPastesRef.current.size === 0) return text;
-      const placeholders = [...pendingPastesRef.current.keys()].sort(
-        (a, b) => b.length - a.length,
-      );
-      const pattern = new RegExp(placeholders.map(escapeRegExp).join('|'), 'g');
-      return text.replace(
-        pattern,
-        (placeholderText) =>
-          pendingPastesRef.current.get(placeholderText) ?? placeholderText,
-      );
-    };
-
     const submitText = (view: EditorView, textOverride?: string) => {
       const rawText = (textOverride ?? view.state.doc.toString()).trim();
       if (!rawText) return true;
-      const text = expandLargePastePlaceholders(rawText);
+      const text = expandLargePastePlaceholders(
+        pendingPastesRef.current,
+        rawText,
+      );
       const images = pastedImagesRef.current;
       const isShellMode = shellModeRef.current;
       const accepted = onSubmitRef.current(
@@ -485,7 +499,13 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
         return;
       }
       if (pendingPastesRef.current.size > 0) {
-        prunePendingPastes(update.state.doc.toString());
+        const nextPasteId = prunePendingPastes(
+          pendingPastesRef.current,
+          update.state.doc.toString(),
+        );
+        if (nextPasteId !== null) {
+          nextPasteIdRef.current = nextPasteId;
+        }
       }
       const selection = update.state.selection.main;
       if (!selection.empty) return;
@@ -600,7 +620,13 @@ export const Editor = forwardRef<EditorHandle, EditorProps>(function Editor(
             ) {
               onDismissFollowupRef.current?.();
             }
-            const placeholderText = createLargePastePlaceholder(pasted);
+            const { placeholderText, nextPasteId } =
+              createLargePastePlaceholder(
+                pendingPastesRef.current,
+                nextPasteIdRef.current,
+                pasted,
+              );
+            nextPasteIdRef.current = nextPasteId;
             const selection = view.state.selection.main;
             view.dispatch({
               changes: {

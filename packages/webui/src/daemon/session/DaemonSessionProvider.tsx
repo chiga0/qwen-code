@@ -176,7 +176,9 @@ export function DaemonSessionProvider({
     undefined,
   );
   const pendingSessionLoadIdRef = useRef(0);
-  const connectionEffectGenerationRef = useRef(0);
+  const replaySeededSessionsRef = useRef<WeakSet<DaemonSessionClient>>(
+    new WeakSet(),
+  );
   const passiveAssistantDoneTimerRef = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined);
@@ -218,7 +220,6 @@ export function DaemonSessionProvider({
     }
     const abort = new AbortController();
     let disposed = false;
-    connectionEffectGenerationRef.current++;
 
     const run = async () => {
       const client =
@@ -235,7 +236,6 @@ export function DaemonSessionProvider({
       while (!disposed && !abort.signal.aborted) {
         try {
           let isSameSessionReconnect = false;
-          let shouldSeedReplayEvents = false;
           if (!session) {
             setConnection((current) => ({
               ...current,
@@ -312,7 +312,6 @@ export function DaemonSessionProvider({
               previousSessionId !== undefined &&
               previousSessionId === nextSession.sessionId;
             session = nextSession;
-            shouldSeedReplayEvents = true;
             reconnectSessionId = session.sessionId;
             shouldCreateFreshSession = false;
             lastSessionIdRef.current = session.sessionId;
@@ -401,18 +400,27 @@ export function DaemonSessionProvider({
           // SSE subscription only needs to deliver incremental events.
           // This avoids relying on the bounded SSE ring for long-session
           // recovery after ring_evicted.
-          if (shouldSeedReplayEvents && activeSession.replayEvents.length > 0) {
+          if (
+            !replaySeededSessionsRef.current.has(activeSession) &&
+            activeSession.replayEvents.length > 0
+          ) {
+            replaySeededSessionsRef.current.add(activeSession);
             const eventOptions = eventOptionsRef.current;
-            let lastReplayEventWasTerminal = false;
+            let seededEventCount = 0;
             for (const replayEvent of activeSession.replayEvents) {
-              if (
-                replayEvent.type === 'turn_complete' ||
-                replayEvent.type === 'turn_error'
-              ) {
-                lastReplayEventWasTerminal = true;
+              if (replayEvent.type === 'turn_complete') {
+                const stopReason =
+                  (replayEvent.data as DaemonTurnCompleteData | undefined)
+                    ?.stopReason ?? 'replay_complete';
+                store.dispatch({ type: 'assistant.done', reason: stopReason });
+                setPromptStatus('idle');
                 continue;
               }
-              lastReplayEventWasTerminal = false;
+              if (replayEvent.type === 'turn_error') {
+                store.dispatch({ type: 'assistant.done', reason: 'error' });
+                setPromptStatus('idle');
+                continue;
+              }
               const normalized = normalizeDaemonEvent(replayEvent, {
                 clientId: activeSession.clientId,
                 suppressOwnUserEcho: eventOptions.suppressOwnUserEcho,
@@ -421,13 +429,11 @@ export function DaemonSessionProvider({
               if (normalized.length > 0) {
                 store.dispatch(normalized);
               }
-            }
-            activeSession.replayEvents.length = 0;
-            if (lastReplayEventWasTerminal) {
-              store.dispatch({
-                type: 'assistant.done',
-                reason: 'replay_complete',
-              });
+              seededEventCount++;
+              if (seededEventCount % 100 === 0) {
+                if (disposed || abort.signal.aborted) return;
+                await delay(0, abort.signal);
+              }
             }
             setConnection((c) => ({ ...c, catchingUp: undefined }));
           }

@@ -1779,14 +1779,17 @@ export function createHttpAcpBridge(opts: BridgeOptions): HttpAcpBridge {
     }
     const workspaceKey = resolveWorkspaceKey(req.workspaceCwd);
 
-    const replayFieldsFor = (
+    const replayFieldsFor = async (
       entry: SessionEntry,
-    ): Pick<BridgeRestoredSession, 'lastEventId' | 'replayEvents'> => ({
-      lastEventId: entry.events.lastEventId,
-      ...(action === 'load'
-        ? { replayEvents: entry.events.snapshotReplayLog() }
-        : {}),
-    });
+    ): Promise<Pick<BridgeRestoredSession, 'lastEventId' | 'replayEvents'>> => {
+      const lastEventId = entry.events.lastEventId;
+      return {
+        lastEventId,
+        ...(action === 'load'
+          ? { replayEvents: await entry.events.snapshotReplayLog() }
+          : {}),
+      };
+    };
 
     const existing = byId.get(req.sessionId);
     if (existing) {
@@ -1801,7 +1804,7 @@ export function createHttpAcpBridge(opts: BridgeOptions): HttpAcpBridge {
         // Late attachers get the same ACP state the original restore
         // caller saw; spawn-only sessions don't carry a state payload.
         state: existing.restoreState ?? {},
-        ...replayFieldsFor(existing),
+        ...(await replayFieldsFor(existing)),
       };
     }
 
@@ -1985,7 +1988,7 @@ export function createHttpAcpBridge(opts: BridgeOptions): HttpAcpBridge {
           clientId,
           createdAt: racedEntry.createdAt,
           state: racedEntry.restoreState ?? {},
-          ...replayFieldsFor(racedEntry),
+          ...(await replayFieldsFor(racedEntry)),
         };
       }
 
@@ -2019,7 +2022,7 @@ export function createHttpAcpBridge(opts: BridgeOptions): HttpAcpBridge {
         clientId,
         createdAt: entry.createdAt,
         state,
-        ...replayFieldsFor(entry),
+        ...(await replayFieldsFor(entry)),
       };
     })().finally(() => {
       ci?.pendingRestoreIds.delete(req.sessionId);

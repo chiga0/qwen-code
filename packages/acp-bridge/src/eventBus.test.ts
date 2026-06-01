@@ -776,14 +776,14 @@ describe('EventBus', () => {
   });
 
   describe('snapshotReplayLog', () => {
-    it('keeps the full replay history after the SSE ring evicts frames', () => {
+    it('keeps the full replay history after the SSE ring evicts frames', async () => {
       const bus = new EventBus(3);
       for (let i = 0; i < 7; i++) {
         bus.publish({ type: 'session_update', data: { i } });
       }
 
       const ring = bus.snapshotRing();
-      const replayLog = bus.snapshotReplayLog();
+      const replayLog = await bus.snapshotReplayLog();
 
       expect(ring).toHaveLength(3);
       expect(ring[0]!.id).toBe(5);
@@ -792,12 +792,12 @@ describe('EventBus', () => {
       expect(replayLog[6]!.id).toBe(7);
     });
 
-    it('returns a defensive copy', () => {
+    it('returns a defensive copy', async () => {
       const bus = new EventBus(5);
       bus.publish({ type: 'foo', data: {} });
 
-      const a = bus.snapshotReplayLog();
-      const b = bus.snapshotReplayLog();
+      const a = await bus.snapshotReplayLog();
+      const b = await bus.snapshotReplayLog();
 
       expect(a).not.toBe(b);
       expect(a).toEqual(b);
@@ -816,9 +816,9 @@ describe('EventBus', () => {
         }
 
         expect(bus.snapshotRing().map((event) => event.id)).toEqual([4, 5]);
-        expect(bus.snapshotReplayLog().map((event) => event.id)).toEqual([
-          1, 2, 3, 4, 5,
-        ]);
+        expect(
+          (await bus.snapshotReplayLog()).map((event) => event.id),
+        ).toEqual([1, 2, 3, 4, 5]);
         bus.close();
       } finally {
         await fs.rm(dir, { recursive: true, force: true });
@@ -846,9 +846,9 @@ describe('EventBus', () => {
             String(call[0]).includes('replay cache write failed'),
           ),
         );
-        expect(bus.snapshotReplayLog().map((event) => event.id)).toEqual([
-          1, 2,
-        ]);
+        expect(
+          (await bus.snapshotReplayLog()).map((event) => event.id),
+        ).toEqual([1, 2]);
         expect(
           stderrSpy.mock.calls.some((call) =>
             String(call[0]).includes('replay cache write failed'),
@@ -888,7 +888,9 @@ describe('EventBus', () => {
           'utf8',
         );
 
-        expect(store.snapshot().map((event) => event.id)).toEqual([1, 2]);
+        expect((await store.snapshot()).map((event) => event.id)).toEqual([
+          1, 2,
+        ]);
         expect(
           stderrSpy.mock.calls.some((call) =>
             String(call[0]).includes('malformed JSONL'),
