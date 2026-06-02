@@ -601,6 +601,7 @@ const PERSIST_TIMEOUT_MS = 5_000;
  * as long as the slowest legitimate per-server discovery.
  */
 const MCP_RESTART_TIMEOUT_MS = 300_000;
+const MCP_OAUTH_TIMEOUT_MS = 600_000;
 /**
  * Backstop timeout for `qwen/control/session/recap`. The underlying
  * side-query is single-attempt with `maxOutputTokens: 300`, so a
@@ -3847,13 +3848,17 @@ export function createHttpAcpBridge(opts: BridgeOptions): HttpAcpBridge {
       if (!info) {
         throw new SessionNotFoundError(`mcp:${serverName}`);
       }
+      const timeout =
+        action === 'authenticate'
+          ? MCP_OAUTH_TIMEOUT_MS
+          : MCP_RESTART_TIMEOUT_MS;
       const response = (await Promise.race([
         withTimeout(
           info.connection.extMethod(
             SERVE_CONTROL_EXT_METHODS.workspaceMcpManage,
             { serverName, action, originatorClientId },
           ),
-          MCP_RESTART_TIMEOUT_MS,
+          timeout,
           SERVE_CONTROL_EXT_METHODS.workspaceMcpManage,
         ),
         getChannelClosedReject(info),
