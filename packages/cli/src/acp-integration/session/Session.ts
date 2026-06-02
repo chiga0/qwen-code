@@ -138,6 +138,13 @@ import {
 
 const debugLogger = createDebugLogger('SESSION');
 
+function maskApiKeyForDisplay(apiKey: string | undefined): string {
+  const trimmed = apiKey?.trim() ?? '';
+  if (trimmed.length === 0) return '(not set)';
+  if (trimmed.length <= 6) return '***';
+  return `${trimmed.slice(0, 3)}...${trimmed.slice(-4)}`;
+}
+
 type AutoCompressionSendResult =
   | { responseStream: AsyncGenerator<StreamEvent>; stopReason?: never }
   | { responseStream: null; stopReason: PromptResponse['stopReason'] };
@@ -284,6 +291,7 @@ export class Session implements SessionContext {
    */
   private followupAbort: AbortController | null = null;
   private turn: number = 0;
+  private readonly createdAt: number = Date.now();
   private readonly runtimeBaseDir: string;
 
   // Cron scheduling state
@@ -344,6 +352,14 @@ export class Session implements SessionContext {
 
   getConfig(): Config {
     return this.config;
+  }
+
+  getTurnCount(): number {
+    return this.turn;
+  }
+
+  getCreatedAt(): number {
+    return this.createdAt;
   }
 
   /**
@@ -1806,6 +1822,10 @@ export class Session implements SessionContext {
         : undefined,
     );
 
+    const after = this.config.getContentGeneratorConfig?.();
+    const effectiveAuthType = after?.authType ?? selectedAuthType;
+    const effectiveModelId = after?.model ?? parsed.modelId;
+
     // A1 (#4511): notify attached clients of an in-session model switch so a
     // `/model` slash command or plan-mode change reaches the bus (today only
     // the HTTP `POST /session/:id/model` path publishes `model_switched`).
@@ -1820,7 +1840,7 @@ export class Session implements SessionContext {
       .extNotification('qwen/notify/session/model-update', {
         v: 1,
         sessionId: this.sessionId,
-        currentModelId: parsed.modelId,
+        currentModelId: effectiveModelId,
       })
       .catch(() => {
         // Advisory only; a failed notification must not fail the model switch.
@@ -1835,6 +1855,18 @@ export class Session implements SessionContext {
         selectedAuthType,
       );
     }
+
+    return {
+      _meta: {
+        qwenModelSwitch: {
+          authType: effectiveAuthType,
+          modelId: effectiveModelId,
+          baseUrl: after?.baseUrl ?? '(default)',
+          apiKey: maskApiKeyForDisplay(after?.apiKey),
+          isRuntime: rawModelId.startsWith('$runtime|'),
+        },
+      },
+    };
   }
 
   /**
