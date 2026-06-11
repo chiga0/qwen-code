@@ -64,6 +64,27 @@ describe('daemon UI normalizer and transcript reducer', () => {
     ]);
   });
 
+  it('preserves status source in transcript blocks', () => {
+    const state = reduceDaemonTranscriptEvents(
+      createDaemonTranscriptState({ now: 100 }),
+      [
+        {
+          type: 'status',
+          text: 'Conversation rewound.',
+          source: 'conversation_rewind',
+        },
+      ],
+    );
+
+    expect(state.blocks).toEqual([
+      expect.objectContaining({
+        kind: 'status',
+        text: 'Conversation rewound.',
+        source: 'conversation_rewind',
+      }),
+    ]);
+  });
+
   it('keeps optimistic local user blocks before daemon replies when sorting', () => {
     let state = createDaemonTranscriptState({ now: 1 });
     state = appendLocalUserTranscriptMessage(state, 'hello', { now: 10 });
@@ -4952,6 +4973,29 @@ describe('R5 review batch — coverage additions', () => {
     } as never);
     expect(events).toHaveLength(1);
     expect(events[0]?.type).toBe('debug');
+  });
+
+  it('normalizes session_rewound as a typed event', () => {
+    const events = normalizeDaemonEvent({
+      id: 1,
+      v: 1,
+      type: 'session_rewound',
+      data: {
+        sessionId: 'session-1',
+        targetTurnIndex: 1,
+        filesChanged: [],
+        filesFailed: [],
+      },
+    });
+    expect(events).toEqual([
+      expect.objectContaining({
+        type: 'session.rewound',
+        sessionId: 'session-1',
+        targetTurnIndex: 1,
+        filesChanged: [],
+        filesFailed: [],
+      }),
+    ]);
   });
 
   it('store.clearAwaitingResync clears latch', async () => {

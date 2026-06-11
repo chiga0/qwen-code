@@ -635,7 +635,7 @@ export interface DaemonTurnErrorData {
 
 export interface DaemonSessionRewoundData {
   sessionId: string;
-  promptId: string;
+  promptId?: string;
   targetTurnIndex: number;
   filesChanged: string[];
   filesFailed: string[];
@@ -1445,7 +1445,7 @@ function isSessionRewoundData(
   return (
     isRecord(value) &&
     isNonEmptyString(value['sessionId']) &&
-    isNonEmptyString(value['promptId']) &&
+    (value['promptId'] === undefined || isNonEmptyString(value['promptId'])) &&
     isFiniteNumber(value['targetTurnIndex']) &&
     Array.isArray(value['filesChanged']) &&
     Array.isArray(value['filesFailed'])

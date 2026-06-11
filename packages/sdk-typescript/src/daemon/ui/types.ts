@@ -37,6 +37,7 @@ export type DaemonUiEventType =
   | 'session.available_commands'
   | 'session.state_resync_required'
   | 'session.replay_complete'
+  | 'session.rewound'
   // Prompt lifecycle (cross-client)
   | 'prompt.cancelled'
   // Daemon assist push (server-side ghost-text suggestion)
@@ -211,6 +212,7 @@ export interface DaemonUiModelChangedEvent extends DaemonUiEventBase {
 export interface DaemonUiStatusEvent extends DaemonUiEventBase {
   type: 'status' | 'debug';
   text: string;
+  source?: 'conversation_rewind';
 }
 
 export interface DaemonUiErrorEvent extends DaemonUiEventBase {
@@ -324,6 +326,14 @@ export interface DaemonUiReplayCompleteEvent extends DaemonUiEventBase {
   replayedCount: number;
   /** Highest event id delivered in the replay, when any frames replayed. */
   lastReplayedEventId?: number;
+}
+
+export interface DaemonUiSessionRewoundEvent extends DaemonUiEventBase {
+  type: 'session.rewound';
+  sessionId: string;
+  targetTurnIndex: number;
+  filesChanged: string[];
+  filesFailed: string[];
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -466,6 +476,7 @@ export type DaemonUiEvent =
   | DaemonUiSessionAvailableCommandsEvent
   | DaemonUiStateResyncRequiredEvent
   | DaemonUiReplayCompleteEvent
+  | DaemonUiSessionRewoundEvent
   // Prompt lifecycle (cross-client)
   | DaemonUiPromptCancelledEvent
   // Daemon assist push (server-side ghost-text suggestion)
@@ -744,7 +755,7 @@ export interface DaemonStatusTranscriptBlock extends DaemonTranscriptBlockBase {
   text: string;
   code?: string;
   promptId?: string;
-  source?: 'turn_error';
+  source?: 'turn_error' | 'conversation_rewind';
 }
 
 export interface DaemonPromptCancelledTranscriptBlock

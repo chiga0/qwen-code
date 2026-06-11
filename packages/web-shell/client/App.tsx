@@ -16,10 +16,12 @@ import {
   useTranscriptBlocks,
   useTranscriptStore,
   useWorkspaceActions,
+  isDaemonTurnError,
   type DaemonSessionNotice,
+  type DaemonTranscriptBlock,
   type DaemonStreamingState,
+  type DaemonRewindSnapshotInfo,
 } from '@qwen-code/webui/daemon-react-sdk';
-import { isDaemonTurnError } from '@qwen-code/sdk/daemon';
 import { extractPendingPermission } from './adapters/transcriptAdapter';
 import { MessageList, type MessageListHandle } from './components/MessageList';
 import { Editor, type EditorHandle } from './components/Editor';
@@ -39,6 +41,11 @@ import {
   ApprovalModeMessage,
 } from './components/messages/ApprovalModeMessage';
 import { ResumeDialog } from './components/dialogs/ResumeDialog';
+import {
+  RewindDialog,
+  type RewindRestoreOption,
+  type RewindTarget,
+} from './components/dialogs/RewindDialog';
 import {
   AGENTS_ACTIVE_EVENT,
   AgentsMessage,
@@ -144,6 +151,33 @@ const MAX_QUEUED_PROMPT_PREVIEW_CHARS = 240;
 const MAX_TOASTS = 4;
 const COMPACT_MODE_SETTING_KEY = 'ui.compactMode';
 const HIDE_TIPS_SETTING_KEY = 'ui.hideTips';
+const SLASH_PATH_SEPARATOR_RE = /[/\\]/;
+
+function isSlashCommandPrompt(text: string): boolean {
+  if (!text.startsWith('/')) return false;
+  if (text.startsWith('//') || text.startsWith('/*')) return false;
+  const firstToken = text.slice(1).trimStart().split(/\s+/u)[0] ?? '';
+  return !SLASH_PATH_SEPARATOR_RE.test(firstToken);
+}
+
+function buildRewindTargets(
+  snapshots: readonly DaemonRewindSnapshotInfo[],
+  blocks: readonly DaemonTranscriptBlock[],
+): RewindTarget[] {
+  const userBlocks = blocks.filter(
+    (block): block is Extract<DaemonTranscriptBlock, { kind: 'user' }> =>
+      block.kind === 'user' &&
+      block.text.trim().length > 0 &&
+      !isSlashCommandPrompt(block.text) &&
+      !block.text.startsWith('?'),
+  );
+  return [...snapshots]
+    .sort((a, b) => a.turnIndex - b.turnIndex)
+    .flatMap((snapshot) => {
+      const text = userBlocks[snapshot.turnIndex]?.text.trim();
+      return text ? [{ ...snapshot, text }] : [];
+    });
+}
 
 function normalizeHiddenCommand(command: string): string {
   return command.trim().replace(/^\/+/, '').toLowerCase();
@@ -738,6 +772,12 @@ export function App({
     useState<ModelInlineMode | null>(null);
   const [approvalModeInlineOpen, setApprovalModeInlineOpen] = useState(false);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
+  const [showRewindDialog, setShowRewindDialog] = useState(false);
+  const [rewindSnapshots, setRewindSnapshots] = useState<
+    DaemonRewindSnapshotInfo[]
+  >([]);
+  const [rewindLoading, setRewindLoading] = useState(false);
+  const [rewindError, setRewindError] = useState<string | undefined>();
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showReleaseDialog, setShowReleaseDialog] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
@@ -755,6 +795,10 @@ export function App({
     useState<AgentsInitialMode | null>(null);
   const [memoryPortalHost, setMemoryPortalHost] =
     useState<HTMLDivElement | null>(null);
+  const rewindTargets = useMemo(
+    () => buildRewindTargets(rewindSnapshots, messageBlocks),
+    [rewindSnapshots, messageBlocks],
+  );
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [escapeHintVisible, setEscapeHintVisible] = useState(false);
   const escPressCountRef = useRef(0);
@@ -785,6 +829,7 @@ export function App({
   const drainingQueueRef = useRef(false);
   const dialogOpen =
     showResumeDialog ||
+    showRewindDialog ||
     showDeleteDialog ||
     showReleaseDialog ||
     showHelpDialog ||
@@ -1513,6 +1558,41 @@ export function App({
   );
   const hideSettings = hiddenCommands.has('settings');
 
+  const openRewindDialog = useCallback(() => {
+    setShowRewindDialog(true);
+    setRewindLoading(true);
+    setRewindError(undefined);
+    sessionActions
+      .getRewindSnapshots()
+      .then(({ snapshots }) => {
+        setRewindSnapshots(snapshots);
+      })
+      .catch((error: unknown) => {
+        const message =
+          error instanceof Error
+            ? error.message
+            : 'Failed to load rewind turns';
+        setRewindError(message);
+      })
+      .finally(() => {
+        setRewindLoading(false);
+      });
+  }, [sessionActions]);
+
+  const handleRewind = useCallback(
+    (target: RewindTarget, option: RewindRestoreOption) =>
+      sessionActions
+        .rewind(
+          target.turnIndex,
+          option === 'both' ? target.promptId : undefined,
+        )
+        .catch((error: unknown) => {
+          reportError(error, 'Failed to rewind session');
+          throw error;
+        }),
+    [reportError, sessionActions],
+  );
+
   const handleSubmit = useCallback(
     (text: string, images?: PromptImage[]) => {
       const promptBlocked = streamingStateRef.current !== 'idle';
@@ -1924,6 +2004,14 @@ export function App({
             }
             return true;
           }
+          if (cmd === 'rewind') {
+            if (promptBlocked) {
+              store.dispatch([{ type: 'error', text: t('rewind.blocked') }]);
+              return true;
+            }
+            openRewindDialog();
+            return true;
+          }
           if (cmd === 'recap') {
             runVisibleRecap();
             return true;
@@ -2101,6 +2189,7 @@ export function App({
       handleSetMode,
       handleLanguageChange,
       hideSettings,
+      openRewindDialog,
       pushToast,
       reportError,
       runVisibleRecap,
@@ -2432,6 +2521,15 @@ export function App({
                       });
                   }}
                   onClose={() => setShowResumeDialog(false)}
+                />
+              )}
+              {showRewindDialog && (
+                <RewindDialog
+                  targets={rewindTargets}
+                  loading={rewindLoading}
+                  error={rewindError}
+                  onRewind={handleRewind}
+                  onClose={() => setShowRewindDialog(false)}
                 />
               )}
               {showDeleteDialog && (

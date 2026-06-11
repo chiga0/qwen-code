@@ -925,9 +925,7 @@ function appendStatusBlock(
     ...(event?.type === 'error' && event.promptId
       ? { promptId: event.promptId }
       : {}),
-    ...(event?.type === 'error' && event.source
-      ? { source: event.source }
-      : {}),
+    ...(event?.source ? { source: event.source } : {}),
   };
   appendBlock(state, block);
   if (opts.clearActiveText !== false) clearActiveText(state);

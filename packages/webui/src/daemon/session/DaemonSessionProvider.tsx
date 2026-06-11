@@ -154,6 +154,7 @@ const INITIAL_WORKSPACE_EVENT_SIGNALS: DaemonWorkspaceEventSignals = {
  * behavior, unless the caller opts into leaving missing sessions disconnected.
  */
 const AUTH_FAILURE_HTTP_STATUSES = new Set([401, 403]);
+const REWIND_STATUS_TEXT = 'Conversation rewound.';
 
 export function DaemonSessionProvider({
   baseUrl,
@@ -200,6 +201,7 @@ export function DaemonSessionProvider({
     undefined,
   );
   const pendingSessionLoadIdRef = useRef(0);
+  const pendingRewindNoticeRef = useRef(false);
   const passiveAssistantDoneTimerRef = useRef<
     ReturnType<typeof setTimeout> | undefined
   >(undefined);
@@ -640,6 +642,14 @@ export function DaemonSessionProvider({
             }
             setConnection((c) => ({ ...c, catchingUp: undefined }));
           }
+          if (pendingRewindNoticeRef.current) {
+            pendingRewindNoticeRef.current = false;
+            store.dispatch({
+              type: 'status',
+              text: REWIND_STATUS_TEXT,
+              source: 'conversation_rewind',
+            });
+          }
           if (pendingLoadToResolve) {
             pendingSessionLoadRef.current = undefined;
             clearTimeout(pendingLoadToResolve.timeout);
@@ -689,6 +699,19 @@ export function DaemonSessionProvider({
                   epochReplaySourceEvents = [];
                   continue;
                 }
+              }
+              if (event.type === 'session_rewound') {
+                store.reset();
+                pendingRewindNoticeRef.current = true;
+                resyncRequested = true;
+                session = undefined;
+                sessionRef.current = undefined;
+                setConnection((current) => ({
+                  ...current,
+                  status: 'connecting',
+                  error: undefined,
+                }));
+                break;
               }
               if (epochReplayUiEvents) {
                 epochReplaySourceEvents.push(event);
