@@ -747,7 +747,12 @@ export class Session implements SessionContext {
     // is NOT excluded.
     if (isSystemReminderContent(content)) return false;
 
-    return content.parts.some((part) => 'text' in part && part.text);
+    return content.parts.some(
+      (part) =>
+        'text' in part &&
+        typeof part.text === 'string' &&
+        part.text.trim().length > 0,
+    );
   }
 
   #getUserText(content: Content): string {

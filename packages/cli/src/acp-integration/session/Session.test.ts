@@ -572,6 +572,29 @@ describe('Session', () => {
       expect(mockChat.truncateHistory).toHaveBeenCalledWith(4);
     });
 
+    it('does not count whitespace-only user messages as rewindable turns', () => {
+      const history: Content[] = [
+        { role: 'user', parts: [{ text: 'first' }] },
+        { role: 'model', parts: [{ text: 'first reply' }] },
+        { role: 'user', parts: [{ text: '   ' }] },
+        { role: 'model', parts: [{ text: 'ignored reply' }] },
+        { role: 'user', parts: [{ text: 'second' }] },
+        { role: 'model', parts: [{ text: 'second reply' }] },
+      ];
+      vi.mocked(mockChat.getHistory).mockReturnValue(history);
+      vi.mocked(mockChat.getHistoryShallow).mockReturnValue(history);
+
+      const turns = session.getRewindableTurns();
+      const result = session.rewindToTurn(1);
+
+      expect(turns).toEqual([
+        { turnIndex: 0, text: 'first' },
+        { turnIndex: 1, text: 'second' },
+      ]);
+      expect(result).toEqual({ targetTurnIndex: 1, apiTruncateIndex: 4 });
+      expect(mockChat.truncateHistory).toHaveBeenCalledWith(4);
+    });
+
     it('rejects unreachable user turns', () => {
       const history: Content[] = [{ role: 'user', parts: [{ text: 'first' }] }];
       vi.mocked(mockChat.getHistory).mockReturnValue(history);

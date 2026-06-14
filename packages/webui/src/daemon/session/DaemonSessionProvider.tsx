@@ -280,6 +280,7 @@ export function DaemonSessionProvider({
       let reconnectSessionId = restoreSessionId;
       let shouldCreateFreshSession = !restoreSessionId && newSessionNonce > 0;
       let reconnectAttempt = 0;
+      let skipReconnectDelay = false;
 
       while (!disposed && !abort.signal.aborted) {
         try {
@@ -720,9 +721,13 @@ export function DaemonSessionProvider({
                   message: REWIND_STATUS_TEXT,
                   recoverable: true,
                 });
+                setPromptStatus('idle');
+                clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
+                activePromptsRef.current.delete(activeSession.sessionId);
                 store.reset();
                 pendingRewindNoticeRef.current = true;
                 resyncRequested = true;
+                skipReconnectDelay = true;
                 session = undefined;
                 sessionRef.current = undefined;
                 setConnection((current) => ({
@@ -1035,19 +1040,23 @@ export function DaemonSessionProvider({
           return;
         }
 
-        reconnectAttempt += 1;
-        const reconnectConfig = reconnectConfigRef.current;
-        const delayMs = getReconnectDelayMs(
-          reconnectAttempt,
-          reconnectConfig.reconnectDelayMs,
-          reconnectConfig.maxReconnectDelayMs,
-        );
-        setConnection((current) => ({
-          ...current,
-          status: 'disconnected',
-          error: `Reconnecting in ${delayMs}ms`,
-        }));
-        await delay(delayMs, abort.signal);
+        if (skipReconnectDelay) {
+          skipReconnectDelay = false;
+        } else {
+          reconnectAttempt += 1;
+          const reconnectConfig = reconnectConfigRef.current;
+          const delayMs = getReconnectDelayMs(
+            reconnectAttempt,
+            reconnectConfig.reconnectDelayMs,
+            reconnectConfig.maxReconnectDelayMs,
+          );
+          setConnection((current) => ({
+            ...current,
+            status: 'disconnected',
+            error: `Reconnecting in ${delayMs}ms`,
+          }));
+          await delay(delayMs, abort.signal);
+        }
       }
     };
 

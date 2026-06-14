@@ -5062,7 +5062,7 @@ class QwenAgent implements Agent {
               ...(snapshot ? { promptId: snapshot.promptId } : {}),
               turnIndex,
               text,
-              timestamp: (snapshot?.timestamp ?? new Date()).toISOString(),
+              timestamp: (snapshot?.timestamp ?? new Date(0)).toISOString(),
               diffStats: {
                 filesChanged: stats?.filesChanged?.length ?? 0,
                 insertions: stats?.insertions ?? 0,
@@ -6051,7 +6051,7 @@ class QwenAgent implements Agent {
           | undefined;
         const promptId = params['promptId'] as string | undefined;
 
-        if (promptId && (turnIndex === undefined || turnIndex === null)) {
+        if (promptId) {
           const prefix = sessionId + '########';
           if (!promptId.startsWith(prefix)) {
             throw new RequestError(-32602, 'Invalid promptId format', {
@@ -6092,15 +6092,24 @@ class QwenAgent implements Agent {
           const suffixTurnIndex = suffixIndex - 1;
           const canFallbackByPosition =
             fileSnapshots.length === rewindableTurns.length;
-          turnIndex = rewindableTurnIndices.has(suffixTurnIndex)
+          const mappedTurnIndex = rewindableTurnIndices.has(suffixTurnIndex)
             ? suffixTurnIndex
             : canFallbackByPosition
               ? snapshotIdx
               : -1;
-          if (turnIndex < 0) {
+          if (mappedTurnIndex < 0) {
             throw new RequestError(
               -32602,
               'Snapshot cannot be mapped to a rewindable turn',
+              { errorKind: 'invalid_rewind_target' },
+            );
+          }
+          if (turnIndex === undefined || turnIndex === null) {
+            turnIndex = mappedTurnIndex;
+          } else if (turnIndex !== mappedTurnIndex) {
+            throw new RequestError(
+              -32602,
+              'promptId does not match targetTurnIndex',
               { errorKind: 'invalid_rewind_target' },
             );
           }

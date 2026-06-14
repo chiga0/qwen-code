@@ -4455,6 +4455,56 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
     await agentPromise;
   });
 
+  it('rewindSession rejects mismatched promptId and targetTurnIndex', async () => {
+    const sessionId = '11111111-1111-1111-1111-111111111111';
+    const innerConfig = await setupSessionMocks(sessionId);
+    const prefix = `${sessionId}########`;
+    vi.mocked(innerConfig.getFileHistoryService).mockReturnValue({
+      getSnapshots: vi.fn().mockReturnValue([
+        {
+          promptId: `${prefix}3`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-03T00:00:00.000Z'),
+        },
+      ]),
+      getDiffStats: vi.fn(),
+      rewind: vi.fn(),
+    });
+
+    const agentPromise = runAcpAgent(
+      mockConfig,
+      makeSessionSettings(),
+      mockArgv,
+    );
+    await vi.waitFor(() => expect(capturedAgentFactory).toBeDefined());
+
+    const agent = capturedAgentFactory!({
+      get closed() {
+        return mockConnectionState.promise;
+      },
+    }) as AgentLike;
+
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    vi.mocked(lastSessionMock!.getRewindableTurns).mockReturnValue([
+      { turnIndex: 0, text: 'first' },
+      { turnIndex: 1, text: 'second' },
+      { turnIndex: 2, text: 'third' },
+    ]);
+
+    await expect(
+      agent.extMethod('rewindSession', {
+        sessionId,
+        targetTurnIndex: 0,
+        promptId: `${prefix}3`,
+        cwd: '/tmp',
+      }),
+    ).rejects.toThrow('promptId does not match targetTurnIndex');
+    expect(lastSessionMock?.rewindToTurn).not.toHaveBeenCalled();
+
+    mockConnectionState.resolve();
+    await agentPromise;
+  });
+
   it('rewindSession rejects stale promptId fallback when snapshots have gaps', async () => {
     const sessionId = '11111111-1111-1111-1111-111111111111';
     const innerConfig = await setupSessionMocks(sessionId);

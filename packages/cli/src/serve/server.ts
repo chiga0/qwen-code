@@ -2790,7 +2790,17 @@ export function createServeApp(
       const body = safeBody(req);
       const promptId = body['promptId'];
       const targetTurnIndex = body['targetTurnIndex'];
-      const hasPromptId = typeof promptId === 'string' && promptId.length > 0;
+      const hasPromptId =
+        typeof promptId === 'string' &&
+        promptId.length > 0 &&
+        promptId.length <= 512;
+      if (promptId !== undefined && !hasPromptId) {
+        res.status(400).json({
+          error: '`promptId` must be a non-empty string up to 512 characters',
+          code: 'invalid_prompt_id',
+        });
+        return;
+      }
       const hasTargetTurnIndex =
         typeof targetTurnIndex === 'number' &&
         Number.isInteger(targetTurnIndex) &&

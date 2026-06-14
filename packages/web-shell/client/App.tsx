@@ -1558,11 +1558,10 @@ export function App({
           target.turnIndex,
           option === 'both' ? target.promptId : undefined,
         )
-        .then((result) => {
+        .then(() => {
           editorRef.current?.clearText();
           editorRef.current?.insertText(target.text);
           editorRef.current?.focus();
-          return result;
         })
         .catch((error: unknown) => {
           reportError(error, 'Failed to rewind session');

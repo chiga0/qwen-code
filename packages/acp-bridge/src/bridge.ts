@@ -4271,8 +4271,6 @@ export function createAcpSessionBridge(opts: BridgeOptions): AcpSessionBridge {
       const filesChanged = (response['filesChanged'] as string[]) ?? [];
       const filesFailed = (response['filesFailed'] as string[]) ?? [];
 
-      entry.events.rewindReplay(targetTurnIndex);
-
       try {
         entry.events.publish({
           type: 'session_rewound',
