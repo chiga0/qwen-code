@@ -215,6 +215,39 @@ const debugLogger = createDebugLogger('ACP_AGENT');
 // aborts before the bridge's backstop timer fires.
 const BTW_CHILD_TIMEOUT_MS = 55_000;
 
+function getPromptSuffixTurnIndex(
+  promptId: string,
+  prefix: string,
+): number | undefined {
+  if (!promptId.startsWith(prefix)) return undefined;
+  const suffix = promptId.slice(prefix.length);
+  return /^\d+$/.test(suffix) ? Number(suffix) - 1 : undefined;
+}
+
+function canFallbackRewindSnapshotsByPosition(
+  fileSnapshots: ReadonlyArray<{ promptId: string }>,
+  rewindableTurns: ReadonlyArray<{ turnIndex: number }>,
+  rewindableTurnIndices: ReadonlySet<number>,
+  prefix: string,
+): boolean {
+  return (
+    fileSnapshots.length === rewindableTurns.length &&
+    fileSnapshots.every((snapshot, idx) => {
+      const turnIndex = rewindableTurns[idx]?.turnIndex;
+      const suffixTurnIndex = getPromptSuffixTurnIndex(
+        snapshot.promptId,
+        prefix,
+      );
+      return (
+        turnIndex !== undefined &&
+        suffixTurnIndex !== undefined &&
+        (suffixTurnIndex === turnIndex ||
+          !rewindableTurnIndices.has(suffixTurnIndex))
+      );
+    })
+  );
+}
+
 function sanitizeProviderBaseUrl(baseUrl: string): string {
   const scheme = baseUrl.match(/^[A-Za-z][A-Za-z\d+.-]*:\/\//);
   if (!scheme) {
@@ -5032,14 +5065,13 @@ class QwenAgent implements Agent {
           rewindableTurns.map(({ turnIndex }) => turnIndex),
         );
         const fileSnapshots = snapshots.filter(
-          (s) =>
-            s.promptId.startsWith(prefix) &&
-            /^\d+$/.test(s.promptId.slice(prefix.length)),
+          (s) => getPromptSuffixTurnIndex(s.promptId, prefix) !== undefined,
         );
         const fileSnapshotsByTurn = new Map<number, (typeof snapshots)[number]>(
           fileSnapshots
             .map(
-              (s) => [Number(s.promptId.slice(prefix.length)) - 1, s] as const,
+              (s) =>
+                [getPromptSuffixTurnIndex(s.promptId, prefix)!, s] as const,
             )
             .filter(([turnIndex]) => rewindableTurnIndices.has(turnIndex)),
         );
@@ -5047,9 +5079,15 @@ class QwenAgent implements Agent {
         // After a rewind, new prompt ids keep increasing, so their suffixes no
         // longer map to current 0-based turn indexes. In that case we may only
         // fall back to insertion order when every rewindable turn still has a
-        // file snapshot; gaps would make positional fallback ambiguous.
-        const canFallbackByPosition =
-          fileSnapshots.length === rewindableTurns.length;
+        // file snapshot, and any suffix that still points at a current turn is
+        // already in the matching slot. Gaps or collisions make fallback
+        // ambiguous.
+        const canFallbackByPosition = canFallbackRewindSnapshotsByPosition(
+          fileSnapshots,
+          rewindableTurns,
+          rewindableTurnIndices,
+          prefix,
+        );
         const results = await Promise.all(
           rewindableTurns.map(async ({ turnIndex, text }) => {
             const snapshot =
@@ -6070,9 +6108,7 @@ class QwenAgent implements Agent {
           const fileSnapshots = fhs
             .getSnapshots()
             .filter(
-              (s) =>
-                s.promptId.startsWith(prefix) &&
-                /^\d+$/.test(s.promptId.slice(prefix.length)),
+              (s) => getPromptSuffixTurnIndex(s.promptId, prefix) !== undefined,
             );
           const snapshotIdx = fileSnapshots.findIndex(
             (s) => s.promptId === promptId,
@@ -6090,8 +6126,12 @@ class QwenAgent implements Agent {
             rewindableTurns.map((turn) => turn.turnIndex),
           );
           const suffixTurnIndex = suffixIndex - 1;
-          const canFallbackByPosition =
-            fileSnapshots.length === rewindableTurns.length;
+          const canFallbackByPosition = canFallbackRewindSnapshotsByPosition(
+            fileSnapshots,
+            rewindableTurns,
+            rewindableTurnIndices,
+            prefix,
+          );
           const mappedTurnIndex = rewindableTurnIndices.has(suffixTurnIndex)
             ? suffixTurnIndex
             : canFallbackByPosition

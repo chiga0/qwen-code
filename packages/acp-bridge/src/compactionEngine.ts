@@ -81,11 +81,10 @@ export class TurnBoundaryCompactionEngine implements CompactionEngine {
 
     if (event.type === 'session_rewound') {
       const targetTurnIndex = getRewindTargetTurnIndex(event);
-      if (targetTurnIndex !== undefined) {
-        this.rewindToTurn(targetTurnIndex);
-        if (event.id !== undefined) {
-          this.lastEventId = event.id;
-        }
+      const rewound =
+        targetTurnIndex !== undefined && this.rewindToTurn(targetTurnIndex);
+      if (!rewound) {
+        return;
       }
       this.liveJournal.push(event);
       return;
@@ -124,13 +123,15 @@ export class TurnBoundaryCompactionEngine implements CompactionEngine {
     this.textSlotIndex.clear();
   }
 
-  rewindToTurn(targetTurnIndex: number): void {
-    if (this.closed) return;
-    if (!Number.isInteger(targetTurnIndex) || targetTurnIndex < 0) return;
+  rewindToTurn(targetTurnIndex: number): boolean {
+    if (this.closed) return false;
+    if (!Number.isInteger(targetTurnIndex) || targetTurnIndex < 0) {
+      return false;
+    }
 
     let completedUserTurns = 0;
     let activeUserTurn = false;
-    let truncateIndex = -1;
+    let truncateIndex = targetTurnIndex === 0 ? 0 : -1;
 
     for (let i = 0; i < this.compactedTurns.length; i++) {
       const event = this.compactedTurns[i]!;
@@ -147,7 +148,7 @@ export class TurnBoundaryCompactionEngine implements CompactionEngine {
       }
     }
 
-    if (truncateIndex < 0) return;
+    if (truncateIndex < 0) return false;
 
     this.compactedTurns = this.compactedTurns.slice(0, truncateIndex);
     this.liveJournal = [];
@@ -157,6 +158,7 @@ export class TurnBoundaryCompactionEngine implements CompactionEngine {
     const lastKeptId = this.compactedTurns.at(-1)?.id;
     this.lastEventId =
       typeof lastKeptId === 'number' ? lastKeptId : this.lastEventId;
+    return true;
   }
 
   close(): void {

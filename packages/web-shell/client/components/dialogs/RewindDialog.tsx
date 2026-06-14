@@ -69,6 +69,7 @@ export function RewindDialog({
   const [confirmTarget, setConfirmTarget] = useState<RewindTarget | null>(null);
   const [restoreOptionIdx, setRestoreOptionIdx] = useState(0);
   const [restoring, setRestoring] = useState(false);
+  const [rewindError, setRewindError] = useState<string | undefined>();
   const restoringRef = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
   const restoreOptions = confirmTarget
@@ -89,19 +90,25 @@ export function RewindDialog({
     el?.scrollIntoView({ block: 'nearest' });
   }, [selectedIdx]);
 
+  useEffect(() => {
+    setRewindError(undefined);
+  }, [confirmTarget]);
+
   const startRewind = useCallback(
     (target: RewindTarget, option: RewindRestoreOption) => {
       if (restoringRef.current) return;
       restoringRef.current = true;
       setRestoring(true);
+      setRewindError(undefined);
       onRewind(target, option)
         .then(() => {
           restoringRef.current = false;
           onClose();
         })
-        .catch(() => {
+        .catch((err: unknown) => {
           restoringRef.current = false;
           setRestoring(false);
+          setRewindError(err instanceof Error ? err.message : 'Rewind failed');
         });
     },
     [onClose, onRewind],
@@ -270,6 +277,9 @@ export function RewindDialog({
             <div className={dp('resume-picker-description')}>
               {t('rewind.restoring')}
             </div>
+          )}
+          {!restoring && rewindError && (
+            <div className={dp('resume-picker-description')}>{rewindError}</div>
           )}
         </div>
       ) : (

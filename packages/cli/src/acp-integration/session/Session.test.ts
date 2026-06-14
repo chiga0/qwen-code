@@ -572,6 +572,25 @@ describe('Session', () => {
       expect(mockChat.truncateHistory).toHaveBeenCalledWith(4);
     });
 
+    it('omits system-reminder parts from rewindable turn text', () => {
+      const history: Content[] = [
+        {
+          role: 'user',
+          parts: [
+            {
+              text: `${SYSTEM_REMINDER_OPEN}\nstartup context\n${SYSTEM_REMINDER_CLOSE}\n\nfirst`,
+            },
+          ],
+        },
+        { role: 'model', parts: [{ text: 'first reply' }] },
+      ];
+      vi.mocked(mockChat.getHistoryShallow).mockReturnValue(history);
+
+      expect(session.getRewindableTurns()).toEqual([
+        { turnIndex: 0, text: 'first' },
+      ]);
+    });
+
     it('does not count whitespace-only user messages as rewindable turns', () => {
       const history: Content[] = [
         { role: 'user', parts: [{ text: 'first' }] },

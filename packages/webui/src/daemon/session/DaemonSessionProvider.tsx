@@ -725,6 +725,11 @@ export function DaemonSessionProvider({
                 clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
                 activePromptsRef.current.delete(activeSession.sessionId);
                 store.reset();
+                store.dispatch({
+                  type: 'status',
+                  text: REWIND_STATUS_TEXT,
+                  source: 'conversation_rewind',
+                });
                 pendingRewindNoticeRef.current = true;
                 resyncRequested = true;
                 skipReconnectDelay = true;

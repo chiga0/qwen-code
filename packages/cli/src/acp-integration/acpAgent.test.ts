@@ -4399,6 +4399,78 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
     await agentPromise;
   });
 
+  it('rewind snapshots use positional fallback for post-rewind prompt ids', async () => {
+    const sessionId = '11111111-1111-1111-1111-111111111111';
+    const innerConfig = await setupSessionMocks(sessionId);
+    const prefix = `${sessionId}########`;
+    const getDiffStats = vi.fn(async (promptId: string) =>
+      promptId === `${prefix}5`
+        ? { filesChanged: ['after-rewind.ts'], insertions: 4, deletions: 2 }
+        : undefined,
+    );
+    vi.mocked(innerConfig.getFileHistoryService).mockReturnValue({
+      getSnapshots: vi.fn().mockReturnValue([
+        {
+          promptId: `${prefix}1`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-01T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}2`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-02T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}5`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-05T00:00:00.000Z'),
+        },
+      ]),
+      getDiffStats,
+      rewind: vi.fn(),
+    });
+
+    const agentPromise = runAcpAgent(
+      mockConfig,
+      makeSessionSettings(),
+      mockArgv,
+    );
+    await vi.waitFor(() => expect(capturedAgentFactory).toBeDefined());
+
+    const agent = capturedAgentFactory!({
+      get closed() {
+        return mockConnectionState.promise;
+      },
+    }) as AgentLike;
+
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    vi.mocked(lastSessionMock!.getRewindableTurns).mockReturnValue([
+      { turnIndex: 0, text: 'first' },
+      { turnIndex: 1, text: 'second' },
+      { turnIndex: 2, text: 'third after rewind' },
+    ]);
+
+    const response = await agent.extMethod(
+      SERVE_STATUS_EXT_METHODS.sessionRewindSnapshots,
+      { sessionId },
+    );
+
+    expect(response).toMatchObject({
+      snapshots: [
+        { turnIndex: 0, promptId: `${prefix}1` },
+        { turnIndex: 1, promptId: `${prefix}2` },
+        {
+          turnIndex: 2,
+          promptId: `${prefix}5`,
+          diffStats: { filesChanged: 1, insertions: 4, deletions: 2 },
+        },
+      ],
+    });
+
+    mockConnectionState.resolve();
+    await agentPromise;
+  });
+
   it('rewindSession resolves promptId suffixes before snapshot positions', async () => {
     const sessionId = '11111111-1111-1111-1111-111111111111';
     const innerConfig = await setupSessionMocks(sessionId);
@@ -4450,6 +4522,65 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
     });
 
     expect(lastSessionMock?.rewindToTurn).toHaveBeenCalledWith(2);
+
+    mockConnectionState.resolve();
+    await agentPromise;
+  });
+
+  it('rewindSession rejects positional fallback when suffixes collide with current turns', async () => {
+    const sessionId = '11111111-1111-1111-1111-111111111111';
+    const innerConfig = await setupSessionMocks(sessionId);
+    const prefix = `${sessionId}########`;
+    vi.mocked(innerConfig.getFileHistoryService).mockReturnValue({
+      getSnapshots: vi.fn().mockReturnValue([
+        {
+          promptId: `${prefix}2`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-02T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}5`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-05T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}6`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-06T00:00:00.000Z'),
+        },
+      ]),
+      getDiffStats: vi.fn(),
+      rewind: vi.fn(),
+    });
+
+    const agentPromise = runAcpAgent(
+      mockConfig,
+      makeSessionSettings(),
+      mockArgv,
+    );
+    await vi.waitFor(() => expect(capturedAgentFactory).toBeDefined());
+
+    const agent = capturedAgentFactory!({
+      get closed() {
+        return mockConnectionState.promise;
+      },
+    }) as AgentLike;
+
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    vi.mocked(lastSessionMock!.getRewindableTurns).mockReturnValue([
+      { turnIndex: 0, text: 'first' },
+      { turnIndex: 1, text: 'second' },
+      { turnIndex: 2, text: 'third' },
+    ]);
+
+    await expect(
+      agent.extMethod('rewindSession', {
+        sessionId,
+        promptId: `${prefix}5`,
+        cwd: '/tmp',
+      }),
+    ).rejects.toThrow('Snapshot cannot be mapped to a rewindable turn');
+    expect(lastSessionMock?.rewindToTurn).not.toHaveBeenCalled();
 
     mockConnectionState.resolve();
     await agentPromise;

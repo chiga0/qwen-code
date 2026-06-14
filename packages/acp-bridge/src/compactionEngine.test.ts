@@ -471,7 +471,7 @@ describe('TurnBoundaryCompactionEngine', () => {
       engine.ingest(makeTextChunk(5, 'Second'));
       engine.ingest(makeTurnComplete(6));
 
-      engine.rewindToTurn(1);
+      expect(engine.rewindToTurn(1)).toBe(true);
 
       const snap = engine.snapshot();
       const texts = extractTexts(snap.compactedTurns);
@@ -490,7 +490,7 @@ describe('TurnBoundaryCompactionEngine', () => {
       engine.ingest(makeTextChunk(4, 'live'));
 
       const before = engine.snapshot();
-      engine.rewindToTurn(99);
+      expect(engine.rewindToTurn(99)).toBe(false);
       const after = engine.snapshot();
 
       expect(after).toEqual(before);
@@ -798,6 +798,29 @@ describe('EventBus + CompactionEngine integration', () => {
     expect(snapshot.liveJournal).toHaveLength(1);
     expect(snapshot.liveJournal[0]?.type).toBe('session_rewound');
     expect(snapshot.lastEventId).toBe(8);
+  });
+
+  it('does not journal session_rewound when replay cannot be trimmed', () => {
+    const engine = new TurnBoundaryCompactionEngine();
+    const bus = new EventBus(100, undefined, engine);
+
+    bus.publish(makeUserMessage(0, 'first'));
+    bus.publish(makeTextChunk(0, 'first reply'));
+    bus.publish({ type: 'turn_complete', data: { stopReason: 'end_turn' } });
+    bus.publish({
+      type: 'session_rewound',
+      data: {
+        sessionId: 'session-1',
+        targetTurnIndex: 99,
+        filesChanged: [],
+        filesFailed: [],
+      },
+    });
+
+    const snapshot = bus.snapshotReplay()!;
+    expect(extractTexts(snapshot.compactedTurns)).toContain('first');
+    expect(snapshot.liveJournal).toHaveLength(0);
+    expect(snapshot.lastEventId).toBe(4);
   });
 
   it('compaction engine is closed when bus closes', () => {

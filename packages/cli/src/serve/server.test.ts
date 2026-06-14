@@ -436,6 +436,7 @@ interface FakeBridgeOpts {
     signal?: AbortSignal,
     context?: BridgeClientRequestContext,
   ) => Promise<{ exitCode: number | null; output: string; aborted: boolean }>;
+  rewindImpl?: AcpSessionBridge['rewindSession'];
 }
 
 interface FakeBridge extends AcpSessionBridge {
@@ -510,6 +511,11 @@ interface FakeBridge extends AcpSessionBridge {
     sessionId: string;
     command: string;
     signal?: AbortSignal;
+    context?: BridgeClientRequestContext;
+  }>;
+  rewindCalls: Array<{
+    sessionId: string;
+    req: Parameters<AcpSessionBridge['rewindSession']>[1];
     context?: BridgeClientRequestContext;
   }>;
   generateSessionRecapCalls: Array<{
@@ -782,6 +788,7 @@ function fakeBridge(opts: FakeBridgeOpts = {}): FakeBridge {
     }));
   const setApprovalModeCalls: FakeBridge['setApprovalModeCalls'] = [];
   const shellCalls: FakeBridge['shellCalls'] = [];
+  const rewindCalls: FakeBridge['rewindCalls'] = [];
   const setApprovalModeImpl =
     opts.setApprovalModeImpl ??
     (async (
@@ -876,6 +883,14 @@ function fakeBridge(opts: FakeBridgeOpts = {}): FakeBridge {
       output: `$ ${command}`,
       aborted: false,
     }));
+  const rewindImpl =
+    opts.rewindImpl ??
+    (async (_sessionId, req) => ({
+      rewound: true,
+      targetTurnIndex: req.targetTurnIndex ?? 0,
+      filesChanged: [],
+      filesFailed: [],
+    }));
   return {
     // F3 Commit 6 — `AcpSessionBridge.permissionPolicy` is required so
     // `/capabilities` can expose `policy.permission`. Tests don't
@@ -904,6 +919,7 @@ function fakeBridge(opts: FakeBridgeOpts = {}): FakeBridge {
     setLanguageCalls,
     setApprovalModeCalls,
     shellCalls,
+    rewindCalls,
     generateSessionRecapCalls,
     setToolEnabledCalls,
     initWorkspaceCalls,
@@ -1119,6 +1135,27 @@ function fakeBridge(opts: FakeBridgeOpts = {}): FakeBridge {
         ...(context ? { context } : {}),
       });
       return shellImpl(sessionId, command, signal, context);
+    },
+    async getRewindSnapshots(sessionId) {
+      return {
+        snapshots: [
+          {
+            turnIndex: 0,
+            text: 'rewind target',
+            timestamp: '1970-01-01T00:00:00.000Z',
+            diffStats: { filesChanged: 0, insertions: 0, deletions: 0 },
+            promptId: `${sessionId}########1`,
+          },
+        ],
+      };
+    },
+    async rewindSession(sessionId, req, context) {
+      rewindCalls.push({
+        sessionId,
+        req,
+        ...(context ? { context } : {}),
+      });
+      return rewindImpl(sessionId, req, context);
     },
     async setWorkspaceToolEnabled(
       toolName: string,
@@ -4208,6 +4245,76 @@ describe('createServeApp', () => {
       ).send({ mode: 'yolo' });
       expect(res.status).toBe(404);
       expect(res.body.sessionId).toBe('missing');
+    });
+  });
+
+  describe('POST /session/:id/rewind', () => {
+    const tokenOpts: ServeOptions = { ...baseOpts, token: 'secret' };
+    const auth = (req: request.Test): request.Test =>
+      req
+        .set('Host', `127.0.0.1:${tokenOpts.port}`)
+        .set('Authorization', 'Bearer secret');
+
+    it('passes targetTurnIndex-only rewind requests to the bridge', async () => {
+      const bridge = fakeBridge();
+      const app = createServeApp(tokenOpts, undefined, { bridge });
+      const res = await auth(
+        request(app).post('/session/session-A/rewind'),
+      ).send({ targetTurnIndex: 2 });
+
+      expect(res.status).toBe(200);
+      expect(bridge.rewindCalls).toEqual([
+        { sessionId: 'session-A', req: { targetTurnIndex: 2 } },
+      ]);
+    });
+
+    it('passes promptId and targetTurnIndex rewind requests to the bridge', async () => {
+      const bridge = fakeBridge();
+      const app = createServeApp(tokenOpts, undefined, { bridge });
+      const res = await auth(request(app).post('/session/session-A/rewind'))
+        .set('X-Qwen-Client-Id', 'client-1')
+        .send({
+          targetTurnIndex: 2,
+          promptId: 'session-A########3',
+        });
+
+      expect(res.status).toBe(200);
+      expect(bridge.rewindCalls).toEqual([
+        {
+          sessionId: 'session-A',
+          req: { targetTurnIndex: 2, promptId: 'session-A########3' },
+          context: { clientId: 'client-1' },
+        },
+      ]);
+    });
+
+    it('400s when no rewind target is provided', async () => {
+      const bridge = fakeBridge();
+      const app = createServeApp(tokenOpts, undefined, { bridge });
+      const res = await auth(
+        request(app).post('/session/session-A/rewind'),
+      ).send({});
+
+      expect(res.status).toBe(400);
+      expect(res.body.code).toBe('missing_rewind_target');
+      expect(bridge.rewindCalls).toHaveLength(0);
+    });
+
+    it('400s invalid promptId values before touching the bridge', async () => {
+      const bridge = fakeBridge();
+      const app = createServeApp(tokenOpts, undefined, { bridge });
+      const empty = await auth(
+        request(app).post('/session/session-A/rewind'),
+      ).send({ targetTurnIndex: 2, promptId: '' });
+      const tooLong = await auth(
+        request(app).post('/session/session-A/rewind'),
+      ).send({ targetTurnIndex: 2, promptId: 'x'.repeat(513) });
+
+      expect(empty.status).toBe(400);
+      expect(empty.body.code).toBe('invalid_prompt_id');
+      expect(tooLong.status).toBe(400);
+      expect(tooLong.body.code).toBe('invalid_prompt_id');
+      expect(bridge.rewindCalls).toHaveLength(0);
     });
   });
 

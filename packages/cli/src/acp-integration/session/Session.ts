@@ -62,6 +62,8 @@ import {
   getArenaSystemReminder,
   getStartupContextLength,
   isSystemReminderContent,
+  SYSTEM_REMINDER_CLOSE,
+  SYSTEM_REMINDER_OPEN,
   evaluatePermissionFlow,
   getEffectivePermissionForConfirmation,
   needsConfirmation,
@@ -759,9 +761,16 @@ export class Session implements SessionContext {
     if (!content.parts) return '';
     return content.parts
       .filter((part): part is Part & { text: string } => 'text' in part)
-      .map((part) => part.text)
+      .map((part) => this.#stripLeadingSystemReminder(part.text))
       .join(' ')
       .trim();
+  }
+
+  #stripLeadingSystemReminder(text: string): string {
+    if (!text.startsWith(SYSTEM_REMINDER_OPEN)) return text;
+    const closeIndex = text.indexOf(SYSTEM_REMINDER_CLOSE);
+    if (closeIndex < 0) return text;
+    return text.slice(closeIndex + SYSTEM_REMINDER_CLOSE.length).trimStart();
   }
 
   async cancelPendingPrompt(): Promise<void> {
