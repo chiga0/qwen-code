@@ -54,6 +54,7 @@ interface MockSession {
     snapshots: Array<{
       promptId?: string;
       turnIndex: number;
+      text: string;
       timestamp: string;
       diffStats: {
         filesChanged: number;
@@ -724,6 +725,7 @@ describe('DaemonSessionProvider', () => {
         {
           promptId: 'prompt-1',
           turnIndex: 3,
+          text: 'rewind target',
           timestamp: '2026-06-11T00:00:00.000Z',
           diffStats: { filesChanged: 1, insertions: 2, deletions: 3 },
         },
@@ -741,11 +743,7 @@ describe('DaemonSessionProvider', () => {
       rewind,
       events: createIdleEvents(),
     });
-    const reloadedSession = createMockSession({
-      sessionId: 'session-rewind',
-      events: createIdleEvents(),
-    });
-    sdkMocks.sessions.push(session, reloadedSession);
+    sdkMocks.sessions.push(session);
     let actions: DaemonSessionActions | undefined;
     let connection: DaemonConnectionState | undefined;
 
@@ -786,12 +784,7 @@ describe('DaemonSessionProvider', () => {
       targetTurnIndex: 3,
       promptId: 'prompt-1',
     });
-    expect(sdkMocks.MockDaemonSessionClient.load).toHaveBeenCalledWith(
-      expect.anything(),
-      'session-rewind',
-      { workspaceCwd: '/mock-workspace' },
-      expect.any(String),
-    );
+    expect(sdkMocks.MockDaemonSessionClient.load).not.toHaveBeenCalled();
     expect(connection).toMatchObject({
       status: 'connected',
       sessionId: 'session-rewind',

@@ -4319,10 +4319,137 @@ describe('QwenAgent MCP SSE/HTTP support', () => {
 
     expect(response).toMatchObject({
       snapshots: [
-        { turnIndex: 0, diffStats: { filesChanged: 0 } },
-        { turnIndex: 1, diffStats: { filesChanged: 0 } },
+        { turnIndex: 0, text: 'first', diffStats: { filesChanged: 0 } },
+        { turnIndex: 1, text: 'second', diffStats: { filesChanged: 0 } },
       ],
     });
+
+    mockConnectionState.resolve();
+    await agentPromise;
+  });
+
+  it('rewind snapshots do not shift file snapshots across missing turns', async () => {
+    const sessionId = '11111111-1111-1111-1111-111111111111';
+    const innerConfig = await setupSessionMocks(sessionId);
+    const prefix = `${sessionId}########`;
+    const getDiffStats = vi.fn(async (promptId: string) =>
+      promptId === `${prefix}2`
+        ? { filesChanged: ['changed.ts'], insertions: 3, deletions: 1 }
+        : undefined,
+    );
+    vi.mocked(innerConfig.getFileHistoryService).mockReturnValue({
+      getSnapshots: vi.fn().mockReturnValue([
+        {
+          promptId: `${prefix}0`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-01T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}2`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-03T00:00:00.000Z'),
+        },
+      ]),
+      getDiffStats,
+      rewind: vi.fn(),
+    });
+
+    const agentPromise = runAcpAgent(
+      mockConfig,
+      makeSessionSettings(),
+      mockArgv,
+    );
+    await vi.waitFor(() => expect(capturedAgentFactory).toBeDefined());
+
+    const agent = capturedAgentFactory!({
+      get closed() {
+        return mockConnectionState.promise;
+      },
+    }) as AgentLike;
+
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    vi.mocked(lastSessionMock!.getRewindableTurns).mockReturnValue([
+      { turnIndex: 0, text: 'first' },
+      { turnIndex: 1, text: 'second' },
+      { turnIndex: 2, text: 'third' },
+    ]);
+
+    const response = await agent.extMethod(
+      SERVE_STATUS_EXT_METHODS.sessionRewindSnapshots,
+      { sessionId },
+    );
+
+    expect(response).toMatchObject({
+      snapshots: [
+        {
+          turnIndex: 0,
+          promptId: `${prefix}0`,
+          diffStats: { filesChanged: 0 },
+        },
+        { turnIndex: 1, diffStats: { filesChanged: 0 } },
+        {
+          turnIndex: 2,
+          promptId: `${prefix}2`,
+          diffStats: { filesChanged: 1 },
+        },
+      ],
+    });
+
+    mockConnectionState.resolve();
+    await agentPromise;
+  });
+
+  it('rewindSession resolves promptId suffixes before snapshot positions', async () => {
+    const sessionId = '11111111-1111-1111-1111-111111111111';
+    const innerConfig = await setupSessionMocks(sessionId);
+    const prefix = `${sessionId}########`;
+    vi.mocked(innerConfig.getFileHistoryService).mockReturnValue({
+      getSnapshots: vi.fn().mockReturnValue([
+        {
+          promptId: `${prefix}0`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-01T00:00:00.000Z'),
+        },
+        {
+          promptId: `${prefix}2`,
+          trackedFileBackups: {},
+          timestamp: new Date('2026-01-03T00:00:00.000Z'),
+        },
+      ]),
+      getDiffStats: vi.fn(),
+      rewind: vi.fn().mockResolvedValue({
+        filesChanged: [],
+        filesFailed: [],
+      }),
+    });
+
+    const agentPromise = runAcpAgent(
+      mockConfig,
+      makeSessionSettings(),
+      mockArgv,
+    );
+    await vi.waitFor(() => expect(capturedAgentFactory).toBeDefined());
+
+    const agent = capturedAgentFactory!({
+      get closed() {
+        return mockConnectionState.promise;
+      },
+    }) as AgentLike;
+
+    await agent.newSession({ cwd: '/tmp', mcpServers: [] });
+    vi.mocked(lastSessionMock!.getRewindableTurns).mockReturnValue([
+      { turnIndex: 0, text: 'first' },
+      { turnIndex: 1, text: 'second' },
+      { turnIndex: 2, text: 'third' },
+    ]);
+
+    await agent.extMethod('rewindSession', {
+      sessionId,
+      promptId: `${prefix}2`,
+      cwd: '/tmp',
+    });
+
+    expect(lastSessionMock?.rewindToTurn).toHaveBeenCalledWith(2);
 
     mockConnectionState.resolve();
     await agentPromise;

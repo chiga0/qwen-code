@@ -578,17 +578,14 @@ export function createDaemonSessionActions({
         'Rewind failed',
         'rewind_session',
       );
-      const sessionId = session.sessionId;
       try {
-        const result = await withActionTimeout(
+        return await withActionTimeout(
           session.rewind({
             targetTurnIndex,
             ...(promptId ? { promptId } : {}),
           }),
           'Rewind timed out',
         );
-        void startSessionSwitch(sessionId, 'load').catch(() => {});
-        return result;
       } catch (error) {
         throw dispatchActionError(
           addNotice,

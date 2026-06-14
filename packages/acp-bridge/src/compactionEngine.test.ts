@@ -481,6 +481,20 @@ describe('TurnBoundaryCompactionEngine', () => {
       expect(texts).not.toContain('Second');
       expect(snap.liveJournal).toHaveLength(0);
     });
+
+    it('leaves replay state unchanged when rewind target is out of range', () => {
+      const engine = new TurnBoundaryCompactionEngine();
+      engine.ingest(makeUserMessage(1, 'Hello'));
+      engine.ingest(makeTextChunk(2, 'Hi'));
+      engine.ingest(makeTurnComplete(3));
+      engine.ingest(makeTextChunk(4, 'live'));
+
+      const before = engine.snapshot();
+      engine.rewindToTurn(99);
+      const after = engine.snapshot();
+
+      expect(after).toEqual(before);
+    });
   });
 
   describe('turn_error compaction', () => {

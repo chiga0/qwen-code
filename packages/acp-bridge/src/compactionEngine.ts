@@ -147,9 +147,9 @@ export class TurnBoundaryCompactionEngine implements CompactionEngine {
       }
     }
 
-    if (truncateIndex >= 0) {
-      this.compactedTurns = this.compactedTurns.slice(0, truncateIndex);
-    }
+    if (truncateIndex < 0) return;
+
+    this.compactedTurns = this.compactedTurns.slice(0, truncateIndex);
     this.liveJournal = [];
     this.slots = [];
     this.toolSlotIndex.clear();

@@ -649,11 +649,13 @@ describe('createAcpSessionBridge', () => {
   });
 
   it('loads trimmed replay after rewinding an attached session', async () => {
+    const rewindParams: Array<Record<string, unknown>> = [];
     const bridge = makeBridge({
       channelFactory: async () =>
         makeChannel({
           extMethodImpl: (method, params) => {
             if (method === 'qwen/control/session/rewind') {
+              rewindParams.push(params);
               return {
                 targetTurnIndex: params['targetTurnIndex'],
                 filesChanged: [],
@@ -689,6 +691,11 @@ describe('createAcpSessionBridge', () => {
     expect(beforeReplayText).toContain('second');
 
     await bridge.rewindSession(session.sessionId, { targetTurnIndex: 0 });
+    expect(rewindParams[0]).toMatchObject({
+      sessionId: session.sessionId,
+      targetTurnIndex: 0,
+      rewindFiles: false,
+    });
     const loaded = await bridge.loadSession({
       sessionId: session.sessionId,
       workspaceCwd: WS_A,

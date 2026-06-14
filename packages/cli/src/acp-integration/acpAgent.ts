@@ -5027,25 +5027,34 @@ class QwenAgent implements Agent {
         const fhs = session.getConfig().getFileHistoryService();
         const snapshots = fhs.getSnapshots();
         const prefix = (sessionId as string) + '########';
-        const fileSnapshotsByTurn = new Map(
-          snapshots
-            .map((s, idx) => ({ s, idx }))
-            .filter(
-              ({ s }) =>
-                s.promptId.startsWith(prefix) &&
-                /^\d+$/.test(s.promptId.slice(prefix.length)),
-            )
-            .map(({ s, idx }) => [idx, s] as const),
+        const rewindableTurns = session.getRewindableTurns();
+        const rewindableTurnIndices = new Set(
+          rewindableTurns.map(({ turnIndex }) => turnIndex),
         );
+        const fileSnapshots = snapshots.filter(
+          (s) =>
+            s.promptId.startsWith(prefix) &&
+            /^\d+$/.test(s.promptId.slice(prefix.length)),
+        );
+        const fileSnapshotsByTurn = new Map<number, (typeof snapshots)[number]>(
+          fileSnapshots
+            .map((s) => [Number(s.promptId.slice(prefix.length)), s] as const)
+            .filter(([turnIndex]) => rewindableTurnIndices.has(turnIndex)),
+        );
+        const canFallbackByPosition =
+          fileSnapshots.length === rewindableTurns.length;
         const results = await Promise.all(
-          session.getRewindableTurns().map(async ({ turnIndex }) => {
-            const snapshot = fileSnapshotsByTurn.get(turnIndex);
+          rewindableTurns.map(async ({ turnIndex, text }) => {
+            const snapshot =
+              fileSnapshotsByTurn.get(turnIndex) ??
+              (canFallbackByPosition ? fileSnapshots[turnIndex] : undefined);
             const stats = snapshot
               ? await fhs.getDiffStats(snapshot.promptId)
               : undefined;
             return {
               ...(snapshot ? { promptId: snapshot.promptId } : {}),
               turnIndex,
+              text,
               timestamp: (snapshot?.timestamp ?? new Date()).toISOString(),
               diffStats: {
                 filesChanged: stats?.filesChanged?.length ?? 0,
@@ -6050,13 +6059,15 @@ class QwenAgent implements Agent {
               { errorKind: 'invalid_rewind_target' },
             );
           }
-          // Derive turnIndex from the snapshot's position in the array,
-          // NOT from the promptId suffix. Session.turn is monotonic and
-          // does not reset on rewind, so after a rewind cycle the suffix
-          // no longer matches the turn's position in the current history.
           const fhs = session.getConfig().getFileHistoryService();
-          const snapshots = fhs.getSnapshots();
-          const snapshotIdx = snapshots.findIndex(
+          const fileSnapshots = fhs
+            .getSnapshots()
+            .filter(
+              (s) =>
+                s.promptId.startsWith(prefix) &&
+                /^\d+$/.test(s.promptId.slice(prefix.length)),
+            );
+          const snapshotIdx = fileSnapshots.findIndex(
             (s) => s.promptId === promptId,
           );
           if (snapshotIdx < 0) {
@@ -6066,7 +6077,13 @@ class QwenAgent implements Agent {
               { errorKind: 'invalid_rewind_target' },
             );
           }
-          turnIndex = snapshotIdx;
+          const suffixIndex = Number(suffix);
+          const rewindableTurnIndices = new Set(
+            session.getRewindableTurns().map((turn) => turn.turnIndex),
+          );
+          turnIndex = rewindableTurnIndices.has(suffixIndex)
+            ? suffixIndex
+            : snapshotIdx;
         }
 
         if (!Number.isInteger(turnIndex) || (turnIndex as number) < 0) {

@@ -18,7 +18,6 @@ import {
   useWorkspaceActions,
   isDaemonTurnError,
   type DaemonSessionNotice,
-  type DaemonTranscriptBlock,
   type DaemonStreamingState,
   type DaemonRewindSnapshotInfo,
 } from '@qwen-code/webui/daemon-react-sdk';
@@ -94,6 +93,7 @@ import {
 } from './utils/copyCommand';
 import type { SkillInfo } from './completions/slashCompletion';
 import { collectSystemInfo } from './utils/systemInfo';
+import { buildRewindTargets } from './utils/rewindTargets';
 import {
   TasksStatusMessage,
   type SerializedTasksMessage,
@@ -151,34 +151,6 @@ const MAX_QUEUED_PROMPT_PREVIEW_CHARS = 240;
 const MAX_TOASTS = 4;
 const COMPACT_MODE_SETTING_KEY = 'ui.compactMode';
 const HIDE_TIPS_SETTING_KEY = 'ui.hideTips';
-const SLASH_PATH_SEPARATOR_RE = /[/\\]/;
-
-function isSlashCommandPrompt(text: string): boolean {
-  if (!text.startsWith('/')) return false;
-  if (text.startsWith('//') || text.startsWith('/*')) return false;
-  const firstToken = text.slice(1).trimStart().split(/\s+/u)[0] ?? '';
-  return !SLASH_PATH_SEPARATOR_RE.test(firstToken);
-}
-
-function buildRewindTargets(
-  snapshots: readonly DaemonRewindSnapshotInfo[],
-  blocks: readonly DaemonTranscriptBlock[],
-): RewindTarget[] {
-  const userBlocks = blocks.filter(
-    (block): block is Extract<DaemonTranscriptBlock, { kind: 'user' }> =>
-      block.kind === 'user' &&
-      block.text.trim().length > 0 &&
-      !isSlashCommandPrompt(block.text) &&
-      !block.text.startsWith('?'),
-  );
-  return [...snapshots]
-    .sort((a, b) => a.turnIndex - b.turnIndex)
-    .flatMap((snapshot) => {
-      const text = userBlocks[snapshot.turnIndex]?.text.trim();
-      return text ? [{ ...snapshot, text }] : [];
-    });
-}
-
 function normalizeHiddenCommand(command: string): string {
   return command.trim().replace(/^\/+/, '').toLowerCase();
 }
@@ -796,8 +768,8 @@ export function App({
   const [memoryPortalHost, setMemoryPortalHost] =
     useState<HTMLDivElement | null>(null);
   const rewindTargets = useMemo(
-    () => buildRewindTargets(rewindSnapshots, messageBlocks),
-    [rewindSnapshots, messageBlocks],
+    () => buildRewindTargets(rewindSnapshots),
+    [rewindSnapshots],
   );
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [escapeHintVisible, setEscapeHintVisible] = useState(false);
@@ -1586,6 +1558,12 @@ export function App({
           target.turnIndex,
           option === 'both' ? target.promptId : undefined,
         )
+        .then((result) => {
+          editorRef.current?.clearText();
+          editorRef.current?.insertText(target.text);
+          editorRef.current?.focus();
+          return result;
+        })
         .catch((error: unknown) => {
           reportError(error, 'Failed to rewind session');
           throw error;

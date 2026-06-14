@@ -910,6 +910,12 @@ function appendStatusBlock(
   event?: DaemonUiEvent,
   opts: { clearActiveText?: boolean } = {},
 ): void {
+  const source =
+    event?.type === 'status' ||
+    event?.type === 'debug' ||
+    event?.type === 'error'
+      ? event.source
+      : undefined;
   const block: DaemonStatusTranscriptBlock = {
     id: allocateBlockId(state, kind),
     kind,
@@ -925,7 +931,7 @@ function appendStatusBlock(
     ...(event?.type === 'error' && event.promptId
       ? { promptId: event.promptId }
       : {}),
-    ...(event?.source ? { source: event.source } : {}),
+    ...(source ? { source } : {}),
   };
   appendBlock(state, block);
   if (opts.clearActiveText !== false) clearActiveText(state);

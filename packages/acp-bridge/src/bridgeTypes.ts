@@ -33,6 +33,7 @@ import type {
 export interface RewindSnapshotInfo {
   promptId?: string;
   turnIndex: number;
+  text: string;
   timestamp: string;
   diffStats: { filesChanged: number; insertions: number; deletions: number };
 }

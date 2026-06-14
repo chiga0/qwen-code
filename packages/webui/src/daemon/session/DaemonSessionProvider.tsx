@@ -701,6 +701,25 @@ export function DaemonSessionProvider({
                 }
               }
               if (event.type === 'session_rewound') {
+                const rewindData = event.data as
+                  | { targetTurnIndex?: number; filesFailed?: string[] }
+                  | undefined;
+                console.warn(
+                  '[DaemonSessionProvider] session_rewound received, resetting (sessionId=%s, targetTurn=%s)',
+                  activeSession.sessionId,
+                  rewindData?.targetTurnIndex ?? 'unknown',
+                );
+                addNotice({
+                  severity:
+                    (rewindData?.filesFailed?.length ?? 0) > 0
+                      ? 'warning'
+                      : 'info',
+                  category: 'lifecycle',
+                  operation: 'rewind_session',
+                  code: 'daemon.session_rewound',
+                  message: REWIND_STATUS_TEXT,
+                  recoverable: true,
+                });
                 store.reset();
                 pendingRewindNoticeRef.current = true;
                 resyncRequested = true;

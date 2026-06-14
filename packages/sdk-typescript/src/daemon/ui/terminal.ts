@@ -171,6 +171,12 @@ export function daemonUiEventToTerminalText(event: DaemonUiEvent): string {
         `device-flow cancelled (${event.deviceFlowId})`,
         '2',
       );
+    case 'session.rewound':
+      return terminalLine(
+        'session',
+        `rewound to turn ${event.targetTurnIndex}`,
+        event.filesFailed.length > 0 ? '33' : '36',
+      );
     case 'user.shell.command':
       return '';
     case 'user.image.delta':

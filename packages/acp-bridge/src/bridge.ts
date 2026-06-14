@@ -4244,7 +4244,7 @@ export function createAcpSessionBridge(opts: BridgeOptions): AcpSessionBridge {
                 ...(Number.isInteger(req.targetTurnIndex)
                   ? { targetTurnIndex: req.targetTurnIndex }
                   : {}),
-                rewindFiles: req.promptId !== undefined,
+                rewindFiles: !!req.promptId,
               },
             ),
             initTimeoutMs,

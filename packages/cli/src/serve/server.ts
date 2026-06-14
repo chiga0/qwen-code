@@ -2806,12 +2806,19 @@ export function createServeApp(
       const clientId = parseClientIdHeader(req, res);
       if (clientId === null) return;
       try {
+        const rewindRequest: {
+          promptId?: string;
+          targetTurnIndex?: number;
+        } = {};
+        if (hasPromptId) {
+          rewindRequest.promptId = promptId;
+        }
+        if (hasTargetTurnIndex) {
+          rewindRequest.targetTurnIndex = targetTurnIndex;
+        }
         const response = await bridge.rewindSession(
           sessionId,
-          {
-            ...(hasPromptId ? { promptId } : {}),
-            ...(hasTargetTurnIndex ? { targetTurnIndex } : {}),
-          },
+          rewindRequest as Parameters<AcpSessionBridge['rewindSession']>[1],
           clientId !== undefined ? { clientId } : undefined,
         );
         res.status(200).json(response);
