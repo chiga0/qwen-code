@@ -1057,6 +1057,7 @@ export function DaemonSessionProvider({
       disposed = true;
       abort.abort();
       setPromptStatus('idle');
+      pendingRewindNoticeRef.current = false;
       clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
       if (pendingSessionLoadRef.current) {
         clearTimeout(pendingSessionLoadRef.current.timeout);

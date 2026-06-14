@@ -5038,9 +5038,16 @@ class QwenAgent implements Agent {
         );
         const fileSnapshotsByTurn = new Map<number, (typeof snapshots)[number]>(
           fileSnapshots
-            .map((s) => [Number(s.promptId.slice(prefix.length)), s] as const)
+            .map(
+              (s) => [Number(s.promptId.slice(prefix.length)) - 1, s] as const,
+            )
             .filter(([turnIndex]) => rewindableTurnIndices.has(turnIndex)),
         );
+        // ACP prompt ids are generated before each turn as 1-based counters.
+        // After a rewind, new prompt ids keep increasing, so their suffixes no
+        // longer map to current 0-based turn indexes. In that case we may only
+        // fall back to insertion order when every rewindable turn still has a
+        // file snapshot; gaps would make positional fallback ambiguous.
         const canFallbackByPosition =
           fileSnapshots.length === rewindableTurns.length;
         const results = await Promise.all(
@@ -6078,12 +6085,25 @@ class QwenAgent implements Agent {
             );
           }
           const suffixIndex = Number(suffix);
+          const rewindableTurns = session.getRewindableTurns();
           const rewindableTurnIndices = new Set(
-            session.getRewindableTurns().map((turn) => turn.turnIndex),
+            rewindableTurns.map((turn) => turn.turnIndex),
           );
-          turnIndex = rewindableTurnIndices.has(suffixIndex)
-            ? suffixIndex
-            : snapshotIdx;
+          const suffixTurnIndex = suffixIndex - 1;
+          const canFallbackByPosition =
+            fileSnapshots.length === rewindableTurns.length;
+          turnIndex = rewindableTurnIndices.has(suffixTurnIndex)
+            ? suffixTurnIndex
+            : canFallbackByPosition
+              ? snapshotIdx
+              : -1;
+          if (turnIndex < 0) {
+            throw new RequestError(
+              -32602,
+              'Snapshot cannot be mapped to a rewindable turn',
+              { errorKind: 'invalid_rewind_target' },
+            );
+          }
         }
 
         if (!Number.isInteger(turnIndex) || (turnIndex as number) < 0) {
@@ -6129,7 +6149,9 @@ class QwenAgent implements Agent {
             debugLogger.error(
               `[ACP] File-history rewind failed for session=${sessionId} promptId=${promptId}: ${reason}`,
             );
-            filesFailed = [`file-history-rewind: ${reason}`];
+            filesFailed = [
+              'file-history-rewind: failed to restore file changes',
+            ];
           }
         }
 

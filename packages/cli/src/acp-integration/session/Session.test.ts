@@ -470,6 +470,49 @@ describe('Session', () => {
       );
     });
 
+    it('drops file snapshots for the removed target turn and later turns', () => {
+      const history: Content[] = [
+        { role: 'user', parts: [{ text: 'first' }] },
+        { role: 'model', parts: [{ text: 'first reply' }] },
+        { role: 'user', parts: [{ text: 'second' }] },
+        { role: 'model', parts: [{ text: 'second reply' }] },
+        { role: 'user', parts: [{ text: 'third' }] },
+        { role: 'model', parts: [{ text: 'third reply' }] },
+      ];
+      const snapshots = [
+        {
+          promptId: 'test-session-id########1',
+          trackedFileBackups: {},
+          timestamp: new Date('2026-06-13T00:00:01.000Z'),
+        },
+        {
+          promptId: 'test-session-id########2',
+          trackedFileBackups: {},
+          timestamp: new Date('2026-06-13T00:00:02.000Z'),
+        },
+        {
+          promptId: 'test-session-id########3',
+          trackedFileBackups: {},
+          timestamp: new Date('2026-06-13T00:00:03.000Z'),
+        },
+      ];
+      vi.mocked(mockChat.getHistory).mockReturnValue(history);
+      vi.mocked(mockChat.getHistoryShallow).mockReturnValue(history);
+      mockFileHistoryService.getSnapshots.mockReturnValue(snapshots);
+
+      const result = session.rewindToTurn(2);
+
+      expect(result).toEqual({ targetTurnIndex: 2, apiTruncateIndex: 4 });
+      expect(mockFileHistoryService.restoreFromSnapshots).toHaveBeenCalledWith(
+        snapshots.slice(0, 2),
+      );
+      expect(mockChatRecordingService.rewindRecording).toHaveBeenCalledWith(
+        2,
+        { truncatedCount: 2 },
+        snapshots.slice(0, 2),
+      );
+    });
+
     it('preserves startup context when rewinding to the first user turn', () => {
       const history: Content[] = [
         {

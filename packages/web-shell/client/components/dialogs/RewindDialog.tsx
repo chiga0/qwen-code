@@ -69,6 +69,7 @@ export function RewindDialog({
   const [confirmTarget, setConfirmTarget] = useState<RewindTarget | null>(null);
   const [restoreOptionIdx, setRestoreOptionIdx] = useState(0);
   const [restoring, setRestoring] = useState(false);
+  const restoringRef = useRef(false);
   const listRef = useRef<HTMLDivElement>(null);
   const restoreOptions = confirmTarget
     ? getRestoreOptions(confirmTarget, t)
@@ -88,8 +89,26 @@ export function RewindDialog({
     el?.scrollIntoView({ block: 'nearest' });
   }, [selectedIdx]);
 
+  const startRewind = useCallback(
+    (target: RewindTarget, option: RewindRestoreOption) => {
+      if (restoringRef.current) return;
+      restoringRef.current = true;
+      setRestoring(true);
+      onRewind(target, option)
+        .then(() => {
+          restoringRef.current = false;
+          onClose();
+        })
+        .catch(() => {
+          restoringRef.current = false;
+          setRestoring(false);
+        });
+    },
+    [onClose, onRewind],
+  );
+
   const handleConfirm = useCallback(() => {
-    if (!confirmTarget || restoring) return;
+    if (!confirmTarget || restoringRef.current) return;
     const options = getRestoreOptions(confirmTarget, t);
     const option = options[restoreOptionIdx];
     if (!option) return;
@@ -98,13 +117,8 @@ export function RewindDialog({
       setRestoreOptionIdx(0);
       return;
     }
-    setRestoring(true);
-    onRewind(confirmTarget, option.key)
-      .then(onClose)
-      .catch(() => {
-        setRestoring(false);
-      });
-  }, [confirmTarget, onClose, onRewind, restoreOptionIdx, restoring, t]);
+    startRewind(confirmTarget, option.key);
+  }, [confirmTarget, restoreOptionIdx, startRewind, t]);
 
   useDelayedGlobalKeyDown(
     (e: KeyboardEvent) => {
@@ -217,16 +231,14 @@ export function RewindDialog({
                 idx === restoreOptionIdx ? 'selected' : undefined,
               )}
               onClick={() => {
+                if (restoringRef.current) return;
                 setRestoreOptionIdx(idx);
                 if (option.key === 'cancel') {
                   setConfirmTarget(null);
                   setRestoreOptionIdx(0);
                   return;
                 }
-                setRestoring(true);
-                onRewind(confirmTarget, option.key)
-                  .then(onClose)
-                  .catch(() => setRestoring(false));
+                startRewind(confirmTarget, option.key);
               }}
             >
               <div className={dp('resume-picker-item-row')}>

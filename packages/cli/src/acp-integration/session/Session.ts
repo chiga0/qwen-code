@@ -650,7 +650,7 @@ export class Session implements SessionContext {
     const fileHistoryService = this.config.getFileHistoryService();
     const survivingSnapshots = fileHistoryService
       .getSnapshots()
-      .slice(0, targetTurnIndex + 1);
+      .slice(0, targetTurnIndex);
 
     fileHistoryService.restoreFromSnapshots(survivingSnapshots);
 
