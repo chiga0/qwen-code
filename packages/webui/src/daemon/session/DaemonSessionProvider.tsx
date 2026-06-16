@@ -30,7 +30,7 @@ import {
   type DaemonTurnCompleteData,
   type DaemonUiEvent,
 } from '@qwen-code/sdk/daemon';
-import { createDaemonSessionActions } from './actions.js';
+import { createDaemonSessionActions, promptSettledKey } from './actions.js';
 import {
   detachDaemonClient,
   getStableClientId,
@@ -73,6 +73,7 @@ import type {
   DaemonSessionProviderProps,
   DaemonWorkspaceEventSignals,
   PendingSessionLoad,
+  SettledPrompt,
 } from './types.js';
 
 export type {
@@ -195,6 +196,7 @@ export function DaemonSessionProvider({
   const sessionRef = useRef<DaemonSessionClient | undefined>(undefined);
   const lastSessionIdRef = useRef<string | undefined>(undefined);
   const activePromptsRef = useRef<Map<string, ActivePrompt>>(new Map());
+  const settledPromptsRef = useRef<Map<string, SettledPrompt>>(new Map());
   const pendingSessionLoadRef = useRef<PendingSessionLoad | undefined>(
     undefined,
   );
@@ -616,6 +618,7 @@ export function DaemonSessionProvider({
             for (const replayEvent of replayEvents) {
               settleActivePromptFromTurnEvent(
                 activePromptsRef.current,
+                settledPromptsRef.current,
                 activeSession.sessionId,
                 replayEvent,
                 store,
@@ -736,6 +739,7 @@ export function DaemonSessionProvider({
                   for (const replayEvent of replaySourceEvents) {
                     settleActivePromptFromTurnEvent(
                       activePromptsRef.current,
+                      settledPromptsRef.current,
                       activeSession.sessionId,
                       replayEvent,
                       store,
@@ -756,6 +760,7 @@ export function DaemonSessionProvider({
               }
               const activePromptSettled = settleActivePromptFromTurnEvent(
                 activePromptsRef.current,
+                settledPromptsRef.current,
                 activeSession.sessionId,
                 event,
                 store,
@@ -1106,6 +1111,7 @@ export function DaemonSessionProvider({
         store,
         sessionRef,
         activePromptsRef,
+        settledPromptsRef,
         pendingSessionLoadRef,
         pendingSessionLoadIdRef,
         heartbeatSupportedRef,
@@ -1141,6 +1147,7 @@ export function DaemonSessionProvider({
 
 function settleActivePromptFromTurnEvent(
   activePrompts: Map<string, ActivePrompt>,
+  settledPrompts: Map<string, SettledPrompt>,
   sessionId: string,
   event: DaemonEvent,
   store: DaemonTranscriptStore,
@@ -1173,10 +1180,10 @@ function settleActivePromptFromTurnEvent(
       activePrompts.delete(sessionId);
       active.resolve(result);
     } else {
-      activePrompts.set(sessionId, {
-        ...active,
-        promptId,
-        pendingResult: result,
+      activePrompts.delete(sessionId);
+      settledPrompts.set(promptSettledKey(sessionId, promptId), {
+        status: 'resolved',
+        result,
       });
     }
   } catch (error) {
@@ -1186,10 +1193,10 @@ function settleActivePromptFromTurnEvent(
       activePrompts.delete(sessionId);
       active.reject(error);
     } else {
-      activePrompts.set(sessionId, {
-        ...active,
-        promptId,
-        pendingError: error,
+      activePrompts.delete(sessionId);
+      settledPrompts.set(promptSettledKey(sessionId, promptId), {
+        status: 'rejected',
+        error,
       });
     }
   }
