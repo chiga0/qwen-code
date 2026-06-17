@@ -122,7 +122,8 @@ describe('MessageList — turn collapse (DOM)', () => {
     expect(has(c, 'u1')).toBe(true);
     expect(has(c, 'a1')).toBe(true);
     expect(has(c, 'g1')).toBe(false);
-    expect(toggle(c, 'u1').textContent).toContain('expand-1');
+    // Toggle button shows chevron only (step count is in the label, not the button)
+    expect(toggle(c, 'u1').textContent).toBe('▸');
     expect(toggle(c, 'u1').getAttribute('aria-expanded')).toBe('false');
   });
 

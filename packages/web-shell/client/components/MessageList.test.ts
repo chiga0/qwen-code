@@ -364,6 +364,15 @@ function rowIds(items: DisplayItem[]): string[] {
   );
 }
 
+function turnCollapseRow(
+  item: DisplayItem,
+): Extract<DisplayItem, { type: 'turn_collapse' }> {
+  if (item.type !== 'turn_collapse') {
+    throw new Error(`Expected turn_collapse item, got ${item.type}`);
+  }
+  return item;
+}
+
 describe('applyTurnCollapse', () => {
   it('returns the same array reference when disabled', () => {
     const items = groupParallelAgents([
@@ -382,24 +391,25 @@ describe('applyTurnCollapse', () => {
     expect(collapseItems(items)).toBe(items);
   });
 
-  it('collapses a completed turn to prompt + final answer and tags the head', () => {
+  it('collapses a completed turn to prompt + turn_collapse + final answer', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeMultiToolGroup('g1'),
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse).toEqual({
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse).toEqual({
       turnId: 'u1',
       collapsed: true,
       hiddenCount: 1,
       toolCallCount: 2,
     });
-    expect(messageRow(out[1]).collapse).toBeUndefined();
+    // Final answer carries turnCollapse for metrics display
+    expect(messageRow(out[2]).turnCollapse).toBeDefined();
   });
 
-  it('keeps every row but still tags the head when the turn is expanded', () => {
+  it('keeps every row and inserts turn_collapse when the turn is expanded', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeMultiToolGroup('g1'),
@@ -408,8 +418,8 @@ describe('applyTurnCollapse', () => {
     const out = collapseItems(items, {
       overrides: new Map([['u1', true]]),
     });
-    expect(rowIds(out)).toEqual(['u1', 'g1', 'a1']);
-    expect(messageRow(out[0]).collapse).toEqual({
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'g1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse).toEqual({
       turnId: 'u1',
       collapsed: false,
       hiddenCount: 1,
@@ -431,25 +441,25 @@ describe('applyTurnCollapse', () => {
       isResponding: true,
       overrides: new Map([['u1', true]]),
     });
-    expect(rowIds(out)).toEqual(['u1', 'a0', 'g1']);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a0', 'g1']);
   });
 
-  it('tags but keeps the active turn expanded while responding', () => {
+  it('inserts turn_collapse but keeps the active turn expanded while responding', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeMultiToolGroup('g1'),
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items, { isResponding: true });
-    // Every row stays visible; the head carries the seam but is not collapsed.
+    // Every row stays visible; turn_collapse is inserted but not collapsed.
     // The streamed answer is provisional (not a step), so only the tool group
     // counts — a step-less reply stays step-less rather than flashing "1 step".
-    expect(rowIds(out)).toEqual(['u1', 'g1', 'a1']);
-    expect(messageRow(out[0]).collapse?.collapsed).toBe(false);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(1);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'g1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.collapsed).toBe(false);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(1);
   });
 
-  it('collapsing the active turn folds to prompt + seam (no stranded line)', () => {
+  it('collapsing the active turn folds to prompt + turn_collapse (no stranded line)', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeMultiToolGroup('g1'),
@@ -461,9 +471,9 @@ describe('applyTurnCollapse', () => {
       overrides: new Map([['u1', false]]),
     });
     // No final answer yet, so the fold drops the intermediate text too — only
-    // the prompt row (carrying the seam) survives.
-    expect(rowIds(out)).toEqual(['u1']);
-    expect(messageRow(out[0]).collapse?.collapsed).toBe(true);
+    // the prompt row and turn_collapse survive.
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.collapsed).toBe(true);
   });
 
   it('keeps a step-less reply step-less while it streams', () => {
@@ -477,12 +487,12 @@ describe('applyTurnCollapse', () => {
         usage: { inputTokens: 100, outputTokens: 20 },
       },
     ]);
-    const head = messageRow(
-      collapseItems(items, { isResponding: true })[0],
-    ).collapse;
+    const tc = turnCollapseRow(
+      collapseItems(items, { isResponding: true })[1],
+    ).turnCollapse;
     // The streamed answer is provisional, not a step → nothing to fold, so no
     // chevron flashes in then out when the turn completes.
-    expect(head?.hiddenCount).toBe(0);
+    expect(tc.hiddenCount).toBe(0);
   });
 
   it('marks the active turn live with its prompt timestamp', () => {
@@ -495,20 +505,20 @@ describe('applyTurnCollapse', () => {
         timestamp: 2_000,
       },
     ]);
-    const head = messageRow(
-      collapseItems(items, { isResponding: true })[0],
-    ).collapse;
-    expect(head?.liveStartedAt).toBe(1_000);
+    const tc = turnCollapseRow(
+      collapseItems(items, { isResponding: true })[1],
+    ).turnCollapse;
+    expect(tc.liveStartedAt).toBe(1_000);
   });
 
   it('marks a prompt-only active turn live with its prompt timestamp', () => {
     const items = groupParallelAgents([
       { id: 'u1', role: 'user', content: 'hi', timestamp: 1_000 },
     ]);
-    const head = messageRow(
-      collapseItems(items, { isResponding: true })[0],
-    ).collapse;
-    expect(head).toMatchObject({
+    const tc = turnCollapseRow(
+      collapseItems(items, { isResponding: true })[1],
+    ).turnCollapse;
+    expect(tc).toMatchObject({
       collapsed: false,
       hiddenCount: 0,
       liveStartedAt: 1_000,
@@ -522,10 +532,10 @@ describe('applyTurnCollapse', () => {
       const items = groupParallelAgents([
         { id: 'u1', role: 'user', content: 'hi' },
       ]);
-      const head = messageRow(
-        collapseItems(items, { isResponding: true })[0],
-      ).collapse;
-      expect(head).toMatchObject({
+      const tc = turnCollapseRow(
+        collapseItems(items, { isResponding: true })[1],
+      ).turnCollapse;
+      expect(tc).toMatchObject({
         collapsed: false,
         hiddenCount: 0,
         liveStartedAt: 10_000,
@@ -547,7 +557,7 @@ describe('applyTurnCollapse', () => {
       { id: 'a1', role: 'assistant', content: 'done', timestamp: 3_000 },
     ]);
     expect(
-      messageRow(collapseItems(items)[0]).collapse?.liveStartedAt,
+      turnCollapseRow(collapseItems(items)[1]).turnCollapse.liveStartedAt,
     ).toBeUndefined();
   });
 
@@ -560,9 +570,9 @@ describe('applyTurnCollapse', () => {
       makeMultiToolGroup('g2'),
     ]);
     const out = collapseItems(items, { isResponding: true });
-    expect(rowIds(out)).toEqual(['u1', 'a1', 'u2', 'g2']);
-    expect(messageRow(out[0]).collapse?.collapsed).toBe(true);
-    expect(messageRow(out[2]).collapse?.collapsed).toBe(false);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1', 'u2', 'tc-u2', 'g2']);
+    expect(turnCollapseRow(out[1]).turnCollapse.collapsed).toBe(true);
+    expect(turnCollapseRow(out[4]).turnCollapse.collapsed).toBe(false);
   });
 
   it('shows live metrics on the active turn without collapsing it', () => {
@@ -583,34 +593,34 @@ describe('applyTurnCollapse', () => {
       },
     ]);
     const out = collapseItems(items, { isResponding: true });
-    // Active turn stays fully expanded, yet the seam carries live metrics.
-    expect(rowIds(out)).toEqual(['u1', 'g1', 'a1']);
-    const head = messageRow(out[0]).collapse;
-    expect(head?.collapsed).toBe(false);
-    expect(head?.elapsedMs).toBe(2_500);
-    expect(head?.inputTokens).toBe(120);
-    expect(head?.outputTokens).toBe(30);
+    // Active turn stays fully expanded, yet the turn_collapse carries live metrics.
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'g1', 'a1']);
+    const tc = turnCollapseRow(out[1]).turnCollapse;
+    expect(tc.collapsed).toBe(false);
+    expect(tc.elapsedMs).toBe(2_500);
+    expect(tc.inputTokens).toBe(120);
+    expect(tc.outputTokens).toBe(30);
   });
 
-  it('does not tag a turn with no intermediate steps', () => {
+  it('does not insert turn_collapse for a turn with no intermediate steps and no metrics', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
+    // No steps and no metrics → no turn_collapse inserted
     expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse).toBeUndefined();
   });
 
-  it('folds a turn with no final answer down to just the prompt', () => {
+  it('folds a turn with no final answer down to prompt + turn_collapse', () => {
     const items = groupParallelAgents([
       makeUserMessage('u1'),
       makeMultiToolGroup('g1'),
       makeMultiToolGroup('g2'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1']);
-    expect(messageRow(out[0]).collapse).toEqual({
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1']);
+    expect(turnCollapseRow(out[1]).turnCollapse).toEqual({
       turnId: 'u1',
       collapsed: true,
       hiddenCount: 2,
@@ -625,8 +635,8 @@ describe('applyTurnCollapse', () => {
       makeAnswerWithThinking('a1'),
     ]);
     const collapsed = collapseItems(items);
-    expect(rowIds(collapsed)).toEqual(['u1', 'a1']);
-    const collapsedAnswer = messageRow(collapsed[1]).message;
+    expect(rowIds(collapsed)).toEqual(['u1', 'tc-u1', 'a1']);
+    const collapsedAnswer = messageRow(collapsed[2]).message;
     expect(collapsedAnswer.role).toBe('assistant');
     if (collapsedAnswer.role === 'assistant') {
       expect(collapsedAnswer.thinking).toBeUndefined();
@@ -636,7 +646,7 @@ describe('applyTurnCollapse', () => {
     const expanded = collapseItems(items, {
       overrides: new Map([['u1', true]]),
     });
-    const expandedAnswer = messageRow(expanded[2]).message;
+    const expandedAnswer = messageRow(expanded[3]).message;
     if (expandedAnswer.role === 'assistant') {
       expect(expandedAnswer.thinking).toBe('pondering');
     }
@@ -650,9 +660,10 @@ describe('applyTurnCollapse', () => {
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['pre', 'u1', 'a1']);
-    expect(messageRow(out[0]).collapse).toBeUndefined();
-    expect(messageRow(out[1]).collapse?.collapsed).toBe(true);
+    expect(rowIds(out)).toEqual(['pre', 'u1', 'tc-u1', 'a1']);
+    // 'pre' is a message, not a turn_collapse
+    expect(messageRow(out[0]).turnCollapse).toBeUndefined();
+    expect(turnCollapseRow(out[2]).turnCollapse.collapsed).toBe(true);
   });
 
   it('keeps system rows (errors/output) visible while hiding tool steps', () => {
@@ -663,8 +674,8 @@ describe('applyTurnCollapse', () => {
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1', 's1', 'a1']);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(1);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 's1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(1);
   });
 
   it('does not collapse a turn whose only response is a system row', () => {
@@ -674,7 +685,7 @@ describe('applyTurnCollapse', () => {
     ]);
     const out = collapseItems(items);
     expect(rowIds(out)).toEqual(['u1', 's1']);
-    expect(messageRow(out[0]).collapse).toBeUndefined();
+    // No turn_collapse inserted when there are no steps and no metrics
   });
 
   it('hides mid-turn assistant narration but keeps the final answer', () => {
@@ -685,8 +696,8 @@ describe('applyTurnCollapse', () => {
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(2);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(2);
   });
 
   it('hides plan rows', () => {
@@ -696,8 +707,8 @@ describe('applyTurnCollapse', () => {
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(1);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(1);
   });
 
   it('counts a grouped parallel-agents row as one hidden step', () => {
@@ -709,8 +720,8 @@ describe('applyTurnCollapse', () => {
     ]);
     // x1/x2 collapse into a single parallel_agents row upstream.
     const out = collapseItems(items);
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(1);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(1);
   });
 
   it('treats an assistant row with undefined content as a non-answer without crashing', () => {
@@ -721,9 +732,9 @@ describe('applyTurnCollapse', () => {
       { id: 'x', role: 'assistant', content: undefined as unknown as string },
     ]);
     const out = collapseItems(items);
-    // No assistant-with-content → no final answer → fold to just the prompt.
-    expect(rowIds(out)).toEqual(['u1']);
-    expect(messageRow(out[0]).collapse?.hiddenCount).toBe(2);
+    // No assistant-with-content → no final answer → fold to prompt + turn_collapse.
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.hiddenCount).toBe(2);
   });
 
   it('force-expands a completed turn that holds a pending approval', () => {
@@ -735,8 +746,8 @@ describe('applyTurnCollapse', () => {
     // call-g1-a belongs to g1's tool group → the turn must stay expanded so
     // its inline approve/reject UI is reachable.
     const out = collapseItems(items, { pendingApprovalCallId: 'call-g1-a' });
+    // When there's a pending approval, the turn passes through untouched (no turn_collapse)
     expect(rowIds(out)).toEqual(['u1', 'g1', 'a1']);
-    expect(messageRow(out[0]).collapse).toBeUndefined();
   });
 
   it('still collapses when the pending approval is in a different turn', () => {
@@ -746,11 +757,11 @@ describe('applyTurnCollapse', () => {
       makeAssistantMessage('a1'),
     ]);
     const out = collapseItems(items, { pendingApprovalCallId: 'call-other' });
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    expect(messageRow(out[0]).collapse?.collapsed).toBe(true);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(turnCollapseRow(out[1]).turnCollapse.collapsed).toBe(true);
   });
 
-  it('records elapsed (prompt → last step) and token usage on the head', () => {
+  it('records elapsed (prompt → last step) and token usage on turn_collapse', () => {
     const items = groupParallelAgents([
       { id: 'u1', role: 'user', content: 'hi', timestamp: 1_000 },
       {
@@ -768,7 +779,7 @@ describe('applyTurnCollapse', () => {
       },
     ]);
     const out = collapseItems(items);
-    expect(messageRow(out[0]).collapse).toEqual({
+    expect(turnCollapseRow(out[1]).turnCollapse).toEqual({
       turnId: 'u1',
       collapsed: true,
       hiddenCount: 1,
@@ -802,8 +813,8 @@ describe('applyTurnCollapse', () => {
         timestamp: 100_000,
       },
     ]);
-    const head = messageRow(collapseItems(items)[0]).collapse;
-    expect(head?.elapsedMs).toBe(4_000);
+    const tc = turnCollapseRow(collapseItems(items)[1]).turnCollapse;
+    expect(tc.elapsedMs).toBe(4_000);
   });
 
   it('sums token usage across a turn (hidden mid-turn text + final answer)', () => {
@@ -830,11 +841,11 @@ describe('applyTurnCollapse', () => {
         usage: { inputTokens: 200, outputTokens: 80 },
       },
     ]);
-    const head = messageRow(collapseItems(items)[0]).collapse;
-    expect(head?.inputTokens).toBe(300);
-    expect(head?.outputTokens).toBe(130);
-    expect(head?.elapsedMs).toBe(3_000);
-    expect(head?.toolCallCount).toBe(1);
+    const tc = turnCollapseRow(collapseItems(items)[1]).turnCollapse;
+    expect(tc.inputTokens).toBe(300);
+    expect(tc.outputTokens).toBe(130);
+    expect(tc.elapsedMs).toBe(3_000);
+    expect(tc.toolCallCount).toBe(1);
   });
 
   it('counts visible tool calls across regular and grouped agent rows', () => {
@@ -895,8 +906,8 @@ describe('applyTurnCollapse', () => {
         timestamp: 5_000,
       },
     ]);
-    const head = messageRow(collapseItems(items)[0]).collapse;
-    expect(head?.toolCallCount).toBe(4);
+    const tc = turnCollapseRow(collapseItems(items)[1]).turnCollapse;
+    expect(tc.toolCallCount).toBe(4);
   });
 
   it('omits elapsed/usage when the turn carries no timestamps or usage', () => {
@@ -905,8 +916,8 @@ describe('applyTurnCollapse', () => {
       makeMultiToolGroup('g1'),
       makeAssistantMessage('a1'),
     ]);
-    const head = messageRow(collapseItems(items)[0]).collapse;
-    expect(head).toEqual({
+    const tc = turnCollapseRow(collapseItems(items)[1]).turnCollapse;
+    expect(tc).toEqual({
       turnId: 'u1',
       collapsed: true,
       hiddenCount: 1,
@@ -927,13 +938,13 @@ describe('applyTurnCollapse', () => {
     ]);
     const out = collapseItems(items);
     // Nothing foldable, but the metrics still surface and all rows stay visible.
-    expect(rowIds(out)).toEqual(['u1', 'a1']);
-    const head = messageRow(out[0]).collapse;
-    expect(head?.hiddenCount).toBe(0);
-    expect(head?.collapsed).toBe(false);
-    expect(head?.elapsedMs).toBe(900);
-    expect(head?.inputTokens).toBe(1200);
-    expect(head?.outputTokens).toBe(45);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    const tc = turnCollapseRow(out[1]).turnCollapse;
+    expect(tc.hiddenCount).toBe(0);
+    expect(tc.collapsed).toBe(false);
+    expect(tc.elapsedMs).toBe(900);
+    expect(tc.inputTokens).toBe(1200);
+    expect(tc.outputTokens).toBe(45);
   });
 
   it('sums cached-read tokens across the turn', () => {
@@ -953,9 +964,9 @@ describe('applyTurnCollapse', () => {
         usage: { inputTokens: 2000, outputTokens: 100, cachedTokens: 1800 },
       },
     ]);
-    expect(messageRow(collapseItems(items)[0]).collapse?.cachedTokens).toBe(
-      1800,
-    );
+    expect(
+      turnCollapseRow(collapseItems(items)[1]).turnCollapse.cachedTokens,
+    ).toBe(1800);
   });
 });
 

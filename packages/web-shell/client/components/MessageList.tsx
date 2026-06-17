@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  memo,
   useContext,
   useEffect,
   useImperativeHandle,
@@ -27,6 +28,8 @@ import { ToolApproval } from './messages/ToolApproval';
 import { AskUserQuestion } from './messages/AskUserQuestion';
 import { toolContainsCallId } from './messages/toolFormatting';
 import styles from './MessageList.module.css';
+import turnCollapseStyles from './TurnCollapseRow.module.css';
+import { useI18n } from '../i18n';
 
 interface MessageListProps {
   messages: Message[];
@@ -93,11 +96,13 @@ export type DisplayItem =
       type: 'message';
       key: string;
       message: Message;
-      /**
-       * Present only on a turn's leading user-message row when the turn is
-       * collapsible; drives the prompt-row expand/collapse toggle.
-       */
-      collapse?: TurnCollapseHead;
+      /** Metrics info for the final answer assistant message. */
+      turnCollapse?: TurnCollapseHead;
+    }
+  | {
+      type: 'turn_collapse';
+      key: string;
+      turnCollapse: TurnCollapseHead;
     }
   | {
       type: 'parallel_agents';
@@ -292,9 +297,9 @@ export function groupParallelAgents(messages: Message[]): DisplayItem[] {
 }
 
 export function getDisplayItemVirtualKey(item: DisplayItem): string {
-  return item.type === 'parallel_agents'
-    ? `group:${item.key}`
-    : `msg:${item.key}`;
+  if (item.type === 'parallel_agents') return `group:${item.key}`;
+  if (item.type === 'turn_collapse') return `tc:${item.key}`;
+  return `msg:${item.key}`;
 }
 
 export interface ApplyTurnCollapseOptions {
@@ -339,6 +344,7 @@ function isAssistantAnswer(item: DisplayItem): boolean {
  */
 function isHideableStep(item: DisplayItem, isFinalAnswer: boolean): boolean {
   if (item.type === 'parallel_agents') return true;
+  if (item.type === 'turn_collapse') return false;
   switch (item.message.role) {
     case 'tool_group':
     case 'plan':
@@ -367,12 +373,15 @@ function isHideableStep(item: DisplayItem, isFinalAnswer: boolean): boolean {
 
 function isExecutionWorkStep(item: DisplayItem): boolean {
   if (item.type === 'parallel_agents') return true;
+  if (item.type === 'turn_collapse') return false;
   return item.message.role === 'tool_group' || item.message.role === 'plan';
 }
 
 /** Wall-clock stamp of a display row, whichever variant carries it. */
 function itemTimestamp(item: DisplayItem): number | undefined {
-  return item.type === 'message' ? item.message.timestamp : item.timestamp;
+  if (item.type === 'message') return item.message.timestamp;
+  if (item.type === 'parallel_agents') return item.timestamp;
+  return undefined;
 }
 
 /**
@@ -395,6 +404,7 @@ function itemAssistantUsage(item: DisplayItem):
 
 function itemToolCallCount(item: DisplayItem): number {
   if (item.type === 'parallel_agents') return item.agents.length;
+  if (item.type === 'turn_collapse') return 0;
   return item.message.role === 'tool_group' ? item.message.tools.length : 0;
 }
 
@@ -558,25 +568,44 @@ export function applyTurnCollapse(
           : isActiveTurn;
     const collapsed = !expanded;
 
+    // Push the user message
     result.push({
       type: 'message',
       key: head.key,
       message: head.message,
-      collapse: {
-        turnId,
-        collapsed,
-        hiddenCount,
-        ...(elapsedMs !== undefined ? { elapsedMs } : {}),
-        ...(hasUsage ? { inputTokens, outputTokens } : {}),
-        ...(cachedTokens > 0 ? { cachedTokens } : {}),
-        ...(toolCallCount > 0 ? { toolCallCount } : {}),
-        ...(liveStartedAt !== undefined ? { liveStartedAt } : {}),
-      },
+    });
+
+    // Insert standalone turn_collapse item right after user message
+    // This keeps the toggle at the top of the turn regardless of expand state
+    const turnCollapseInfo: TurnCollapseHead = {
+      turnId,
+      collapsed,
+      hiddenCount,
+      ...(elapsedMs !== undefined ? { elapsedMs } : {}),
+      ...(hasUsage ? { inputTokens, outputTokens } : {}),
+      ...(cachedTokens > 0 ? { cachedTokens } : {}),
+      ...(toolCallCount > 0 ? { toolCallCount } : {}),
+      ...(liveStartedAt !== undefined ? { liveStartedAt } : {}),
+    };
+    result.push({
+      type: 'turn_collapse',
+      key: `tc-${turnId}`,
+      turnCollapse: turnCollapseInfo,
     });
 
     if (!collapsed) {
       for (let i = start + 1; i <= end; i++) {
-        result.push(items[i]!);
+        const item = items[i]!;
+        // Attach turnCollapse to final answer for metrics display
+        if (
+          i === answerIdx &&
+          item.type === 'message' &&
+          item.message.role === 'assistant'
+        ) {
+          result.push({ ...item, turnCollapse: turnCollapseInfo });
+        } else {
+          result.push(item);
+        }
       }
       continue;
     }
@@ -599,7 +628,14 @@ export function applyTurnCollapse(
           type: 'message',
           key: item.key,
           message: { ...item.message, thinking: undefined },
+          turnCollapse: turnCollapseInfo,
         });
+      } else if (
+        i === answerIdx &&
+        item.type === 'message' &&
+        item.message.role === 'assistant'
+      ) {
+        result.push({ ...item, turnCollapse: turnCollapseInfo });
       } else {
         result.push(item);
       }
@@ -630,12 +666,15 @@ export function findDisplayItemIndex(
       ) {
         return i;
       }
-    } else if (
-      callId &&
-      item.agents.some((agent) => toolContainsCallId(agent, callId))
-    ) {
-      return i;
+    } else if (item.type === 'parallel_agents') {
+      if (
+        callId &&
+        item.agents.some((agent) => toolContainsCallId(agent, callId))
+      ) {
+        return i;
+      }
     }
+    // turn_collapse items are skipped — they don't match by messageId or callId
   }
   return -1;
 }
@@ -653,6 +692,7 @@ const ESTIMATE_HEADER = 120;
 const ESTIMATE_MESSAGE = 80;
 const ESTIMATE_APPROVAL = 200;
 const ESTIMATE_TAIL = 240;
+const ESTIMATE_TURN_COLLAPSE = 40;
 export const VIRTUAL_SCROLL_THRESHOLD = 200;
 
 export function shouldUseVirtualScroll(
@@ -661,6 +701,157 @@ export function shouldUseVirtualScroll(
 ): boolean {
   return totalCount > threshold;
 }
+
+// ── TurnCollapseRow helpers ────────────────────────────────────────────────
+
+/** Compact turn duration: `820ms` · `12.4s` · `1m 5s`. */
+function formatDuration(ms: number): string {
+  if (ms < 1000) return `${Math.max(0, Math.round(ms))}ms`;
+  const totalSeconds = ms / 1000;
+  if (totalSeconds < 60) return `${totalSeconds.toFixed(1)}s`;
+  const minutes = Math.floor(totalSeconds / 60);
+  const seconds = Math.round(totalSeconds - minutes * 60);
+  return `${minutes}m ${seconds}s`;
+}
+
+/** Token count abbreviated past 1k (e.g. `3.1k`), matching the context badge. */
+function formatTokenCount(tokens: number): string {
+  return tokens >= 1000 ? `${(tokens / 1000).toFixed(1)}k` : `${tokens}`;
+}
+
+type Translate = (
+  key: string,
+  vars?: Record<string, string | number>,
+) => string;
+
+function durationMetricText(elapsedMs: number | undefined): string {
+  return elapsedMs !== undefined ? formatDuration(elapsedMs) : '';
+}
+
+function extraMetricsText(collapse: TurnCollapseHead, t: Translate): string {
+  const parts: string[] = [];
+  if (
+    collapse.inputTokens !== undefined &&
+    collapse.outputTokens !== undefined
+  ) {
+    const cachedTokens = collapse.cachedTokens ?? 0;
+    const cached =
+      cachedTokens > 0 && collapse.inputTokens > 0
+        ? ` (${formatTokenCount(cachedTokens)} ${t('turn.cached')}, ${Math.round(
+            (cachedTokens / collapse.inputTokens) * 100,
+          )}%)`
+        : '';
+    parts.push(
+      `↑${formatTokenCount(collapse.inputTokens)}${cached} ↓${formatTokenCount(
+        collapse.outputTokens,
+      )}`,
+    );
+  }
+  if (collapse.toolCallCount !== undefined && collapse.toolCallCount > 0) {
+    parts.push(t('turn.toolCalls', { count: collapse.toolCallCount }));
+  }
+  if (collapse.hiddenCount > 0) {
+    parts.push(t('turn.executionSteps', { count: collapse.hiddenCount }));
+  }
+  return parts.join(' · ');
+}
+
+function hasNonDurationMetrics(collapse: TurnCollapseHead): boolean {
+  return (
+    (collapse.inputTokens !== undefined &&
+      collapse.outputTokens !== undefined) ||
+    (collapse.toolCallCount !== undefined && collapse.toolCallCount > 0)
+  );
+}
+
+/**
+ * Wall-clock that re-renders this row once a second while `active`, so a live
+ * turn's elapsed advances smoothly instead of jumping per step. Idle (and for
+ * completed turns) it never ticks. App code, so `Date.now()` is available.
+ */
+function useNowTicker(active: boolean): number {
+  const [now, setNow] = useState(() => Date.now());
+  useEffect(() => {
+    if (!active) return;
+    setNow(Date.now());
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [active]);
+  return now;
+}
+
+interface TurnCollapseRowProps {
+  turnCollapse: TurnCollapseHead;
+  onToggleCollapse: (turnId: string) => void;
+}
+
+const TurnCollapseRow = memo(function TurnCollapseRow({
+  turnCollapse,
+  onToggleCollapse,
+}: TurnCollapseRowProps) {
+  const { t } = useI18n();
+  const hasToggle = turnCollapse.hiddenCount > 0;
+  const liveStartedAt = turnCollapse.liveStartedAt;
+  const showMetadataRow =
+    hasToggle ||
+    liveStartedAt !== undefined ||
+    hasNonDurationMetrics(turnCollapse);
+
+  const now = useNowTicker(liveStartedAt !== undefined && showMetadataRow);
+  const elapsedSeenRef = useRef(0);
+  let displayElapsedMs: number | undefined;
+  if (liveStartedAt !== undefined && showMetadataRow) {
+    elapsedSeenRef.current = Math.max(
+      elapsedSeenRef.current,
+      Math.max(0, now - liveStartedAt),
+    );
+    displayElapsedMs = elapsedSeenRef.current;
+  } else if (showMetadataRow && turnCollapse.elapsedMs !== undefined) {
+    elapsedSeenRef.current = Math.max(
+      elapsedSeenRef.current,
+      turnCollapse.elapsedMs,
+    );
+    displayElapsedMs = elapsedSeenRef.current;
+  } else {
+    displayElapsedMs = undefined;
+  }
+
+  const visibleMetrics = durationMetricText(displayElapsedMs);
+  const hiddenMetrics = extraMetricsText(turnCollapse, t);
+  const showVisibleMetrics = !!visibleMetrics && showMetadataRow;
+  const showHiddenMetrics = !!hiddenMetrics && showMetadataRow;
+
+  if (!showMetadataRow) return null;
+
+  return (
+    <div className={turnCollapseStyles.collapseRow}>
+      <span className={turnCollapseStyles.collapseLabel}>
+        {t('turn.processed')}
+        {showVisibleMetrics && ` ${visibleMetrics}`}
+        {showHiddenMetrics && (
+          <span className={turnCollapseStyles.hiddenMetrics}>
+            {hiddenMetrics}
+          </span>
+        )}
+      </span>
+      {hasToggle && (
+        <button
+          type="button"
+          data-testid={`toggle-${turnCollapse.turnId}`}
+          className={turnCollapseStyles.collapseIcon}
+          onClick={() => onToggleCollapse(turnCollapse.turnId)}
+          aria-expanded={!turnCollapse.collapsed}
+          aria-label={
+            turnCollapse.collapsed ? t('turn.expand') : t('turn.collapse')
+          }
+          title={turnCollapse.collapsed ? t('turn.expand') : t('turn.collapse')}
+        >
+          {turnCollapse.collapsed ? '▸' : '▾'}
+        </button>
+      )}
+    </div>
+  );
+});
 
 export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
   function MessageList(
@@ -867,6 +1058,9 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
           return ESTIMATE_APPROVAL;
         }
         if (hasTailContent && index === tailContentIndex) return ESTIMATE_TAIL;
+        const itemIndex = index - headerOffset;
+        const item = visibleItems[itemIndex];
+        if (item?.type === 'turn_collapse') return ESTIMATE_TURN_COLLAPSE;
         return ESTIMATE_MESSAGE;
       },
       overscan: 20,
@@ -1123,6 +1317,15 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
           );
         }
 
+        if (item.type === 'turn_collapse') {
+          return (
+            <TurnCollapseRow
+              turnCollapse={item.turnCollapse}
+              onToggleCollapse={handleToggleCollapse}
+            />
+          );
+        }
+
         return (
           <MessageItem
             message={item.message}
@@ -1134,8 +1337,6 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
             showRetryHint={showRetryHint}
             onRetryClick={onRetryClick}
             shellOutputMaxLines={shellOutputMaxLines}
-            collapse={item.collapse}
-            onToggleCollapse={handleToggleCollapse}
           />
         );
       },
