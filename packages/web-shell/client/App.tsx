@@ -147,6 +147,7 @@ import {
 } from './themeContext';
 import {
   WebShellCustomizationProvider,
+  ComposerVariantProvider,
   type WebShellComposerApi,
   type WebShellComposerInput,
   type WebShellMarkdownCustomization,
@@ -352,7 +353,7 @@ export interface WebShellProps {
   composerInput?: WebShellComposerInput;
   /** Replay key for composerInput. */
   composerInputVersion?: number;
-  /** Composer layout variant. Defaults to 'terminal'. */
+  /** Composer layout variant. Defaults to 'chat'. */
   composerVariant?: 'terminal' | 'chat';
 }
 
@@ -722,6 +723,15 @@ export function App({
   const [composerVariant, setComposerVariant] = useState<'terminal' | 'chat'>(
     initialComposerVariant,
   );
+  const [editorDraft, setEditorDraft] = useState('');
+  const [editorDraftVersion, setEditorDraftVersion] = useState(0);
+  useEffect(() => {
+    if (editorDraft) {
+      setEditorDraft('');
+      setEditorDraftVersion(0);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [composerVariant]);
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
       providedLanguage === undefined
@@ -737,7 +747,6 @@ export function App({
       compactThinking,
       collapseCompletedTurns,
       markdown,
-      composerVariant,
     }),
     [
       renderToolHeaderExtra,
@@ -746,7 +755,6 @@ export function App({
       compactThinking,
       collapseCompletedTurns,
       markdown,
-      composerVariant,
     ],
   );
   const CustomFooter = renderFooter;
@@ -1051,6 +1059,18 @@ export function App({
   const sessionDisplayName = connection.displayName;
   const [currentMode, setCurrentMode] = useState('default');
   const [queuedPrompts, setQueuedPrompts] = useState<QueuedPrompt[]>([]);
+  const queuedTexts = useMemo(
+    () => queuedPrompts.map((prompt) => prompt.text),
+    [queuedPrompts],
+  );
+  const availableModels = useMemo(
+    () =>
+      (connection.models ?? []).map((m) => ({
+        id: m.id,
+        label: m.label,
+      })),
+    [connection.models],
+  );
   const queuedPromptsRef = useRef<QueuedPrompt[]>([]);
   const nextQueuedPromptIdRef = useRef(1);
   const drainingQueueRef = useRef(false);
@@ -1599,6 +1619,18 @@ export function App({
     [sessionActions, reportError, store, t],
   );
 
+  const handleSelectModel = useCallback(
+    (model: string) => {
+      sessionActions
+        .setModel(model)
+        .then(() => {
+          setCurrentModel(model);
+        })
+        .catch(() => {});
+    },
+    [sessionActions],
+  );
+
   useEffect(() => {
     streamingStateRef.current = streamingState;
   }, [streamingState]);
@@ -1943,6 +1975,11 @@ export function App({
           if (cmd === 'ui') {
             const uiArg = text.slice(match[0].length).trim().toLowerCase();
             if (uiArg === 'chat' || uiArg === 'terminal') {
+              const draft = editorRef.current?.getText() ?? '';
+              if (draft) {
+                setEditorDraft(draft);
+                setEditorDraftVersion((v) => v + 1);
+              }
               setComposerVariant(uiArg);
               store.dispatch([
                 {
@@ -1960,8 +1997,8 @@ export function App({
                     t('ui.usage'),
                     '',
                     t('ui.options'),
-                    '  - chat: Chat UI',
-                    '  - terminal: Terminal UI',
+                    `  - chat: ${t('ui.optionChat')}`,
+                    `  - terminal: ${t('ui.optionTerminal')}`,
                   ].join('\n'),
                 },
               ]);
@@ -2909,153 +2946,157 @@ export function App({
           )}
 
           <WebShellCustomizationProvider value={customization}>
-            <CompactModeContext.Provider value={compactMode}>
-              <TodoContextsProvider
-                timeline={todoTimeline}
-                details={todoDetails}
-              >
-                <div
-                  className={
-                    showFloatingTodos
-                      ? `${styles.content} ${styles.contentHasMessages}`
-                      : styles.content
-                  }
-                  style={dialogOpen ? { visibility: 'hidden' } : undefined}
+            <ComposerVariantProvider value={composerVariant}>
+              <CompactModeContext.Provider value={compactMode}>
+                <TodoContextsProvider
+                  timeline={todoTimeline}
+                  details={todoDetails}
                 >
-                  <MessageList
-                    ref={messageListRef}
-                    messages={displayMessages}
-                    pendingApproval={pendingApproval}
-                    onConfirm={handleConfirm}
-                    onShowContextDetail={handleShowContextDetail}
-                    catchingUp={connection.catchingUp}
-                    isResponding={streamingState !== 'idle'}
-                    workspaceCwd={connection.workspaceCwd || ''}
-                    shellOutputMaxLines={shellOutputMaxLines}
-                    showRetryHint={showRetryHint}
-                    onRetryClick={handleRetry}
-                    welcomeHeader={welcomeHeader}
-                    tailContent={
-                      agentsInlineMode ||
-                      memoryInlineOpen ||
-                      modelInlineMode ||
-                      authInlineOpen ||
-                      approvalModeInlineOpen ||
-                      settingsInlineOpen ? (
-                        <>
-                          {authInlineOpen && (
-                            <AuthMessage
-                              onMessage={(text, type = 'status') => {
-                                store.dispatch([
-                                  type === 'error'
-                                    ? { type: 'error', text }
-                                    : { type: 'status', text },
-                                ]);
-                              }}
-                              onClose={() => setAuthInlineOpen(false)}
-                            />
-                          )}
-                          {approvalModeInlineOpen && (
-                            <ApprovalModeMessage
-                              currentMode={currentMode}
-                              onSelect={handleSetMode}
-                              onClose={() => setApprovalModeInlineOpen(false)}
-                            />
-                          )}
-                          {modelInlineMode && (
-                            <ModelMessage
-                              mode={modelInlineMode}
-                              onSelect={
-                                modelInlineMode === 'fast'
-                                  ? handleFastModelSelect
-                                  : handleModelSelect
-                              }
-                              onClose={() => setModelInlineMode(null)}
-                            />
-                          )}
-                          {agentsInlineMode && (
-                            <AgentsMessage
-                              mode={agentsInlineMode}
-                              onMessage={(text) =>
-                                store.dispatch([{ type: 'status', text }])
-                              }
-                              onClose={() => setAgentsInlineMode(null)}
-                            />
-                          )}
-                          {memoryInlineOpen && (
-                            <MemoryMessage
-                              refreshSignal={memoryRefreshSignal}
-                              addSignal={memoryAddSignal}
-                              addScope={memoryAddScope}
-                              portalHost={memoryPortalHost}
-                              onMessage={(text, type = 'status') => {
-                                store.dispatch([{ type, text }]);
-                              }}
-                              onClose={() => setMemoryInlineOpen(false)}
-                            />
-                          )}
-                          {settingsInlineOpen && (
-                            <SettingsMessage
-                              settingsState={workspaceSettingsState}
-                              onClose={() => setSettingsInlineOpen(false)}
-                              onLanguageChange={handleSettingsLanguageChange}
-                              onThemeChange={handleThemeChange}
-                              onSubDialog={(key) => {
-                                setSettingsInlineOpen(false);
-                                if (key === 'fastModel')
-                                  setModelInlineMode('fast');
-                                else if (key === 'tools.approvalMode')
-                                  setApprovalModeInlineOpen(true);
-                              }}
-                            />
-                          )}
-                        </>
-                      ) : undefined
+                  <div
+                    className={
+                      showFloatingTodos
+                        ? `${styles.content} ${styles.contentHasMessages}`
+                        : styles.content
                     }
-                    tailKey={
-                      agentsInlineMode ||
-                      memoryInlineOpen ||
-                      modelInlineMode ||
-                      authInlineOpen ||
-                      approvalModeInlineOpen ||
-                      settingsInlineOpen
-                        ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
-                        : undefined
-                    }
-                    // The approval-mode/model pickers and the settings panel are
-                    // reachable by mouse from the status bar, so they reveal
-                    // themselves when opened while the user is scrolled up; the
-                    // agents/memory panels keep the user's scroll position.
-                    autoScrollTailIntoView={
-                      approvalModeInlineOpen ||
-                      modelInlineMode !== null ||
-                      settingsInlineOpen
-                    }
-                    virtualScrollThreshold={virtualScrollThreshold}
-                  />
+                    style={dialogOpen ? { visibility: 'hidden' } : undefined}
+                  >
+                    <MessageList
+                      ref={messageListRef}
+                      messages={displayMessages}
+                      pendingApproval={pendingApproval}
+                      onConfirm={handleConfirm}
+                      onShowContextDetail={handleShowContextDetail}
+                      catchingUp={connection.catchingUp}
+                      isResponding={streamingState !== 'idle'}
+                      workspaceCwd={connection.workspaceCwd || ''}
+                      shellOutputMaxLines={shellOutputMaxLines}
+                      showRetryHint={showRetryHint}
+                      onRetryClick={handleRetry}
+                      welcomeHeader={welcomeHeader}
+                      tailContent={
+                        agentsInlineMode ||
+                        memoryInlineOpen ||
+                        modelInlineMode ||
+                        authInlineOpen ||
+                        approvalModeInlineOpen ||
+                        settingsInlineOpen ? (
+                          <>
+                            {authInlineOpen && (
+                              <AuthMessage
+                                onMessage={(text, type = 'status') => {
+                                  store.dispatch([
+                                    type === 'error'
+                                      ? { type: 'error', text }
+                                      : { type: 'status', text },
+                                  ]);
+                                }}
+                                onClose={() => setAuthInlineOpen(false)}
+                              />
+                            )}
+                            {approvalModeInlineOpen && (
+                              <ApprovalModeMessage
+                                currentMode={currentMode}
+                                onSelect={handleSetMode}
+                                onClose={() => setApprovalModeInlineOpen(false)}
+                              />
+                            )}
+                            {modelInlineMode && (
+                              <ModelMessage
+                                mode={modelInlineMode}
+                                onSelect={
+                                  modelInlineMode === 'fast'
+                                    ? handleFastModelSelect
+                                    : handleModelSelect
+                                }
+                                onClose={() => setModelInlineMode(null)}
+                              />
+                            )}
+                            {agentsInlineMode && (
+                              <AgentsMessage
+                                mode={agentsInlineMode}
+                                onMessage={(text) =>
+                                  store.dispatch([{ type: 'status', text }])
+                                }
+                                onClose={() => setAgentsInlineMode(null)}
+                              />
+                            )}
+                            {memoryInlineOpen && (
+                              <MemoryMessage
+                                refreshSignal={memoryRefreshSignal}
+                                addSignal={memoryAddSignal}
+                                addScope={memoryAddScope}
+                                portalHost={memoryPortalHost}
+                                onMessage={(text, type = 'status') => {
+                                  store.dispatch([{ type, text }]);
+                                }}
+                                onClose={() => setMemoryInlineOpen(false)}
+                              />
+                            )}
+                            {settingsInlineOpen && (
+                              <SettingsMessage
+                                settingsState={workspaceSettingsState}
+                                onClose={() => setSettingsInlineOpen(false)}
+                                onLanguageChange={handleSettingsLanguageChange}
+                                onThemeChange={handleThemeChange}
+                                onSubDialog={(key) => {
+                                  setSettingsInlineOpen(false);
+                                  if (key === 'fastModel')
+                                    setModelInlineMode('fast');
+                                  else if (key === 'tools.approvalMode')
+                                    setApprovalModeInlineOpen(true);
+                                }}
+                              />
+                            )}
+                          </>
+                        ) : undefined
+                      }
+                      tailKey={
+                        agentsInlineMode ||
+                        memoryInlineOpen ||
+                        modelInlineMode ||
+                        authInlineOpen ||
+                        approvalModeInlineOpen ||
+                        settingsInlineOpen
+                          ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
+                          : undefined
+                      }
+                      // The approval-mode/model pickers and the settings panel are
+                      // reachable by mouse from the status bar, so they reveal
+                      // themselves when opened while the user is scrolled up; the
+                      // agents/memory panels keep the user's scroll position.
+                      autoScrollTailIntoView={
+                        approvalModeInlineOpen ||
+                        modelInlineMode !== null ||
+                        settingsInlineOpen
+                      }
+                      virtualScrollThreshold={virtualScrollThreshold}
+                    />
 
-                  {btwMessage?.role === 'btw' && (
-                    <div className={styles.btwPanel}>
-                      <BtwMessage
-                        question={btwMessage.question}
-                        answer={btwMessage.answer}
-                        isPending={btwMessage.isPending}
-                      />
-                    </div>
-                  )}
+                    {btwMessage?.role === 'btw' && (
+                      <div className={styles.btwPanel}>
+                        <BtwMessage
+                          question={btwMessage.question}
+                          answer={btwMessage.answer}
+                          isPending={btwMessage.isPending}
+                        />
+                      </div>
+                    )}
 
-                  <StreamingStatus />
-                </div>
-                <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
-              </TodoContextsProvider>
-            </CompactModeContext.Provider>
+                    {composerVariant === 'terminal' && <StreamingStatus />}
+                  </div>
+                  <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
+                </TodoContextsProvider>
+              </CompactModeContext.Provider>
+            </ComposerVariantProvider>
           </WebShellCustomizationProvider>
 
           <div
             className={
               bottomHidden
                 ? `${styles.footer} ${styles.footerHidden}`
-                : styles.footer
+                : composerVariant === 'chat'
+                  ? `${styles.footer} ${styles.footerChat}`
+                  : styles.footer
             }
           >
             {showFloatingTodos && !tasksPanelMessage && (
@@ -3072,6 +3113,7 @@ export function App({
             )}
             {!shouldHideComposer && (
               <div className={styles.composer}>
+                {composerVariant === 'chat' && <StreamingStatus />}
                 <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
                 {composerVariant === 'chat' ? (
                   <ChatEditor
@@ -3083,22 +3125,15 @@ export function App({
                     commands={commands}
                     skills={loadedSkills}
                     slashCommandCategoryOrder={slashCommandCategoryOrder}
-                    queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
+                    queuedMessages={queuedTexts}
                     onFocusFooter={handleFocusTaskPill}
                     onPopQueuedMessages={popQueuedPromptsForEdit}
                     onClearQueuedMessages={clearQueuedPrompts}
                     currentMode={currentMode}
                     currentModel={currentModel}
-                    availableModels={(connection.models ?? []).map((m) => ({
-                      id: m.id,
-                      label: m.label,
-                    }))}
+                    availableModels={availableModels}
                     onSelectMode={handleSetMode}
-                    onSelectModel={(model) => {
-                      sessionActions.setModel(model).then(() => {
-                        setCurrentModel(model);
-                      });
-                    }}
+                    onSelectModel={handleSelectModel}
                     sessionName={sessionDisplayName}
                     dialogOpen={bottomHidden || tasksPanelMessage !== null}
                     followupState={followupState}
@@ -3106,6 +3141,8 @@ export function App({
                     onDismissFollowup={onDismissFollowup}
                     composerInput={composerInput}
                     composerInputVersion={composerInputVersion}
+                    draftText={editorDraft}
+                    draftVersion={editorDraftVersion}
                     placeholderText={
                       !connected
                         ? t('common.loading')
@@ -3124,7 +3161,7 @@ export function App({
                     commands={commands}
                     skills={loadedSkills}
                     slashCommandCategoryOrder={slashCommandCategoryOrder}
-                    queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
+                    queuedMessages={queuedTexts}
                     onFocusFooter={handleFocusTaskPill}
                     onPopQueuedMessages={popQueuedPromptsForEdit}
                     onClearQueuedMessages={clearQueuedPrompts}
@@ -3136,6 +3173,8 @@ export function App({
                     onDismissFollowup={onDismissFollowup}
                     composerInput={composerInput}
                     composerInputVersion={composerInputVersion}
+                    draftText={editorDraft}
+                    draftVersion={editorDraftVersion}
                     placeholderText={
                       !connected
                         ? t('common.loading')
@@ -3184,14 +3223,10 @@ export function App({
                     contextWindow: m.contextWindow,
                   }))}
                   skills={loadedSkills}
-                  onSelectMode={(mode) => handleSetMode(mode)}
-                  onSelectModel={(model) => {
-                    sessionActions.setModel(model).then(() => {
-                      setCurrentModel(model);
-                    });
-                  }}
+                  onSelectMode={handleSetMode}
+                  onSelectModel={handleSelectModel}
                 />
-              ) : composerVariant === 'terminal' ? (
+              ) : (
                 <StatusBar
                   escapeHint={escapeHintVisible}
                   onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
@@ -3208,7 +3243,7 @@ export function App({
                   hideSettings={hideSettings}
                   onToggleShortcuts={handleToggleShortcuts}
                 />
-              ) : null)}
+              ))}
           </div>
         </div>
       </I18nProvider>

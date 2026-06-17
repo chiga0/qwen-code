@@ -5,7 +5,7 @@ import type {
   PermissionRequest,
   TodoItem,
 } from '../adapters/types';
-import { useWebShellCustomization } from '../customization';
+import { useComposerVariant } from '../customization';
 import { MessageTimestamp } from './MessageTimestamp';
 import { UserMessage } from './messages/UserMessage';
 import { AssistantMessage } from './messages/AssistantMessage';
@@ -45,7 +45,7 @@ export const MessageItem = memo(function MessageItem({
   onRetryClick,
   shellOutputMaxLines,
 }: MessageItemProps) {
-  const { composerVariant } = useWebShellCustomization();
+  const composerVariant = useComposerVariant();
 
   const body = ((): ReactElement | null => {
     switch (message.role) {

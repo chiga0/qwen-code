@@ -123,6 +123,10 @@
   flex-shrink: 0;
 }
 
+.footerChat {
+  margin-top: auto;
+}
+
 .footerHidden {
   display: none;
 }

@@ -179,11 +179,14 @@ export interface WebShellCustomization {
    */
   collapseCompletedTurns?: boolean;
   markdown?: WebShellMarkdownCustomization;
-  /** Switch the built-in composer layout. Defaults to 'terminal'. */
+  /** Switch the built-in composer layout. Defaults to 'chat'. */
   composerVariant?: WebShellComposerVariant;
 }
 
 const WebShellCustomizationContext = createContext<WebShellCustomization>({});
+
+const ComposerVariantContext =
+  createContext<WebShellComposerVariant>('terminal');
 
 export const WebShellCustomizationProvider =
   WebShellCustomizationContext.Provider;
@@ -191,3 +194,9 @@ export const WebShellCustomizationProvider =
 export function useWebShellCustomization(): WebShellCustomization {
   return useContext(WebShellCustomizationContext);
 }
+
+export function useComposerVariant(): WebShellComposerVariant {
+  return useContext(ComposerVariantContext);
+}
+
+export const ComposerVariantProvider = ComposerVariantContext.Provider;

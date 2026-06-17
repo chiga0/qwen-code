@@ -3,12 +3,16 @@ import {
   useCallback,
   useContext,
   useEffect,
+  useLayoutEffect,
   useRef,
   useState,
 } from 'react';
 import { Markdown } from './Markdown';
 import { CompactModeContext } from '../../App';
-import { useWebShellCustomization } from '../../customization';
+import {
+  useWebShellCustomization,
+  useComposerVariant,
+} from '../../customization';
 import { useI18n } from '../../i18n';
 import styles from './AssistantMessage.module.css';
 
@@ -25,13 +29,15 @@ export const AssistantMessage = memo(function AssistantMessage({
 }: AssistantMessageProps) {
   const { t } = useI18n();
   const compactMode = useContext(CompactModeContext);
-  const { compactThinking, composerVariant } = useWebShellCustomization();
+  const { compactThinking } = useWebShellCustomization();
+  const composerVariant = useComposerVariant();
   const isChatMode = composerVariant === 'chat';
   const [thinkingExpanded, setThinkingExpanded] = useState(false);
   const [overflowing, setOverflowing] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const collapsed = compactThinking && !thinkingExpanded;
+  const pinThinkingTail = collapsed && isStreaming && !content;
   // Re-check on content growth: the clamped box stops resizing once it
   // hits 5 lines, so a ResizeObserver alone misses later overflow.
   useEffect(() => {
@@ -64,15 +70,15 @@ export const AssistantMessage = memo(function AssistantMessage({
     };
   }, [collapsed]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     const el = previewRef.current;
     if (!el || !collapsed) return;
-    if (isStreaming && !content) {
+    if (pinThinkingTail) {
       el.scrollTop = el.scrollHeight;
     } else {
       el.scrollTop = 0;
     }
-  }, [collapsed, isStreaming, thinking, content]);
+  }, [collapsed, pinThinkingTail, thinking]);
 
   const handleToggle = useCallback(() => {
     setThinkingExpanded((v) => !v);
@@ -95,7 +101,7 @@ export const AssistantMessage = memo(function AssistantMessage({
                 <div
                   ref={previewRef}
                   className={`${styles.thinkingPreview} ${
-                    isStreaming ? styles.thinkingPreviewTail : ''
+                    pinThinkingTail ? styles.thinkingPreviewTail : ''
                   }`}
                 >
                   <Markdown

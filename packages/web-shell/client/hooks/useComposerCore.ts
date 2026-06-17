@@ -1154,7 +1154,10 @@ export function useComposerCore(
             if (!items) return false;
             let hasImage = false;
             for (const item of items) {
-              if (item.type.startsWith('image/')) {
+              if (
+                item.type.startsWith('image/') &&
+                /^image\/(png|jpeg|gif|webp)$/i.test(item.type)
+              ) {
                 hasImage = true;
                 const file = item.getAsFile();
                 if (!file) continue;
@@ -1298,6 +1301,12 @@ export function useComposerCore(
     const handler = (event: KeyboardEvent) => {
       if (disabledRef.current || searchMode || dialogOpen) return;
       if (event.defaultPrevented) return;
+      // Only capture keystrokes if the target is within the web-shell container
+      // or if no specific element has focus (document.body is active)
+      const target = event.target as Node;
+      const isWithinContainer = containerRef.current?.contains(target);
+      const isBodyFocused = document.activeElement === document.body;
+      if (!isWithinContainer && !isBodyFocused) return;
       const view = viewRef.current;
       const followup = followupStateRef.current;
       if (

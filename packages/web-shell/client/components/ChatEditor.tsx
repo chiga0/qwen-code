@@ -1,5 +1,6 @@
 import {
   forwardRef,
+  memo,
   useImperativeHandle,
   useCallback,
   useEffect,
@@ -227,8 +228,8 @@ function ToolbarDropdown({
   );
 }
 
-export const ChatEditor = forwardRef<EditorHandle, ChatEditorProps>(
-  function ChatEditor(props, ref) {
+export const ChatEditor = memo(
+  forwardRef<EditorHandle, ChatEditorProps>(function ChatEditor(props, ref) {
     const {
       onSubmit,
       onCycleMode,
@@ -307,16 +308,18 @@ export const ChatEditor = forwardRef<EditorHandle, ChatEditorProps>(
       (modeId: string) => {
         onSelectMode?.(modeId);
         setModeDropdownOpen(false);
+        core.focus();
       },
-      [onSelectMode],
+      [onSelectMode, core],
     );
 
     const handleModelSelect = useCallback(
       (modelId: string) => {
         onSelectModel?.(modelId);
         setModelDropdownOpen(false);
+        core.focus();
       },
-      [onSelectModel],
+      [onSelectModel, core],
     );
 
     const {
@@ -556,7 +559,7 @@ export const ChatEditor = forwardRef<EditorHandle, ChatEditorProps>(
                 e.stopPropagation();
                 core.submitText();
               }}
-              aria-label={t('editor.placeholder')}
+              aria-label={t('editor.send')}
             >
               <SendIcon />
             </button>
@@ -564,5 +567,5 @@ export const ChatEditor = forwardRef<EditorHandle, ChatEditorProps>(
         </div>
       </div>
     );
-  },
+  }),
 );

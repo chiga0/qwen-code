@@ -369,6 +369,25 @@ describe('findDisplayItemIndex', () => {
     expect(items[0].type).toBe('parallel_agents');
     expect(findDisplayItemIndex(items, 'a2', 'call-a2')).toBe(0);
   });
+
+  it('skips turn_collapse rows when searching by message id', () => {
+    const items: DisplayItem[] = [
+      { type: 'message', key: 'msg-u1', message: makeUserMessage('u1') },
+      {
+        type: 'turn_collapse',
+        key: 'tc-u1',
+        turnCollapse: {
+          turnId: 'u1',
+          collapsed: true,
+          hiddenCount: 1,
+        },
+      },
+      { type: 'message', key: 'msg-a1', message: makeAssistantMessage('a1') },
+    ];
+    expect(findDisplayItemIndex(items, 'u1')).toBe(0);
+    expect(findDisplayItemIndex(items, 'a1')).toBe(2);
+    expect(findDisplayItemIndex(items, 'missing')).toBe(-1);
+  });
 });
 
 function collapseItems(

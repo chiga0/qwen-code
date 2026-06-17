@@ -55,4 +55,34 @@ describe('AssistantMessage compact thinking', () => {
     expect(container.querySelector('strong')?.textContent).toBe('workspace');
     expect(container.textContent).toContain('Inspect workspace first.');
   });
+
+  it('pins collapsed streaming thinking to the tail before answer content', () => {
+    const container = render(
+      <AssistantMessage
+        content=""
+        thinking="Inspect workspace first."
+        isStreaming
+      />,
+    );
+
+    const preview = container.querySelector(
+      '[data-markdown-source="thinking"]',
+    )?.parentElement;
+    expect(preview?.className).toContain('thinkingPreviewTail');
+  });
+
+  it('stops pinning collapsed thinking once answer content appears', () => {
+    const container = render(
+      <AssistantMessage
+        content="Here is the answer."
+        thinking="Inspect workspace first."
+        isStreaming
+      />,
+    );
+
+    const preview = container.querySelector(
+      '[data-markdown-source="thinking"]',
+    )?.parentElement;
+    expect(preview?.className).not.toContain('thinkingPreviewTail');
+  });
 });

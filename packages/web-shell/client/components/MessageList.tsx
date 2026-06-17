@@ -28,7 +28,7 @@ import { ParallelAgentsGroup } from './messages/tools/ParallelAgentsGroup';
 import { ToolApproval } from './messages/ToolApproval';
 import { AskUserQuestion } from './messages/AskUserQuestion';
 import { toolContainsCallId } from './messages/toolFormatting';
-import turnCollapseStyles from './messages/AssistantMessage.module.css';
+import turnCollapseStyles from './TurnCollapseRow.module.css';
 import styles from './MessageList.module.css';
 
 interface MessageListProps {
@@ -688,6 +688,7 @@ export interface MessageListHandle {
 const HEADER_INDEX = 0;
 const ESTIMATE_HEADER = 120;
 const ESTIMATE_MESSAGE = 80;
+const ESTIMATE_TURN_COLLAPSE = 32;
 const ESTIMATE_APPROVAL = 200;
 const ESTIMATE_TAIL = 240;
 export const VIRTUAL_SCROLL_THRESHOLD = 200;
@@ -1042,6 +1043,8 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
           return ESTIMATE_APPROVAL;
         }
         if (hasTailContent && index === tailContentIndex) return ESTIMATE_TAIL;
+        const item = visibleItems[index - headerOffset];
+        if (item?.type === 'turn_collapse') return ESTIMATE_TURN_COLLAPSE;
         return ESTIMATE_MESSAGE;
       },
       overscan: 20,

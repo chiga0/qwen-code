@@ -71,5 +71,5 @@
   max-height: 150px;
   border-radius: 8px;
   object-fit: contain;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid var(--border-color);
 }

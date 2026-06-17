@@ -1,7 +1,7 @@
 import { memo } from 'react';
 import { PromptChevron } from '../PromptChevron';
 import { isSafeImageSrc } from './Markdown';
-import { useWebShellCustomization } from '../../customization';
+import { useComposerVariant } from '../../customization';
 import styles from './UserMessage.module.css';
 
 interface UserMessageImage {
@@ -18,7 +18,7 @@ export const UserMessage = memo(function UserMessage({
   content,
   images,
 }: UserMessageProps) {
-  const { composerVariant } = useWebShellCustomization();
+  const composerVariant = useComposerVariant();
   const isChatMode = composerVariant === 'chat';
 
   // Chat mode: right-aligned bubble layout
