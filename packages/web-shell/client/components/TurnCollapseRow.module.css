@@ -15,6 +15,10 @@
   white-space: nowrap;
 }
 
+.hiddenMetrics {
+  display: none;
+}
+
 .collapseIcon {
   flex-shrink: 0;
   background: none;

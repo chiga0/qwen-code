@@ -718,15 +718,12 @@ type Translate = (
   vars?: Record<string, string | number>,
 ) => string;
 
-function metricsText(
-  collapse: TurnCollapseHead,
-  elapsedMs: number | undefined,
-  t: Translate,
-): string {
+function durationMetricText(elapsedMs: number | undefined): string {
+  return elapsedMs !== undefined ? formatDuration(elapsedMs) : '';
+}
+
+function extraMetricsText(collapse: TurnCollapseHead, t: Translate): string {
   const parts: string[] = [];
-  if (elapsedMs !== undefined) {
-    parts.push(formatDuration(elapsedMs));
-  }
   if (
     collapse.inputTokens !== undefined &&
     collapse.outputTokens !== undefined
@@ -808,8 +805,10 @@ const TurnCollapseRow = memo(function TurnCollapseRow({
     displayElapsedMs = undefined;
   }
 
-  const metrics = metricsText(turnCollapse, displayElapsedMs, t);
-  const showMetrics = !!metrics && showMetadataRow;
+  const visibleMetrics = durationMetricText(displayElapsedMs);
+  const hiddenMetrics = extraMetricsText(turnCollapse, t);
+  const showVisibleMetrics = !!visibleMetrics && showMetadataRow;
+  const showHiddenMetrics = !!hiddenMetrics && showMetadataRow;
 
   if (!showMetadataRow) return null;
 
@@ -817,7 +816,12 @@ const TurnCollapseRow = memo(function TurnCollapseRow({
     <div className={turnCollapseStyles.collapseRow}>
       <span className={turnCollapseStyles.collapseLabel}>
         {t('turn.processed')}
-        {showMetrics && ` ${metrics}`}
+        {showVisibleMetrics && ` ${visibleMetrics}`}
+        {showHiddenMetrics && (
+          <span className={turnCollapseStyles.hiddenMetrics}>
+            {hiddenMetrics}
+          </span>
+        )}
       </span>
       {hasToggle && (
         <button
