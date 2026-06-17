@@ -4,7 +4,6 @@ import type {
   Message,
   PermissionRequest,
   TodoItem,
-  TurnCollapseHead,
 } from '../adapters/types';
 import { useWebShellCustomization } from '../customization';
 import { MessageTimestamp } from './MessageTimestamp';
@@ -33,7 +32,6 @@ interface MessageItemProps {
   showRetryHint?: boolean;
   onRetryClick?: () => void;
   shellOutputMaxLines: number;
-  turnCollapse?: TurnCollapseHead;
 }
 
 export const MessageItem = memo(function MessageItem({
@@ -46,7 +44,6 @@ export const MessageItem = memo(function MessageItem({
   showRetryHint = false,
   onRetryClick,
   shellOutputMaxLines,
-  turnCollapse,
 }: MessageItemProps) {
   const { composerVariant } = useWebShellCustomization();
 
@@ -54,10 +51,7 @@ export const MessageItem = memo(function MessageItem({
     switch (message.role) {
       case 'user':
         return (
-          <UserMessage
-            content={message.content}
-            images={message.images}
-          />
+          <UserMessage content={message.content} images={message.images} />
         );
       case 'assistant':
         return (
@@ -65,7 +59,6 @@ export const MessageItem = memo(function MessageItem({
             content={message.content}
             thinking={message.thinking}
             isStreaming={message.isStreaming}
-            turnCollapse={turnCollapse}
           />
         );
       case 'tool_group':
@@ -151,27 +144,7 @@ function areMessageItemPropsEqual(
   if (prev.showRetryHint !== next.showRetryHint) return false;
   if (prev.onRetryClick !== next.onRetryClick) return false;
   if (prev.shellOutputMaxLines !== next.shellOutputMaxLines) return false;
-  if (!turnCollapseEqual(prev.turnCollapse, next.turnCollapse)) return false;
   return areMessagesEqual(prev.message, next.message);
-}
-
-function turnCollapseEqual(
-  a: TurnCollapseHead | undefined,
-  b: TurnCollapseHead | undefined,
-): boolean {
-  if (a === b) return true;
-  if (!a || !b) return false;
-  return (
-    a.turnId === b.turnId &&
-    a.collapsed === b.collapsed &&
-    a.hiddenCount === b.hiddenCount &&
-    a.elapsedMs === b.elapsedMs &&
-    a.inputTokens === b.inputTokens &&
-    a.outputTokens === b.outputTokens &&
-    a.cachedTokens === b.cachedTokens &&
-    a.toolCallCount === b.toolCallCount &&
-    a.liveStartedAt === b.liveStartedAt
-  );
 }
 
 function areMessagesEqual(prev: Message, next: Message): boolean {

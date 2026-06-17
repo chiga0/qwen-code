@@ -746,6 +746,9 @@ function metricsText(
   if (collapse.toolCallCount !== undefined && collapse.toolCallCount > 0) {
     parts.push(t('turn.toolCalls', { count: collapse.toolCallCount }));
   }
+  if (collapse.hiddenCount > 0) {
+    parts.push(t('turn.executionSteps', { count: collapse.hiddenCount }));
+  }
   return parts.join(' · ');
 }
 
@@ -818,6 +821,7 @@ const TurnCollapseRow = memo(function TurnCollapseRow({
       {hasToggle && (
         <button
           type="button"
+          data-testid={`toggle-${turnCollapse.turnId}`}
           className={turnCollapseStyles.collapseIcon}
           onClick={() => onToggleCollapse(turnCollapse.turnId)}
           aria-expanded={!turnCollapse.collapsed}
@@ -1314,7 +1318,6 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
             showRetryHint={showRetryHint}
             onRetryClick={onRetryClick}
             shellOutputMaxLines={shellOutputMaxLines}
-            turnCollapse={item.turnCollapse}
           />
         );
       },
