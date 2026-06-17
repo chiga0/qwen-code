@@ -6,6 +6,7 @@ import type {
   TodoItem,
   TurnCollapseHead,
 } from '../adapters/types';
+import { useWebShellCustomization } from '../customization';
 import { MessageTimestamp } from './MessageTimestamp';
 import { UserMessage } from './messages/UserMessage';
 import { AssistantMessage } from './messages/AssistantMessage';
@@ -32,9 +33,7 @@ interface MessageItemProps {
   showRetryHint?: boolean;
   onRetryClick?: () => void;
   shellOutputMaxLines: number;
-  /** Present on a collapsible turn's prompt row; renders the collapse toggle. */
-  collapse?: TurnCollapseHead;
-  onToggleCollapse?: (turnId: string) => void;
+  turnCollapse?: TurnCollapseHead;
 }
 
 export const MessageItem = memo(function MessageItem({
@@ -47,9 +46,10 @@ export const MessageItem = memo(function MessageItem({
   showRetryHint = false,
   onRetryClick,
   shellOutputMaxLines,
-  collapse,
-  onToggleCollapse,
+  turnCollapse,
 }: MessageItemProps) {
+  const { composerVariant } = useWebShellCustomization();
+
   const body = ((): ReactElement | null => {
     switch (message.role) {
       case 'user':
@@ -57,8 +57,6 @@ export const MessageItem = memo(function MessageItem({
           <UserMessage
             content={message.content}
             images={message.images}
-            collapse={collapse}
-            onToggleCollapse={onToggleCollapse}
           />
         );
       case 'assistant':
@@ -67,6 +65,7 @@ export const MessageItem = memo(function MessageItem({
             content={message.content}
             thinking={message.thinking}
             isStreaming={message.isStreaming}
+            turnCollapse={turnCollapse}
           />
         );
       case 'tool_group':
@@ -131,8 +130,12 @@ export const MessageItem = memo(function MessageItem({
 
   if (body === null) return null;
 
+  const isChatUser = message.role === 'user' && composerVariant === 'chat';
+
   return (
-    <MessageTimestamp timestamp={message.timestamp}>{body}</MessageTimestamp>
+    <MessageTimestamp timestamp={message.timestamp} chatMode={isChatUser}>
+      {body}
+    </MessageTimestamp>
   );
 }, areMessageItemPropsEqual);
 
@@ -148,8 +151,7 @@ function areMessageItemPropsEqual(
   if (prev.showRetryHint !== next.showRetryHint) return false;
   if (prev.onRetryClick !== next.onRetryClick) return false;
   if (prev.shellOutputMaxLines !== next.shellOutputMaxLines) return false;
-  if (prev.onToggleCollapse !== next.onToggleCollapse) return false;
-  if (!turnCollapseEqual(prev.collapse, next.collapse)) return false;
+  if (!turnCollapseEqual(prev.turnCollapse, next.turnCollapse)) return false;
   return areMessagesEqual(prev.message, next.message);
 }
 

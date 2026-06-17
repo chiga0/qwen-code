@@ -1,0 +1,377 @@
+.container {
+  border-radius: 16px;
+  /* Light theme: white, Dark theme: bg-secondary */
+  background: #fff;
+  border: 1px solid var(--border-color);
+  padding: 12px 16px 8px;
+  margin: 0 14px 14px 14px;
+  cursor: text;
+}
+
+/* Dark theme fallback */
+.themeDark .container {
+  background: var(--bg-secondary);
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 0 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.tagLabel,
+.tagValue {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagLabel {
+  padding: 3px 0 3px 7px;
+  color: var(--accent-color);
+}
+
+.tagValue {
+  max-width: 32ch;
+  padding: 3px 0 3px 0.5ch;
+  color: var(--text-secondary);
+}
+
+.tagRemove {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dimmed);
+  font: inherit;
+  line-height: 22px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+}
+
+.tagRemove:hover,
+.tagRemove:focus-visible {
+  color: var(--error-color);
+  outline: none;
+}
+
+.editorArea {
+  min-height: 60px;
+  padding: 4px 0;
+}
+
+.editorArea .cm-content {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0 0;
+  gap: 8px;
+}
+
+.toolbarLeft,
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.toolbarLeft {
+  margin-left: -5px;
+}
+.toolbarRight {
+  margin-right: -5px;
+
+}
+
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  padding: 4px;
+  background: var(--bg-secondary, #1e1e1e);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdownItem:hover {
+  background: var(--bg-tertiary);
+}
+
+.dropdownItemActive {
+  color: var(--accent-color);
+  background: var(--bg-tertiary);
+}
+
+.toolBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toolBtn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.toolBtnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.toolBtnIcon svg {
+  display: block;
+}
+
+.toolBtnText {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.toolBtnArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  margin-left: 2px;
+}
+
+.toolBtnArrow svg {
+  display: block;
+}
+
+.sendBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-tertiary);
+  color: var(--text-dimmed);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sendBtn:not(:disabled) {
+  background: var(--accent-color);
+  color: #fff;
+  cursor: pointer;
+}
+
+.sendBtn:not(:disabled):hover {
+  filter: brightness(1.15);
+  transform: scale(1.05);
+}
+
+.sendBtn:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+.sendIcon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.images {
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 0;
+  flex-wrap: wrap;
+}
+
+.imageThumb {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.imageThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageRemove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--error-color);
+  border: none;
+  cursor: pointer;
+  border-radius: 0 0 0 4px;
+}
+
+.imageRemove:hover {
+  background: var(--error-color);
+  color: #fff;
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.searchLabel {
+  color: var(--text-dimmed);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.searchInput::placeholder {
+  color: var(--text-dimmed);
+}
+
+.searchHint {
+  color: var(--text-dimmed);
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 2px 0 6px;
+}
+
+.searchResult {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: 4px;
+  width: 100%;
+  min-height: 24px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+.searchResult:hover,
+.searchResultActive {
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+}
+
+.searchResultMarker {
+  color: var(--accent-color);
+  line-height: 1.45;
+}
+
+.searchResultText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchEmpty {
+  padding: 4px 0 6px;
+  color: var(--text-dimmed);
+  font-size: 12px;
+}

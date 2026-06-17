@@ -164,6 +164,8 @@ export interface WebShellFooterRenderInfo {
 
 export type FooterRenderer = ComponentType<WebShellFooterRenderInfo>;
 
+export type WebShellComposerVariant = 'terminal' | 'chat';
+
 export interface WebShellCustomization {
   renderToolHeaderExtra?: ToolHeaderExtraRenderer;
   renderWelcomeHeader?: WelcomeHeaderRenderer;
@@ -177,6 +179,8 @@ export interface WebShellCustomization {
    */
   collapseCompletedTurns?: boolean;
   markdown?: WebShellMarkdownCustomization;
+  /** Switch the built-in composer layout. Defaults to 'terminal'. */
+  composerVariant?: WebShellComposerVariant;
 }
 
 const WebShellCustomizationContext = createContext<WebShellCustomization>({});

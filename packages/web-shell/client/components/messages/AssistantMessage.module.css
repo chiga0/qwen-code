@@ -163,3 +163,70 @@
   color: var(--text-primary);
   margin: 0;
 }
+
+/* ---- Collapse toggle above assistant message ---- */
+
+.collapseRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  border-bottom: 1px solid #ebebeb;
+  padding-bottom: 10px;
+  margin-bottom: 8px;
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+/* Dark theme fallback */
+.themeDark .collapseRow {
+  border-bottom-color: var(--border-color);
+}
+
+.collapseLabel {
+  color: var(--text-dimmed);
+  white-space: nowrap;
+}
+
+.collapseIcon {
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--text-dimmed);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.collapseIcon:hover {
+  color: var(--text-secondary);
+}
+
+/* ---- Metrics row below assistant message ---- */
+
+.metricsRow {
+  font-size: 12px;
+  color: var(--text-dimmed);
+  margin-top: 8px;
+  line-height: 1.2;
+  display: flex;
+}
+
+.metricsItem {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.metricsIcon {
+  flex-shrink: 0;
+}
+
+.metricsSpacer {
+  width: 6px;
+}
+
+.metricsDot {
+  margin: 0 4px;
+}

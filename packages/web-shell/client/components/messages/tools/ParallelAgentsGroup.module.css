@@ -4,7 +4,6 @@
   border-radius: var(--radius);
   padding: 8px 12px;
   margin-bottom: 12px;
-  margin-left: 14px;
   min-width: 0;
   overflow: hidden;
 }

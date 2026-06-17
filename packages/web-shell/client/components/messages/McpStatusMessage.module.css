@@ -8,7 +8,6 @@
   padding: 10px 14px;
   max-width: min(920px, calc(100vw - 64px));
   background: var(--bg-primary);
-  margin-left: 14px;
 }
 
 .title {

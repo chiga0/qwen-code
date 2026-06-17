@@ -29,7 +29,8 @@ import type {
 import { extractPendingPermission } from './adapters/transcriptAdapter';
 import { removeInjectedFromQueue } from './midTurnDedup';
 import { MessageList, type MessageListHandle } from './components/MessageList';
-import { Editor, type EditorHandle } from './components/Editor';
+import { TerminalEditor, type EditorHandle } from './components/TerminalEditor';
+import { ChatEditor } from './components/ChatEditor';
 import type { PromptImage } from './adapters/promptTypes';
 import { StatusBar, type StatusBarHandle } from './components/StatusBar';
 import { ShortcutsPanel } from './components/ShortcutsPanel';
@@ -351,6 +352,8 @@ export interface WebShellProps {
   composerInput?: WebShellComposerInput;
   /** Replay key for composerInput. */
   composerInputVersion?: number;
+  /** Composer layout variant. Defaults to 'terminal'. */
+  composerVariant?: 'terminal' | 'chat';
 }
 
 const emptyComposerApi: WebShellComposerApi = {
@@ -714,6 +717,7 @@ export function App({
   composerRef,
   composerInput,
   composerInputVersion,
+  composerVariant = 'chat',
 }: WebShellProps = {}) {
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
@@ -730,6 +734,7 @@ export function App({
       compactThinking,
       collapseCompletedTurns,
       markdown,
+      composerVariant,
     }),
     [
       renderToolHeaderExtra,
@@ -738,6 +743,7 @@ export function App({
       compactThinking,
       collapseCompletedTurns,
       markdown,
+      composerVariant,
     ],
   );
   const CustomFooter = renderFooter;
@@ -3033,35 +3039,78 @@ export function App({
             {!shouldHideComposer && (
               <div className={styles.composer}>
                 <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
-                <Editor
-                  ref={setEditorHandle}
-                  onSubmit={handleSubmit}
-                  onCycleMode={handleCycleMode}
-                  onToggleShortcuts={handleToggleShortcuts}
-                  disabled={isDisabled}
-                  commands={commands}
-                  skills={loadedSkills}
-                  slashCommandCategoryOrder={slashCommandCategoryOrder}
-                  queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
-                  onFocusFooter={handleFocusTaskPill}
-                  onPopQueuedMessages={popQueuedPromptsForEdit}
-                  onClearQueuedMessages={clearQueuedPrompts}
-                  currentMode={currentMode}
-                  sessionName={sessionDisplayName}
-                  dialogOpen={bottomHidden || tasksPanelMessage !== null}
-                  followupState={followupState}
-                  onAcceptFollowup={onAcceptFollowup}
-                  onDismissFollowup={onDismissFollowup}
-                  composerInput={composerInput}
-                  composerInputVersion={composerInputVersion}
-                  placeholderText={
-                    !connected
-                      ? t('common.loading')
-                      : streamingState !== 'idle'
-                        ? t('editor.processing')
-                        : t('editor.placeholder')
-                  }
-                />
+                {composerVariant === 'chat' ? (
+                  <ChatEditor
+                    ref={setEditorHandle}
+                    onSubmit={handleSubmit}
+                    onCycleMode={handleCycleMode}
+                    onToggleShortcuts={handleToggleShortcuts}
+                    disabled={isDisabled}
+                    commands={commands}
+                    skills={loadedSkills}
+                    slashCommandCategoryOrder={slashCommandCategoryOrder}
+                    queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
+                    onFocusFooter={handleFocusTaskPill}
+                    onPopQueuedMessages={popQueuedPromptsForEdit}
+                    onClearQueuedMessages={clearQueuedPrompts}
+                    currentMode={currentMode}
+                    currentModel={currentModel}
+                    availableModels={(connection.models ?? []).map((m) => ({
+                      id: m.id,
+                      label: m.label,
+                    }))}
+                    onSelectMode={handleSetMode}
+                    onSelectModel={(model) => {
+                      sessionActions.setModel(model).then(() => {
+                        setCurrentModel(model);
+                      });
+                    }}
+                    sessionName={sessionDisplayName}
+                    dialogOpen={bottomHidden || tasksPanelMessage !== null}
+                    followupState={followupState}
+                    onAcceptFollowup={onAcceptFollowup}
+                    onDismissFollowup={onDismissFollowup}
+                    composerInput={composerInput}
+                    composerInputVersion={composerInputVersion}
+                    placeholderText={
+                      !connected
+                        ? t('common.loading')
+                        : streamingState !== 'idle'
+                          ? t('editor.processing')
+                          : t('editor.placeholder')
+                    }
+                  />
+                ) : (
+                  <TerminalEditor
+                    ref={setEditorHandle}
+                    onSubmit={handleSubmit}
+                    onCycleMode={handleCycleMode}
+                    onToggleShortcuts={handleToggleShortcuts}
+                    disabled={isDisabled}
+                    commands={commands}
+                    skills={loadedSkills}
+                    slashCommandCategoryOrder={slashCommandCategoryOrder}
+                    queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
+                    onFocusFooter={handleFocusTaskPill}
+                    onPopQueuedMessages={popQueuedPromptsForEdit}
+                    onClearQueuedMessages={clearQueuedPrompts}
+                    currentMode={currentMode}
+                    sessionName={sessionDisplayName}
+                    dialogOpen={bottomHidden || tasksPanelMessage !== null}
+                    followupState={followupState}
+                    onAcceptFollowup={onAcceptFollowup}
+                    onDismissFollowup={onDismissFollowup}
+                    composerInput={composerInput}
+                    composerInputVersion={composerInputVersion}
+                    placeholderText={
+                      !connected
+                        ? t('common.loading')
+                        : streamingState !== 'idle'
+                          ? t('editor.processing')
+                          : t('editor.placeholder')
+                    }
+                  />
+                )}
               </div>
             )}
             {tasksPanelMessage && (
@@ -3108,7 +3157,7 @@ export function App({
                     });
                   }}
                 />
-              ) : (
+              ) : composerVariant === 'terminal' ? (
                 <StatusBar
                   escapeHint={escapeHintVisible}
                   onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
@@ -3125,7 +3174,7 @@ export function App({
                   hideSettings={hideSettings}
                   onToggleShortcuts={handleToggleShortcuts}
                 />
-              ))}
+              ) : null)}
           </div>
         </div>
       </I18nProvider>

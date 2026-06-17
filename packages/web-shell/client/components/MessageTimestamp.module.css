@@ -29,3 +29,29 @@
 .row:hover > .tip {
   opacity: 1;
 }
+
+/* Chat mode: timestamp shown at bottom-right on hover */
+.chatRow {
+  position: relative;
+}
+
+.chatTip {
+  position: absolute;
+  bottom: -20px;
+  right: 4px;
+  z-index: 5;
+  color: var(--text-dimmed);
+  background: color-mix(in srgb, var(--bg-primary) 92%, transparent);
+  border-radius: 4px;
+  padding: 1px 4px;
+  font-size: 11px;
+  line-height: 1.4;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.chatRow:hover > .chatTip {
+  opacity: 1;
+}

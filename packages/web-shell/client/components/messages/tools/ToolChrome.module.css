@@ -1,6 +1,5 @@
 .group {
   margin-bottom: 12px;
-  margin-left: 14px;
   padding: 8px 14px;
   border: 1px solid var(--border-color);
   border-radius: var(--radius);
@@ -187,7 +186,7 @@
 }
 
 .todoBody {
-  padding: 4px 0 2px 24px;
+  padding: 4px 0 2px 14px;
 }
 
 .compactGroup {
