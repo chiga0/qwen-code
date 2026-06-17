@@ -3,6 +3,8 @@
   display: flex;
   gap: 8px;
   align-items: baseline;
+  padding: 5px 0;
+  background: var(--user-msg-bg);
 }
 
 .prefix {
@@ -31,7 +33,7 @@
   max-height: 200px;
   border-radius: 8px;
   object-fit: contain;
-  border: 1px solid var(--border-color, #e5e7eb);
+  border: 1px solid var(--border-color);
 }
 
 /* ---- Chat mode: right-aligned bubble layout ---- */
@@ -47,8 +49,7 @@
   max-width: 50%;
   padding: 10px 14px;
   border-radius: 16px;
-  /* Light theme: #f0f0f1, Dark theme: use bg-tertiary */
-  background: #f0f0f1;
+  background: var(--bg-tertiary);
   color: var(--text-primary);
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 14px;
@@ -56,11 +57,6 @@
   white-space: pre-wrap;
   word-break: break-word;
   text-align: left;
-}
-
-/* Dark theme fallback */
-.themeDark .chatBubble {
-  background: var(--bg-tertiary);
 }
 
 .chatImages {

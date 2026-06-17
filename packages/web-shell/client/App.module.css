@@ -38,6 +38,7 @@
   --error-color: #fc8181;
   --user-color: #48bb78;
   --assist-color: #b794f4;
+  --user-msg-bg: rgba(255, 255, 255, 0.15);
   --welcome-logo-gradient: linear-gradient(
     90deg,
     #4796e4 0%,
@@ -62,7 +63,7 @@
   --app-bg: #fff;
   --bg-primary: #ffffff;
   --bg-secondary: #f7f7f2;
-  --bg-tertiary: #efeee8;
+  --bg-tertiary: #f2f2f3;
   --bg-surface: #f5f4ed;
   --border-color: #d8d6cc;
   --text-primary: #22231f;
@@ -75,6 +76,7 @@
   --error-color: #c0362c;
   --user-color: #0a7a3d;
   --assist-color: #7b4ab8;
+  --user-msg-bg: var(--bg-tertiary);
   --welcome-logo-gradient: linear-gradient(
     90deg,
     #0b66c3 0%,

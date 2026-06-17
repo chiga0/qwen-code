@@ -717,8 +717,11 @@ export function App({
   composerRef,
   composerInput,
   composerInputVersion,
-  composerVariant = 'chat',
+  composerVariant: initialComposerVariant = 'chat',
 }: WebShellProps = {}) {
+  const [composerVariant, setComposerVariant] = useState<'terminal' | 'chat'>(
+    initialComposerVariant,
+  );
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
       providedLanguage === undefined
@@ -1937,6 +1940,36 @@ export function App({
             }
             return true;
           }
+          if (cmd === 'ui') {
+            const uiArg = text.slice(match[0].length).trim().toLowerCase();
+            if (uiArg === 'chat' || uiArg === 'terminal') {
+              setComposerVariant(uiArg);
+              store.dispatch([
+                {
+                  type: 'status',
+                  text: t('ui.switched', { mode: uiArg }),
+                },
+              ]);
+            } else if (!uiArg) {
+              store.dispatch([
+                {
+                  type: 'status',
+                  text: [
+                    t('ui.current', { mode: composerVariant }),
+                    '',
+                    t('ui.usage'),
+                    '',
+                    t('ui.options'),
+                    '  - chat: Chat UI',
+                    '  - terminal: Terminal UI',
+                  ].join('\n'),
+                },
+              ]);
+            } else {
+              pushToast('error', t('ui.invalid'));
+            }
+            return true;
+          }
           if (cmd === 'language') {
             const args = text.slice(match[0].length).trim();
             const [subCommand, languageArg] = args.split(/\s+/);
@@ -2488,6 +2521,7 @@ export function App({
       showContextUsage,
       t,
       workspaceActions,
+      composerVariant,
     ],
   );
 
