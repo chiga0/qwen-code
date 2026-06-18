@@ -69,6 +69,8 @@ export interface TurnCollapseHead {
   cachedTokens?: number;
   /** Number of tool calls shown in this turn. */
   toolCallCount?: number;
+  /** Number of assistant thinking blocks shown in this turn. */
+  thinkingCount?: number;
   /**
    * Prompt wall-clock (ms) for a still-running turn. Present only while the turn
    * is active; the row ticks `now - liveStartedAt` once a second so the elapsed

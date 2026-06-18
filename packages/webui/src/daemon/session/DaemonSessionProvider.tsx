@@ -771,8 +771,12 @@ export function DaemonSessionProvider({
               }
               bumpWorkspaceEventSignals(uiEvents, setWorkspaceEventSignals);
               if (uiEvents.length > 0) {
+                const hasGenerationSignal = hasActiveGenerationSignal(uiEvents);
                 setPromptStatus((current) =>
-                  current === 'waiting' ? 'streaming' : current,
+                  current === 'waiting' ||
+                  (current === 'idle' && hasGenerationSignal)
+                    ? 'streaming'
+                    : current,
                 );
               }
               const activePromptSettled = settleActivePromptFromTurnEvent(

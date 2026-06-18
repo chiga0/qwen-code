@@ -371,6 +371,18 @@ function isHideableStep(item: DisplayItem, isFinalAnswer: boolean): boolean {
   }
 }
 
+function hasFoldableFinalThinking(
+  item: DisplayItem,
+  isFinalAnswer: boolean,
+): boolean {
+  return (
+    isFinalAnswer &&
+    item.type === 'message' &&
+    item.message.role === 'assistant' &&
+    Boolean(item.message.thinking)
+  );
+}
+
 function isExecutionWorkStep(item: DisplayItem): boolean {
   if (item.type === 'parallel_agents') return true;
   if (item.type === 'turn_collapse') return false;
@@ -519,17 +531,27 @@ export function applyTurnCollapse(
     let outputTokens = 0;
     let cachedTokens = 0;
     let toolCallCount = 0;
+    let thinkingCount = 0;
     let hasUsage = false;
     for (let i = start + 1; i <= end; i++) {
-      const isStep = isHideableStep(items[i], i === answerIdx);
-      if (isStep) hiddenCount++;
-      toolCallCount += itemToolCallCount(items[i]);
-      const ts =
-        isStep || i === answerIdx ? itemTimestamp(items[i]) : undefined;
+      const item = items[i]!;
+      const isStep = isHideableStep(item, i === answerIdx);
+      if (isStep || hasFoldableFinalThinking(item, i === answerIdx)) {
+        hiddenCount++;
+      }
+      toolCallCount += itemToolCallCount(item);
+      if (
+        item.type === 'message' &&
+        item.message.role === 'assistant' &&
+        item.message.thinking
+      ) {
+        thinkingCount++;
+      }
+      const ts = isStep || i === answerIdx ? itemTimestamp(item) : undefined;
       if (ts !== undefined) {
         lastStepTs = lastStepTs === undefined ? ts : Math.max(lastStepTs, ts);
       }
-      const usage = itemAssistantUsage(items[i]);
+      const usage = itemAssistantUsage(item);
       if (usage) {
         inputTokens += usage.inputTokens;
         outputTokens += usage.outputTokens;
@@ -585,6 +607,7 @@ export function applyTurnCollapse(
       ...(hasUsage ? { inputTokens, outputTokens } : {}),
       ...(cachedTokens > 0 ? { cachedTokens } : {}),
       ...(toolCallCount > 0 ? { toolCallCount } : {}),
+      ...(thinkingCount > 0 ? { thinkingCount } : {}),
       ...(liveStartedAt !== undefined ? { liveStartedAt } : {}),
     };
     result.push({
@@ -722,30 +745,47 @@ function durationMetricText(elapsedMs: number | undefined): string {
   return elapsedMs !== undefined ? formatDuration(elapsedMs) : '';
 }
 
+function tokenMetricText(collapse: TurnCollapseHead, t: Translate): string {
+  if (
+    collapse.inputTokens === undefined ||
+    collapse.outputTokens === undefined
+  ) {
+    return '';
+  }
+  const cachedTokens = collapse.cachedTokens ?? 0;
+  const cached =
+    cachedTokens > 0 && collapse.inputTokens > 0
+      ? ` (${formatTokenCount(cachedTokens)} ${t('turn.cached')}, ${Math.round(
+          (cachedTokens / collapse.inputTokens) * 100,
+        )}%)`
+      : '';
+  return `↑${formatTokenCount(collapse.inputTokens)}${cached} ↓${formatTokenCount(
+    collapse.outputTokens,
+  )}`;
+}
+
 function extraMetricsText(collapse: TurnCollapseHead, t: Translate): string {
   const parts: string[] = [];
-  if (
-    collapse.inputTokens !== undefined &&
-    collapse.outputTokens !== undefined
-  ) {
-    const cachedTokens = collapse.cachedTokens ?? 0;
-    const cached =
-      cachedTokens > 0 && collapse.inputTokens > 0
-        ? ` (${formatTokenCount(cachedTokens)} ${t('turn.cached')}, ${Math.round(
-            (cachedTokens / collapse.inputTokens) * 100,
-          )}%)`
-        : '';
-    parts.push(
-      `↑${formatTokenCount(collapse.inputTokens)}${cached} ↓${formatTokenCount(
-        collapse.outputTokens,
-      )}`,
-    );
-  }
+  const tokenMetric = tokenMetricText(collapse, t);
+  if (tokenMetric) parts.push(tokenMetric);
   if (collapse.toolCallCount !== undefined && collapse.toolCallCount > 0) {
     parts.push(t('turn.toolCalls', { count: collapse.toolCallCount }));
   }
-  if (collapse.hiddenCount > 0) {
-    parts.push(t('turn.executionSteps', { count: collapse.hiddenCount }));
+  if (collapse.thinkingCount !== undefined && collapse.thinkingCount > 0) {
+    parts.push(t('turn.thinkingCount', { count: collapse.thinkingCount }));
+  }
+  return parts.join(' · ');
+}
+
+function summaryMetricsText(collapse: TurnCollapseHead, t: Translate): string {
+  const parts: string[] = [];
+  const tokenMetric = tokenMetricText(collapse, t);
+  if (tokenMetric) parts.push(tokenMetric);
+  if (collapse.toolCallCount !== undefined && collapse.toolCallCount > 0) {
+    parts.push(t('turn.toolCalls', { count: collapse.toolCallCount }));
+  }
+  if (collapse.thinkingCount !== undefined && collapse.thinkingCount > 0) {
+    parts.push(t('turn.thinkingCount', { count: collapse.thinkingCount }));
   }
   return parts.join(' · ');
 }
@@ -807,16 +847,60 @@ const TurnCollapseRow = memo(function TurnCollapseRow({
 
   const visibleMetrics = durationMetricText(displayElapsedMs);
   const hiddenMetrics = extraMetricsText(turnCollapse, t);
+  const summaryMetrics = summaryMetricsText(turnCollapse, t);
   const showVisibleMetrics = !!visibleMetrics && showMetadataRow;
   const showHiddenMetrics = !!hiddenMetrics && showMetadataRow;
+  const showSummaryMetrics = !!summaryMetrics && showMetadataRow;
 
   if (!showMetadataRow) return null;
 
   return (
-    <div className={turnCollapseStyles.collapseRow}>
+    <div
+      className={
+        hasToggle
+          ? `${turnCollapseStyles.collapseRow} ${turnCollapseStyles.collapseRowClickable}`
+          : turnCollapseStyles.collapseRow
+      }
+      role={hasToggle ? 'button' : undefined}
+      tabIndex={hasToggle ? 0 : undefined}
+      aria-expanded={hasToggle ? !turnCollapse.collapsed : undefined}
+      aria-label={
+        hasToggle
+          ? turnCollapse.collapsed
+            ? t('turn.expand')
+            : t('turn.collapse')
+          : undefined
+      }
+      title={
+        hasToggle
+          ? turnCollapse.collapsed
+            ? t('turn.expand')
+            : t('turn.collapse')
+          : undefined
+      }
+      onClick={
+        hasToggle ? () => onToggleCollapse(turnCollapse.turnId) : undefined
+      }
+      onKeyDown={
+        hasToggle
+          ? (event) => {
+              if (event.key !== 'Enter' && event.key !== ' ') return;
+              event.preventDefault();
+              onToggleCollapse(turnCollapse.turnId);
+            }
+          : undefined
+      }
+    >
       <span className={turnCollapseStyles.collapseLabel}>
-        {t('turn.processed')}
-        {showVisibleMetrics && ` ${visibleMetrics}`}
+        <span className={turnCollapseStyles.processedLabel}>
+          {t('turn.processed')}
+          {showVisibleMetrics && ` ${visibleMetrics}`}
+        </span>
+        {showSummaryMetrics && (
+          <span className={turnCollapseStyles.summaryMetrics}>
+            {summaryMetrics}
+          </span>
+        )}
         {showHiddenMetrics && (
           <span className={turnCollapseStyles.hiddenMetrics}>
             {hiddenMetrics}
@@ -824,23 +908,37 @@ const TurnCollapseRow = memo(function TurnCollapseRow({
         )}
       </span>
       {hasToggle && (
-        <button
-          type="button"
+        <span
           data-testid={`toggle-${turnCollapse.turnId}`}
           className={turnCollapseStyles.collapseIcon}
-          onClick={() => onToggleCollapse(turnCollapse.turnId)}
-          aria-expanded={!turnCollapse.collapsed}
-          aria-label={
-            turnCollapse.collapsed ? t('turn.expand') : t('turn.collapse')
-          }
-          title={turnCollapse.collapsed ? t('turn.expand') : t('turn.collapse')}
         >
-          {turnCollapse.collapsed ? '▸' : '▾'}
-        </button>
+          <span
+            className={
+              turnCollapse.collapsed
+                ? turnCollapseStyles.chevronRight
+                : turnCollapseStyles.chevronDown
+            }
+            aria-hidden="true"
+          />
+        </span>
       )}
     </div>
   );
 });
+
+function getChatRowClassName(item: DisplayItem): string | undefined {
+  if (item.type === 'turn_collapse') return styles.turnStatusRow;
+  if (item.type !== 'message') return undefined;
+  if (item.turnCollapse) return styles.turnAnswerRow;
+  return undefined;
+}
+
+function joinClassNames(
+  ...classNames: Array<string | undefined>
+): string | undefined {
+  const result = classNames.filter(Boolean).join(' ');
+  return result || undefined;
+}
 
 export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
   function MessageList(
@@ -991,6 +1089,9 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
       totalCount,
       virtualScrollThreshold,
     );
+    const getScrollElement = useCallback((): HTMLElement | null => {
+      return document.scrollingElement as HTMLElement | null;
+    }, []);
 
     const getItemKey = useCallback(
       (index: number) => {
@@ -1020,26 +1121,38 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
     );
 
     // Rule 6: skip if content doesn't overflow (no scrollbar).
-    const scrollToBottom = useCallback(() => {
-      const el = containerRef.current;
-      if (!el) return;
-      if (el.scrollHeight <= el.clientHeight) return;
-      scrollCooldownCount.current += 1;
-      const gen = scrollCooldownCount.current;
-      scrollCooldown.current = true;
-      el.scrollTop = el.scrollHeight;
-      lastScrollTop.current = el.scrollTop;
-      requestAnimationFrame(() => {
-        if (scrollCooldownCount.current === gen) {
-          scrollCooldown.current = false;
+    const scrollToBottom = useCallback(
+      (behavior: ScrollBehavior = 'auto') => {
+        const el = getScrollElement();
+        if (!el) return;
+        if (el.scrollHeight <= el.clientHeight) return;
+        scrollCooldownCount.current += 1;
+        const gen = scrollCooldownCount.current;
+        scrollCooldown.current = true;
+        if (behavior === 'smooth') {
+          el.scrollTo({ top: el.scrollHeight, behavior });
+        } else {
+          el.scrollTop = el.scrollHeight;
         }
-      });
-    }, []);
+        lastScrollTop.current = el.scrollHeight;
+        const releaseCooldown = () => {
+          if (scrollCooldownCount.current === gen) {
+            scrollCooldown.current = false;
+          }
+        };
+        if (behavior === 'smooth') {
+          setTimeout(releaseCooldown, 350);
+        } else {
+          requestAnimationFrame(releaseCooldown);
+        }
+      },
+      [getScrollElement],
+    );
 
     const virtualizer = useVirtualizer({
       count: totalCount,
       enabled: useVirtualScroll,
-      getScrollElement: () => containerRef.current,
+      getScrollElement,
       getItemKey,
       estimateSize: (index) => {
         if (hasHeader && index === HEADER_INDEX) return ESTIMATE_HEADER;
@@ -1158,7 +1271,7 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
     // Runs synchronously in the scroll handler — no rAF needed since
     // the browser already coalesces scroll events.
     const handleScroll = useCallback(() => {
-      const el = containerRef.current;
+      const el = getScrollElement();
       if (!el) return;
       if (scrollCooldown.current) {
         lastScrollTop.current = el.scrollTop;
@@ -1180,7 +1293,12 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
       if (distanceFromBottom < 30) {
         shouldFollow.current = true;
       }
-    }, []);
+    }, [getScrollElement]);
+
+    useEffect(() => {
+      document.addEventListener('scroll', handleScroll, { passive: true });
+      return () => document.removeEventListener('scroll', handleScroll);
+    }, [handleScroll]);
 
     // Clear screen (e.g. /clear) → reset to follow mode, drop stale per-turn
     // collapse overrides, and disarm any deferred scroll so it can't fire
@@ -1225,10 +1343,9 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
         shouldFollow.current = true;
         // A new prompt supersedes any pending "Show in transcript" scroll.
         pendingScrollRef.current = null;
-        requestAnimationFrame(scrollToBottom);
       }
       prevLastUserMsgId.current = lastId;
-    }, [messages, catchingUp, scrollToBottom]);
+    }, [messages, catchingUp]);
 
     // Rule 5: session restore — when catchingUp flips from true → falsy,
     // replay just finished. Scroll to bottom once so the user sees the
@@ -1236,7 +1353,7 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
     useEffect(() => {
       if (prevCatchingUp.current && !catchingUp) {
         shouldFollow.current = true;
-        requestAnimationFrame(scrollToBottom);
+        requestAnimationFrame(() => scrollToBottom());
       }
       prevCatchingUp.current = catchingUp;
     }, [catchingUp, scrollToBottom]);
@@ -1353,8 +1470,11 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
     const totalVirtualSize = virtualizer.getTotalSize();
 
     const getRowClassName = useCallback(
-      (key: string): string | undefined =>
-        flashKey === key ? styles.rowFlash : undefined,
+      (key: string, item?: DisplayItem): string | undefined =>
+        joinClassNames(
+          flashKey === key ? styles.rowFlash : undefined,
+          item ? getChatRowClassName(item) : undefined,
+        ),
       [flashKey],
     );
 
@@ -1371,13 +1491,17 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
     //         and is a no-op when there's no overflow.
     useLayoutEffect(() => {
       if (catchingUp) return;
+      if (scrollCooldown.current) return;
       if (shouldFollow.current) {
-        scrollToBottom();
+        const lastId = getLastUserMessageId(messages);
+        const isNewUserMessage =
+          lastId !== null && lastId !== prevLastUserMsgId.current;
+        scrollToBottom(isNewUserMessage ? 'smooth' : 'auto');
       }
     }, [totalVirtualSize, messages, totalCount, catchingUp, scrollToBottom]);
 
     return (
-      <div ref={containerRef} className={styles.list} onScroll={handleScroll}>
+      <div ref={containerRef} className={styles.list}>
         {useVirtualScroll ? (
           <div
             style={{
@@ -1391,7 +1515,10 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
                 key={virtualRow.key}
                 data-index={virtualRow.index}
                 ref={virtualizer.measureElement}
-                className={getRowClassName(String(virtualRow.key))}
+                className={getRowClassName(
+                  String(virtualRow.key),
+                  visibleItems[virtualRow.index - headerOffset],
+                )}
                 style={{
                   position: 'absolute',
                   top: 0,
@@ -1407,11 +1534,12 @@ export const MessageList = forwardRef<MessageListHandle, MessageListProps>(
         ) : (
           Array.from({ length: totalCount }, (_, index) => {
             const key = getItemKey(index);
+            const item = visibleItems[index - headerOffset];
             return (
               <div
                 key={key}
                 data-index={index}
-                className={getRowClassName(key)}
+                className={getRowClassName(key, item)}
               >
                 {renderVirtualItem(index)}
               </div>

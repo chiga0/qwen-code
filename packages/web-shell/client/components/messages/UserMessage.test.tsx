@@ -29,7 +29,7 @@ function render(node: ReactNode): HTMLElement {
 }
 
 describe('UserMessage', () => {
-  it('renders content in terminal mode by default', () => {
+  it('renders content', () => {
     const container = render(<UserMessage content="hello world" />);
     expect(container.textContent).toContain('hello world');
   });

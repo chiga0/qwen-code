@@ -16,6 +16,12 @@
   overflow: hidden;
 }
 
+.appChat {
+  min-height: 100%;
+  height: auto;
+  overflow: visible;
+}
+
 .app,
 .app * {
   box-sizing: border-box;
@@ -47,9 +53,10 @@
   );
   --editor-bg: #0a0a0a;
   --msg-body-color: #e3bcfe;
-  --thinking-pre-color: #9d9ec6;
+  --thinking-pre-color: #757575;
   --subtle-bg: rgba(255, 255, 255, 0.04);
   --subtle-bg-strong: rgba(255, 255, 255, 0.06);
+  --inline-code-bg: #2a2a2a;
   --info-bg: rgba(74, 158, 255, 0.08);
   --info-border: rgba(74, 158, 255, 0.2);
   --success-bg: rgba(72, 187, 120, 0.12);
@@ -85,9 +92,10 @@
   );
   --editor-bg: #f7f7f2;
   --msg-body-color: #0b6f3a;
-  --thinking-pre-color: #74788f;
+  --thinking-pre-color: #a3a4a5;
   --subtle-bg: rgba(32, 31, 25, 0.05);
   --subtle-bg-strong: rgba(32, 31, 25, 0.08);
+  --inline-code-bg: #f1f2f2;
   --info-bg: rgba(11, 102, 195, 0.08);
   --info-border: rgba(11, 102, 195, 0.22);
   --success-bg: rgba(31, 122, 58, 0.11);
@@ -118,13 +126,47 @@
   flex: 1 1 auto;
 }
 
+.contentChat {
+  width: min(100%, 800px);
+  margin: 0 auto;
+  overflow: visible;
+  padding-right: 20px;
+  padding-left: 20px;
+}
+
+.contentChat.contentHasMessages {
+  padding-bottom: var(--chat-footer-space, 170px);
+}
+
+.contentChatEmpty {
+  flex: 0 0 auto;
+}
+
 .footer {
   margin: 0 10px;
   flex-shrink: 0;
 }
 
 .footerChat {
-  margin-top: auto;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 2;
+  width: min(100%, 800px);
+  margin: 0;
+  padding-right: 20px;
+  padding-left: 20px;
+  transform: translateX(-50%);
+  background: var(--app-bg);
+  transition:
+    bottom 280ms ease,
+    transform 280ms ease;
+  will-change: bottom, transform;
+}
+
+.footerChatEmpty {
+  bottom: 50%;
+  transform: translate(-50%, 50%);
 }
 
 .footerHidden {
@@ -155,6 +197,14 @@
 .composer {
   flex-shrink: 0;
   padding: 0;
+}
+
+.emptyWelcome {
+  padding: 0 0 16px;
+}
+
+.emptyWelcomeFooter {
+  padding: 12px 0 0;
 }
 
 .queuedPrompts {

@@ -8,11 +8,14 @@ export type {
   ToolHeaderExtraRenderer,
   ToolHeaderExtraRenderInfo,
   ToolHeaderKind,
+  ComposerToolbarStartRenderer,
+  WelcomeFooterRenderer,
   WebShellComposerApi,
   WebShellComposerInput,
   WebShellComposerTag,
   WebShellComposerTagOptions,
   WebShellComposerTagPlacement,
+  WebShellComposerToolbarStartRenderInfo,
   WebShellComposerTextOptions,
   WelcomeHeaderRenderer,
   WebShellMarkdownCustomization,
@@ -24,6 +27,5 @@ export type {
   WebShellMonitorTask,
   WebShellModelInfo,
   WebShellSkillInfo,
-  WebShellComposerVariant,
 } from './customization';
 export type { WelcomeHeaderProps } from './components/WelcomeHeader';

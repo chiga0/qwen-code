@@ -315,13 +315,6 @@ const EN: Messages = {
   'editor.searchPlaceholder': 'type to search...',
   'error.unsupportedTheme':
     'Unsupported theme. Use /theme light or /theme dark.',
-  'ui.current': (v) => `Current UI mode: ${v?.mode ?? 'unknown'}`,
-  'ui.usage': 'Usage: /ui [chat|terminal]',
-  'ui.options': 'Options:',
-  'ui.switched': (v) => `Switched to ${v?.mode ?? ''} UI mode`,
-  'ui.invalid': 'Invalid UI mode. Use /ui chat or /ui terminal.',
-  'ui.optionChat': 'Chat UI',
-  'ui.optionTerminal': 'Terminal UI',
   'queue.cleared': 'Queued messages cleared',
   'queue.footer': 'Press ↑ to edit queued messages · Esc to clear queue',
   'queue.imageCount': (v) => `(+${v?.count ?? 0} images)`,
@@ -465,7 +458,6 @@ const EN: Messages = {
   'local.status': 'Show version info',
   'local.theme': 'Change theme',
   'local.settings': 'View and edit settings',
-  'local.ui': 'Switch UI mode',
   'local.tools': 'List available tools. Usage: /tools [desc]',
   'loadWarning.commands':
     'Failed to load command list; slash commands may be incomplete.',
@@ -803,6 +795,10 @@ const EN: Messages = {
     const n = v?.count ?? 0;
     return `${n} tool call${n === 1 ? '' : 's'}`;
   },
+  'turn.thinkingCount': (v) => {
+    const n = v?.count ?? 0;
+    return `${n} thought${n === 1 ? '' : 's'}`;
+  },
   'tasks.title': 'Background tasks',
   'tasks.empty': 'No tasks currently running',
   'tasks.refreshStale': 'Task status may be stale; reconnecting...',
@@ -877,8 +873,20 @@ const EN: Messages = {
   'tool.showLess': '▲ Show less',
   'tool.showFullLines': '▼ Show full lines',
   'tool.linesTotal': (v) => `▼ ${v?.count ?? 0} lines total`,
+  'toolGroup.moreKinds': (v) => ` +${v?.count ?? 0}`,
+  'toolGroup.summary': (v) =>
+    `Ran ${v?.count ?? 0} tool${v?.count === 1 ? '' : 's'}${
+      v?.names ? ` · ${v.names}` : ''
+    }`,
+  'toolGroup.running': (v) =>
+    `Running ${v?.name ?? 'tool'}${
+      Number(v?.count ?? 0) > 1 ? ` · ${v?.count ?? 0} tools` : ''
+    }`,
   'thinking.expand': 'Expand thinking',
   'thinking.collapse': 'Collapse thinking',
+  'thinking.running': (v) => `Thinking${v?.duration ? ` ${v.duration}` : ''}`,
+  'thinking.done': (v) =>
+    `Finished thinking${v?.duration ? ` ${v.duration}` : ''}`,
   'settings.title': 'Settings',
   'settings.loading': 'Loading settings...',
   'settings.empty': 'No settings available.',
@@ -1181,13 +1189,6 @@ const ZH: Messages = {
   'editor.searchPlaceholder': '输入以搜索…',
   'error.unsupportedTheme':
     '不支持该主题。请使用 /theme light 或 /theme dark。',
-  'ui.current': (v) => `当前 UI 模式：${v?.mode ?? '未知'}`,
-  'ui.usage': '用法：/ui [chat|terminal]',
-  'ui.options': '选项：',
-  'ui.switched': (v) => `已切换到 ${v?.mode ?? ''} UI 模式`,
-  'ui.invalid': '无效的 UI 模式。请使用 /ui chat 或 /ui terminal。',
-  'ui.optionChat': '聊天 UI',
-  'ui.optionTerminal': '终端 UI',
   'queue.cleared': '已清空排队消息',
   'queue.footer': '按 ↑ 编辑排队消息 · Esc 清空队列',
   'queue.imageCount': (v) => `（+${v?.count ?? 0} 张图片）`,
@@ -1326,7 +1327,6 @@ const ZH: Messages = {
   'local.status': '查看版本信息',
   'local.theme': '切换主题',
   'local.settings': '查看和编辑设置',
-  'local.ui': '切换 UI 模式',
   'local.tools': '列出可用工具。用法: /tools [desc]',
   'loadWarning.commands': '命令列表加载失败，斜杠命令可能不完整。',
   'loadWarning.context': '会话上下文加载失败，当前模式可能不准确。',
@@ -1646,6 +1646,7 @@ const ZH: Messages = {
   'turn.cached': '缓存',
   'turn.executionSteps': (v) => `${v?.count ?? 0} 步`,
   'turn.toolCalls': (v) => `工具 ${v?.count ?? 0} 次`,
+  'turn.thinkingCount': (v) => `思考 ${v?.count ?? 0} 次`,
   'tasks.title': '后台任务',
   'tasks.empty': '当前没有运行中的任务',
   'tasks.refreshStale': '任务状态可能已过期，正在重连...',
@@ -1720,8 +1721,17 @@ const ZH: Messages = {
   'tool.showLess': '▲ 显示更少',
   'tool.showFullLines': '▼ 显示完整行',
   'tool.linesTotal': (v) => `▼ 共 ${v?.count ?? 0} 行`,
+  'toolGroup.moreKinds': (v) => ` +${v?.count ?? 0}`,
+  'toolGroup.summary': (v) =>
+    `执行了 ${v?.count ?? 0} 个工具${v?.names ? ` · ${v.names}` : ''}`,
+  'toolGroup.running': (v) =>
+    `正在执行 ${v?.name ?? '工具'}${
+      Number(v?.count ?? 0) > 1 ? ` · 共 ${v?.count ?? 0} 个工具` : ''
+    }`,
   'thinking.expand': '展开思考',
   'thinking.collapse': '收起思考',
+  'thinking.running': (v) => `正在思考${v?.duration ? ` ${v.duration}` : ''}`,
+  'thinking.done': (v) => `已完成思考${v?.duration ? ` ${v.duration}` : ''}`,
   'welcome.changeModel': '(/model 切换)',
   'welcome.defaultModel': '未知模型',
   'settings.title': '设置',

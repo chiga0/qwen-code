@@ -13,9 +13,10 @@ import type { UseDaemonFollowupSuggestionReturn } from '@qwen-code/webui/daemon-
 import type { CommandDisplayCategoryOrder } from '../utils/commandDisplay';
 import type { SkillInfo } from '../completions/slashCompletion';
 import { useI18n } from '../i18n';
-import type {
-  WebShellComposerInput,
-  WebShellComposerTag,
+import {
+  useWebShellCustomization,
+  type WebShellComposerInput,
+  type WebShellComposerTag,
 } from '../customization';
 import {
   useComposerCore,
@@ -24,6 +25,7 @@ import {
   getComposerTagLabel,
   getComposerTagValue,
 } from '../hooks/useComposerCore';
+import './Editor.module.css';
 import styles from './ChatEditor.module.css';
 
 interface ChatEditorProps {
@@ -33,6 +35,9 @@ interface ChatEditorProps {
   ) => boolean | void;
   onCycleMode?: () => void;
   onToggleShortcuts?: () => void;
+  onOpenSettings?: () => void;
+  onCancel?: () => void;
+  isRunning?: boolean;
   disabled?: boolean;
   placeholderText?: string;
   commands: CommandInfo[];
@@ -103,38 +108,31 @@ function SendIcon() {
   );
 }
 
-function MicIcon() {
+function StopIcon() {
+  return <span className={styles.stopIcon} aria-hidden="true" />;
+}
+
+function GearIcon() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
-      <path
-        d="M10 2V12M10 2C7 2 5 4 5 7V12C5 15 7 17 10 17C13 17 15 15 15 12V7C15 4 13 2 10 2Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M3 10C3 10 3 16 10 16C17 16 17 10 17 10"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
+    <svg
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z" />
     </svg>
   );
 }
 
 function ChevronDownIcon() {
-  return (
-    <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-      <path
-        d="M2 3.5L5 6.5L8 3.5"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+  return <span className={styles.chevronDown} aria-hidden="true" />;
 }
 
 interface DropdownItem {
@@ -234,6 +232,9 @@ export const ChatEditor = memo(
       onSubmit,
       onCycleMode,
       onToggleShortcuts,
+      onOpenSettings,
+      onCancel,
+      isRunning = false,
       disabled = false,
       placeholderText = 'Type a message...',
       commands,
@@ -286,6 +287,8 @@ export const ChatEditor = memo(
     });
 
     const { t } = useI18n();
+    const { renderComposerToolbarStart: ToolbarStart } =
+      useWebShellCustomization();
 
     useImperativeHandle(ref, () => core.handle, [core.handle]);
 
@@ -474,56 +477,69 @@ export const ChatEditor = memo(
           <div ref={core.containerRef} />
         </div>
         <div className={styles.toolbar}>
-          <div className={styles.toolbarLeft}>
-            <div className={styles.dropdownWrapper}>
-              <ToolbarDropdown
-                open={modeDropdownOpen}
-                items={modeItems}
-                activeId={currentMode}
-                onClose={() => setModeDropdownOpen(false)}
-                onSelect={handleModeSelect}
-                anchorRef={modeBtnRef}
-              />
-              <button
-                ref={modeBtnRef}
-                className={styles.toolBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModeDropdownOpen((v) => !v);
-                  setModelDropdownOpen(false);
-                }}
-                aria-label={t('status.mode')}
-              >
-                <span className={styles.toolBtnText}>{modeLabel}</span>
-                <span className={styles.toolBtnArrow}>
-                  <ChevronDownIcon />
-                </span>
-              </button>
-            </div>
-            <div className={styles.dropdownWrapper}>
-              <ToolbarDropdown
-                open={modelDropdownOpen}
-                items={modelItems}
-                activeId={currentModel}
-                onClose={() => setModelDropdownOpen(false)}
-                onSelect={handleModelSelect}
-                anchorRef={modelBtnRef}
-              />
-              <button
-                ref={modelBtnRef}
-                className={styles.toolBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setModelDropdownOpen((v) => !v);
-                  setModeDropdownOpen(false);
-                }}
-                aria-label={t('model.select')}
-              >
-                <span className={styles.toolBtnText}>{modelLabel}</span>
-                <span className={styles.toolBtnArrow}>
-                  <ChevronDownIcon />
-                </span>
-              </button>
+          <div className={styles.toolbarLeading}>
+            {ToolbarStart && (
+              <div className={styles.toolbarStart}>
+                <ToolbarStart
+                  disabled={disabled}
+                  isRunning={isRunning}
+                  currentMode={currentMode}
+                  currentModel={currentModel}
+                  sessionName={sessionName}
+                />
+              </div>
+            )}
+            <div className={styles.toolbarLeft}>
+              <div className={styles.dropdownWrapper}>
+                <ToolbarDropdown
+                  open={modeDropdownOpen}
+                  items={modeItems}
+                  activeId={currentMode}
+                  onClose={() => setModeDropdownOpen(false)}
+                  onSelect={handleModeSelect}
+                  anchorRef={modeBtnRef}
+                />
+                <button
+                  ref={modeBtnRef}
+                  className={styles.toolBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModeDropdownOpen((v) => !v);
+                    setModelDropdownOpen(false);
+                  }}
+                  aria-label={t('status.mode')}
+                >
+                  <span className={styles.toolBtnText}>{modeLabel}</span>
+                  <span className={styles.toolBtnArrow}>
+                    <ChevronDownIcon />
+                  </span>
+                </button>
+              </div>
+              <div className={styles.dropdownWrapper}>
+                <ToolbarDropdown
+                  open={modelDropdownOpen}
+                  items={modelItems}
+                  activeId={currentModel}
+                  onClose={() => setModelDropdownOpen(false)}
+                  onSelect={handleModelSelect}
+                  anchorRef={modelBtnRef}
+                />
+                <button
+                  ref={modelBtnRef}
+                  className={styles.toolBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setModelDropdownOpen((v) => !v);
+                    setModeDropdownOpen(false);
+                  }}
+                  aria-label={t('model.select')}
+                >
+                  <span className={styles.toolBtnText}>{modelLabel}</span>
+                  <span className={styles.toolBtnArrow}>
+                    <ChevronDownIcon />
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
           <div className={styles.toolbarRight}>
@@ -547,21 +563,39 @@ export const ChatEditor = memo(
             >
               <span className={styles.toolBtnIcon}>@</span>
             </button>
-            <button className={styles.toolBtn} disabled aria-label="Voice">
+            <button
+              className={styles.toolBtn}
+              onClick={(e) => {
+                e.stopPropagation();
+                onOpenSettings?.();
+              }}
+              disabled={!onOpenSettings}
+              aria-label={t('settings.title')}
+            >
               <span className={styles.toolBtnIcon}>
-                <MicIcon />
+                <GearIcon />
               </span>
             </button>
             <button
-              className={styles.sendBtn}
-              disabled={core.disabled || !core.hasContent}
+              className={
+                isRunning
+                  ? `${styles.sendBtn} ${styles.sendBtnRunning}`
+                  : styles.sendBtn
+              }
+              disabled={
+                isRunning ? !onCancel : core.disabled || !core.hasContent
+              }
               onClick={(e) => {
                 e.stopPropagation();
+                if (isRunning) {
+                  onCancel?.();
+                  return;
+                }
                 core.submitText();
               }}
-              aria-label={t('editor.send')}
+              aria-label={isRunning ? t('stream.cancel') : t('editor.send')}
             >
-              <SendIcon />
+              {isRunning ? <StopIcon /> : <SendIcon />}
             </button>
           </div>
         </div>

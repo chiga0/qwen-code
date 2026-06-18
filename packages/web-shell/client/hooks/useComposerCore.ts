@@ -743,6 +743,29 @@ export function useComposerCore(
       return true;
     };
 
+    const acceptFollowupIntoEditor = (
+      view: EditorView,
+      method: 'tab' | 'right',
+    ): boolean => {
+      const followup = followupStateRef.current;
+      const suggestion = followup?.suggestion;
+      if (
+        view.state.doc.toString().length !== 0 ||
+        !followup?.isVisible ||
+        !suggestion
+      ) {
+        return false;
+      }
+      view.dispatch({
+        changes: { from: 0, to: view.state.doc.length, insert: suggestion },
+        selection: { anchor: suggestion.length },
+        scrollIntoView: true,
+      });
+      view.focus();
+      onAcceptFollowupRef.current?.(method, { skipOnAccept: true });
+      return true;
+    };
+
     const submitKeymap = keymap.of([
       {
         key: 'Backspace',
@@ -935,6 +958,9 @@ export function useComposerCore(
       {
         key: 'Tab',
         run: (view) => {
+          if (acceptFollowupIntoEditor(view, 'tab')) {
+            return true;
+          }
           if (completionStatus(view.state) === 'active') {
             return acceptCompletion(view);
           }
@@ -970,25 +996,16 @@ export function useComposerCore(
             });
             return true;
           }
-          const followup = followupStateRef.current;
-          if (text.length === 0 && followup?.isVisible && followup.suggestion) {
-            onAcceptFollowupRef.current?.('tab');
-            return true;
-          }
           return true;
         },
       },
       {
         key: 'ArrowRight',
         run: (view) => {
-          const followup = followupStateRef.current;
           if (
             completionStatus(view.state) !== 'active' &&
-            view.state.doc.toString().length === 0 &&
-            followup?.isVisible &&
-            followup.suggestion
+            acceptFollowupIntoEditor(view, 'right')
           ) {
-            onAcceptFollowupRef.current?.('right');
             return true;
           }
           return false;
@@ -1326,7 +1343,17 @@ export function useComposerCore(
           completionStatus(view.state) !== 'active'
         ) {
           event.preventDefault();
-          onAcceptFollowupRef.current?.('tab');
+          view.dispatch({
+            changes: {
+              from: 0,
+              to: view.state.doc.length,
+              insert: followup.suggestion,
+            },
+            selection: { anchor: followup.suggestion.length },
+            scrollIntoView: true,
+          });
+          view.focus();
+          onAcceptFollowupRef.current?.('tab', { skipOnAccept: true });
           return;
         }
         if (
@@ -1338,7 +1365,17 @@ export function useComposerCore(
           completionStatus(view.state) !== 'active'
         ) {
           event.preventDefault();
-          onAcceptFollowupRef.current?.('right');
+          view.dispatch({
+            changes: {
+              from: 0,
+              to: view.state.doc.length,
+              insert: followup.suggestion,
+            },
+            selection: { anchor: followup.suggestion.length },
+            scrollIntoView: true,
+          });
+          view.focus();
+          onAcceptFollowupRef.current?.('right', { skipOnAccept: true });
           return;
         }
       }

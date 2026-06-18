@@ -665,6 +665,7 @@ describe('applyTurnCollapse', () => {
     ]);
     const collapsed = collapseItems(items);
     expect(rowIds(collapsed)).toEqual(['u1', 'tc-u1', 'a1']);
+    expect(collapseOf(collapsed, 0)?.thinkingCount).toBe(1);
     const collapsedAnswer = messageById(collapsed, 'a1').message;
     expect(collapsedAnswer.role).toBe('assistant');
     if (collapsedAnswer.role === 'assistant') {
@@ -973,6 +974,32 @@ describe('applyTurnCollapse', () => {
     expect(head?.elapsedMs).toBe(900);
     expect(head?.inputTokens).toBe(1200);
     expect(head?.outputTokens).toBe(45);
+  });
+
+  it("folds the final answer's thinking even without tool steps", () => {
+    const items = groupParallelAgents([
+      { id: 'u1', role: 'user', content: '你好', timestamp: 1_000 },
+      {
+        id: 'a1',
+        role: 'assistant',
+        content: '你好！有什么可以帮你的？',
+        thinking: 'The user sent a simple greeting.',
+        timestamp: 1_900,
+        usage: { inputTokens: 1200, outputTokens: 45 },
+      },
+    ]);
+    const out = collapseItems(items);
+    expect(rowIds(out)).toEqual(['u1', 'tc-u1', 'a1']);
+    const head = collapseOf(out, 0);
+    expect(head?.hiddenCount).toBe(1);
+    expect(head?.collapsed).toBe(true);
+    expect(head?.thinkingCount).toBe(1);
+    const collapsedAnswer = messageById(out, 'a1').message;
+    expect(collapsedAnswer.role).toBe('assistant');
+    if (collapsedAnswer.role === 'assistant') {
+      expect(collapsedAnswer.thinking).toBeUndefined();
+      expect(collapsedAnswer.content).toBe('你好！有什么可以帮你的？');
+    }
   });
 
   it('sums cached-read tokens across the turn', () => {

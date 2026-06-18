@@ -5,6 +5,7 @@ import {
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
 import {
@@ -29,8 +30,8 @@ import type {
 import { extractPendingPermission } from './adapters/transcriptAdapter';
 import { removeInjectedFromQueue } from './midTurnDedup';
 import { MessageList, type MessageListHandle } from './components/MessageList';
-import { TerminalEditor, type EditorHandle } from './components/TerminalEditor';
 import { ChatEditor } from './components/ChatEditor';
+import type { EditorHandle } from './hooks/useComposerCore';
 import type { PromptImage } from './adapters/promptTypes';
 import { StatusBar, type StatusBarHandle } from './components/StatusBar';
 import { ShortcutsPanel } from './components/ShortcutsPanel';
@@ -147,12 +148,13 @@ import {
 } from './themeContext';
 import {
   WebShellCustomizationProvider,
-  ComposerVariantProvider,
   type WebShellComposerApi,
   type WebShellComposerInput,
   type WebShellMarkdownCustomization,
   type ToolHeaderExtraRenderer,
   type WelcomeHeaderRenderer,
+  type WelcomeFooterRenderer,
+  type ComposerToolbarStartRenderer,
   type FooterRenderer,
   type WebShellTaskInfo,
 } from './customization';
@@ -256,17 +258,21 @@ type GoalStatusTranscriptBlock = DaemonTranscriptBlock & {
   data?: unknown;
 };
 
+function parseGoalStatusFromBlock(block: DaemonTranscriptBlock) {
+  const statusBlock = block as GoalStatusTranscriptBlock;
+  return (
+    parseGoalStatusMessage(statusBlock.data) ??
+    parseGoalStatusMessage(statusBlock.text)
+  );
+}
+
 function getLatestActiveGoalFromBlocks(
   blocks: readonly DaemonTranscriptBlock[],
 ): ActiveGoalStatus | null {
   for (let i = blocks.length - 1; i >= 0; i--) {
     const block = blocks[i];
     if (block.kind !== 'status') continue;
-    const statusBlock = block as GoalStatusTranscriptBlock;
-    const status =
-      statusBlock.source === 'goal'
-        ? parseGoalStatusMessage(statusBlock.data)
-        : parseGoalStatusMessage(statusBlock.text);
+    const status = parseGoalStatusFromBlock(block);
     if (!status) continue;
     if (status.kind === 'set' || status.kind === 'checking') {
       return {
@@ -301,11 +307,11 @@ export interface BugReportInfo {
 export interface WebShellProps {
   /** Called whenever the attached daemon session id changes. */
   onSessionIdChange?: (sessionId: string) => void;
-  /** Visual theme for the embedded shell. Defaults to the dark terminal skin. */
+  /** Visual theme for the embedded shell. */
   theme?: WebShellTheme;
   /** Called when `/theme` changes the web-shell theme. */
   onThemeChange?: (theme: WebShellTheme) => void;
-  /** UI language for the Web terminal. Defaults to `?language=` or browser language. */
+  /** UI language for the web-shell. Defaults to `?language=` or browser language. */
   language?: 'en' | 'zh-CN' | 'zh' | 'zh-cn';
   /** Called when `/language ui` changes the web-shell UI language. */
   onLanguageChange?: (language: WebShellLanguage) => void;
@@ -335,6 +341,10 @@ export interface WebShellProps {
   renderToolHeaderExtra?: ToolHeaderExtraRenderer;
   /** Custom renderer for the welcome header. Receives version, cwd, model, and mode. */
   renderWelcomeHeader?: WelcomeHeaderRenderer;
+  /** Custom renderer shown below the chat composer in the empty welcome state. */
+  renderWelcomeFooter?: WelcomeFooterRenderer;
+  /** Custom renderer inserted before the built-in chat composer toolbar controls. */
+  renderComposerToolbarStart?: ComposerToolbarStartRenderer;
   /** Custom component for the footer area below the Editor. Replaces the built-in StatusBar. */
   renderFooter?: FooterRenderer;
   /** Collapse thinking blocks to 5 lines with a click-to-expand toggle. */
@@ -353,8 +363,6 @@ export interface WebShellProps {
   composerInput?: WebShellComposerInput;
   /** Replay key for composerInput. */
   composerInputVersion?: number;
-  /** Composer layout variant. Defaults to 'chat'. */
-  composerVariant?: 'terminal' | 'chat';
 }
 
 const emptyComposerApi: WebShellComposerApi = {
@@ -708,6 +716,8 @@ export function App({
   slashCommandCategoryOrder,
   renderToolHeaderExtra,
   renderWelcomeHeader,
+  renderWelcomeFooter,
+  renderComposerToolbarStart,
   renderFooter,
   compactThinking = false,
   collapseCompletedTurns = true,
@@ -718,20 +728,9 @@ export function App({
   composerRef,
   composerInput,
   composerInputVersion,
-  composerVariant: initialComposerVariant = 'chat',
 }: WebShellProps = {}) {
-  const [composerVariant, setComposerVariant] = useState<'terminal' | 'chat'>(
-    initialComposerVariant,
-  );
-  const [editorDraft, setEditorDraft] = useState('');
-  const [editorDraftVersion, setEditorDraftVersion] = useState(0);
-  useEffect(() => {
-    if (editorDraft) {
-      setEditorDraft('');
-      setEditorDraftVersion(0);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [composerVariant]);
+  const [editorDraft] = useState('');
+  const [editorDraftVersion] = useState(0);
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
       providedLanguage === undefined
@@ -743,6 +742,8 @@ export function App({
     () => ({
       renderToolHeaderExtra,
       renderWelcomeHeader,
+      renderWelcomeFooter,
+      renderComposerToolbarStart,
       renderFooter,
       compactThinking,
       collapseCompletedTurns,
@@ -751,6 +752,8 @@ export function App({
     [
       renderToolHeaderExtra,
       renderWelcomeHeader,
+      renderWelcomeFooter,
+      renderComposerToolbarStart,
       renderFooter,
       compactThinking,
       collapseCompletedTurns,
@@ -929,6 +932,8 @@ export function App({
   );
   const statusBarRef = useRef<StatusBarHandle>(null);
   const editorRef = useRef<EditorHandle | null>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [footerHeight, setFooterHeight] = useState(0);
   const setEditorHandle = useCallback(
     (handle: EditorHandle | null) => {
       editorRef.current = handle;
@@ -939,6 +944,23 @@ export function App({
   useEffect(() => {
     assignComposerRef(composerRef, editorRef.current ?? emptyComposerApi);
   }, [composerRef]);
+  useEffect(() => {
+    const el = footerRef.current;
+    if (!el) return;
+
+    const update = () => {
+      setFooterHeight(Math.ceil(el.getBoundingClientRect().height));
+    };
+
+    update();
+    const observer = new ResizeObserver(update);
+    observer.observe(el);
+    window.addEventListener('resize', update);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', update);
+    };
+  }, []);
   const messageListRef = useRef<MessageListHandle>(null);
   const handleLocateFloatingTodos = useCallback(() => {
     if (!floatingTodosState.sourceMessageId) return;
@@ -1972,41 +1994,6 @@ export function App({
             }
             return true;
           }
-          if (cmd === 'ui') {
-            const uiArg = text.slice(match[0].length).trim().toLowerCase();
-            if (uiArg === 'chat' || uiArg === 'terminal') {
-              const draft = editorRef.current?.getText() ?? '';
-              if (draft) {
-                setEditorDraft(draft);
-                setEditorDraftVersion((v) => v + 1);
-              }
-              setComposerVariant(uiArg);
-              store.dispatch([
-                {
-                  type: 'status',
-                  text: t('ui.switched', { mode: uiArg }),
-                },
-              ]);
-            } else if (!uiArg) {
-              store.dispatch([
-                {
-                  type: 'status',
-                  text: [
-                    t('ui.current', { mode: composerVariant }),
-                    '',
-                    t('ui.usage'),
-                    '',
-                    t('ui.options'),
-                    `  - chat: ${t('ui.optionChat')}`,
-                    `  - terminal: ${t('ui.optionTerminal')}`,
-                  ].join('\n'),
-                },
-              ]);
-            } else {
-              pushToast('error', t('ui.invalid'));
-            }
-            return true;
-          }
           if (cmd === 'language') {
             const args = text.slice(match[0].length).trim();
             const [subCommand, languageArg] = args.split(/\s+/);
@@ -2558,7 +2545,6 @@ export function App({
       showContextUsage,
       t,
       workspaceActions,
-      composerVariant,
     ],
   );
 
@@ -2853,9 +2839,20 @@ export function App({
       ),
     [renderWelcomeHeader, welcomeHeaderProps],
   );
+  const welcomeFooter = useMemo(
+    () => renderWelcomeFooter?.(welcomeHeaderProps),
+    [renderWelcomeFooter, welcomeHeaderProps],
+  );
+  const isChatEmptyState =
+    displayMessages.length === 0 &&
+    !showFloatingTodos &&
+    !pendingApproval &&
+    !btwMessage &&
+    !tasksPanelMessage;
 
   const appClassName = [
     styles.app,
+    styles.appChat,
     selectedTheme === WebShellThemeId.Light
       ? styles.themeLight
       : styles.themeDark,
@@ -2863,6 +2860,14 @@ export function App({
   ]
     .filter(Boolean)
     .join(' ');
+  const contentStyle = useMemo(
+    () =>
+      ({
+        ...(dialogOpen ? { visibility: 'hidden' as const } : {}),
+        '--chat-footer-space': `${footerHeight + 16}px`,
+      }) as CSSProperties,
+    [dialogOpen, footerHeight],
+  );
 
   return (
     <ThemeProvider value={selectedTheme}>
@@ -2946,181 +2951,197 @@ export function App({
           )}
 
           <WebShellCustomizationProvider value={customization}>
-            <ComposerVariantProvider value={composerVariant}>
-              <CompactModeContext.Provider value={compactMode}>
-                <TodoContextsProvider
-                  timeline={todoTimeline}
-                  details={todoDetails}
+            <CompactModeContext.Provider value={compactMode}>
+              <TodoContextsProvider
+                timeline={todoTimeline}
+                details={todoDetails}
+              >
+                <div
+                  className={[
+                    styles.content,
+                    styles.contentChat,
+                    showFloatingTodos ||
+                    displayMessages.length > 0 ||
+                    pendingApproval
+                      ? styles.contentHasMessages
+                      : undefined,
+                    isChatEmptyState ? styles.contentChatEmpty : undefined,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                  style={contentStyle}
                 >
-                  <div
-                    className={
-                      showFloatingTodos
-                        ? `${styles.content} ${styles.contentHasMessages}`
-                        : styles.content
+                  <MessageList
+                    ref={messageListRef}
+                    messages={displayMessages}
+                    pendingApproval={pendingApproval}
+                    onConfirm={handleConfirm}
+                    onShowContextDetail={handleShowContextDetail}
+                    catchingUp={connection.catchingUp}
+                    isResponding={streamingState !== 'idle'}
+                    workspaceCwd={connection.workspaceCwd || ''}
+                    shellOutputMaxLines={shellOutputMaxLines}
+                    showRetryHint={showRetryHint}
+                    onRetryClick={handleRetry}
+                    welcomeHeader={undefined}
+                    tailContent={
+                      agentsInlineMode ||
+                      memoryInlineOpen ||
+                      modelInlineMode ||
+                      authInlineOpen ||
+                      approvalModeInlineOpen ||
+                      settingsInlineOpen ? (
+                        <>
+                          {authInlineOpen && (
+                            <AuthMessage
+                              onMessage={(text, type = 'status') => {
+                                store.dispatch([
+                                  type === 'error'
+                                    ? { type: 'error', text }
+                                    : { type: 'status', text },
+                                ]);
+                              }}
+                              onClose={() => setAuthInlineOpen(false)}
+                            />
+                          )}
+                          {approvalModeInlineOpen && (
+                            <ApprovalModeMessage
+                              currentMode={currentMode}
+                              onSelect={handleSetMode}
+                              onClose={() => setApprovalModeInlineOpen(false)}
+                            />
+                          )}
+                          {modelInlineMode && (
+                            <ModelMessage
+                              mode={modelInlineMode}
+                              onSelect={
+                                modelInlineMode === 'fast'
+                                  ? handleFastModelSelect
+                                  : handleModelSelect
+                              }
+                              onClose={() => setModelInlineMode(null)}
+                            />
+                          )}
+                          {agentsInlineMode && (
+                            <AgentsMessage
+                              mode={agentsInlineMode}
+                              onMessage={(text) =>
+                                store.dispatch([{ type: 'status', text }])
+                              }
+                              onClose={() => setAgentsInlineMode(null)}
+                            />
+                          )}
+                          {memoryInlineOpen && (
+                            <MemoryMessage
+                              refreshSignal={memoryRefreshSignal}
+                              addSignal={memoryAddSignal}
+                              addScope={memoryAddScope}
+                              portalHost={memoryPortalHost}
+                              onMessage={(text, type = 'status') => {
+                                store.dispatch([{ type, text }]);
+                              }}
+                              onClose={() => setMemoryInlineOpen(false)}
+                            />
+                          )}
+                          {settingsInlineOpen && (
+                            <SettingsMessage
+                              settingsState={workspaceSettingsState}
+                              onClose={() => setSettingsInlineOpen(false)}
+                              onLanguageChange={handleSettingsLanguageChange}
+                              onThemeChange={handleThemeChange}
+                              onSubDialog={(key) => {
+                                setSettingsInlineOpen(false);
+                                if (key === 'fastModel')
+                                  setModelInlineMode('fast');
+                                else if (key === 'tools.approvalMode')
+                                  setApprovalModeInlineOpen(true);
+                              }}
+                            />
+                          )}
+                        </>
+                      ) : undefined
                     }
-                    style={dialogOpen ? { visibility: 'hidden' } : undefined}
-                  >
-                    <MessageList
-                      ref={messageListRef}
-                      messages={displayMessages}
-                      pendingApproval={pendingApproval}
-                      onConfirm={handleConfirm}
-                      onShowContextDetail={handleShowContextDetail}
-                      catchingUp={connection.catchingUp}
-                      isResponding={streamingState !== 'idle'}
-                      workspaceCwd={connection.workspaceCwd || ''}
-                      shellOutputMaxLines={shellOutputMaxLines}
-                      showRetryHint={showRetryHint}
-                      onRetryClick={handleRetry}
-                      welcomeHeader={welcomeHeader}
-                      tailContent={
-                        agentsInlineMode ||
-                        memoryInlineOpen ||
-                        modelInlineMode ||
-                        authInlineOpen ||
-                        approvalModeInlineOpen ||
-                        settingsInlineOpen ? (
-                          <>
-                            {authInlineOpen && (
-                              <AuthMessage
-                                onMessage={(text, type = 'status') => {
-                                  store.dispatch([
-                                    type === 'error'
-                                      ? { type: 'error', text }
-                                      : { type: 'status', text },
-                                  ]);
-                                }}
-                                onClose={() => setAuthInlineOpen(false)}
-                              />
-                            )}
-                            {approvalModeInlineOpen && (
-                              <ApprovalModeMessage
-                                currentMode={currentMode}
-                                onSelect={handleSetMode}
-                                onClose={() => setApprovalModeInlineOpen(false)}
-                              />
-                            )}
-                            {modelInlineMode && (
-                              <ModelMessage
-                                mode={modelInlineMode}
-                                onSelect={
-                                  modelInlineMode === 'fast'
-                                    ? handleFastModelSelect
-                                    : handleModelSelect
-                                }
-                                onClose={() => setModelInlineMode(null)}
-                              />
-                            )}
-                            {agentsInlineMode && (
-                              <AgentsMessage
-                                mode={agentsInlineMode}
-                                onMessage={(text) =>
-                                  store.dispatch([{ type: 'status', text }])
-                                }
-                                onClose={() => setAgentsInlineMode(null)}
-                              />
-                            )}
-                            {memoryInlineOpen && (
-                              <MemoryMessage
-                                refreshSignal={memoryRefreshSignal}
-                                addSignal={memoryAddSignal}
-                                addScope={memoryAddScope}
-                                portalHost={memoryPortalHost}
-                                onMessage={(text, type = 'status') => {
-                                  store.dispatch([{ type, text }]);
-                                }}
-                                onClose={() => setMemoryInlineOpen(false)}
-                              />
-                            )}
-                            {settingsInlineOpen && (
-                              <SettingsMessage
-                                settingsState={workspaceSettingsState}
-                                onClose={() => setSettingsInlineOpen(false)}
-                                onLanguageChange={handleSettingsLanguageChange}
-                                onThemeChange={handleThemeChange}
-                                onSubDialog={(key) => {
-                                  setSettingsInlineOpen(false);
-                                  if (key === 'fastModel')
-                                    setModelInlineMode('fast');
-                                  else if (key === 'tools.approvalMode')
-                                    setApprovalModeInlineOpen(true);
-                                }}
-                              />
-                            )}
-                          </>
-                        ) : undefined
-                      }
-                      tailKey={
-                        agentsInlineMode ||
-                        memoryInlineOpen ||
-                        modelInlineMode ||
-                        authInlineOpen ||
-                        approvalModeInlineOpen ||
-                        settingsInlineOpen
-                          ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
-                          : undefined
-                      }
-                      // The approval-mode/model pickers and the settings panel are
-                      // reachable by mouse from the status bar, so they reveal
-                      // themselves when opened while the user is scrolled up; the
-                      // agents/memory panels keep the user's scroll position.
-                      autoScrollTailIntoView={
-                        approvalModeInlineOpen ||
-                        modelInlineMode !== null ||
-                        settingsInlineOpen
-                      }
-                      virtualScrollThreshold={virtualScrollThreshold}
-                    />
+                    tailKey={
+                      agentsInlineMode ||
+                      memoryInlineOpen ||
+                      modelInlineMode ||
+                      authInlineOpen ||
+                      approvalModeInlineOpen ||
+                      settingsInlineOpen
+                        ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
+                        : undefined
+                    }
+                    // The approval-mode/model pickers and the settings panel are
+                    // reachable by mouse from the status bar, so they reveal
+                    // themselves when opened while the user is scrolled up; the
+                    // agents/memory panels keep the user's scroll position.
+                    autoScrollTailIntoView={
+                      approvalModeInlineOpen ||
+                      modelInlineMode !== null ||
+                      settingsInlineOpen
+                    }
+                    virtualScrollThreshold={virtualScrollThreshold}
+                  />
 
-                    {btwMessage?.role === 'btw' && (
-                      <div className={styles.btwPanel}>
-                        <BtwMessage
-                          question={btwMessage.question}
-                          answer={btwMessage.answer}
-                          isPending={btwMessage.isPending}
-                        />
-                      </div>
-                    )}
+                  {btwMessage?.role === 'btw' && (
+                    <div className={styles.btwPanel}>
+                      <BtwMessage
+                        question={btwMessage.question}
+                        answer={btwMessage.answer}
+                        isPending={btwMessage.isPending}
+                      />
+                    </div>
+                  )}
+                </div>
+                <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
+              </TodoContextsProvider>
+            </CompactModeContext.Provider>
 
-                    {composerVariant === 'terminal' && <StreamingStatus />}
-                  </div>
-                  <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
-                </TodoContextsProvider>
-              </CompactModeContext.Provider>
-            </ComposerVariantProvider>
-          </WebShellCustomizationProvider>
-
-          <div
-            className={
-              bottomHidden
-                ? `${styles.footer} ${styles.footerHidden}`
-                : composerVariant === 'chat'
-                  ? `${styles.footer} ${styles.footerChat}`
-                  : styles.footer
-            }
-          >
-            {showFloatingTodos && !tasksPanelMessage && (
-              <div className={styles.bottomPanels}>
-                <TodoPanel
-                  todos={floatingTodos}
-                  onLocateSource={
-                    floatingTodosState.sourceMessageId
-                      ? handleLocateFloatingTodos
-                      : undefined
-                  }
-                />
-              </div>
-            )}
-            {!shouldHideComposer && (
-              <div className={styles.composer}>
-                {composerVariant === 'chat' && <StreamingStatus />}
-                <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
-                {composerVariant === 'chat' ? (
+            <div
+              ref={footerRef}
+              className={
+                bottomHidden
+                  ? `${styles.footer} ${styles.footerHidden}`
+                  : [
+                      styles.footer,
+                      styles.footerChat,
+                      isChatEmptyState ? styles.footerChatEmpty : undefined,
+                    ]
+                      .filter(Boolean)
+                      .join(' ')
+              }
+            >
+              {showFloatingTodos && !tasksPanelMessage && (
+                <div className={styles.bottomPanels}>
+                  <TodoPanel
+                    todos={floatingTodos}
+                    onLocateSource={
+                      floatingTodosState.sourceMessageId
+                        ? handleLocateFloatingTodos
+                        : undefined
+                    }
+                  />
+                </div>
+              )}
+              {!shouldHideComposer && (
+                <div className={styles.composer}>
+                  {isChatEmptyState && (
+                    <div className={styles.emptyWelcome}>{welcomeHeader}</div>
+                  )}
+                  <StreamingStatus />
+                  <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
                   <ChatEditor
                     ref={setEditorHandle}
                     onSubmit={handleSubmit}
                     onCycleMode={handleCycleMode}
                     onToggleShortcuts={handleToggleShortcuts}
+                    onOpenSettings={
+                      hideSettings
+                        ? undefined
+                        : () => setSettingsInlineOpen((v) => !v)
+                    }
+                    onCancel={handleCancel}
+                    isRunning={streamingState !== 'idle'}
                     disabled={isDisabled}
                     commands={commands}
                     skills={loadedSkills}
@@ -3151,100 +3172,77 @@ export function App({
                           : t('editor.placeholder')
                     }
                   />
-                ) : (
-                  <TerminalEditor
-                    ref={setEditorHandle}
-                    onSubmit={handleSubmit}
-                    onCycleMode={handleCycleMode}
-                    onToggleShortcuts={handleToggleShortcuts}
-                    disabled={isDisabled}
-                    commands={commands}
-                    skills={loadedSkills}
-                    slashCommandCategoryOrder={slashCommandCategoryOrder}
-                    queuedMessages={queuedTexts}
-                    onFocusFooter={handleFocusTaskPill}
-                    onPopQueuedMessages={popQueuedPromptsForEdit}
-                    onClearQueuedMessages={clearQueuedPrompts}
-                    currentMode={currentMode}
-                    sessionName={sessionDisplayName}
-                    dialogOpen={bottomHidden || tasksPanelMessage !== null}
-                    followupState={followupState}
-                    onAcceptFollowup={onAcceptFollowup}
-                    onDismissFollowup={onDismissFollowup}
-                    composerInput={composerInput}
-                    composerInputVersion={composerInputVersion}
-                    draftText={editorDraft}
-                    draftVersion={editorDraftVersion}
-                    placeholderText={
-                      !connected
-                        ? t('common.loading')
-                        : streamingState !== 'idle'
-                          ? t('editor.processing')
-                          : t('editor.placeholder')
-                    }
+                </div>
+              )}
+              {tasksPanelMessage && (
+                <div className={styles.tasksBottomPanel}>
+                  <TasksStatusMessage
+                    message={tasksPanelMessage}
+                    manageActiveEvent={false}
+                    onClose={() => {
+                      setTasksPanelMessage(null);
+                      handleReturnToEditor();
+                    }}
                   />
+                </div>
+              )}
+              {!shouldHideComposer &&
+                !tasksPanelMessage &&
+                (showShortcuts ? (
+                  <ShortcutsPanel onClose={handleCloseShortcuts} />
+                ) : CustomFooter ? (
+                  <CustomFooter
+                    connected={connected}
+                    mode={currentMode}
+                    model={currentModel}
+                    streamingState={streamingState}
+                    contextUsageRatio={
+                      (connection.contextWindow ?? 0) > 0
+                        ? (connection.tokenCount ?? 0) /
+                          (connection.contextWindow ?? 0)
+                        : 0
+                    }
+                    activeGoal={activeGoal}
+                    tasks={footerTasks}
+                    availableModes={MODES_CYCLE}
+                    availableModels={(connection.models ?? []).map((m) => ({
+                      id: m.id,
+                      label: m.label,
+                      contextWindow: m.contextWindow,
+                    }))}
+                    skills={loadedSkills}
+                    onSelectMode={handleSetMode}
+                    onSelectModel={handleSelectModel}
+                  />
+                ) : (
+                  <StatusBar
+                    escapeHint={escapeHintVisible}
+                    onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
+                    onSelectModel={() =>
+                      setModelInlineMode((v) => (v ? null : 'main'))
+                    }
+                    onShowContext={() => showContextUsage('/context', false)}
+                    onOpenSettings={() => setSettingsInlineOpen((v) => !v)}
+                    ref={statusBarRef}
+                    onOpenTasks={() => openTasksPanel()}
+                    onReturnToInput={handleReturnToEditor}
+                    tasks={backgroundTasks}
+                    activeGoal={activeGoal}
+                    hideSettings={hideSettings}
+                    onToggleShortcuts={handleToggleShortcuts}
+                    compact={true}
+                  />
+                ))}
+              {isChatEmptyState &&
+                !shouldHideComposer &&
+                !tasksPanelMessage &&
+                welcomeFooter && (
+                  <div className={styles.emptyWelcomeFooter}>
+                    {welcomeFooter}
+                  </div>
                 )}
-              </div>
-            )}
-            {tasksPanelMessage && (
-              <div className={styles.tasksBottomPanel}>
-                <TasksStatusMessage
-                  message={tasksPanelMessage}
-                  manageActiveEvent={false}
-                  onClose={() => {
-                    setTasksPanelMessage(null);
-                    handleReturnToEditor();
-                  }}
-                />
-              </div>
-            )}
-            {!shouldHideComposer &&
-              !tasksPanelMessage &&
-              (showShortcuts ? (
-                <ShortcutsPanel onClose={handleCloseShortcuts} />
-              ) : CustomFooter ? (
-                <CustomFooter
-                  connected={connected}
-                  mode={currentMode}
-                  model={currentModel}
-                  streamingState={streamingState}
-                  contextUsageRatio={
-                    (connection.contextWindow ?? 0) > 0
-                      ? (connection.tokenCount ?? 0) /
-                        (connection.contextWindow ?? 0)
-                      : 0
-                  }
-                  activeGoal={activeGoal}
-                  tasks={footerTasks}
-                  availableModes={MODES_CYCLE}
-                  availableModels={(connection.models ?? []).map((m) => ({
-                    id: m.id,
-                    label: m.label,
-                    contextWindow: m.contextWindow,
-                  }))}
-                  skills={loadedSkills}
-                  onSelectMode={handleSetMode}
-                  onSelectModel={handleSelectModel}
-                />
-              ) : (
-                <StatusBar
-                  escapeHint={escapeHintVisible}
-                  onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
-                  onSelectModel={() =>
-                    setModelInlineMode((v) => (v ? null : 'main'))
-                  }
-                  onShowContext={() => showContextUsage('/context', false)}
-                  onOpenSettings={() => setSettingsInlineOpen((v) => !v)}
-                  ref={statusBarRef}
-                  onOpenTasks={() => openTasksPanel()}
-                  onReturnToInput={handleReturnToEditor}
-                  tasks={backgroundTasks}
-                  activeGoal={activeGoal}
-                  hideSettings={hideSettings}
-                  onToggleShortcuts={handleToggleShortcuts}
-                />
-              ))}
-          </div>
+            </div>
+          </WebShellCustomizationProvider>
         </div>
       </I18nProvider>
     </ThemeProvider>

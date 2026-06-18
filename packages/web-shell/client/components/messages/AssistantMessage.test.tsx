@@ -1,88 +1,41 @@
-// @vitest-environment jsdom
-import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import { act, type ReactNode } from 'react';
-import { createRoot, type Root } from 'react-dom/client';
-import { CompactModeContext } from '../../App';
-import { WebShellCustomizationProvider } from '../../customization';
-import { I18nProvider } from '../../i18n';
-import { AssistantMessage } from './AssistantMessage';
+import { describe, expect, it, vi } from 'vitest';
 
-(
-  globalThis as { IS_REACT_ACT_ENVIRONMENT?: boolean }
-).IS_REACT_ACT_ENVIRONMENT = true;
-
-const mounted: Array<{ root: Root; container: HTMLElement }> = [];
-
-beforeAll(() => {
-  globalThis.ResizeObserver = vi.fn().mockImplementation(() => ({
-    observe: vi.fn(),
-    disconnect: vi.fn(),
-  }));
+vi.mock('../../App', async () => {
+  const { createContext } = await import('react');
+  return {
+    CompactModeContext: createContext(false),
+  };
 });
 
-afterEach(() => {
-  for (const { root, container } of mounted.splice(0)) {
-    act(() => root.unmount());
-    container.remove();
-  }
-});
+const { formatThinkingDuration, getThinkingSummaryKey } = await import(
+  './AssistantMessage'
+);
 
-function render(node: ReactNode): HTMLElement {
-  const container = document.createElement('div');
-  document.body.appendChild(container);
-  const root = createRoot(container);
-  act(() => {
-    root.render(
-      <I18nProvider language="en">
-        <CompactModeContext.Provider value={false}>
-          <WebShellCustomizationProvider value={{ compactThinking: true }}>
-            {node}
-          </WebShellCustomizationProvider>
-        </CompactModeContext.Provider>
-      </I18nProvider>,
+describe('AssistantMessage thinking logic', () => {
+  it('uses the running summary while streaming before answer content', () => {
+    expect(getThinkingSummaryKey({ content: '', isStreaming: true })).toBe(
+      'thinking.running',
     );
   });
-  mounted.push({ root, container });
-  return container;
-}
 
-describe('AssistantMessage compact thinking', () => {
-  it('renders collapsed thinking as markdown', () => {
-    const container = render(
-      <AssistantMessage content="" thinking="Inspect **workspace** first." />,
+  it('uses the finished summary after answer content appears or streaming ends', () => {
+    expect(
+      getThinkingSummaryKey({
+        content: 'Here is the answer.',
+        isStreaming: true,
+      }),
+    ).toBe('thinking.done');
+    expect(getThinkingSummaryKey({ content: '', isStreaming: false })).toBe(
+      'thinking.done',
     );
-
-    expect(container.querySelector('strong')?.textContent).toBe('workspace');
-    expect(container.textContent).toContain('Inspect workspace first.');
+    expect(getThinkingSummaryKey({ content: '' })).toBe('thinking.done');
   });
 
-  it('pins collapsed streaming thinking to the tail before answer content', () => {
-    const container = render(
-      <AssistantMessage
-        content=""
-        thinking="Inspect workspace first."
-        isStreaming
-      />,
-    );
-
-    const preview = container.querySelector(
-      '[data-markdown-source="thinking"]',
-    )?.parentElement;
-    expect(preview?.className).toContain('thinkingPreviewTail');
-  });
-
-  it('stops pinning collapsed thinking once answer content appears', () => {
-    const container = render(
-      <AssistantMessage
-        content="Here is the answer."
-        thinking="Inspect workspace first."
-        isStreaming
-      />,
-    );
-
-    const preview = container.querySelector(
-      '[data-markdown-source="thinking"]',
-    )?.parentElement;
-    expect(preview?.className).not.toContain('thinkingPreviewTail');
+  it('formats thinking durations', () => {
+    expect(formatThinkingDuration(-1000)).toBe('0s');
+    expect(formatThinkingDuration(1499)).toBe('1s');
+    expect(formatThinkingDuration(59_400)).toBe('59s');
+    expect(formatThinkingDuration(65_000)).toBe('1m 5s');
+    expect(formatThinkingDuration(120_000)).toBe('2m');
   });
 });

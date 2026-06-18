@@ -49,6 +49,7 @@ export type ToolHeaderExtraRenderer = (
 ) => ReactNode;
 
 export type WelcomeHeaderRenderer = (props: WelcomeHeaderProps) => ReactNode;
+export type WelcomeFooterRenderer = (props: WelcomeHeaderProps) => ReactNode;
 
 export interface WebShellComposerTag {
   id: string;
@@ -86,6 +87,17 @@ export interface WebShellComposerApi {
   clear(options?: { text?: boolean; tags?: boolean }): void;
   submit(input?: WebShellComposerInput): void;
 }
+
+export interface WebShellComposerToolbarStartRenderInfo {
+  disabled: boolean;
+  isRunning: boolean;
+  currentMode: string;
+  currentModel: string;
+  sessionName?: string;
+}
+
+export type ComposerToolbarStartRenderer =
+  ComponentType<WebShellComposerToolbarStartRenderInfo>;
 
 // ---- Background task info (public type for footer renderer) ----
 
@@ -164,11 +176,11 @@ export interface WebShellFooterRenderInfo {
 
 export type FooterRenderer = ComponentType<WebShellFooterRenderInfo>;
 
-export type WebShellComposerVariant = 'terminal' | 'chat';
-
 export interface WebShellCustomization {
   renderToolHeaderExtra?: ToolHeaderExtraRenderer;
   renderWelcomeHeader?: WelcomeHeaderRenderer;
+  renderWelcomeFooter?: WelcomeFooterRenderer;
+  renderComposerToolbarStart?: ComposerToolbarStartRenderer;
   renderFooter?: FooterRenderer;
   compactThinking?: boolean;
   /**
@@ -179,14 +191,9 @@ export interface WebShellCustomization {
    */
   collapseCompletedTurns?: boolean;
   markdown?: WebShellMarkdownCustomization;
-  /** Switch the built-in composer layout. Defaults to 'chat'. */
-  composerVariant?: WebShellComposerVariant;
 }
 
 const WebShellCustomizationContext = createContext<WebShellCustomization>({});
-
-const ComposerVariantContext =
-  createContext<WebShellComposerVariant>('terminal');
 
 export const WebShellCustomizationProvider =
   WebShellCustomizationContext.Provider;
@@ -194,9 +201,3 @@ export const WebShellCustomizationProvider =
 export function useWebShellCustomization(): WebShellCustomization {
   return useContext(WebShellCustomizationContext);
 }
-
-export function useComposerVariant(): WebShellComposerVariant {
-  return useContext(ComposerVariantContext);
-}
-
-export const ComposerVariantProvider = ComposerVariantContext.Provider;

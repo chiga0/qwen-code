@@ -125,7 +125,7 @@ function extractDiff(tool: ACPToolCall): string {
   return getRawFileDiff(tool);
 }
 
-function getRawFileDiff(tool: ACPToolCall): string {
+export function getRawFileDiff(tool: ACPToolCall): string {
   if (tool.rawOutput && typeof tool.rawOutput === 'object') {
     const raw = tool.rawOutput as Record<string, unknown>;
     if (isTruncatedSessionDiff(raw)) return '';
@@ -142,7 +142,7 @@ function isTruncatedSessionDiff(raw: Record<string, unknown>): boolean {
 
 const MAX_DIFF_PRODUCT = 250_000;
 
-function buildUnifiedDiff(oldText: string, newText: string): string {
+export function buildUnifiedDiff(oldText: string, newText: string): string {
   const oldLines = oldText.split('\n');
   const newLines = newText.split('\n');
 
@@ -430,7 +430,7 @@ function getAgentDisplayInfo(
   };
 }
 
-function shouldAutoExpand(tool: ACPToolCall): boolean {
+export function shouldAutoExpand(tool: ACPToolCall): boolean {
   // Only the verbose tool kinds below (shell/edit/write/ask) auto-expand, and
   // only while pending/in-progress or after failing: a successful completion
   // collapses them to a one-line summary so the transcript stays scannable
@@ -452,7 +452,7 @@ function ExpandedAskUserQuestionOutput({ tool }: { tool: ACPToolCall }) {
   return <pre className={styles.expandedOutput}>{text}</pre>;
 }
 
-function getToolHeaderKind(tool: ACPToolCall): ToolHeaderKind {
+export function getToolHeaderKind(tool: ACPToolCall): ToolHeaderKind {
   const name = tool.toolName.toLowerCase();
   if (isSubAgentToolCall(tool)) return 'agent';
   if (isShellToolName(name)) return 'shell';
@@ -500,13 +500,200 @@ function isDescriptionExpandable(description: string): boolean {
   );
 }
 
-function getActiveTool(tools: ACPToolCall[]): ACPToolCall {
+export function isActiveToolStatus(
+  status: ACPToolCall['status'] | string,
+): boolean {
   return (
-    tools.find((t) => t.status === 'in_progress') ?? tools[tools.length - 1]
+    status === 'in_progress' || status === 'pending' || status === 'running'
   );
 }
 
-function isWebFetchToolName(toolName: string): boolean {
+export function getActiveTool(tools: ACPToolCall[]): ACPToolCall {
+  return (
+    tools.find((tool) => isActiveToolStatus(tool.status)) ??
+    tools[tools.length - 1]
+  );
+}
+
+export function formatToolGroupSummary(
+  tools: ACPToolCall[],
+  t: ReturnType<typeof useI18n>['t'],
+): string {
+  if (hasActiveTool(tools)) {
+    const activeTool = getActiveTool(tools);
+    return t('toolGroup.running', {
+      name: formatToolDisplayName(activeTool.toolName),
+      count: tools.length,
+    });
+  }
+
+  return t('toolGroup.summary', {
+    count: tools.length,
+  });
+}
+
+export function hasActiveTool(tools: ACPToolCall[]): boolean {
+  return tools.some((tool) => isActiveToolStatus(tool.status));
+}
+
+function PencilIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.7"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 20h9" />
+      <path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" />
+    </svg>
+  );
+}
+
+function ToolGroupIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      data-testid="chat-summary-tool-icon"
+      aria-hidden="true"
+    >
+      <rect
+        x="1.25"
+        y="1.25"
+        width="11.5"
+        height="11.5"
+        rx="3"
+        stroke="currentColor"
+        strokeWidth="1.4"
+      />
+      <path
+        d="M4.2 5.1 5.8 6.7 4.2 8.3"
+        stroke="currentColor"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.1 8.4h2.4"
+        stroke="currentColor"
+        strokeWidth="1.15"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function WebFetchIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="7" r="5.5" stroke="currentColor" strokeWidth="1.25" />
+      <path
+        d="M1.8 7h10.4M7 1.5c1.3 1.5 2 3.3 2 5.5s-.7 4-2 5.5M7 1.5C5.7 3 5 4.8 5 7s.7 4 2 5.5"
+        stroke="currentColor"
+        strokeWidth="1.05"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function FileIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3.2 1.5h4.3l3.3 3.3v7.7H3.2Z"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinejoin="round"
+      />
+      <path
+        d="M7.5 1.7v3.2h3.1M5 7.5h4M5 9.7h3"
+        stroke="currentColor"
+        strokeWidth="1.05"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TodoIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <path
+        d="M3 4.2 4.2 5.4 6.1 3.3M7.5 4.5h3.6M3 9.1l1.2 1.2 1.9-2.1M7.5 9.4h3.6"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function AgentIcon() {
+  return (
+    <svg
+      className={styles.chatSummaryToolIcon}
+      width="14"
+      height="14"
+      viewBox="0 0 14 14"
+      fill="none"
+      aria-hidden="true"
+    >
+      <circle cx="7" cy="4" r="2" stroke="currentColor" strokeWidth="1.25" />
+      <path
+        d="M3.5 11.8c.6-2 1.8-3 3.5-3s2.9 1 3.5 3"
+        stroke="currentColor"
+        strokeWidth="1.25"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function ToolSummaryIcon({ tool }: { tool: ACPToolCall }) {
+  const kind = getToolHeaderKind(tool);
+  if (kind === 'agent') return <AgentIcon />;
+  if (kind === 'edit' || kind === 'write') return <PencilIcon />;
+  if (kind === 'fetch') return <WebFetchIcon />;
+  if (kind === 'read') return <FileIcon />;
+  if (kind === 'todo') return <TodoIcon />;
+  return <ToolGroupIcon />;
+}
+
+export function isWebFetchToolName(toolName: string): boolean {
   const name = toolName.toLowerCase();
   return name === 'web_fetch' || name === 'webfetch' || name === 'fetch';
 }
@@ -891,7 +1078,11 @@ export const ToolGroup = memo(function ToolGroup({
   workspaceCwd,
   shellOutputMaxLines,
 }: ToolGroupProps) {
+  const { t } = useI18n();
   const compactMode = useContext(CompactModeContext);
+  const [chatExpanded, setChatExpanded] = useState(false);
+  const activeTool = hasActiveTool(tools);
+  const summaryIconTool = tools[0] ?? getActiveTool(tools);
   const directApprovalTool =
     pendingApproval?.toolCallId &&
     tools.find((t) => t.callId === pendingApproval.toolCallId);
@@ -906,6 +1097,53 @@ export const ToolGroup = memo(function ToolGroup({
 
   if (showCompact) {
     return <CompactToolGroup tools={tools} workspaceCwd={workspaceCwd} />;
+  }
+
+  if (!hasApprovalTool) {
+    return (
+      <div className={styles.chatGroupWrap}>
+        <button
+          type="button"
+          className={styles.chatSummary}
+          onClick={() => setChatExpanded((value) => !value)}
+          aria-expanded={chatExpanded}
+          title={chatExpanded ? t('tool.collapseHint') : t('tool.expand')}
+        >
+          <span className={styles.chatSummaryIcon} aria-hidden="true">
+            <ToolSummaryIcon tool={summaryIconTool} />
+          </span>
+          <span
+            className={
+              activeTool
+                ? `${styles.chatSummaryText} ${styles.chatSummaryTextActive}`
+                : styles.chatSummaryText
+            }
+          >
+            {formatToolGroupSummary(tools, t)}
+          </span>
+          <span
+            className={
+              chatExpanded ? styles.chatChevronDown : styles.chatChevronRight
+            }
+            aria-hidden="true"
+          />
+        </button>
+        {chatExpanded && (
+          <div className={styles.group}>
+            {tools.map((tool) => (
+              <ToolLine
+                key={tool.callId}
+                tool={tool}
+                approval={pendingApproval}
+                onConfirm={onConfirm}
+                workspaceCwd={workspaceCwd}
+                shellOutputMaxLines={shellOutputMaxLines}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    );
   }
 
   return (

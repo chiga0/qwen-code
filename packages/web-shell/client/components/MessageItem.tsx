@@ -5,7 +5,6 @@ import type {
   PermissionRequest,
   TodoItem,
 } from '../adapters/types';
-import { useComposerVariant } from '../customization';
 import { MessageTimestamp } from './MessageTimestamp';
 import { UserMessage } from './messages/UserMessage';
 import { AssistantMessage } from './messages/AssistantMessage';
@@ -45,8 +44,6 @@ export const MessageItem = memo(function MessageItem({
   onRetryClick,
   shellOutputMaxLines,
 }: MessageItemProps) {
-  const composerVariant = useComposerVariant();
-
   const body = ((): ReactElement | null => {
     switch (message.role) {
       case 'user':
@@ -59,6 +56,7 @@ export const MessageItem = memo(function MessageItem({
             content={message.content}
             thinking={message.thinking}
             isStreaming={message.isStreaming}
+            timestamp={message.timestamp}
           />
         );
       case 'tool_group':
@@ -123,10 +121,11 @@ export const MessageItem = memo(function MessageItem({
 
   if (body === null) return null;
 
-  const isChatUser = message.role === 'user' && composerVariant === 'chat';
-
   return (
-    <MessageTimestamp timestamp={message.timestamp} chatMode={isChatUser}>
+    <MessageTimestamp
+      timestamp={message.timestamp}
+      chatMode={message.role === 'user'}
+    >
       {body}
     </MessageTimestamp>
   );

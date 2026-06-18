@@ -1,5 +1,4 @@
 .message {
-  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -16,7 +15,6 @@
   display: flex;
   align-items: flex-start;
   gap: 0;
-  margin-bottom: 4px;
 }
 
 .thinking .prefix {
@@ -56,33 +54,129 @@
   word-break: break-word;
 }
 
-.thinkingPreviewWrap,
-.thinkingExpandedWrap {
-  position: relative;
-}
-
-.thinkingPreview {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  padding-right: 18px;
-  line-height: inherit;
-}
-
-.thinkingPreviewTail {
-  display: block;
-  max-height: calc(5 * 1.5em);
-  overflow-y: hidden;
-}
-
-.thinkingPreview > [data-markdown-source='thinking'] {
+.thinkingSummary {
+  width: 100%;
+  margin: 0;
+  padding: 2px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #a1a2a3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  cursor: pointer;
+  text-align: left;
   font: inherit;
-  line-height: inherit;
 }
 
-.thinkingPreview > [data-markdown-source='thinking'] > :first-child {
-  margin-top: 0;
+.thinkingSummary:hover,
+.thinkingSummary:focus-visible {
+  color: var(--text-primary);
+  outline: none;
+}
+
+.thinkingSummaryIcon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.thinkingSummaryIcon svg {
+  display: block;
+}
+
+.thinkingSummaryToolIcon {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.thinkingSummaryText {
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.thinkingSummaryTextActive {
+  position: relative;
+  animation: thinking-summary-wave 1.8s ease-in-out infinite;
+}
+
+.thinkingSummaryTextActive::after {
+  content: '';
+  position: absolute;
+  right: 0;
+  bottom: -3px;
+  left: 0;
+  height: 3px;
+  background: radial-gradient(
+      circle at 3px 1.5px,
+      currentColor 1px,
+      transparent 1.2px
+    )
+    0 0 / 8px 3px repeat-x;
+  opacity: 0.35;
+  animation: thinking-summary-wave-line 1.1s linear infinite;
+}
+
+@keyframes thinking-summary-wave {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes thinking-summary-wave-line {
+  from {
+    background-position-x: 0;
+  }
+  to {
+    background-position-x: 8px;
+  }
+}
+
+.thinkingChevronRight,
+.thinkingChevronDown {
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.thinkingSummary:hover .thinkingChevronRight,
+.thinkingSummary:hover .thinkingChevronDown,
+.thinkingSummary:focus-visible .thinkingChevronRight,
+.thinkingSummary:focus-visible .thinkingChevronDown {
+  opacity: 1;
+}
+
+.thinkingChevronRight {
+  transform: rotate(-45deg);
+}
+
+.thinkingChevronDown {
+  transform: rotate(45deg);
+  margin-top: -3px;
+}
+
+.thinkingExpandedWrap {
+  margin-top: 4px;
 }
 
 .expandToggle {
@@ -96,7 +190,6 @@
   margin: 2px 0 0 auto;
 }
 
-.thinkingPreviewWrap .expandToggle,
 .thinkingExpandedWrap .expandToggle {
   position: absolute;
   right: 0;
@@ -108,24 +201,6 @@
   transition: opacity 0.12s ease;
 }
 
-.thinkingPreviewOverflow::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 16px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--bg-primary) 70%, transparent)
-  );
-  opacity: 0.45;
-}
-
-.thinkingPreviewWrap:hover .expandToggle,
-.thinkingPreviewWrap .expandToggle:focus-visible,
 .thinkingExpandedWrap:hover .expandToggle,
 .thinkingExpandedWrap .expandToggle:focus-visible {
   opacity: 1;
@@ -133,7 +208,6 @@
 }
 
 @media (hover: none) {
-  .thinkingPreviewWrap .expandToggle,
   .thinkingExpandedWrap .expandToggle {
     opacity: 1;
     pointer-events: auto;

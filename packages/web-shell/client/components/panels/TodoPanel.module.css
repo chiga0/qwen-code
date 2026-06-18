@@ -1,10 +1,9 @@
 .panel {
   flex-shrink: 0;
   padding: 6px 10px 8px;
-  margin: 0 16px 4px;
   border: 1px solid var(--border-color);
   border-radius: 8px;
-  background: var(--bg-secondary);
+  background: var(--bg-primary);
   border-left: 3px solid var(--accent-color);
 }
 

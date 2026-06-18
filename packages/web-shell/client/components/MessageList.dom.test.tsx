@@ -97,6 +97,8 @@ const queryToggle = (c: HTMLElement, turnId: string) =>
   c.querySelector(`[data-testid="toggle-${turnId}"]`) as HTMLElement | null;
 const toggle = (c: HTMLElement, turnId: string) =>
   queryToggle(c, turnId) as HTMLElement;
+const toggleRow = (c: HTMLElement, turnId: string) =>
+  toggle(c, turnId).closest('[role="button"]') as HTMLElement;
 const click = (el: Element) =>
   act(() => el.dispatchEvent(new MouseEvent('click', { bubbles: true })));
 
@@ -106,8 +108,7 @@ describe('MessageList — turn collapse (DOM)', () => {
     expect(has(c, 'u1')).toBe(true);
     expect(has(c, 'a1')).toBe(true);
     expect(has(c, 'g1')).toBe(false);
-    expect(toggle(c, 'u1').textContent).toBe('▸');
-    expect(toggle(c, 'u1').getAttribute('aria-expanded')).toBe('false');
+    expect(toggleRow(c, 'u1').getAttribute('aria-expanded')).toBe('false');
   });
 
   it('renders collapse metrics in the standalone turn row', () => {
@@ -117,6 +118,7 @@ describe('MessageList — turn collapse (DOM)', () => {
       {
         ...asstMsg('a1'),
         timestamp: 13_400,
+        thinking: 'checking the tool result',
         usage: { inputTokens: 3100, outputTokens: 5100, cachedTokens: 2800 },
       },
     ]);
@@ -125,7 +127,8 @@ describe('MessageList — turn collapse (DOM)', () => {
     expect(text).toContain('12.4s');
     expect(text).toContain('↑3.1k (2.8k cached, 90%) ↓5.1k');
     expect(text).toContain('1 tool call');
-    expect(text).toContain('1 step');
+    expect(text).toContain('1 thought');
+    expect(text).not.toContain('1 step');
     expect(text.indexOf('↓5.1k')).toBeLessThan(text.indexOf('1 tool call'));
   });
 
@@ -170,7 +173,7 @@ describe('MessageList — turn collapse (DOM)', () => {
     const c = mount([userMsg('u1'), toolMsg('g1'), asstMsg('a1')]);
     click(toggle(c, 'u1'));
     expect(has(c, 'g1')).toBe(true);
-    expect(toggle(c, 'u1').getAttribute('aria-expanded')).toBe('true');
+    expect(toggleRow(c, 'u1').getAttribute('aria-expanded')).toBe('true');
     click(toggle(c, 'u1'));
     expect(has(c, 'g1')).toBe(false);
   });
@@ -185,5 +188,33 @@ describe('MessageList — turn collapse (DOM)', () => {
     });
     expect(found).toBe(true);
     expect(has(c, 'g1')).toBe(true);
+  });
+
+  it('smooth-scrolls the page when a new chat prompt appears', () => {
+    const scrollEl = document.documentElement;
+    const scrollTo = vi.fn();
+    Object.defineProperty(document, 'scrollingElement', {
+      configurable: true,
+      value: scrollEl,
+    });
+    Object.defineProperty(scrollEl, 'scrollHeight', {
+      configurable: true,
+      value: 1200,
+    });
+    Object.defineProperty(scrollEl, 'clientHeight', {
+      configurable: true,
+      value: 600,
+    });
+    Object.defineProperty(scrollEl, 'scrollTo', {
+      configurable: true,
+      value: scrollTo,
+    });
+
+    mount([userMsg('u1')]);
+
+    expect(scrollTo).toHaveBeenCalledWith({
+      top: 1200,
+      behavior: 'smooth',
+    });
   });
 });

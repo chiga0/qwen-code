@@ -97,12 +97,6 @@ export function getLocalCommands(t: Translate): CommandInfo[] {
       argumentHint: '<session-id>',
     },
     { name: 'settings', description: t('local.settings') },
-    {
-      name: 'ui',
-      description: t('local.ui'),
-      argumentHint: 'chat|terminal',
-      subcommands: ['chat', 'terminal'],
-    },
   ];
   return commands.map((command) => ({
     ...command,

@@ -70,6 +70,9 @@ export type {
   ToolHeaderExtraRenderer,
   ToolHeaderExtraRenderInfo,
   ToolHeaderKind,
+  ComposerToolbarStartRenderer,
+  WebShellComposerToolbarStartRenderInfo,
+  WelcomeFooterRenderer,
   WelcomeHeaderRenderer,
   WebShellMarkdownCustomization,
 } from './customization';

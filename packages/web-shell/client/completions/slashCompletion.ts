@@ -38,10 +38,6 @@ const SUBCOMMAND_TREE_ZH: Record<string, SubcommandNode[]> = {
     { name: 'light', description: '切换到浅色主题' },
     { name: 'dark', description: '切换到深色主题' },
   ],
-  ui: [
-    { name: 'chat', description: '切换到聊天界面' },
-    { name: 'terminal', description: '切换到终端界面' },
-  ],
   export: [
     { name: 'md', description: '将会话导出为 Markdown 文件' },
     { name: 'html', description: '将会话导出为 HTML 文件' },
@@ -69,10 +65,6 @@ const SUBCOMMAND_TREE_EN: Record<string, SubcommandNode[]> = {
   theme: [
     { name: 'light', description: 'Switch to light theme' },
     { name: 'dark', description: 'Switch to dark theme' },
-  ],
-  ui: [
-    { name: 'chat', description: 'Switch to chat UI' },
-    { name: 'terminal', description: 'Switch to terminal UI' },
   ],
   export: [
     { name: 'md', description: 'Export as Markdown' },

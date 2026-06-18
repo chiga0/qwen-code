@@ -13,6 +13,8 @@ const TOOL_DISPLAY_NAMES: Record<string, string> = {
   skill: 'Skill',
   exit_plan_mode: 'ExitPlanMode',
   web_fetch: 'WebFetch',
+  webfetch: 'WebFetch',
+  fetch: 'WebFetch',
   list_directory: 'ListFiles',
   lsp: 'Lsp',
   ask_user_question: 'AskUserQuestion',
@@ -36,7 +38,14 @@ const TOOL_DISPLAY_NAMES: Record<string, string> = {
 };
 
 export function formatToolDisplayName(toolName: string): string {
-  return TOOL_DISPLAY_NAMES[toolName] ?? toolName;
+  if (!toolName.trim()) return 'Tool';
+  const exact = TOOL_DISPLAY_NAMES[toolName];
+  if (exact) return exact;
+  const lower = toolName.toLowerCase();
+  if (lower === 'web_fetch' || lower === 'webfetch' || lower === 'fetch') {
+    return 'WebFetch';
+  }
+  return toolName;
 }
 
 export function isAskUserQuestionToolName(toolName: string): boolean {

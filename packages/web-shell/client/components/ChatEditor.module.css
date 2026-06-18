@@ -1,9 +1,10 @@
 .container {
+  container-type: inline-size;
   border-radius: 16px;
   background: var(--bg-primary);
   border: 1px solid var(--border-color);
   padding: 12px 16px 8px;
-  margin: 0 14px 14px 14px;
+  margin: 0 0 14px;
   cursor: text;
 }
 
@@ -86,20 +87,32 @@
   gap: 8px;
 }
 
+.toolbarLeading,
+.toolbarStart,
 .toolbarLeft,
 .toolbarRight {
   display: flex;
   align-items: center;
   gap: 4px;
 }
-.toolbarLeft {
+
+.toolbarLeading {
   margin-left: -5px;
 }
-.toolbarRight {
-  margin-right: -5px;
 
+.toolbarStart {
+  min-width: 0;
 }
 
+.toolbarRight {
+  margin-right: -5px;
+}
+
+@container (max-width: 499px) {
+  .toolbarRight .toolBtn {
+    display: none;
+  }
+}
 
 .dropdownWrapper {
   position: relative;
@@ -201,6 +214,15 @@
   display: block;
 }
 
+.chevronDown {
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  margin-top: -3px;
+}
+
 .sendBtn {
   flex-shrink: 0;
   width: 32px;
@@ -238,10 +260,28 @@
   transform: scale(0.95);
 }
 
+.sendBtnRunning,
+.sendBtnRunning:not(:disabled) {
+  background: #1b1d21;
+  color: #fff;
+  cursor: pointer;
+}
+
+.sendBtnRunning:not(:disabled):hover {
+  filter: brightness(1.08);
+}
+
 .sendIcon {
   display: inline-block;
   width: 16px;
   height: 16px;
+}
+
+.stopIcon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
 }
 
 .images {
