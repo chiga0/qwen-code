@@ -2,9 +2,11 @@ import {
   createContext,
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
+  type CSSProperties,
   type ReactNode,
 } from 'react';
 import {
@@ -30,7 +32,11 @@ import type {
 import { extractPendingPermission } from './adapters/transcriptAdapter';
 import { removeInjectedFromQueue } from './midTurnDedup';
 import { MessageList, type MessageListHandle } from './components/MessageList';
-import { Editor, type EditorHandle } from './components/Editor';
+import {
+  ChatEditor,
+  type ComposerToolbarAction,
+} from './components/ChatEditor';
+import type { EditorHandle } from './hooks/useComposerCore';
 import type { PromptImage } from './adapters/promptTypes';
 import { StatusBar, type StatusBarHandle } from './components/StatusBar';
 import { ShortcutsPanel } from './components/ShortcutsPanel';
@@ -153,6 +159,8 @@ import {
   type WebShellMarkdownCustomization,
   type ToolHeaderExtraRenderer,
   type WelcomeHeaderRenderer,
+  type WelcomeFooterRenderer,
+  type ComposerToolbarStartRenderer,
   type FooterRenderer,
   type WebShellTaskInfo,
 } from './customization';
@@ -256,17 +264,21 @@ type GoalStatusTranscriptBlock = DaemonTranscriptBlock & {
   data?: unknown;
 };
 
+function parseGoalStatusFromBlock(block: DaemonTranscriptBlock) {
+  const statusBlock = block as GoalStatusTranscriptBlock;
+  return (
+    parseGoalStatusMessage(statusBlock.data) ??
+    parseGoalStatusMessage(statusBlock.text)
+  );
+}
+
 function getLatestActiveGoalFromBlocks(
   blocks: readonly DaemonTranscriptBlock[],
 ): ActiveGoalStatus | null {
   for (let i = blocks.length - 1; i >= 0; i--) {
     const block = blocks[i];
     if (block.kind !== 'status') continue;
-    const statusBlock = block as GoalStatusTranscriptBlock;
-    const status =
-      statusBlock.source === 'goal'
-        ? parseGoalStatusMessage(statusBlock.data)
-        : parseGoalStatusMessage(statusBlock.text);
+    const status = parseGoalStatusFromBlock(block);
     if (!status) continue;
     if (status.kind === 'set' || status.kind === 'checking') {
       return {
@@ -301,11 +313,11 @@ export interface BugReportInfo {
 export interface WebShellProps {
   /** Called whenever the attached daemon session id changes. */
   onSessionIdChange?: (sessionId: string) => void;
-  /** Visual theme for the embedded shell. Defaults to the dark terminal skin. */
+  /** Visual theme for the embedded shell. */
   theme?: WebShellTheme;
   /** Called when `/theme` changes the web-shell theme. */
   onThemeChange?: (theme: WebShellTheme) => void;
-  /** UI language for the Web terminal. Defaults to `?language=` or browser language. */
+  /** UI language for the web-shell. Defaults to `?language=` or browser language. */
   language?: 'en' | 'zh-CN' | 'zh' | 'zh-cn';
   /** Called when `/language ui` changes the web-shell UI language. */
   onLanguageChange?: (language: WebShellLanguage) => void;
@@ -313,6 +325,10 @@ export interface WebShellProps {
   className?: string;
   /** Inline styles applied to the root element. */
   style?: React.CSSProperties;
+  /** Maximum chat content width in regular mode. Defaults to 1000px. */
+  chatMaxWidth?: number;
+  /** Built-in composer toolbar actions to show. Defaults to all actions. */
+  composerToolbarActions?: readonly ComposerToolbarAction[];
   /** Called when connection status changes (idle/connecting/connected/disconnected/error). */
   onConnectionChange?: (status: string) => void;
   /** Called when prompt status changes (idle/waiting/responding). */
@@ -335,6 +351,10 @@ export interface WebShellProps {
   renderToolHeaderExtra?: ToolHeaderExtraRenderer;
   /** Custom renderer for the welcome header. Receives version, cwd, model, and mode. */
   renderWelcomeHeader?: WelcomeHeaderRenderer;
+  /** Custom renderer shown below the chat composer in the empty welcome state. */
+  renderWelcomeFooter?: WelcomeFooterRenderer;
+  /** Custom renderer inserted before the built-in chat composer toolbar controls. */
+  renderComposerToolbarStart?: ComposerToolbarStartRenderer;
   /** Custom component for the footer area below the Editor. Replaces the built-in StatusBar. */
   renderFooter?: FooterRenderer;
   /** Collapse thinking blocks to 5 lines with a click-to-expand toggle. */
@@ -349,6 +369,8 @@ export interface WebShellProps {
   onToast?: (tone: ToastTone, message: string) => void;
   /** Imperative handle for externally controlling the composer input. */
   composerRef?: React.Ref<WebShellComposerApi>;
+  /** Called once the real composer API is mounted and safe to call. */
+  onComposerReady?: (api: WebShellComposerApi) => void;
   /** Declarative composer input value. Increment composerInputVersion to replay the same value. */
   composerInput?: WebShellComposerInput;
   /** Replay key for composerInput. */
@@ -363,6 +385,51 @@ const emptyComposerApi: WebShellComposerApi = {
   clear: () => {},
   submit: () => {},
 };
+
+type ChatWidthMode = '1000' | 'wide';
+
+const CHAT_WIDTH_STORAGE_KEY = 'qwen-code-web-shell-chat-width';
+const DEFAULT_CHAT_MAX_WIDTH = 1000;
+const CHAT_SHELL_HORIZONTAL_PADDING = 40;
+
+function readChatWidthMode(): ChatWidthMode {
+  if (typeof window === 'undefined') return '1000';
+  try {
+    return window.localStorage.getItem(CHAT_WIDTH_STORAGE_KEY) === 'wide'
+      ? 'wide'
+      : '1000';
+  } catch {
+    return '1000';
+  }
+}
+
+function writeChatWidthMode(mode: ChatWidthMode): void {
+  try {
+    window.localStorage.setItem(CHAT_WIDTH_STORAGE_KEY, mode);
+  } catch {
+    // localStorage can be unavailable in private or embedded contexts.
+  }
+}
+
+function getChatMaxWidth(value: number | undefined): number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0
+    ? value
+    : DEFAULT_CHAT_MAX_WIDTH;
+}
+
+function getChatWidthStyle(
+  mode: ChatWidthMode,
+  chatMaxWidth: number | undefined,
+): CSSProperties {
+  const contentWidth = `${getChatMaxWidth(chatMaxWidth)}px`;
+  const shellWidth = `calc(${contentWidth} + ${CHAT_SHELL_HORIZONTAL_PADDING}px)`;
+  return {
+    '--chat-regular-content-width': contentWidth,
+    '--chat-regular-shell-width': shellWidth,
+    '--chat-content-width': mode === 'wide' ? '100%' : contentWidth,
+    '--chat-shell-width': mode === 'wide' ? '100%' : shellWidth,
+  } as CSSProperties;
+}
 
 function assignComposerRef(
   ref: React.Ref<WebShellComposerApi> | undefined,
@@ -706,7 +773,11 @@ export function App({
   slashCommandCategoryOrder,
   renderToolHeaderExtra,
   renderWelcomeHeader,
+  renderWelcomeFooter,
+  renderComposerToolbarStart,
   renderFooter,
+  chatMaxWidth,
+  composerToolbarActions,
   compactThinking = false,
   collapseCompletedTurns = true,
   virtualScrollThreshold,
@@ -714,9 +785,14 @@ export function App({
   onTranscriptChange,
   onToast,
   composerRef,
+  onComposerReady,
   composerInput,
   composerInputVersion,
 }: WebShellProps = {}) {
+  const [editorDraft] = useState('');
+  const [editorDraftVersion] = useState(0);
+  const [chatWidthMode, setChatWidthMode] =
+    useState<ChatWidthMode>(readChatWidthMode);
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
     () =>
       providedLanguage === undefined
@@ -728,6 +804,8 @@ export function App({
     () => ({
       renderToolHeaderExtra,
       renderWelcomeHeader,
+      renderWelcomeFooter,
+      renderComposerToolbarStart,
       renderFooter,
       compactThinking,
       collapseCompletedTurns,
@@ -736,6 +814,8 @@ export function App({
     [
       renderToolHeaderExtra,
       renderWelcomeHeader,
+      renderWelcomeFooter,
+      renderComposerToolbarStart,
       renderFooter,
       compactThinking,
       collapseCompletedTurns,
@@ -913,25 +993,27 @@ export function App({
     [backgroundTasks, renderFooter],
   );
   const statusBarRef = useRef<StatusBarHandle>(null);
+  const messageListRef = useRef<MessageListHandle | null>(null);
   const editorRef = useRef<EditorHandle | null>(null);
+  const notifiedComposerReadyRef = useRef<EditorHandle | null>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const [showScrollToBottom, setShowScrollToBottom] = useState(false);
+  const previousFooterRectRef = useRef<DOMRect | null>(null);
+  const previousEmptyStateRef = useRef(false);
   const setEditorHandle = useCallback(
     (handle: EditorHandle | null) => {
       editorRef.current = handle;
       assignComposerRef(composerRef, handle ?? emptyComposerApi);
+      if (handle && notifiedComposerReadyRef.current !== handle) {
+        notifiedComposerReadyRef.current = handle;
+        onComposerReady?.(handle);
+      }
     },
-    [composerRef],
+    [composerRef, onComposerReady],
   );
   useEffect(() => {
     assignComposerRef(composerRef, editorRef.current ?? emptyComposerApi);
   }, [composerRef]);
-  const messageListRef = useRef<MessageListHandle>(null);
-  const handleLocateFloatingTodos = useCallback(() => {
-    if (!floatingTodosState.sourceMessageId) return;
-    messageListRef.current?.scrollToMessage(
-      floatingTodosState.sourceMessageId,
-      floatingTodosState.sourceCallId ?? undefined,
-    );
-  }, [floatingTodosState.sourceMessageId, floatingTodosState.sourceCallId]);
   const [activeGoal, setActiveGoal] = useState<ActiveGoalStatus | null>(null);
   const activeGoalRef = useRef<ActiveGoalStatus | null>(null);
   activeGoalRef.current = activeGoal;
@@ -975,6 +1057,26 @@ export function App({
   );
   const streamingState = useStreamingState();
   const streamingStateRef = useRef<DaemonStreamingState>(streamingState);
+  const localStreamingStartedAtRef = useRef(Date.now());
+  const previousStreamingStateRef =
+    useRef<DaemonStreamingState>(streamingState);
+  if (
+    previousStreamingStateRef.current === 'idle' &&
+    streamingState !== 'idle'
+  ) {
+    localStreamingStartedAtRef.current = Date.now();
+  }
+  previousStreamingStateRef.current = streamingState;
+  const activeTurnStartedAt = useMemo(() => {
+    if (streamingState === 'idle') return undefined;
+    for (let i = displayMessages.length - 1; i >= 0; i--) {
+      const message = displayMessages[i];
+      if (message?.role === 'user') {
+        return message.timestamp ?? localStreamingStartedAtRef.current;
+      }
+    }
+    return localStreamingStartedAtRef.current;
+  }, [displayMessages, streamingState]);
   const lastSubmittedPromptRef = useRef<string>('');
   const lastSubmittedImagesRef = useRef<PromptImage[] | undefined>(undefined);
   const retryableTurnErrorIdRef = useRef<string | null>(null);
@@ -1111,6 +1213,18 @@ export function App({
   const sessionDisplayName = connection.displayName;
   const [currentMode, setCurrentMode] = useState('default');
   const [queuedPrompts, setQueuedPrompts] = useState<QueuedPrompt[]>([]);
+  const queuedTexts = useMemo(
+    () => queuedPrompts.map((prompt) => prompt.text),
+    [queuedPrompts],
+  );
+  const availableModels = useMemo(
+    () =>
+      (connection.models ?? []).map((m) => ({
+        id: m.id,
+        label: m.label,
+      })),
+    [connection.models],
+  );
   const queuedPromptsRef = useRef<QueuedPrompt[]>([]);
   const nextQueuedPromptIdRef = useRef(1);
   const drainingQueueRef = useRef(false);
@@ -1503,9 +1617,6 @@ export function App({
     setValue: setWorkspaceSetting,
     reload: reloadWorkspaceSettings,
   } = workspaceSettingsState;
-  const compactModeSetting = workspaceSettings.find(
-    (setting) => setting.key === COMPACT_MODE_SETTING_KEY,
-  );
   const themeSetting = workspaceSettings.find(
     (setting) => setting.key === THEME_SETTING_KEY,
   );
@@ -1519,13 +1630,6 @@ export function App({
   const [compactMode, setCompactMode] = useState(false);
   const compactModeRef = useRef(compactMode);
   compactModeRef.current = compactMode;
-
-  useEffect(() => {
-    const value = compactModeSetting?.values.effective;
-    if (typeof value === 'boolean') {
-      setCompactMode(value);
-    }
-  }, [compactModeSetting?.values.effective]);
 
   useEffect(() => {
     if (providedTheme) {
@@ -1620,14 +1724,6 @@ export function App({
         .then((result) => {
           const effectiveMode = result.mode || modeId;
           setCurrentMode(effectiveMode);
-          if (effectiveMode === 'auto') {
-            // TODO: CLI also shows stripped dangerous allow rules via
-            // PermissionManager.getStrippedDangerousRules(). The daemon
-            // API (DaemonApprovalModeResult) doesn't expose this info yet.
-            // Once the daemon returns strippedRules in the response, display
-            // them here like CLI's emitAutoModeEntryNotices does.
-            store.dispatch([{ type: 'status', text: t('mode.auto.notice') }]);
-          }
           const approval = pendingApprovalRef.current;
           if (!approval) return;
           const shouldAutoApprove =
@@ -1658,6 +1754,18 @@ export function App({
         });
     },
     [sessionActions, reportError, store, t],
+  );
+
+  const handleSelectModel = useCallback(
+    (model: string) => {
+      sessionActions
+        .setModel(model)
+        .then(() => {
+          setCurrentModel(model);
+        })
+        .catch(() => {});
+    },
+    [sessionActions],
   );
 
   useEffect(() => {
@@ -1704,16 +1812,12 @@ export function App({
   }, [connection.error, onError]);
 
   useEffect(() => {
-    if (connection.currentModel) {
-      setCurrentModel(connection.currentModel);
-    }
-  }, [connection.currentModel]);
+    setCurrentModel(connection.currentModel ?? '');
+  }, [connection.currentModel, connection.sessionId]);
 
   useEffect(() => {
-    if (connection.currentMode) {
-      setCurrentMode(connection.currentMode);
-    }
-  }, [connection.currentMode]);
+    setCurrentMode(connection.currentMode ?? 'default');
+  }, [connection.currentMode, connection.sessionId]);
 
   useEffect(() => {
     if (connection.sessionId) {
@@ -2970,9 +3074,30 @@ export function App({
       ),
     [renderWelcomeHeader, welcomeHeaderProps],
   );
+  const welcomeFooter = useMemo(
+    () => renderWelcomeFooter?.(welcomeHeaderProps),
+    [renderWelcomeFooter, welcomeHeaderProps],
+  );
+  const isChatEmptyState =
+    displayMessages.length === 0 &&
+    !showFloatingTodos &&
+    !pendingApproval &&
+    !btwMessage &&
+    !tasksPanelMessage;
+  const effectiveChatWidthMode = chatWidthMode;
+  const chatWidthToggleMin = getChatMaxWidth(chatMaxWidth);
+  const hasInlineTail =
+    agentsInlineMode ||
+    memoryInlineOpen ||
+    modelInlineMode ||
+    authInlineOpen ||
+    approvalModeInlineOpen ||
+    settingsInlineOpen;
 
   const appClassName = [
     styles.app,
+    styles.appChat,
+    isChatEmptyState ? styles.appChatEmpty : undefined,
     selectedTheme === WebShellThemeId.Light
       ? styles.themeLight
       : styles.themeDark,
@@ -2980,11 +3105,49 @@ export function App({
   ]
     .filter(Boolean)
     .join(' ');
+  const appStyle = useMemo(
+    () => ({
+      ...externalStyle,
+      ...getChatWidthStyle(effectiveChatWidthMode, chatMaxWidth),
+    }),
+    [chatMaxWidth, effectiveChatWidthMode, externalStyle],
+  );
+  const handleChatWidthModeChange = useCallback((mode: ChatWidthMode) => {
+    setChatWidthMode(mode);
+    writeChatWidthMode(mode);
+  }, []);
+
+  useLayoutEffect(() => {
+    const footer = footerRef.current;
+    if (!footer) return;
+
+    const previousRect = previousFooterRectRef.current;
+    const wasEmpty = previousEmptyStateRef.current;
+    const nextRect = footer.getBoundingClientRect();
+
+    if (wasEmpty && !isChatEmptyState && previousRect) {
+      const offsetY = previousRect.top - nextRect.top;
+      if (Math.abs(offsetY) > 1) {
+        footer.style.transition = 'width 320ms ease';
+        footer.style.transform = `translateY(${offsetY}px)`;
+        requestAnimationFrame(() => {
+          footer.style.transition = 'width 320ms ease, transform 280ms ease';
+          footer.style.transform = '';
+        });
+        window.setTimeout(() => {
+          footer.style.transition = '';
+        }, 320);
+      }
+    }
+
+    previousFooterRectRef.current = nextRect;
+    previousEmptyStateRef.current = isChatEmptyState;
+  }, [isChatEmptyState]);
 
   return (
     <ThemeProvider value={selectedTheme}>
       <I18nProvider language={selectedLanguage}>
-        <div className={appClassName} style={externalStyle} data-web-shell-root>
+        <div className={appClassName} style={appStyle} data-web-shell-root>
           {!onToast && <ToastHost toasts={toasts} onDismiss={dismissToast} />}
           {dialogOpen && (
             <div className={styles.dialogOverlay} data-keyboard-scope>
@@ -3074,11 +3237,16 @@ export function App({
                 details={todoDetails}
               >
                 <div
-                  className={
-                    showFloatingTodos
-                      ? `${styles.content} ${styles.contentHasMessages}`
-                      : styles.content
-                  }
+                  className={[
+                    styles.content,
+                    showFloatingTodos ||
+                    displayMessages.length > 0 ||
+                    pendingApproval
+                      ? styles.contentHasMessages
+                      : undefined,
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
                   style={dialogOpen ? { visibility: 'hidden' } : undefined}
                 >
                   <MessageList
@@ -3089,18 +3257,14 @@ export function App({
                     onShowContextDetail={handleShowContextDetail}
                     catchingUp={connection.catchingUp}
                     isResponding={streamingState !== 'idle'}
+                    activeTurnStartedAt={activeTurnStartedAt}
                     workspaceCwd={connection.workspaceCwd || ''}
                     shellOutputMaxLines={shellOutputMaxLines}
                     showRetryHint={showRetryHint}
                     onRetryClick={handleRetry}
-                    welcomeHeader={welcomeHeader}
+                    welcomeHeader={isChatEmptyState ? welcomeHeader : undefined}
                     tailContent={
-                      agentsInlineMode ||
-                      memoryInlineOpen ||
-                      modelInlineMode ||
-                      authInlineOpen ||
-                      approvalModeInlineOpen ||
-                      settingsInlineOpen ? (
+                      hasInlineTail ? (
                         <>
                           {authInlineOpen && (
                             <AuthMessage
@@ -3159,6 +3323,8 @@ export function App({
                               onClose={() => setSettingsInlineOpen(false)}
                               onLanguageChange={handleSettingsLanguageChange}
                               onThemeChange={handleThemeChange}
+                              chatWidthMode={chatWidthMode}
+                              onChatWidthModeChange={handleChatWidthModeChange}
                               onSubDialog={(key) => {
                                 setSettingsInlineOpen(false);
                                 if (key === 'fastModel')
@@ -3172,12 +3338,7 @@ export function App({
                       ) : undefined
                     }
                     tailKey={
-                      agentsInlineMode ||
-                      memoryInlineOpen ||
-                      modelInlineMode ||
-                      authInlineOpen ||
-                      approvalModeInlineOpen ||
-                      settingsInlineOpen
+                      hasInlineTail
                         ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
                         : undefined
                     }
@@ -3190,9 +3351,11 @@ export function App({
                       modelInlineMode !== null ||
                       settingsInlineOpen
                     }
+                    onFollowStateChange={(isFollowing) =>
+                      setShowScrollToBottom(!isFollowing)
+                    }
                     virtualScrollThreshold={virtualScrollThreshold}
                   />
-
                   {btwMessage?.role === 'btw' && (
                     <div className={styles.btwPanel}>
                       <BtwMessage
@@ -3202,130 +3365,162 @@ export function App({
                       />
                     </div>
                   )}
-
-                  <StreamingStatus />
                 </div>
                 <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
               </TodoContextsProvider>
             </CompactModeContext.Provider>
-          </WebShellCustomizationProvider>
 
-          <div
-            className={
-              bottomHidden
-                ? `${styles.footer} ${styles.footerHidden}`
-                : styles.footer
-            }
-          >
-            {showFloatingTodos && !tasksPanelMessage && (
-              <div className={styles.bottomPanels}>
-                <TodoPanel
-                  todos={floatingTodos}
-                  onLocateSource={
-                    floatingTodosState.sourceMessageId
-                      ? handleLocateFloatingTodos
-                      : undefined
+            <div
+              ref={footerRef}
+              className={
+                bottomHidden
+                  ? `${styles.footer} ${styles.footerHidden}`
+                  : styles.footer
+              }
+            >
+              {showScrollToBottom && !tasksPanelMessage && (
+                <div
+                  className={
+                    showFloatingTodos
+                      ? `${styles.scrollToBottomLayer} ${styles.scrollToBottomLayerWithTodos}`
+                      : styles.scrollToBottomLayer
                   }
-                />
-              </div>
-            )}
-            {!shouldHideComposer && (
-              <div className={styles.composer}>
-                <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
-                <Editor
-                  ref={setEditorHandle}
-                  onSubmit={handleSubmit}
-                  onCycleMode={handleCycleMode}
-                  onToggleShortcuts={handleToggleShortcuts}
-                  disabled={isDisabled}
-                  commands={commands}
-                  skills={loadedSkills}
-                  slashCommandCategoryOrder={slashCommandCategoryOrder}
-                  queuedMessages={queuedPrompts.map((prompt) => prompt.text)}
-                  onFocusFooter={handleFocusTaskPill}
-                  onPopQueuedMessages={popQueuedPromptsForEdit}
-                  onClearQueuedMessages={clearQueuedPrompts}
-                  currentMode={currentMode}
-                  sessionName={sessionDisplayName}
-                  dialogOpen={bottomHidden || tasksPanelMessage !== null}
-                  followupState={followupState}
-                  onAcceptFollowup={onAcceptFollowup}
-                  onDismissFollowup={onDismissFollowup}
-                  composerInput={composerInput}
-                  composerInputVersion={composerInputVersion}
-                  placeholderText={
-                    !connected
-                      ? t('common.loading')
-                      : streamingState !== 'idle'
-                        ? t('editor.processing')
-                        : t('editor.placeholder')
-                  }
-                />
-              </div>
-            )}
-            {tasksPanelMessage && (
-              <div className={styles.tasksBottomPanel}>
-                <TasksStatusMessage
-                  message={tasksPanelMessage}
-                  manageActiveEvent={false}
-                  onClose={() => {
-                    setTasksPanelMessage(null);
-                    handleReturnToEditor();
-                  }}
-                />
-              </div>
-            )}
-            {!shouldHideComposer &&
-              !tasksPanelMessage &&
-              (showShortcuts ? (
-                <ShortcutsPanel onClose={handleCloseShortcuts} />
-              ) : CustomFooter ? (
-                <CustomFooter
-                  connected={connected}
-                  mode={currentMode}
-                  model={currentModel}
-                  streamingState={streamingState}
-                  contextUsageRatio={
-                    (connection.contextWindow ?? 0) > 0
-                      ? (connection.tokenCount ?? 0) /
-                        (connection.contextWindow ?? 0)
-                      : 0
-                  }
-                  activeGoal={activeGoal}
-                  tasks={footerTasks}
-                  availableModes={MODES_CYCLE}
-                  availableModels={(connection.models ?? []).map((m) => ({
-                    id: m.id,
-                    label: m.label,
-                    contextWindow: m.contextWindow,
-                  }))}
-                  skills={loadedSkills}
-                  onSelectMode={(mode) => handleSetMode(mode)}
-                  onSelectModel={(model) => {
-                    sessionActions.setModel(model).then(() => {
-                      setCurrentModel(model);
-                    });
-                  }}
-                />
-              ) : (
-                <StatusBar
-                  escapeHint={escapeHintVisible}
-                  onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
-                  onSelectModel={() =>
-                    setModelInlineMode((v) => (v ? null : 'main'))
-                  }
-                  onShowContext={() => showContextUsage('/context', false)}
-                  onOpenSettings={() => setSettingsInlineOpen((v) => !v)}
-                  ref={statusBarRef}
-                  onOpenTasks={() => openTasksPanel()}
-                  onReturnToInput={handleReturnToEditor}
-                  tasks={backgroundTasks}
-                  activeGoal={activeGoal}
-                  hideSettings={hideSettings}
-                  onToggleShortcuts={handleToggleShortcuts}
-                />
-              ))}
-          </div>
+                >
+                  <button
+                    type="button"
+                    className={styles.scrollToBottomButton}
+                    aria-label={t('chat.scrollToBottom')}
+                    onClick={() => {
+                      setShowScrollToBottom(false);
+                      messageListRef.current?.scrollToBottom('smooth');
+                    }}
+                  >
+                    <span className={styles.scrollToBottomIcon} />
+                  </button>
+                </div>
+              )}
+              {showFloatingTodos && !tasksPanelMessage && (
+                <div className={styles.bottomPanels}>
+                  <TodoPanel todos={floatingTodos} />
+                </div>
+              )}
+              {!shouldHideComposer && (
+                <div className={styles.composer}>
+                  <StreamingStatus startedAt={activeTurnStartedAt} />
+                  <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
+                  <ChatEditor
+                    ref={setEditorHandle}
+                    onSubmit={handleSubmit}
+                    onCycleMode={handleCycleMode}
+                    onToggleShortcuts={handleToggleShortcuts}
+                    onCancel={handleCancel}
+                    isRunning={streamingState !== 'idle'}
+                    disabled={isDisabled}
+                    commands={commands}
+                    skills={loadedSkills}
+                    slashCommandCategoryOrder={slashCommandCategoryOrder}
+                    queuedMessages={queuedTexts}
+                    onFocusFooter={handleFocusTaskPill}
+                    onPopQueuedMessages={popQueuedPromptsForEdit}
+                    onClearQueuedMessages={clearQueuedPrompts}
+                    currentMode={currentMode}
+                    currentModel={currentModel}
+                    chatWidthMode={effectiveChatWidthMode}
+                    showChatWidthToggle={!isChatEmptyState}
+                    chatWidthToggleMin={chatWidthToggleMin}
+                    visibleToolbarActions={composerToolbarActions}
+                    availableModels={availableModels}
+                    onSelectMode={handleSetMode}
+                    onSelectModel={handleSelectModel}
+                    onChatWidthModeChange={handleChatWidthModeChange}
+                    sessionName={sessionDisplayName}
+                    dialogOpen={bottomHidden || tasksPanelMessage !== null}
+                    followupState={followupState}
+                    onAcceptFollowup={onAcceptFollowup}
+                    onDismissFollowup={onDismissFollowup}
+                    composerInput={composerInput}
+                    composerInputVersion={composerInputVersion}
+                    draftText={editorDraft}
+                    draftVersion={editorDraftVersion}
+                    placeholderText={
+                      !connected
+                        ? t('common.loading')
+                        : streamingState !== 'idle'
+                          ? t('editor.processing')
+                          : t('editor.placeholder')
+                    }
+                  />
+                </div>
+              )}
+              {tasksPanelMessage && (
+                <div className={styles.tasksBottomPanel}>
+                  <TasksStatusMessage
+                    message={tasksPanelMessage}
+                    manageActiveEvent={false}
+                    onClose={() => {
+                      setTasksPanelMessage(null);
+                      handleReturnToEditor();
+                    }}
+                  />
+                </div>
+              )}
+              {!shouldHideComposer &&
+                !tasksPanelMessage &&
+                (showShortcuts ? (
+                  <ShortcutsPanel onClose={handleCloseShortcuts} />
+                ) : CustomFooter ? (
+                  <CustomFooter
+                    connected={connected}
+                    mode={currentMode}
+                    model={currentModel}
+                    streamingState={streamingState}
+                    contextUsageRatio={
+                      (connection.contextWindow ?? 0) > 0
+                        ? (connection.tokenCount ?? 0) /
+                          (connection.contextWindow ?? 0)
+                        : 0
+                    }
+                    activeGoal={activeGoal}
+                    tasks={footerTasks}
+                    availableModes={MODES_CYCLE}
+                    availableModels={(connection.models ?? []).map((m) => ({
+                      id: m.id,
+                      label: m.label,
+                      contextWindow: m.contextWindow,
+                    }))}
+                    skills={loadedSkills}
+                    onSelectMode={handleSetMode}
+                    onSelectModel={handleSelectModel}
+                  />
+                ) : (
+                  <StatusBar
+                    escapeHint={escapeHintVisible}
+                    onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
+                    onSelectModel={() =>
+                      setModelInlineMode((v) => (v ? null : 'main'))
+                    }
+                    onShowContext={() => showContextUsage('/context', false)}
+                    onOpenSettings={() => setSettingsInlineOpen((v) => !v)}
+                    ref={statusBarRef}
+                    onOpenTasks={() => openTasksPanel()}
+                    onReturnToInput={handleReturnToEditor}
+                    tasks={backgroundTasks}
+                    activeGoal={activeGoal}
+                    hideSettings={hideSettings}
+                    onToggleShortcuts={handleToggleShortcuts}
+                    compact={true}
+                  />
+                ))}
+              {isChatEmptyState &&
+                !shouldHideComposer &&
+                !tasksPanelMessage &&
+                welcomeFooter && (
+                  <div className={styles.emptyWelcomeFooter}>
+                    {welcomeFooter}
+                  </div>
+                )}
+            </div>
+          </WebShellCustomizationProvider>
         </div>
       </I18nProvider>
     </ThemeProvider>

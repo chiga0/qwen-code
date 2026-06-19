@@ -221,7 +221,7 @@ function applyDaemonTranscriptEvent(
       );
       break;
     case 'assistant.done':
-      finishAssistant(next);
+      finishAssistant(next, event);
       // PR-E cancellation propagation: when the assistant turn ENDS
       // abnormally, any in-flight tool block whose status the daemon
       // never updated to a terminal state would otherwise spin forever.
@@ -407,16 +407,24 @@ export function selectPendingPermissionBlocks(
 function finalizeStreamingTextBlock(
   state: DaemonTranscriptState,
   blockId: string | undefined,
+  event?: DaemonUiEvent,
 ): void {
   const block = getWritableBlockById(state, blockId);
   if (block?.kind === 'assistant' || block?.kind === 'thought') {
     block.streaming = false;
     block.updatedAt = state.now;
+    if (event?.eventId !== undefined) block.eventId = event.eventId;
+    if (event?.serverTimestamp !== undefined) {
+      block.serverTimestamp = event.serverTimestamp;
+    }
   }
 }
 
-function clearActiveAssistant(state: DaemonTranscriptState): void {
-  finalizeStreamingTextBlock(state, state.activeAssistantBlockId);
+function clearActiveAssistant(
+  state: DaemonTranscriptState,
+  event?: DaemonUiEvent,
+): void {
+  finalizeStreamingTextBlock(state, state.activeAssistantBlockId, event);
   state.activeAssistantBlockId = undefined;
 }
 
@@ -451,18 +459,23 @@ function applyAssistantUsage(
   block.updatedAt = state.now;
 }
 
-function clearActiveThought(state: DaemonTranscriptState): void {
-  finalizeStreamingTextBlock(state, state.activeThoughtBlockId);
+function clearActiveThought(
+  state: DaemonTranscriptState,
+  event?: DaemonUiEvent,
+): void {
+  finalizeStreamingTextBlock(state, state.activeThoughtBlockId, event);
   state.activeThoughtBlockId = undefined;
 }
 
 function clearActiveAssistantForParent(
   state: DaemonTranscriptState,
   parentToolCallId: string,
+  event?: DaemonUiEvent,
 ): void {
   finalizeStreamingTextBlock(
     state,
     state.activeAssistantBlockByParent[parentToolCallId],
+    event,
   );
   delete state.activeAssistantBlockByParent[parentToolCallId];
 }
@@ -470,10 +483,12 @@ function clearActiveAssistantForParent(
 function clearActiveThoughtForParent(
   state: DaemonTranscriptState,
   parentToolCallId: string,
+  event?: DaemonUiEvent,
 ): void {
   finalizeStreamingTextBlock(
     state,
     state.activeThoughtBlockByParent[parentToolCallId],
+    event,
   );
   delete state.activeThoughtBlockByParent[parentToolCallId];
 }
@@ -554,16 +569,19 @@ function appendTextDelta(
   }
 }
 
-function finishAssistant(state: DaemonTranscriptState): void {
-  clearActiveAssistant(state);
+function finishAssistant(
+  state: DaemonTranscriptState,
+  event?: DaemonUiEvent,
+): void {
+  clearActiveAssistant(state, event);
 
   for (const parentId of Object.keys(state.activeAssistantBlockByParent)) {
-    clearActiveAssistantForParent(state, parentId);
+    clearActiveAssistantForParent(state, parentId, event);
   }
   for (const parentId of Object.keys(state.activeThoughtBlockByParent)) {
-    clearActiveThoughtForParent(state, parentId);
+    clearActiveThoughtForParent(state, parentId, event);
   }
-  clearActiveThought(state);
+  clearActiveThought(state, event);
 }
 
 function upsertToolBlock(

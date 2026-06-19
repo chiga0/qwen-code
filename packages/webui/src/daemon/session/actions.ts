@@ -506,6 +506,8 @@ export function createDaemonSessionActions({
           context,
           currentMode:
             getModeFromSessionContext(context) ?? current.currentMode,
+          currentModel:
+            getModelFromSessionContext(context) ?? current.currentModel,
         }));
         return context;
       } catch (error) {
@@ -865,6 +867,17 @@ function getModeFromSessionContext(
       : undefined;
   const mode = modes?.['currentModeId'] ?? modes?.['currentMode'];
   return typeof mode === 'string' ? mode : undefined;
+}
+
+function getModelFromSessionContext(
+  context: DaemonSessionContextStatus,
+): string | undefined {
+  const models =
+    typeof context.state.models === 'object' && context.state.models !== null
+      ? (context.state.models as Record<string, unknown>)
+      : undefined;
+  const model = models?.['currentModelId'] ?? models?.['currentModel'];
+  return typeof model === 'string' ? model : undefined;
 }
 
 function requireSessionForAction(

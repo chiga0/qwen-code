@@ -308,6 +308,7 @@ const EN: Messages = {
   'editor.hintSearch': 'search',
   'editor.noHistory': 'No matching history',
   'editor.placeholder': 'Type a message or @ file path',
+  'editor.send': 'Send message',
   'editor.processing': 'Processing. New messages will be queued.',
   'editor.searchHint': 'ctrl+r next · tab accept · enter send · esc cancel',
   'editor.searchLabel': 'reverse-i-search:',
@@ -703,8 +704,9 @@ const EN: Messages = {
   'memory.status': 'Workspace and user memory files',
   'memory.unknown': 'unknown',
   'memory.write': 'Write memory content',
-  'mode.auto': 'Auto mode',
-  'mode.auto.desc': 'Automatically decide when approval is needed',
+  'mode.auto': 'Classifier Approval',
+  'mode.auto.desc':
+    'Uses a classifier to approve safe tool calls and block or ask for risky ones',
   'mode.auto.notice':
     'Auto mode enabled. An LLM classifier evaluates each tool call and auto-approves safe actions, blocks risky ones. To exit: Shift+Tab or /approval-mode default.',
   'mode.footer': '(Use Enter to select, Esc to cancel)',
@@ -713,11 +715,19 @@ const EN: Messages = {
   'mode.name.auto-edit': 'auto-edit',
   'mode.name.auto': 'auto',
   'mode.name.yolo': 'yolo',
+  'mode.label.plan': 'Plan',
+  'mode.label.default': 'Ask Approval',
+  'mode.label.auto-edit': 'Approve for Me',
+  'mode.label.auto': 'Classifier Approval',
+  'mode.label.yolo': 'Full Access',
   'mode.desc.plan': 'Analyze only, do not modify files or execute commands',
-  'mode.desc.default': 'Require approval for file edits or shell commands',
-  'mode.desc.auto-edit': 'Automatically approve file edits',
-  'mode.desc.auto': 'auto mode',
-  'mode.desc.yolo': 'Automatically approve all tools',
+  'mode.desc.default':
+    'Always ask before editing external files or using the internet',
+  'mode.desc.auto-edit': 'Ask only for risky operations detected',
+  'mode.desc.auto':
+    'Use a classifier to approve safe tools and block or ask for risky ones',
+  'mode.desc.yolo':
+    'Access the internet and any file on this computer without restrictions',
   'mode.select': 'Approval Mode',
   'mode.autoApproved': ((v) =>
     v?.tool
@@ -851,21 +861,28 @@ const EN: Messages = {
   'todo.detail.start': 'Start',
   'todo.detail.tool': 'Tool',
   'todo.expand': 'Expand task list',
-  'todo.locate': 'Show in transcript',
   'todo.more': (v) => `... ${v?.count ?? 0} more`,
   'todo.moreAbove': (v) => `... ${v?.count ?? 0} earlier`,
   'todo.showLess': 'Show less',
+  'todo.stepProgress': (v) => `Step ${v?.current ?? 0} / ${v?.total ?? 0}`,
   'todo.title': 'Current tasks',
+  'chat.scrollToBottom': 'Scroll to bottom',
+  'turn.processed': 'Processed',
+  'turn.processing': 'Processing',
   'turn.collapse': 'Collapse steps',
   'turn.expand': 'Expand steps',
   'turn.cached': 'cached',
   'turn.executionSteps': (v) => {
     const n = v?.count ?? 0;
-    return `Execution ${n} step${n === 1 ? '' : 's'}`;
+    return `${n} step${n === 1 ? '' : 's'}`;
   },
   'turn.toolCalls': (v) => {
     const n = v?.count ?? 0;
     return `${n} tool call${n === 1 ? '' : 's'}`;
+  },
+  'turn.thinkingCount': (v) => {
+    const n = v?.count ?? 0;
+    return `${n} thought${n === 1 ? '' : 's'}`;
   },
   'tasks.title': 'Background tasks',
   'tasks.empty': 'No tasks currently running',
@@ -941,8 +958,20 @@ const EN: Messages = {
   'tool.showLess': '▲ Show less',
   'tool.showFullLines': '▼ Show full lines',
   'tool.linesTotal': (v) => `▼ ${v?.count ?? 0} lines total`,
+  'toolGroup.moreKinds': (v) => ` +${v?.count ?? 0}`,
+  'toolGroup.summary': (v) =>
+    `Ran ${v?.count ?? 0} tool${v?.count === 1 ? '' : 's'}${
+      v?.names ? ` · ${v.names}` : ''
+    }`,
+  'toolGroup.running': (v) =>
+    `Running ${v?.name ?? 'tool'}${v?.duration ? ` ${v.duration}` : ''}${
+      Number(v?.count ?? 0) > 1 ? ` · ${v?.count ?? 0} tools` : ''
+    }`,
   'thinking.expand': 'Expand thinking',
   'thinking.collapse': 'Collapse thinking',
+  'thinking.running': (v) => `Thinking${v?.duration ? ` ${v.duration}` : ''}`,
+  'thinking.done': (v) =>
+    `Finished thinking${v?.duration ? ` ${v.duration}` : ''}`,
   'settings.title': 'Settings',
   'settings.loading': 'Loading settings...',
   'settings.empty': 'No settings available.',
@@ -961,6 +990,11 @@ const EN: Messages = {
   'settings.requiresRestart': 'This change requires a restart to take effect.',
   'settings.corrupted': (v) =>
     `Settings file was corrupted${v?.recovered === 'true' ? ' (recovered from backup)' : ''}`,
+  'settings.label.ui.chatWidth': 'Chat width',
+  'settings.description.ui.chatWidth':
+    'Frontend-only chat content width. Stored in this browser.',
+  'settings.option.ui.chatWidth.1000': 'Regular',
+  'settings.option.ui.chatWidth.wide': 'Ultra wide',
   'welcome.changeModel': '(/model to change)',
   'welcome.defaultModel': 'unknown model',
   'welcome.modeHint': 'Shift+Tab or /approval-mode',
@@ -986,6 +1020,8 @@ const ZH: Messages = {
   'toolName.enter_plan_mode': '进入计划模式',
   'toolName.exit_plan_mode': '退出计划模式',
   'toolName.web_fetch': '网络抓取',
+  'toolName.webfetch': '网络抓取',
+  'toolName.fetch': '网络抓取',
   'toolName.web_search': '网络搜索',
   'toolName.list_directory': '列出文件',
   'toolName.lsp': 'LSP',
@@ -1011,8 +1047,14 @@ const ZH: Messages = {
   'toolName.bash': '运行命令',
   'toolName.shell': 'Shell 命令',
   'toolName.read': '读取文件',
+  'toolName.readfile': '读取文件',
   'toolName.write': '写入文件',
+  'toolName.writefile': '写入文件',
   'toolName.search': 'Grep',
+  'toolName.todowrite': '任务清单',
+  'toolName.savememory': '保存记忆',
+  'toolName.askuserquestion': '询问用户',
+  'toolName.toolsearch': '工具搜索',
   'about.auth': '认证',
   'about.baseUrl': 'Base URL',
   'about.fastModel': '快速模型',
@@ -1282,6 +1324,7 @@ const ZH: Messages = {
   'editor.hintSearch': '搜索',
   'editor.noHistory': '没有匹配的历史记录',
   'editor.placeholder': '输入消息或 @ 文件路径',
+  'editor.send': '发送消息',
   'editor.processing': '处理中。新消息会进入队列。',
   'editor.searchHint': 'ctrl+r 下一条 · tab 采纳 · enter 发送 · esc 取消',
   'editor.searchLabel': '历史搜索：',
@@ -1653,8 +1696,9 @@ const ZH: Messages = {
   'memory.status': 'Workspace 和用户 memory 文件',
   'memory.unknown': '未知',
   'memory.write': '写入 memory 内容',
-  'mode.auto': 'Auto 模式',
-  'mode.auto.desc': '自动判断是否需要请求批准',
+  'mode.auto': '智能审批',
+  'mode.auto.desc':
+    '使用分类器评估工具调用，安全操作自动批准，风险操作阻止或请求确认',
   'mode.auto.notice':
     'Auto 模式已启用。LLM 分类器会评估每个工具调用，自动批准安全操作，拦截危险操作。退出方式：Shift+Tab 或 /approval-mode default。',
   'mode.footer': '(Enter 选择，Esc 取消)',
@@ -1663,11 +1707,17 @@ const ZH: Messages = {
   'mode.name.auto-edit': 'auto-edit',
   'mode.name.auto': 'auto',
   'mode.name.yolo': 'yolo',
+  'mode.label.plan': '计划',
+  'mode.label.default': '请求批准',
+  'mode.label.auto-edit': '替我审批',
+  'mode.label.auto': '智能审批',
+  'mode.label.yolo': '完全访问权限',
   'mode.desc.plan': '仅分析，不修改文件或执行命令',
-  'mode.desc.default': '编辑文件或执行命令前需要批准',
-  'mode.desc.auto-edit': '自动批准文件编辑',
-  'mode.desc.auto': 'auto 模式',
-  'mode.desc.yolo': '自动批准所有工具',
+  'mode.desc.default': '编辑外部文件和使用互联网时始终询问',
+  'mode.desc.auto-edit': '仅对检测到的风险操作请求批准',
+  'mode.desc.auto':
+    '使用分类器评估工具调用，安全操作自动批准，风险操作阻止或请求确认',
+  'mode.desc.yolo': '可不受限制地访问互联网和您电脑上的任何文件',
   'mode.select': '审批模式',
   'mode.autoApproved': ((v) =>
     v?.tool
@@ -1799,16 +1849,20 @@ const ZH: Messages = {
   'todo.detail.start': '开始',
   'todo.detail.tool': '工具',
   'todo.expand': '展开任务列表',
-  'todo.locate': '在会话中定位',
   'todo.more': (v) => `... 还有 ${v?.count ?? 0} 项`,
   'todo.moreAbove': (v) => `... 前面还有 ${v?.count ?? 0} 项`,
   'todo.showLess': '收起',
+  'todo.stepProgress': (v) => `第 ${v?.current ?? 0} / ${v?.total ?? 0} 步`,
   'todo.title': '当前任务',
+  'chat.scrollToBottom': '回到底部',
+  'turn.processed': '已处理',
+  'turn.processing': '处理中',
   'turn.collapse': '折叠步骤',
   'turn.expand': '展开步骤',
   'turn.cached': '缓存',
-  'turn.executionSteps': (v) => `执行过程 ${v?.count ?? 0} 步`,
+  'turn.executionSteps': (v) => `${v?.count ?? 0} 步`,
   'turn.toolCalls': (v) => `工具 ${v?.count ?? 0} 次`,
+  'turn.thinkingCount': (v) => `思考 ${v?.count ?? 0} 次`,
   'tasks.title': '后台任务',
   'tasks.empty': '当前没有运行中的任务',
   'tasks.refreshStale': '任务状态可能已过期，正在重连...',
@@ -1883,8 +1937,17 @@ const ZH: Messages = {
   'tool.showLess': '▲ 显示更少',
   'tool.showFullLines': '▼ 显示完整行',
   'tool.linesTotal': (v) => `▼ 共 ${v?.count ?? 0} 行`,
+  'toolGroup.moreKinds': (v) => ` +${v?.count ?? 0}`,
+  'toolGroup.summary': (v) =>
+    `执行了 ${v?.count ?? 0} 个工具${v?.names ? ` · ${v.names}` : ''}`,
+  'toolGroup.running': (v) =>
+    `正在执行 ${v?.name ?? '工具'}${v?.duration ? ` ${v.duration}` : ''}${
+      Number(v?.count ?? 0) > 1 ? ` · 共 ${v?.count ?? 0} 个工具` : ''
+    }`,
   'thinking.expand': '展开思考',
   'thinking.collapse': '收起思考',
+  'thinking.running': (v) => `正在思考${v?.duration ? ` ${v.duration}` : ''}`,
+  'thinking.done': (v) => `已完成思考${v?.duration ? ` ${v.duration}` : ''}`,
   'welcome.changeModel': '(/model 切换)',
   'welcome.defaultModel': '未知模型',
   'settings.title': '设置',
@@ -1904,6 +1967,11 @@ const ZH: Messages = {
   'settings.requiresRestart': '此更改需要重启后才能生效。',
   'settings.corrupted': (v) =>
     `设置文件已损坏${v?.recovered === 'true' ? '（已从备份恢复）' : ''}`,
+  'settings.label.ui.chatWidth': '屏宽',
+  'settings.description.ui.chatWidth':
+    '纯前端的聊天内容宽度设置，保存在当前浏览器中。',
+  'settings.option.ui.chatWidth.1000': '常规',
+  'settings.option.ui.chatWidth.wide': '超宽',
   'settings.category.General': '通用',
   'settings.category.UI': '界面',
   'settings.category.Privacy': '隐私',

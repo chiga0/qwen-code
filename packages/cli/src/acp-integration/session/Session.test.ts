@@ -32,6 +32,7 @@ import type {
 import type { LoadedSettings } from '../../config/settings.js';
 import * as nonInteractiveCliCommands from '../../nonInteractiveCliCommands.js';
 import { CommandKind } from '../../ui/commands/types.js';
+import { MessageType } from '../../ui/types.js';
 
 const debugLoggerWarnSpy = vi.hoisted(() => vi.fn());
 
@@ -4318,6 +4319,58 @@ describe('Session', () => {
 
         expect(mockGeminiClient.tryCompressChat).not.toHaveBeenCalled();
         expect(mockChat.sendMessageStream).not.toHaveBeenCalled();
+      });
+
+      it('keeps goal terminal observer after ACP /goal set', async () => {
+        vi.mocked(
+          nonInteractiveCliCommands.handleSlashCommand,
+        ).mockResolvedValueOnce({
+          type: 'submit_prompt',
+          content: [{ text: 'Continue until the goal is met.' }],
+          outputHistoryItems: [
+            {
+              type: MessageType.GOAL_STATUS,
+              kind: 'set',
+              condition: 'check weather',
+              setAt: 1234,
+            },
+          ],
+        });
+        mockChat.sendMessageStream = vi
+          .fn()
+          .mockResolvedValue(createEmptyStream());
+
+        await session.prompt({
+          sessionId: 'test-session-id',
+          prompt: [{ type: 'text', text: '/goal check weather' }],
+        });
+
+        core.notifyGoalTerminal('test-session-id', {
+          kind: 'achieved',
+          condition: 'check weather',
+          iterations: 1,
+          durationMs: 5000,
+          lastReason: 'Weather checked.',
+        });
+
+        await vi.waitFor(() => {
+          expect(mockClient.sessionUpdate).toHaveBeenCalledWith({
+            sessionId: 'test-session-id',
+            update: {
+              sessionUpdate: 'agent_message_chunk',
+              content: { type: 'text', text: '' },
+              _meta: {
+                goalTerminal: {
+                  kind: 'achieved',
+                  condition: 'check weather',
+                  iterations: 1,
+                  durationMs: 5000,
+                  lastReason: 'Weather checked.',
+                },
+              },
+            },
+          });
+        });
       });
     });
 

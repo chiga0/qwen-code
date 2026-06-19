@@ -5,6 +5,8 @@ interface MessageTimestampProps {
   /** Wall-clock epoch ms of the message; omitted for synthetic messages. */
   timestamp?: number;
   children: ReactNode;
+  /** When true, show the timestamp permanently at bottom-right instead of hover tooltip. */
+  chatMode?: boolean;
 }
 
 /**
@@ -15,14 +17,18 @@ interface MessageTimestampProps {
 export function MessageTimestamp({
   timestamp,
   children,
+  chatMode = false,
 }: MessageTimestampProps) {
   if (timestamp === undefined) {
     return <>{children}</>;
   }
   return (
-    <div className={styles.row}>
+    <div className={chatMode ? styles.chatRow : styles.row}>
       {children}
-      <span className={styles.tip} aria-hidden="true">
+      <span
+        className={chatMode ? styles.chatTip : styles.tip}
+        aria-hidden="true"
+      >
         {formatTimestamp(timestamp)}
       </span>
     </div>

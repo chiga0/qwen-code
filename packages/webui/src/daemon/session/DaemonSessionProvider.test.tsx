@@ -173,6 +173,7 @@ const sdkMocks = vi.hoisted(() => {
   return {
     sessions,
     capabilities,
+    workspaceProviders,
     MockDaemonClient,
     MockDaemonSessionClient,
     workspaceMcpTools,
@@ -2069,12 +2070,43 @@ describe('DaemonSessionProvider', () => {
   });
 
   it('does not let replay state events overwrite fresh connection status', async () => {
+    sdkMocks.workspaceProviders.mockResolvedValueOnce({
+      v: 1,
+      workspaceCwd: '/mock-workspace',
+      initialized: true,
+      current: { authType: 'openai', modelId: 'provider-model' },
+      providers: [
+        {
+          kind: 'model_provider',
+          status: 'ok',
+          authType: 'openai',
+          current: true,
+          models: [
+            {
+              modelId: 'provider-model',
+              name: 'Provider Model',
+              contextLimit: 1000,
+              isCurrent: true,
+            },
+            {
+              modelId: 'fresh-model',
+              name: 'Fresh Model',
+              contextLimit: 2000,
+              isCurrent: false,
+            },
+          ],
+        },
+      ],
+    });
     const session = createMockSession({
       context: vi.fn(async () => ({
         v: 1 as const,
         sessionId: 'session-1',
         workspaceCwd: '/mock-workspace',
-        state: { modes: { currentModeId: 'fresh-mode' } },
+        state: {
+          modes: { currentModeId: 'fresh-mode' },
+          models: { currentModelId: 'fresh-model' },
+        },
       })),
       supportedCommands: vi.fn(async () => ({
         v: 1 as const,
@@ -2160,12 +2192,68 @@ describe('DaemonSessionProvider', () => {
     );
     expect(connection).toMatchObject({
       currentMode: 'fresh-mode',
+      currentModel: 'fresh-model',
+      contextWindow: 2000,
       skills: ['fresh-skill'],
     });
     expect(connection?.commands?.map((command) => command.name)).toEqual([
       'fresh-command',
       'fresh-skill',
     ]);
+  });
+
+  it('uses providers current model when session context has no model', async () => {
+    sdkMocks.workspaceProviders.mockResolvedValueOnce({
+      v: 1,
+      workspaceCwd: '/mock-workspace',
+      initialized: true,
+      current: { authType: 'openai', modelId: 'provider-default' },
+      providers: [
+        {
+          kind: 'model_provider',
+          status: 'ok',
+          authType: 'openai',
+          current: true,
+          models: [
+            {
+              modelId: 'provider-default',
+              name: 'Provider Default',
+              contextLimit: 4096,
+              isCurrent: true,
+            },
+          ],
+        },
+      ],
+    });
+    const session = createMockSession({
+      context: vi.fn(async () => ({
+        v: 1 as const,
+        sessionId: 'session-1',
+        workspaceCwd: '/mock-workspace',
+        state: { modes: { currentModeId: 'default' } },
+      })),
+    });
+    sdkMocks.sessions.push(session);
+    let connection: DaemonConnectionState | undefined;
+
+    function Harness() {
+      connection = useDaemonConnection();
+      return null;
+    }
+
+    await renderWithProvider(<Harness />, {
+      autoConnect: true,
+      reconnectDelayMs: 1,
+      maxReconnectDelayMs: 1,
+    });
+    await act(async () => {
+      await flushPromises();
+    });
+
+    expect(connection).toMatchObject({
+      currentModel: 'provider-default',
+      contextWindow: 4096,
+    });
   });
 
   it('seeds tokenCount from the latest replay usage on attach', async () => {

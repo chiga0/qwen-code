@@ -1,5 +1,4 @@
 .message {
-  margin-bottom: 12px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -16,7 +15,6 @@
   display: flex;
   align-items: flex-start;
   gap: 0;
-  margin-bottom: 4px;
 }
 
 .thinking .prefix {
@@ -56,33 +54,140 @@
   word-break: break-word;
 }
 
-.thinkingPreviewWrap,
-.thinkingExpandedWrap {
-  position: relative;
-}
-
-.thinkingPreview {
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  padding-right: 18px;
-  line-height: inherit;
-}
-
-.thinkingPreviewTail {
-  display: block;
-  max-height: calc(5 * 1.5em);
-  overflow-y: hidden;
-}
-
-.thinkingPreview > [data-markdown-source='thinking'] {
+.thinkingSummary {
+  width: 100%;
+  margin: 0;
+  padding: 2px 0;
+  border: none;
+  border-radius: 0;
+  background: transparent;
+  color: #a1a2a3;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  cursor: pointer;
+  text-align: left;
   font: inherit;
-  line-height: inherit;
 }
 
-.thinkingPreview > [data-markdown-source='thinking'] > :first-child {
-  margin-top: 0;
+.thinkingSummary:hover,
+.thinkingSummary:focus-visible {
+  color: var(--text-primary);
+  outline: none;
+}
+
+.thinkingSummaryIcon {
+  width: 14px;
+  height: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.thinkingSummaryIcon svg {
+  display: block;
+}
+
+.thinkingSummaryToolIcon {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+.thinkingSummaryText {
+  min-width: 0;
+  flex: 0 1 auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.thinkingSummaryTextActive {
+  position: relative;
+  overflow: hidden;
+}
+
+.thinkingSummaryTextActive::after {
+  content: '';
+  position: absolute;
+  top: -35%;
+  bottom: -35%;
+  left: -60%;
+  width: 45%;
+  background: linear-gradient(
+    100deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.15) 25%,
+    rgba(255, 255, 255, 0.82) 50%,
+    rgba(255, 255, 255, 0.15) 75%,
+    transparent 100%
+  );
+  transform: skewX(-22deg);
+  animation: thinking-summary-shine 2.4s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes thinking-summary-shine {
+  0% {
+    left: -60%;
+  }
+  100% {
+    left: 115%;
+  }
+}
+
+.thinkingChevronRight,
+.thinkingChevronDown {
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 120ms ease;
+}
+
+.thinkingSummary:hover .thinkingChevronRight,
+.thinkingSummary:hover .thinkingChevronDown,
+.thinkingSummary:focus-visible .thinkingChevronRight,
+.thinkingSummary:focus-visible .thinkingChevronDown {
+  opacity: 1;
+}
+
+.thinkingChevronRight {
+  transform: rotate(-45deg);
+}
+
+.thinkingChevronDown {
+  transform: rotate(45deg);
+  margin-top: -3px;
+  opacity: 1;
+}
+
+.thinkingExpandedWrap {
+  margin-top: 4px;
+}
+
+.thinkingExpandedClip {
+  display: grid;
+  grid-template-rows: 1fr;
+  min-height: 0;
+  overflow: hidden;
+  transition: grid-template-rows 180ms ease;
+}
+
+.thinkingExpandedCollapsed {
+  grid-template-rows: 0fr;
+}
+
+.thinkingExpandedInner {
+  min-height: 0;
+  overflow: hidden;
 }
 
 .expandToggle {
@@ -96,7 +201,6 @@
   margin: 2px 0 0 auto;
 }
 
-.thinkingPreviewWrap .expandToggle,
 .thinkingExpandedWrap .expandToggle {
   position: absolute;
   right: 0;
@@ -108,24 +212,6 @@
   transition: opacity 0.12s ease;
 }
 
-.thinkingPreviewOverflow::after {
-  content: '';
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 16px;
-  pointer-events: none;
-  background: linear-gradient(
-    to bottom,
-    transparent,
-    color-mix(in srgb, var(--bg-primary) 70%, transparent)
-  );
-  opacity: 0.45;
-}
-
-.thinkingPreviewWrap:hover .expandToggle,
-.thinkingPreviewWrap .expandToggle:focus-visible,
 .thinkingExpandedWrap:hover .expandToggle,
 .thinkingExpandedWrap .expandToggle:focus-visible {
   opacity: 1;
@@ -133,7 +219,6 @@
 }
 
 @media (hover: none) {
-  .thinkingPreviewWrap .expandToggle,
   .thinkingExpandedWrap .expandToggle {
     opacity: 1;
     pointer-events: auto;

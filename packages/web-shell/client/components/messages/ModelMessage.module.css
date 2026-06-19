@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   gap: 8px;
-  margin: 0px 0 12px 14px;
+  margin: 0px 0 12px 0px;
   padding: 10px 14px;
   border: 1px solid var(--border-color);
   border-radius: 4px;
@@ -10,8 +10,7 @@
   font-size: 13px;
   color: var(--text-primary);
   background: var(--bg-primary);
-  max-width: min(920px, calc(100vw - 64px));
-  margin-left: 14px;
+  max-width: min(var(--chat-regular-content-width, 1000px), calc(100vw - 64px));
 }
 
 .header {

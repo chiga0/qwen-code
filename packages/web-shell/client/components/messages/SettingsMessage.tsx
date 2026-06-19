@@ -33,12 +33,16 @@ import styles from './SettingsMessage.module.css';
 
 export const SETTINGS_ACTIVE_EVENT = 'web-shell:settings-panel-active';
 
+type ChatWidthMode = '1000' | 'wide';
+
 interface SettingsMessageProps {
   settingsState: SettingsMessageSettingsState;
   onClose: () => void;
   onLanguageChange: (language: WebShellLanguage) => void;
   onSubDialog: (settingKey: string) => void;
   onThemeChange: (theme: WebShellTheme) => void;
+  chatWidthMode: ChatWidthMode;
+  onChatWidthModeChange: (mode: ChatWidthMode) => void;
 }
 
 export interface SettingsMessageSettingsState {
@@ -214,11 +218,10 @@ function groupByCategory(
   }));
 }
 
-export interface FlatRow {
-  type: 'header' | 'setting';
-  category?: string;
-  setting?: DaemonSettingDescriptor;
-}
+export type FlatRow =
+  | { type: 'header'; category: string }
+  | { type: 'setting'; setting: DaemonSettingDescriptor }
+  | { type: 'local'; localKey: 'chatWidth' };
 
 function flattenGroups(groups: CategoryGroup[]): FlatRow[] {
   const rows: FlatRow[] = [];
@@ -243,7 +246,7 @@ export function nextSettingIdx(
   let i = current;
   for (let step = 0; step < n; step++) {
     i = (i + dir + n) % n;
-    if (rows[i]!.type === 'setting') return i;
+    if (rows[i]!.type === 'setting' || rows[i]!.type === 'local') return i;
   }
   return current;
 }
@@ -254,6 +257,8 @@ export function SettingsMessage({
   onLanguageChange,
   onSubDialog,
   onThemeChange,
+  chatWidthMode,
+  onChatWidthModeChange,
 }: SettingsMessageProps) {
   const { t } = useI18n();
   const { status, settings, loading, error, reload, setValue } = settingsState;
@@ -279,17 +284,28 @@ export function SettingsMessage({
     onCloseRef.current = onClose;
   }, [onClose]);
 
-  const rows = useMemo(
-    () => flattenGroups(groupByCategory(settings, t)),
-    [settings, t],
-  );
+  const rows = useMemo(() => {
+    const nextRows = flattenGroups(groupByCategory(settings, t));
+    const localRow: FlatRow = { type: 'local', localKey: 'chatWidth' };
+    const themeIndex = nextRows.findIndex(
+      (row) => row.type === 'setting' && row.setting?.key === THEME_SETTING_KEY,
+    );
+    if (themeIndex >= 0) {
+      nextRows.splice(themeIndex + 1, 0, localRow);
+    } else {
+      nextRows.push(localRow);
+    }
+    return nextRows;
+  }, [settings, t]);
   const [restartPending, setRestartPending] = useState(false);
 
   const selectedRow = rows[selectedIdx];
   const selectedDescription =
     selectedRow?.type === 'setting' && selectedRow.setting
       ? formatSettingDescription(selectedRow.setting, t)
-      : undefined;
+      : selectedRow?.type === 'local' && selectedRow.localKey === 'chatWidth'
+        ? t('settings.description.ui.chatWidth')
+        : undefined;
   const showInitialLoading = loading && !status;
   const themeSetting = settings.find((s) => s.key === THEME_SETTING_KEY);
   const themeValue = themeSettingToWebShellTheme(
@@ -464,7 +480,15 @@ export function SettingsMessage({
   );
 
   const handleAction = useCallback(
-    (setting: DaemonSettingDescriptor) => {
+    (row: Extract<FlatRow, { type: 'setting' | 'local' }>) => {
+      if (row.type === 'local') {
+        if (row.localKey === 'chatWidth') {
+          onChatWidthModeChange(chatWidthMode === 'wide' ? '1000' : 'wide');
+        }
+        return;
+      }
+      const setting = row.setting;
+      if (!setting) return;
       if (editMode && editMode.key === setting.key) return;
       setEditMode(null);
       if (scope !== 'workspace') {
@@ -498,7 +522,15 @@ export function SettingsMessage({
         });
       }
     },
-    [editMode, handleSetValue, onSubDialog, scope, t],
+    [
+      chatWidthMode,
+      editMode,
+      handleSetValue,
+      onChatWidthModeChange,
+      onSubDialog,
+      scope,
+      t,
+    ],
   );
 
   const handleEditSubmit = useCallback(() => {
@@ -506,7 +538,7 @@ export function SettingsMessage({
     const row = rows.find(
       (r) => r.type === 'setting' && r.setting?.key === editMode.key,
     );
-    const setting = row?.setting;
+    const setting = row?.type === 'setting' ? row.setting : undefined;
     if (!setting) {
       setEditMode(null);
       return;
@@ -639,8 +671,8 @@ export function SettingsMessage({
       if ((e.key === 'Enter' || e.key === ' ') && !busyKey) {
         claim();
         const row = rows[selectedIdxRef.current];
-        if (row?.type === 'setting' && row.setting) {
-          handleAction(row.setting);
+        if (row?.type === 'setting' || row?.type === 'local') {
+          handleAction(row);
         }
       }
     },
@@ -763,6 +795,36 @@ export function SettingsMessage({
                 );
               }
 
+              if (row.type === 'local') {
+                const isSelected = i === selectedIdx;
+                return (
+                  <div
+                    key={row.localKey}
+                    role="option"
+                    aria-selected={isSelected}
+                    className={`${styles.item} ${isSelected ? styles.selected : ''}`}
+                    onClick={() => {
+                      setSelectedIdx(i);
+                      handleAction(row);
+                    }}
+                  >
+                    <div className={styles.row}>
+                      <span className={styles.pointer}>
+                        {isSelected ? '›' : ' '}
+                      </span>
+                      <span className={styles.label}>
+                        {t('settings.label.ui.chatWidth')}
+                      </span>
+                      <span className={styles.value}>
+                        {chatWidthMode === 'wide'
+                          ? t('settings.option.ui.chatWidth.wide')
+                          : t('settings.option.ui.chatWidth.1000')}
+                      </span>
+                    </div>
+                  </div>
+                );
+              }
+
               const setting = row.setting!;
               const isSelected = i === selectedIdx;
               const isEditing = editMode?.key === setting.key;
@@ -782,7 +844,7 @@ export function SettingsMessage({
                   onClick={() => {
                     if (busyKey) return;
                     setSelectedIdx(i);
-                    handleAction(setting);
+                    handleAction(row);
                   }}
                   // Hover feedback is pure CSS (.item:hover) and deliberately does
                   // NOT move the selection: arrow keys own the pointer + accent

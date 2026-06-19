@@ -2393,6 +2393,42 @@ describe('daemon UI time schema (PR-B)', () => {
     });
   });
 
+  it('stamps assistant.done serverTimestamp onto the active assistant block', () => {
+    let state = createDaemonTranscriptState({ now: 1 });
+    state = reduceDaemonTranscriptEvents(
+      state,
+      normalizeDaemonEvent({
+        id: 1,
+        v: 1,
+        type: 'session_update',
+        data: {
+          update: {
+            _meta: { timestamp: 1_000 },
+            sessionUpdate: 'agent_message_chunk',
+            content: { type: 'text', text: 'done' },
+          },
+        },
+      }),
+    );
+
+    state = reduceDaemonTranscriptEvents(state, [
+      {
+        type: 'assistant.done',
+        reason: 'end_turn',
+        eventId: 2,
+        serverTimestamp: 5_000,
+      },
+    ]);
+
+    expect(state.blocks[0]).toMatchObject({
+      kind: 'assistant',
+      text: 'done',
+      streaming: false,
+      eventId: 2,
+      serverTimestamp: 5_000,
+    });
+  });
+
   it('extracts serverTimestamp from top-level envelope field when present', () => {
     const events = normalizeDaemonEvent({
       id: 3,

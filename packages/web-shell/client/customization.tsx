@@ -49,6 +49,7 @@ export type ToolHeaderExtraRenderer = (
 ) => ReactNode;
 
 export type WelcomeHeaderRenderer = (props: WelcomeHeaderProps) => ReactNode;
+export type WelcomeFooterRenderer = (props: WelcomeHeaderProps) => ReactNode;
 
 export interface WebShellComposerTag {
   id: string;
@@ -86,6 +87,17 @@ export interface WebShellComposerApi {
   clear(options?: { text?: boolean; tags?: boolean }): void;
   submit(input?: WebShellComposerInput): void;
 }
+
+export interface WebShellComposerToolbarStartRenderInfo {
+  disabled: boolean;
+  isRunning: boolean;
+  currentMode: string;
+  currentModel: string;
+  sessionName?: string;
+}
+
+export type ComposerToolbarStartRenderer =
+  ComponentType<WebShellComposerToolbarStartRenderInfo>;
 
 // ---- Background task info (public type for footer renderer) ----
 
@@ -167,6 +179,8 @@ export type FooterRenderer = ComponentType<WebShellFooterRenderInfo>;
 export interface WebShellCustomization {
   renderToolHeaderExtra?: ToolHeaderExtraRenderer;
   renderWelcomeHeader?: WelcomeHeaderRenderer;
+  renderWelcomeFooter?: WelcomeFooterRenderer;
+  renderComposerToolbarStart?: ComposerToolbarStartRenderer;
   renderFooter?: FooterRenderer;
   compactThinking?: boolean;
   /**

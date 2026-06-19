@@ -1,0 +1,564 @@
+.container {
+  container-type: inline-size;
+  border-radius: 16px;
+  background: var(--chat-editor-container-bg);
+  border: 1px solid var(--border-color);
+  padding: 12px 16px 8px;
+  margin: 0 0 14px;
+  cursor: text;
+}
+
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 0 8px;
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  min-height: 22px;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.2;
+}
+
+.tagLabel,
+.tagValue {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagLabel {
+  padding: 3px 0 3px 7px;
+  color: var(--accent-color);
+}
+
+.tagValue {
+  max-width: 32ch;
+  padding: 3px 0 3px 0.5ch;
+  color: var(--text-secondary);
+}
+
+.tagRemove {
+  flex: 0 0 auto;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dimmed);
+  font: inherit;
+  line-height: 22px;
+  cursor: pointer;
+  border-radius: 0 4px 4px 0;
+}
+
+.tagRemove:hover,
+.tagRemove:focus-visible {
+  color: var(--error-color);
+  outline: none;
+}
+
+.editorArea {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 60px;
+  padding: 4px 0;
+}
+
+.editorArea > :last-child {
+  min-width: 0;
+  flex: 1;
+}
+
+.shellPrefix {
+  flex: 0 0 auto;
+  padding-top: 1px;
+  color: var(--accent-color);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.6;
+  user-select: none;
+  pointer-events: none;
+}
+
+.editorArea .cm-content {
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-width: 0;
+  padding: 4px 0 0;
+  gap: 8px;
+}
+
+.toolbarLeading,
+.toolbarStart,
+.toolbarLeft,
+.toolbarRight {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.toolbarLeading {
+  margin-left: -5px;
+}
+
+.toolbarStart {
+  min-width: 0;
+}
+
+.toolbarLeft {
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.toolbarRight {
+  flex-shrink: 0;
+  margin-right: -5px;
+}
+
+@container (max-width: 699px) {
+  .toolbarLeft .toolBtn {
+    width: auto;
+    padding: 0 6px;
+    justify-content: center;
+  }
+
+  .toolbarLeft .toolBtnText {
+    display: none;
+  }
+}
+
+.dropdownWrapper {
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 0;
+  min-width: 160px;
+  padding: 4px;
+  background: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdownRich {
+  min-width: min(360px, calc(100vw - 32px));
+  padding: 6px;
+  gap: 2px;
+}
+
+.dropdownCheck {
+  min-width: min(300px, calc(100vw - 32px));
+  padding: 6px;
+  gap: 2px;
+}
+
+.dropdownItem {
+  display: block;
+  width: 100%;
+  padding: 6px 12px;
+  border: none;
+  background: transparent;
+  color: var(--text-primary);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.dropdownRich .dropdownItem {
+  display: grid;
+  grid-template-columns: 24px minmax(0, 1fr) 18px;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 9px;
+  white-space: normal;
+}
+
+.dropdownCheck .dropdownItem {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 18px;
+  gap: 10px;
+  align-items: center;
+  padding: 6px 9px;
+}
+
+.dropdownItem:hover {
+  background: var(--bg-tertiary);
+}
+
+.dropdownItemActive {
+  color: var(--accent-color);
+  background: var(--bg-tertiary);
+}
+
+.dropdownItemIcon,
+.dropdownItemCheck {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+}
+
+.dropdownItemIcon svg {
+  width: 19px;
+  height: 19px;
+}
+
+.dropdownItemCheck svg {
+  width: 16px;
+  height: 16px;
+}
+
+.dropdownItemContent {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.dropdownItemLabel {
+  overflow: hidden;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dropdownItemDesc {
+  overflow: hidden;
+  color: var(--text-dimmed);
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 1.2;
+  text-overflow: ellipsis;
+}
+
+.dropdownItemActive .dropdownItemIcon,
+.dropdownItemActive .dropdownItemCheck {
+  color: var(--text-primary);
+}
+
+.toolBtn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 28px;
+  padding: 0 8px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 13px;
+  line-height: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.toolBtn:hover {
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
+}
+
+.toolBtn[data-tooltip]:hover::after,
+.toolBtn[data-tooltip]:focus-visible::after {
+  position: absolute;
+  right: 50%;
+  bottom: calc(100% + 8px);
+  z-index: 120;
+  padding: 4px 7px;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  content: attr(data-tooltip);
+  font-family: var(--font-sans, system-ui, sans-serif);
+  font-size: 12px;
+  line-height: 1.2;
+  pointer-events: none;
+  transform: translateX(50%);
+  white-space: nowrap;
+}
+
+.toolBtnIcon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 16px;
+  line-height: 1;
+}
+
+.toolBtnIcon svg {
+  display: block;
+}
+
+.widthModeBtn {
+  flex-shrink: 0;
+}
+
+.toolBtnModeIcon,
+.toolBtnModelIcon {
+  display: inline-flex;
+  width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+}
+
+.toolBtnModeIcon svg,
+.toolBtnModelIcon svg {
+  display: block;
+  width: 16px;
+  height: 16px;
+}
+
+.toolBtnText {
+  display: inline-flex;
+  align-items: center;
+  color: var(--text-primary);
+  line-height: 1;
+}
+
+.toolBtnArrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 10px;
+  height: 10px;
+  margin-left: 2px;
+}
+
+.toolBtnArrow svg {
+  display: block;
+}
+
+.chevronDown {
+  width: 7px;
+  height: 7px;
+  border-right: 1px solid currentColor;
+  border-bottom: 1px solid currentColor;
+  transform: rotate(45deg);
+  margin-top: -3px;
+}
+
+.sendBtn {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background: var(--bg-tertiary);
+  color: var(--text-dimmed);
+  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin-left: 4px;
+  transition: all 0.2s ease;
+}
+
+.sendBtn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.sendBtn:not(:disabled) {
+  background: var(--accent-color);
+  color: #fff;
+  cursor: pointer;
+}
+
+.sendBtn:not(:disabled):hover {
+  filter: brightness(1.15);
+  transform: scale(1.05);
+}
+
+.sendBtn:not(:disabled):active {
+  transform: scale(0.95);
+}
+
+.sendBtnRunning,
+.sendBtnRunning:not(:disabled) {
+  background: #1b1d21;
+  color: #fff;
+  cursor: pointer;
+}
+
+.sendBtnRunning:not(:disabled):hover {
+  filter: brightness(1.08);
+}
+
+.sendIcon {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+}
+
+.stopIcon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  background: currentColor;
+}
+
+.images {
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 0;
+  flex-wrap: wrap;
+}
+
+.imageThumb {
+  position: relative;
+  width: 48px;
+  height: 48px;
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+
+.imageThumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.imageRemove {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 16px;
+  height: 16px;
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: var(--error-color);
+  border: none;
+  cursor: pointer;
+  border-radius: 0 0 0 4px;
+}
+
+.imageRemove:hover {
+  background: var(--error-color);
+  color: var(--text-primary);
+}
+
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 0;
+  font-size: 12px;
+}
+
+.searchLabel {
+  color: var(--text-dimmed);
+  flex-shrink: 0;
+}
+
+.searchInput {
+  flex: 1;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.searchInput::placeholder {
+  color: var(--text-dimmed);
+}
+
+.searchHint {
+  color: var(--text-dimmed);
+  flex-shrink: 0;
+  font-size: 11px;
+}
+
+.searchResults {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  padding: 2px 0 6px;
+}
+
+.searchResult {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr);
+  align-items: start;
+  gap: 4px;
+  width: 100%;
+  min-height: 24px;
+  padding: 3px 6px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.45;
+  text-align: left;
+  cursor: pointer;
+}
+
+.searchResult:hover,
+.searchResultActive {
+  background: var(--bg-tertiary);
+  color: var(--accent-color);
+}
+
+.searchResultMarker {
+  color: var(--accent-color);
+  line-height: 1.45;
+}
+
+.searchResultText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.searchEmpty {
+  padding: 4px 0 6px;
+  color: var(--text-dimmed);
+  font-size: 12px;
+}

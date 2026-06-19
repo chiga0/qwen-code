@@ -368,9 +368,6 @@ export function slashCompletionSource(
               }
             : {}),
           detail: n.description || undefined,
-          ...(isSkillList && n.description
-            ? { info: `/${n.name}\n\n${n.description}` }
-            : {}),
           apply: `${command} `,
         };
       });
@@ -407,9 +404,7 @@ export function slashCompletionSource(
       return {
         label: command,
         detail: c.description || undefined,
-        ...(showCommandInfo && c.description
-          ? { info: `${command}\n\n${c.description}` }
-          : {}),
+        ...(showCommandInfo && c.description ? { type: 'command-info' } : {}),
         apply: `${command} `,
         section: getCommandSection(c, translate, categoryOrder),
       };

@@ -136,7 +136,11 @@ import {
 } from '../../nonInteractiveCliCommands.js';
 import { isSlashCommand } from '../../ui/utils/commandUtils.js';
 import { CommandKind } from '../../ui/commands/types.js';
-import { MessageType, type HistoryItemGoalStatus } from '../../ui/types.js';
+import {
+  isTerminalGoalStatusKind,
+  MessageType,
+  type HistoryItemGoalStatus,
+} from '../../ui/types.js';
 import { parseAcpModelOption } from '../../utils/acpModelUtils.js';
 import { classifyApiError } from '../../ui/hooks/useGeminiStream.js';
 import { getPersistScopeForModelSelection } from '../../config/modelProvidersScope.js';
@@ -4418,6 +4422,7 @@ export class Session implements SessionContext {
     if (!('outputHistoryItems' in result)) {
       return;
     }
+    let hasActiveGoalStatus = false;
     for (const item of result.outputHistoryItems ?? []) {
       if (item.type === MessageType.GOAL_STATUS) {
         this.emitGoalStatus({
@@ -4434,7 +4439,13 @@ export class Session implements SessionContext {
             ? { lastReason: item.lastReason }
             : {}),
         });
+        if (!isTerminalGoalStatusKind(item.kind)) {
+          hasActiveGoalStatus = true;
+        }
       }
+    }
+    if (hasActiveGoalStatus) {
+      this.#installGoalTerminalObserver();
     }
   }
 

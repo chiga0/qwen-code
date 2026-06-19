@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest';
 import { act, createRef, type RefObject } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
 import type { Message } from '../adapters/types';
+import { I18nProvider } from '../i18n';
 
 // Mock the App context and the heavy row children so this test exercises only
 // MessageList's own collapse + deferred-scroll logic, not the whole render tree.
@@ -13,32 +14,8 @@ vi.mock('../App', async () => {
 vi.mock('./MessageItem', async () => {
   const React = await import('react');
   return {
-    MessageItem: ({
-      message,
-      collapse,
-      onToggleCollapse,
-    }: {
-      message: Message;
-      collapse?: { turnId: string; collapsed: boolean; hiddenCount: number };
-      onToggleCollapse?: (id: string) => void;
-    }) =>
-      React.createElement(
-        'div',
-        { 'data-testid': `msg-${message.id}` },
-        collapse
-          ? React.createElement(
-              'button',
-              {
-                'data-testid': `toggle-${collapse.turnId}`,
-                'aria-expanded': String(!collapse.collapsed),
-                onClick: () => onToggleCollapse?.(collapse.turnId),
-              },
-              collapse.collapsed
-                ? `expand-${collapse.hiddenCount}`
-                : 'collapse',
-            )
-          : null,
-      ),
+    MessageItem: ({ message }: { message: Message }) =>
+      React.createElement('div', { 'data-testid': `msg-${message.id}` }),
   };
 });
 vi.mock('./messages/tools/ParallelAgentsGroup', () => ({
@@ -73,6 +50,7 @@ afterEach(() => {
     act(() => root.unmount());
     container.remove();
   }
+  vi.useRealTimers();
 });
 
 const userMsg = (id: string): Message => ({ id, role: 'user', content: 'q' });
@@ -90,19 +68,23 @@ const asstMsg = (id: string): Message => ({
 function mount(
   messages: Message[],
   ref?: RefObject<MessageListHandle | null>,
+  opts: { isResponding?: boolean } = {},
 ): HTMLElement {
   const container = document.createElement('div');
   document.body.appendChild(container);
   const root = createRoot(container);
   act(() => {
     root.render(
-      <MessageList
-        ref={ref}
-        messages={messages}
-        pendingApproval={null}
-        onConfirm={() => {}}
-        shellOutputMaxLines={50}
-      />,
+      <I18nProvider language="en">
+        <MessageList
+          ref={ref}
+          messages={messages}
+          pendingApproval={null}
+          onConfirm={() => {}}
+          isResponding={opts.isResponding}
+          shellOutputMaxLines={50}
+        />
+      </I18nProvider>,
     );
   });
   mounted.push({ root, container });
@@ -111,8 +93,12 @@ function mount(
 
 const has = (c: HTMLElement, id: string) =>
   c.querySelector(`[data-testid="msg-${id}"]`) !== null;
+const queryToggle = (c: HTMLElement, turnId: string) =>
+  c.querySelector(`[data-testid="toggle-${turnId}"]`) as HTMLElement | null;
 const toggle = (c: HTMLElement, turnId: string) =>
-  c.querySelector(`[data-testid="toggle-${turnId}"]`) as HTMLElement;
+  queryToggle(c, turnId) as HTMLElement;
+const toggleRow = (c: HTMLElement, turnId: string) =>
+  toggle(c, turnId).closest('[role="button"]') as HTMLElement;
 const click = (el: Element) =>
   act(() => el.dispatchEvent(new MouseEvent('click', { bubbles: true })));
 
@@ -122,15 +108,77 @@ describe('MessageList — turn collapse (DOM)', () => {
     expect(has(c, 'u1')).toBe(true);
     expect(has(c, 'a1')).toBe(true);
     expect(has(c, 'g1')).toBe(false);
-    expect(toggle(c, 'u1').textContent).toContain('expand-1');
-    expect(toggle(c, 'u1').getAttribute('aria-expanded')).toBe('false');
+    expect(toggleRow(c, 'u1').getAttribute('aria-expanded')).toBe('false');
+  });
+
+  it('renders collapse metrics in the standalone turn row', () => {
+    const c = mount([
+      { ...userMsg('u1'), timestamp: 1_000 },
+      { ...toolMsg('g1'), timestamp: 2_000 },
+      {
+        id: 't1',
+        role: 'thinking',
+        content: 'checking the tool result',
+        timestamp: 2_500,
+      },
+      {
+        ...asstMsg('a1'),
+        timestamp: 13_400,
+        usage: { inputTokens: 3100, outputTokens: 5100, cachedTokens: 2800 },
+      },
+    ]);
+    const text = c.textContent ?? '';
+    expect(text).toContain('Processed');
+    expect(text).toContain('13s');
+    expect(text).toContain('↑3.1k (2.8k cached, 90%) ↓5.1k');
+    expect(text).toContain('1 tool call');
+    expect(text).toContain('1 thought');
+    expect(text).not.toContain('1 step');
+    expect(text.indexOf('↓5.1k')).toBeLessThan(text.indexOf('1 tool call'));
+  });
+
+  it('renders step-less metrics without a toggle', () => {
+    const c = mount([
+      { ...userMsg('u1'), timestamp: 1_000 },
+      {
+        ...asstMsg('a1'),
+        timestamp: 1_900,
+        usage: { inputTokens: 1200, outputTokens: 45 },
+      },
+    ]);
+    const text = c.textContent ?? '';
+    expect(queryToggle(c, 'u1')).toBeNull();
+    expect(text).toContain('Processed 1s');
+    expect(text).toContain('↑1.2k ↓45');
+    expect(text).not.toContain('step');
+  });
+
+  it('omits elapsed-only completed metrics when there is no toggle', () => {
+    const c = mount([
+      { ...userMsg('u1'), timestamp: 1_000 },
+      { ...asstMsg('a1'), timestamp: 13_400 },
+    ]);
+    const text = c.textContent ?? '';
+    expect(queryToggle(c, 'u1')).toBeNull();
+    expect(text).not.toContain('Processed');
+    expect(text).not.toContain('13s');
+  });
+
+  it('shows live elapsed time for a running step-less turn', () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(10_000);
+    const c = mount([{ ...userMsg('u1'), timestamp: 7_600 }], undefined, {
+      isResponding: true,
+    });
+    expect(queryToggle(c, 'u1')).toBeNull();
+    expect(c.textContent).toContain('Processing 3s');
   });
 
   it('toggle round-trip reveals then re-hides the step', () => {
     const c = mount([userMsg('u1'), toolMsg('g1'), asstMsg('a1')]);
     click(toggle(c, 'u1'));
     expect(has(c, 'g1')).toBe(true);
-    expect(toggle(c, 'u1').getAttribute('aria-expanded')).toBe('true');
+    expect(toggleRow(c, 'u1').getAttribute('aria-expanded')).toBe('true');
     click(toggle(c, 'u1'));
     expect(has(c, 'g1')).toBe(false);
   });
@@ -145,5 +193,33 @@ describe('MessageList — turn collapse (DOM)', () => {
     });
     expect(found).toBe(true);
     expect(has(c, 'g1')).toBe(true);
+  });
+
+  it('smooth-scrolls the page when a new chat prompt appears', () => {
+    const scrollEl = document.documentElement;
+    const scrollTo = vi.fn();
+    Object.defineProperty(document, 'scrollingElement', {
+      configurable: true,
+      value: scrollEl,
+    });
+    Object.defineProperty(scrollEl, 'scrollHeight', {
+      configurable: true,
+      value: 1200,
+    });
+    Object.defineProperty(scrollEl, 'clientHeight', {
+      configurable: true,
+      value: 600,
+    });
+    Object.defineProperty(scrollEl, 'scrollTo', {
+      configurable: true,
+      value: scrollTo,
+    });
+
+    mount([userMsg('u1')]);
+
+    expect(scrollTo).toHaveBeenCalledWith({
+      top: 1200,
+      behavior: 'smooth',
+    });
   });
 });

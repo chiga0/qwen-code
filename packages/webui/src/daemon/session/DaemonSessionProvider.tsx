@@ -38,6 +38,7 @@ import {
 } from './clientLifecycle.js';
 import { useOptionalDaemonWorkspace } from '../workspace/DaemonWorkspaceProvider.js';
 import {
+  getCurrentModel,
   getCurrentMode,
   getSessionDisplayName,
   getReplayTokenUsage,
@@ -101,6 +102,41 @@ export type {
   DaemonWorkspaceEventSignals,
   SendPromptOptions,
 } from './types.js';
+
+function getDaemonEventServerTimestamp(event: DaemonEvent): number | undefined {
+  const direct = (event as { serverTimestamp?: unknown }).serverTimestamp;
+  if (typeof direct === 'number' && Number.isFinite(direct)) return direct;
+
+  const meta = (event as { _meta?: unknown })._meta;
+  if (meta && typeof meta === 'object' && !Array.isArray(meta)) {
+    const ts = (meta as Record<string, unknown>)['serverTimestamp'];
+    if (typeof ts === 'number' && Number.isFinite(ts)) return ts;
+  }
+
+  const data = (event as { data?: unknown }).data;
+  if (data && typeof data === 'object' && !Array.isArray(data)) {
+    const dataMeta = (data as Record<string, unknown>)['_meta'];
+    if (dataMeta && typeof dataMeta === 'object' && !Array.isArray(dataMeta)) {
+      const ts = (dataMeta as Record<string, unknown>)['serverTimestamp'];
+      if (typeof ts === 'number' && Number.isFinite(ts)) return ts;
+    }
+  }
+
+  return undefined;
+}
+
+function assistantDoneFromTurnEvent(
+  event: DaemonEvent,
+  reason: string,
+): DaemonUiEvent {
+  const serverTimestamp = getDaemonEventServerTimestamp(event);
+  return {
+    type: 'assistant.done',
+    reason,
+    eventId: event.id,
+    ...(serverTimestamp !== undefined ? { serverTimestamp } : {}),
+  };
+}
 
 const DaemonStoreContext = createContext<DaemonTranscriptStore | undefined>(
   undefined,
@@ -477,8 +513,11 @@ export function DaemonSessionProvider({
               ? loadWarningsRef.current?.context
               : undefined,
           ].filter((warning): warning is string => Boolean(warning));
-          const { models, currentModel, contextWindow } =
-            mapProviderStatus(providers);
+          const contextModel = getCurrentModel(context);
+          const { models, currentModel, contextWindow } = mapProviderStatus(
+            providers,
+            contextModel,
+          );
           const { commands, skills } = mapSupportedCommands(supportedCommands);
           const currentMode = getCurrentMode(context);
 
@@ -593,12 +632,13 @@ export function DaemonSessionProvider({
                   const stopReason =
                     (replayEvent.data as DaemonTurnCompleteData | undefined)
                       ?.stopReason ?? 'end_turn';
-                  allUiEvents.push({
-                    type: 'assistant.done',
-                    reason: stopReason,
-                  });
+                  allUiEvents.push(
+                    assistantDoneFromTurnEvent(replayEvent, stopReason),
+                  );
                 } else if (replayEvent.type === 'turn_error') {
-                  allUiEvents.push({ type: 'assistant.done', reason: 'error' });
+                  allUiEvents.push(
+                    assistantDoneFromTurnEvent(replayEvent, 'error'),
+                  );
                 }
               } catch (error) {
                 const message =
@@ -717,15 +757,13 @@ export function DaemonSessionProvider({
                   const stopReason =
                     (event.data as DaemonTurnCompleteData | undefined)
                       ?.stopReason ?? 'end_turn';
-                  epochReplayUiEvents.push({
-                    type: 'assistant.done',
-                    reason: stopReason,
-                  });
+                  epochReplayUiEvents.push(
+                    assistantDoneFromTurnEvent(event, stopReason),
+                  );
                 } else if (event.type === 'turn_error') {
-                  epochReplayUiEvents.push({
-                    type: 'assistant.done',
-                    reason: 'error',
-                  });
+                  epochReplayUiEvents.push(
+                    assistantDoneFromTurnEvent(event, 'error'),
+                  );
                 }
 
                 const replayComplete = uiEvents.some(
@@ -772,8 +810,12 @@ export function DaemonSessionProvider({
               }
               bumpWorkspaceEventSignals(uiEvents, setWorkspaceEventSignals);
               if (uiEvents.length > 0) {
+                const hasGenerationSignal = hasActiveGenerationSignal(uiEvents);
                 setPromptStatus((current) =>
-                  current === 'waiting' ? 'streaming' : current,
+                  current === 'waiting' ||
+                  (current === 'idle' && hasGenerationSignal)
+                    ? 'streaming'
+                    : current,
                 );
               }
               const activePromptSettled = settleActivePromptFromTurnEvent(
@@ -837,11 +879,11 @@ export function DaemonSessionProvider({
                 const stopReason =
                   (event.data as DaemonTurnCompleteData | undefined)
                     ?.stopReason ?? 'end_turn';
-                store.dispatch({ type: 'assistant.done', reason: stopReason });
+                store.dispatch(assistantDoneFromTurnEvent(event, stopReason));
                 setPromptStatus('idle');
               } else if (isObserver && event.type === 'turn_error') {
                 clearPassiveAssistantDoneTimer(passiveAssistantDoneTimerRef);
-                store.dispatch({ type: 'assistant.done', reason: 'error' });
+                store.dispatch(assistantDoneFromTurnEvent(event, 'error'));
                 setPromptStatus('idle');
               } else if (isObserver && hasActiveGenerationSignal(uiEvents)) {
                 schedulePassiveAssistantDone(
@@ -1192,7 +1234,7 @@ function settleActivePromptFromTurnEvent(
   try {
     const result = matchTurnEvent(event, promptId);
     if (!result) return false;
-    store.dispatch({ type: 'assistant.done', reason: result.stopReason });
+    store.dispatch(assistantDoneFromTurnEvent(event, result.stopReason));
     setPromptStatus('idle');
     if (active.resolve) {
       activePrompts.delete(sessionId);
@@ -1205,7 +1247,7 @@ function settleActivePromptFromTurnEvent(
       });
     }
   } catch (error) {
-    store.dispatch({ type: 'assistant.done', reason: 'error' });
+    store.dispatch(assistantDoneFromTurnEvent(event, 'error'));
     setPromptStatus('idle');
     if (active.reject) {
       activePrompts.delete(sessionId);
