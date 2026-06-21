@@ -41,7 +41,7 @@
 .chatMessageRow {
   display: flex;
   justify-content: flex-end;
-  margin: 20px 0;
+  margin: 30px 0;
 }
 
 .chatBubble {

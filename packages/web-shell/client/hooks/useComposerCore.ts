@@ -2,6 +2,7 @@ import { useEffect, useRef, useState, useCallback } from 'react';
 import {
   Decoration,
   EditorView,
+  ViewPlugin,
   WidgetType,
   keymap,
   placeholder,
@@ -24,7 +25,6 @@ import {
   moveCompletionSelection,
   startCompletion,
   type Completion,
-  type CompletionSource,
 } from '@codemirror/autocomplete';
 import { minimalSetup } from 'codemirror';
 import type { CommandInfo } from '../adapters/types';
@@ -34,12 +34,16 @@ import {
   type UseDaemonFollowupSuggestionReturn,
 } from '@qwen-code/webui/daemon-react-sdk';
 import {
-  slashCompletionSource,
   getImplicitTabCompletion,
   getMissingSlashPrefixCompletion,
+  getSlashCommandCompletionResult,
   type SkillInfo,
+  type SlashCommandCompletionResult,
 } from '../completions/slashCompletion';
-import type { CommandDisplayCategoryOrder } from '../utils/commandDisplay';
+import {
+  DEFAULT_COMMAND_CATEGORY_ORDER,
+  type CommandDisplayCategoryOrder,
+} from '../utils/commandDisplay';
 import { createAtCompletionSource } from '../completions/atCompletion';
 import { useInputHistory } from '../hooks/useInputHistory';
 import { useI18n } from '../i18n';
@@ -641,6 +645,88 @@ export interface EditorHandle extends WebShellComposerApi {
 
 export const editableCompartment = new Compartment();
 export const placeholderCompartment = new Compartment();
+export const followupGhostCompartment = new Compartment();
+
+function getFollowupCompletion(
+  text: string,
+  suggestion: string | null | undefined,
+): string | null {
+  if (!suggestion) return null;
+  if (text.length === 0) return suggestion;
+  return suggestion.startsWith(text) ? suggestion : null;
+}
+
+function getFollowupRemainder(
+  text: string,
+  suggestion: string | null | undefined,
+): string | null {
+  const completion = getFollowupCompletion(text, suggestion);
+  if (!completion || text.length === 0) return null;
+  const remainder = completion.slice(text.length);
+  return remainder.length > 0 ? remainder : null;
+}
+
+class FollowupGhostWidget extends WidgetType {
+  constructor(private readonly text: string) {
+    super();
+  }
+
+  eq(other: FollowupGhostWidget): boolean {
+    return this.text === other.text;
+  }
+
+  toDOM(): HTMLElement {
+    const ghost = document.createElement('span');
+    ghost.className = 'cm-followup-ghost';
+    ghost.textContent = this.text;
+    return ghost;
+  }
+
+  ignoreEvent(): boolean {
+    return true;
+  }
+}
+
+function createFollowupGhostExtension(suggestion: string | null) {
+  return ViewPlugin.fromClass(
+    class {
+      decorations: DecorationSet;
+
+      constructor(view: EditorView) {
+        this.decorations = this.buildDecorations(view);
+      }
+
+      update(update: {
+        view: EditorView;
+        docChanged: boolean;
+        selectionSet: boolean;
+      }) {
+        if (update.docChanged || update.selectionSet) {
+          this.decorations = this.buildDecorations(update.view);
+        }
+      }
+
+      private buildDecorations(view: EditorView): DecorationSet {
+        if (!suggestion) return Decoration.none;
+        const selection = view.state.selection.main;
+        const text = view.state.doc.toString();
+        const remainder = getFollowupRemainder(text, suggestion);
+        if (!remainder || !selection.empty || selection.head !== text.length) {
+          return Decoration.none;
+        }
+        return Decoration.set([
+          Decoration.widget({
+            widget: new FollowupGhostWidget(remainder),
+            side: 1,
+          }).range(text.length),
+        ]);
+      }
+    },
+    {
+      decorations: (plugin) => plugin.decorations,
+    },
+  );
+}
 
 // ---- Hook options ----
 
@@ -685,6 +771,51 @@ export interface SearchState {
   handleSearchInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
+export interface SlashMenuState extends SlashCommandCompletionResult {
+  selectedIndex: number;
+}
+
+type MultilineHistoryBoundary = 'editor' | 'handled' | 'history';
+
+function handleMultilineHistoryBoundary(
+  view: EditorView,
+  direction: 'up' | 'down',
+): MultilineHistoryBoundary {
+  const doc = view.state.doc;
+  if (doc.lines <= 1) return 'history';
+
+  const selection = view.state.selection.main;
+  if (!selection.empty) return 'editor';
+
+  const head = selection.head;
+  const line = doc.lineAt(head);
+
+  // Let CodeMirror handle normal multi-line cursor movement first. Once the
+  // cursor is on the edge line, one more arrow key snaps to the true edge;
+  // the next press can browse prompt history instead of feeling stuck.
+  if (direction === 'up') {
+    if (line.number > 1) return 'editor';
+    if (head > line.from) {
+      view.dispatch({
+        selection: { anchor: line.from },
+        scrollIntoView: true,
+      });
+      return 'handled';
+    }
+    return 'history';
+  }
+
+  if (line.number < doc.lines) return 'editor';
+  if (head < line.to) {
+    view.dispatch({
+      selection: { anchor: line.to },
+      scrollIntoView: true,
+    });
+    return 'handled';
+  }
+  return 'history';
+}
+
 export interface UseComposerCoreReturn {
   containerRef: React.RefObject<HTMLDivElement | null>;
   viewRef: React.RefObject<EditorView | null>;
@@ -712,6 +843,7 @@ export interface UseComposerCoreReturn {
   replaceEditorText: (text: string) => void;
   shellMode: boolean;
   setShellMode: React.Dispatch<React.SetStateAction<boolean>>;
+  toggleShellMode: () => void;
   currentMode: string;
   sessionName: string | undefined;
   searchState: SearchState;
@@ -722,6 +854,10 @@ export interface UseComposerCoreReturn {
   disabled: boolean;
   onAcceptFollowup: UseDaemonFollowupSuggestionReturn['onAcceptFollowup'];
   onDismissFollowup: UseDaemonFollowupSuggestionReturn['onDismissFollowup'];
+  slashMenu: SlashMenuState | null;
+  closeSlashMenu: () => void;
+  selectSlashCompletion: (index: number) => boolean;
+  acceptSlashCompletion: (index?: number) => boolean;
 }
 
 export function useComposerCore(
@@ -794,6 +930,13 @@ export function useComposerCore(
   const [shellMode, setShellMode] = useState(false);
   const shellModeRef = useRef(shellMode);
   shellModeRef.current = shellMode;
+  const toggleShellMode = useCallback(() => {
+    if (followupStateRef.current?.isVisible) {
+      onDismissFollowupRef.current?.();
+    }
+    setShellMode((value) => !value);
+    viewRef.current?.focus();
+  }, []);
   const [searchMode, setSearchMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchMatches, setSearchMatches] = useState<string[]>([]);
@@ -818,6 +961,95 @@ export function useComposerCore(
     ) => boolean
   >(() => true);
   const autoTriggerRef = useRef<{ text: string; from: number } | null>(null);
+  const [slashMenu, setSlashMenuState] = useState<SlashMenuState | null>(null);
+  const slashMenuRef = useRef<SlashMenuState | null>(null);
+
+  const setSlashMenu = useCallback((next: SlashMenuState | null) => {
+    slashMenuRef.current = next;
+    setSlashMenuState(next);
+  }, []);
+
+  const refreshSlashMenuForView = useCallback(
+    (view: EditorView | null, preferredIndex?: number) => {
+      if (!view || disabledRef.current || shellModeRef.current) {
+        setSlashMenu(null);
+        return;
+      }
+      const selection = view.state.selection.main;
+      if (!selection.empty) {
+        setSlashMenu(null);
+        return;
+      }
+      const result = getSlashCommandCompletionResult(
+        view.state.doc.toString(),
+        selection.head,
+        commandsRef.current,
+        skillsRef.current,
+        languageRef.current,
+        (key) => tRef.current(key),
+        slashCommandCategoryOrderRef.current ?? DEFAULT_COMMAND_CATEGORY_ORDER,
+      );
+      if (!result) {
+        setSlashMenu(null);
+        return;
+      }
+      const currentIndex =
+        preferredIndex ?? slashMenuRef.current?.selectedIndex ?? 0;
+      const selectedIndex = Math.max(
+        0,
+        Math.min(currentIndex, result.items.length - 1),
+      );
+      setSlashMenu({ ...result, selectedIndex });
+    },
+    [setSlashMenu],
+  );
+
+  const closeSlashMenu = useCallback(() => {
+    setSlashMenu(null);
+  }, [setSlashMenu]);
+
+  const selectSlashCompletion = useCallback(
+    (index: number) => {
+      const current = slashMenuRef.current;
+      if (!current || index < 0 || index >= current.items.length) {
+        return false;
+      }
+      if (current.selectedIndex === index) return true;
+      setSlashMenu({ ...current, selectedIndex: index });
+      return true;
+    },
+    [setSlashMenu],
+  );
+
+  const moveSlashCompletionSelection = useCallback(
+    (direction: 'up' | 'down') => {
+      const current = slashMenuRef.current;
+      if (!current) return false;
+      const delta = direction === 'up' ? -1 : 1;
+      const nextIndex = current.selectedIndex + delta;
+      if (nextIndex < 0 || nextIndex >= current.items.length) {
+        return false;
+      }
+      setSlashMenu({ ...current, selectedIndex: nextIndex });
+      return true;
+    },
+    [setSlashMenu],
+  );
+
+  const acceptSlashCompletion = useCallback((index?: number) => {
+    const view = viewRef.current;
+    const current = slashMenuRef.current;
+    if (!view || !current) return false;
+    const item = current.items[index ?? current.selectedIndex];
+    if (!item) return false;
+    view.dispatch({
+      changes: { from: current.from, to: current.to, insert: item.apply },
+      selection: { anchor: current.from + item.apply.length },
+      scrollIntoView: true,
+    });
+    view.focus();
+    return true;
+  }, []);
 
   // Track whether editor has content for send button state
   const [hasContent, setHasContent] = useState(false);
@@ -868,22 +1100,34 @@ export function useComposerCore(
   shellHistoryActionsRef.current = shellHistory;
   pastedImagesRef.current = pastedImages;
 
+  const getSearchMatches = useCallback((query: string) => {
+    const isShellMode = shellModeRef.current;
+    const history = isShellMode
+      ? shellHistoryActionsRef.current
+      : historyActionsRef.current;
+    const matches = history.getReverseMatches(query);
+    return isShellMode
+      ? matches
+      : matches.filter((item) => !item.trimStart().startsWith('/'));
+  }, []);
+
   const openHistorySearch = useCallback(() => {
     if (disabledRef.current) return;
     const view = viewRef.current;
     if (!view) return;
+    closeSlashMenu();
     const query = view.state.doc.toString();
     searchDraftRef.current = query;
     setSearchMode(true);
-    setSearchQuery(query);
+    setSearchQuery('');
     const history = shellModeRef.current
       ? shellHistoryActionsRef.current
       : historyActionsRef.current;
-    setSearchMatches(history.getReverseMatches(query));
+    setSearchMatches(getSearchMatches(''));
     setSearchActiveIndex(0);
     history.resetSearch();
     setTimeout(() => searchInputRef.current?.focus(), 0);
-  }, []);
+  }, [closeSlashMenu, getSearchMatches]);
   const openHistorySearchRef = useRef(openHistorySearch);
   openHistorySearchRef.current = openHistorySearch;
 
@@ -1021,6 +1265,7 @@ export function useComposerCore(
         images.length > 0 ? [...images] : undefined,
       );
       if (accepted === false) return true;
+      setSlashMenu(null);
       onDismissFollowupRef.current?.();
       pendingPastesRef.current.clear();
       nextPasteIdRef.current = 1;
@@ -1041,14 +1286,7 @@ export function useComposerCore(
     };
     submitTextRef.current = submitText;
 
-    const completionSources: CompletionSource[] = [
-      slashCompletionSource(
-        () => commandsRef.current,
-        () => skillsRef.current,
-        () => languageRef.current,
-        (key) => tRef.current(key),
-        () => slashCommandCategoryOrderRef.current,
-      ),
+    const completionSources = [
       createAtCompletionSource(
         () => workspaceActionsRef.current?.globWorkspace,
       ),
@@ -1065,16 +1303,16 @@ export function useComposerCore(
     ): boolean => {
       const followup = followupStateRef.current;
       const suggestion = followup?.suggestion;
-      if (
-        view.state.doc.toString().length !== 0 ||
-        !followup?.isVisible ||
-        !suggestion
-      ) {
+      const completion = getFollowupCompletion(
+        view.state.doc.toString(),
+        suggestion,
+      );
+      if (!followup?.isVisible || !completion) {
         return false;
       }
       view.dispatch({
-        changes: { from: 0, to: view.state.doc.length, insert: suggestion },
-        selection: { anchor: suggestion.length },
+        changes: { from: 0, to: view.state.doc.length, insert: completion },
+        selection: { anchor: completion.length },
         scrollIntoView: true,
       });
       view.focus();
@@ -1130,15 +1368,18 @@ export function useComposerCore(
       {
         key: 'Enter',
         run: (view) => {
+          if (slashMenuRef.current) {
+            return acceptSlashCompletion();
+          }
           if (completionStatus(view.state) === 'active') return false;
           const followup = followupStateRef.current;
-          if (
-            view.state.doc.toString().length === 0 &&
-            followup?.isVisible &&
-            followup.suggestion
-          ) {
+          const followupCompletion = getFollowupCompletion(
+            view.state.doc.toString(),
+            followup?.suggestion,
+          );
+          if (followup?.isVisible && followupCompletion) {
             onAcceptFollowupRef.current?.('enter', { skipOnAccept: true });
-            return submitText(view, followup.suggestion);
+            return submitText(view, followupCompletion);
           }
           return submitText(view);
         },
@@ -1162,6 +1403,10 @@ export function useComposerCore(
       {
         key: 'Escape',
         run: () => {
+          if (slashMenuRef.current) {
+            closeSlashMenu();
+            return true;
+          }
           if (shellModeRef.current) {
             setShellMode(false);
             return true;
@@ -1185,6 +1430,7 @@ export function useComposerCore(
       {
         key: 'ArrowUp',
         run: (view) => {
+          if (moveSlashCompletionSelection('up')) return true;
           const history = shellModeRef.current
             ? shellHistoryActionsRef.current
             : historyActionsRef.current;
@@ -1195,7 +1441,9 @@ export function useComposerCore(
           if (isBrowsingHistory) {
             closeCompletion(view);
           }
-          if (view.state.doc.lines > 1) return false;
+          const multilineBoundary = handleMultilineHistoryBoundary(view, 'up');
+          if (multilineBoundary === 'handled') return true;
+          if (multilineBoundary === 'editor') return false;
           if (shellModeRef.current) {
             const current = view.state.doc.toString();
             const prev = history.navigateUp(current);
@@ -1233,6 +1481,7 @@ export function useComposerCore(
       {
         key: 'ArrowDown',
         run: (view) => {
+          if (moveSlashCompletionSelection('down')) return true;
           const history = shellModeRef.current
             ? shellHistoryActionsRef.current
             : historyActionsRef.current;
@@ -1243,7 +1492,12 @@ export function useComposerCore(
           if (isBrowsingHistory) {
             closeCompletion(view);
           }
-          if (view.state.doc.lines > 1) return false;
+          const multilineBoundary = handleMultilineHistoryBoundary(
+            view,
+            'down',
+          );
+          if (multilineBoundary === 'handled') return true;
+          if (multilineBoundary === 'editor') return false;
           if (shellModeRef.current) {
             const next = history.navigateDown();
             if (next === null) return true;
@@ -1276,6 +1530,9 @@ export function useComposerCore(
         run: (view) => {
           if (acceptFollowupIntoEditor(view, 'tab')) {
             return true;
+          }
+          if (slashMenuRef.current) {
+            return acceptSlashCompletion();
           }
           if (completionStatus(view.state) === 'active') {
             return acceptCompletion(view);
@@ -1336,10 +1593,7 @@ export function useComposerCore(
       },
     ]);
 
-    const slashCompletionRestarter = EditorView.updateListener.of((update) => {
-      if (!update.docChanged && !update.selectionSet) {
-        return;
-      }
+    const composerUpdateListener = EditorView.updateListener.of((update) => {
       if (update.docChanged && pendingPastesRef.current.size > 0) {
         const nextPasteId = prunePendingPastes(
           pendingPastesRef.current,
@@ -1349,21 +1603,9 @@ export function useComposerCore(
           nextPasteIdRef.current = nextPasteId;
         }
       }
-      const selection = update.state.selection.main;
-      if (!selection.empty) return;
-      const line = update.state.doc.lineAt(selection.head);
-      const shouldCompleteSlash = line.from === 0 && line.text.startsWith('/');
-      if (!shouldCompleteSlash) return;
-      window.setTimeout(() => {
-        const view = viewRef.current;
-        if (!view || completionStatus(view.state) === 'active') return;
-        const nextSelection = view.state.selection.main;
-        if (!nextSelection.empty) return;
-        const nextLine = view.state.doc.lineAt(nextSelection.head);
-        if (nextLine.from === 0 && nextLine.text.startsWith('/')) {
-          startCompletion(view);
-        }
-      }, 0);
+      if (update.docChanged || update.selectionSet) {
+        refreshSlashMenuForView(update.view);
+      }
     });
 
     let prevCompletionActive = false;
@@ -1444,6 +1686,7 @@ export function useComposerCore(
         }),
         tooltips({ parent: tooltipPortal }),
         placeholderCompartment.of(placeholder('')),
+        followupGhostCompartment.of(createFollowupGhostExtension(null)),
         EditorView.lineWrapping,
         editableCompartment.of(EditorView.editable.of(true)),
         inputHighlight(
@@ -1452,7 +1695,7 @@ export function useComposerCore(
         ),
         inputHighlightTheme,
         inlineComposerTagField,
-        slashCompletionRestarter,
+        composerUpdateListener,
         triggerCleanupListener,
         // Update hasContent state when document changes
         EditorView.updateListener.of((update) => {
@@ -1467,18 +1710,11 @@ export function useComposerCore(
         }),
         EditorView.inputHandler.of((view, from, to, insert) => {
           if (
-            insert.length > 0 &&
-            view.state.doc.toString() === '' &&
-            followupStateRef.current?.isVisible
-          ) {
-            onDismissFollowupRef.current?.();
-          }
-          if (
             insert === '!' &&
             view.state.doc.toString() === '' &&
             completionStatus(view.state) !== 'active'
           ) {
-            setShellMode((value) => !value);
+            toggleShellMode();
             return true;
           }
           if (
@@ -1492,6 +1728,10 @@ export function useComposerCore(
           return false;
         }),
         EditorView.domEventHandlers({
+          blur() {
+            closeSlashMenu();
+            return false;
+          },
           paste(event) {
             const items = event.clipboardData?.items;
             if (!items) return false;
@@ -1599,14 +1839,28 @@ export function useComposerCore(
     const view = viewRef.current;
     if (!view) return;
     const followupSuggestion =
-      followupState?.isVisible && followupState.suggestion
+      !disabled && followupState?.isVisible && followupState.suggestion
         ? followupState.suggestion
         : null;
-    const nextPlaceholder = followupSuggestion ?? placeholderText;
+    const nextPlaceholder =
+      followupSuggestion ??
+      (shellMode ? t('editor.shellPlaceholder') : placeholderText);
     view.dispatch({
-      effects: placeholderCompartment.reconfigure(placeholder(nextPlaceholder)),
+      effects: [
+        placeholderCompartment.reconfigure(placeholder(nextPlaceholder)),
+        followupGhostCompartment.reconfigure(
+          createFollowupGhostExtension(followupSuggestion),
+        ),
+      ],
     });
-  }, [placeholderText, followupState?.isVisible, followupState?.suggestion]);
+  }, [
+    disabled,
+    placeholderText,
+    shellMode,
+    t,
+    followupState?.isVisible,
+    followupState?.suggestion,
+  ]);
 
   useEffect(() => {
     const view = viewRef.current;
@@ -1629,15 +1883,41 @@ export function useComposerCore(
     }, 0);
   }, [language]);
 
+  const slashMenuDataKey = [
+    commands
+      .map((command) =>
+        [
+          command.name,
+          command.description ?? '',
+          command.source ?? '',
+          command.displayCategory ?? '',
+          command.argumentHint ?? '',
+          command.subcommands?.join(',') ?? '',
+        ].join('\u0000'),
+      )
+      .join('\u0001'),
+    skills
+      .map((skill) => [skill.name, skill.description].join('\u0000'))
+      .join('\u0001'),
+    slashCommandCategoryOrder?.join('|') ?? '',
+  ].join('\u0002');
+
+  useEffect(() => {
+    if (slashMenuRef.current) {
+      refreshSlashMenuForView(viewRef.current);
+    }
+  }, [slashMenuDataKey, language, refreshSlashMenuForView]);
+
   useEffect(() => {
     const view = viewRef.current;
     if (!view) return;
     if (dialogOpen) {
+      closeSlashMenu();
       view.contentDOM.blur();
     } else {
       view.focus();
     }
-  }, [dialogOpen]);
+  }, [dialogOpen, closeSlashMenu]);
 
   // Global keydown handler for focus-stealing
   useEffect(() => {
@@ -1652,12 +1932,15 @@ export function useComposerCore(
       if (!isWithinContainer && !isBodyFocused) return;
       const view = viewRef.current;
       const followup = followupStateRef.current;
+      const followupCompletion = getFollowupCompletion(
+        view?.state.doc.toString() ?? '',
+        followup?.suggestion,
+      );
       if (
         view &&
         !view.hasFocus &&
         followup?.isVisible &&
-        followup.suggestion &&
-        view.state.doc.toString().length === 0 &&
+        followupCompletion &&
         !isEditableTarget(event.target)
       ) {
         if (
@@ -1673,9 +1956,9 @@ export function useComposerCore(
             changes: {
               from: 0,
               to: view.state.doc.length,
-              insert: followup.suggestion,
+              insert: followupCompletion,
             },
-            selection: { anchor: followup.suggestion.length },
+            selection: { anchor: followupCompletion.length },
             scrollIntoView: true,
           });
           view.focus();
@@ -1695,9 +1978,9 @@ export function useComposerCore(
             changes: {
               from: 0,
               to: view.state.doc.length,
-              insert: followup.suggestion,
+              insert: followupCompletion,
             },
-            selection: { anchor: followup.suggestion.length },
+            selection: { anchor: followupCompletion.length },
             scrollIntoView: true,
           });
           view.focus();
@@ -1713,11 +1996,7 @@ export function useComposerCore(
 
       event.preventDefault();
       if (event.key === '!' && view.state.doc.toString() === '') {
-        if (followupStateRef.current?.isVisible) {
-          onDismissFollowupRef.current?.();
-        }
-        setShellMode((value) => !value);
-        view.focus();
+        toggleShellMode();
         return;
       }
       const selection = view.state.selection.main;
@@ -1727,7 +2006,11 @@ export function useComposerCore(
         scrollIntoView: true,
       });
       view.focus();
-      if (event.key === '/' || event.key === '@') {
+      if (event.key === '/') {
+        window.setTimeout(() => {
+          refreshSlashMenuForView(viewRef.current);
+        }, 0);
+      } else if (event.key === '@') {
         window.setTimeout(() => {
           const nextView = viewRef.current;
           if (nextView && nextView.hasFocus) {
@@ -1739,7 +2022,7 @@ export function useComposerCore(
 
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [searchMode, dialogOpen]);
+  }, [searchMode, dialogOpen, refreshSlashMenuForView, toggleShellMode]);
 
   // ---- Imperative methods ----
 
@@ -1768,14 +2051,15 @@ export function useComposerCore(
       let insert = text;
       let skipInsert = false;
       let caretOverride: number | null = null;
-      let openMenu = text === '/' || text === '@';
+      const openAtMenu = text === '@';
+      let openSlashMenu = text === '/';
       if (text === '/') {
         const line = view.state.doc.lineAt(selection.head);
         if (line.text.startsWith('/')) {
           skipInsert = true;
         } else if (view.state.doc.length > 0) {
           skipInsert = true;
-          openMenu = false;
+          openSlashMenu = false;
         }
       } else if (text === '@') {
         const before =
@@ -1801,7 +2085,7 @@ export function useComposerCore(
           selection: { anchor: selection.from + insert.length },
           scrollIntoView: true,
         });
-        if (openMenu) {
+        if (openAtMenu) {
           autoTriggerRef.current = { text: insert, from: selection.from };
         }
       } else if (caretOverride !== null) {
@@ -1811,7 +2095,11 @@ export function useComposerCore(
         });
       }
       view.focus();
-      if (openMenu) {
+      if (openSlashMenu) {
+        window.setTimeout(() => {
+          refreshSlashMenuForView(viewRef.current);
+        }, 0);
+      } else if (openAtMenu) {
         window.setTimeout(() => {
           const nextView = viewRef.current;
           if (nextView && nextView.hasFocus) {
@@ -1820,7 +2108,7 @@ export function useComposerCore(
         }, 0);
       }
     },
-    [],
+    [refreshSlashMenuForView],
   );
 
   const getText = useCallback(() => {
@@ -2169,18 +2457,6 @@ export function useComposerCore(
       if (searchMatches.length > 0) {
         setSearchActiveIndex((index) => (index + 1) % searchMatches.length);
       }
-    } else if (e.key === 'ArrowDown') {
-      e.preventDefault();
-      if (searchMatches.length > 0) {
-        setSearchActiveIndex((index) => (index + 1) % searchMatches.length);
-      }
-    } else if (e.key === 'ArrowUp') {
-      e.preventDefault();
-      if (searchMatches.length > 0) {
-        setSearchActiveIndex(
-          (index) => (index - 1 + searchMatches.length) % searchMatches.length,
-        );
-      }
     }
   };
 
@@ -2190,7 +2466,7 @@ export function useComposerCore(
     const history = shellModeRef.current
       ? shellHistoryActionsRef.current
       : historyActionsRef.current;
-    setSearchMatches(history.getReverseMatches(q));
+    setSearchMatches(getSearchMatches(q));
     setSearchActiveIndex(0);
     history.resetSearch();
   };
@@ -2252,6 +2528,7 @@ export function useComposerCore(
     replaceEditorText,
     shellMode,
     setShellMode,
+    toggleShellMode,
     currentMode,
     sessionName,
     searchState: {
@@ -2277,5 +2554,9 @@ export function useComposerCore(
       onAcceptFollowup as UseDaemonFollowupSuggestionReturn['onAcceptFollowup'],
     onDismissFollowup:
       onDismissFollowup as UseDaemonFollowupSuggestionReturn['onDismissFollowup'],
+    slashMenu,
+    closeSlashMenu,
+    selectSlashCompletion,
+    acceptSlashCompletion,
   };
 }

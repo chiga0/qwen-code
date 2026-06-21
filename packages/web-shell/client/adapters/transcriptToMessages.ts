@@ -38,6 +38,10 @@ type ExtendedDaemonStatusTranscriptBlock = DaemonStatusTranscriptBlock & {
   data?: unknown;
 };
 
+type ExtendedDaemonTextTranscriptBlock = DaemonTextTranscriptBlock & {
+  meta?: Record<string, unknown>;
+};
+
 interface TranscriptMessageLabels {
   promptCancelled?: string;
 }
@@ -51,6 +55,33 @@ function isIgnoredWebShellStatus(text: string): boolean {
     text.startsWith('language_changed (unrecognized daemon event):') ||
     text.startsWith('Model switched: ')
   );
+}
+
+function isBackgroundNotificationAssistantBlock(
+  block: DaemonTextTranscriptBlock,
+): boolean {
+  const extended = block as ExtendedDaemonTextTranscriptBlock;
+  const meta = extended.meta;
+  if (
+    meta?.['source'] === 'background_notification' &&
+    meta['qwenDiscreteMessage'] === true &&
+    meta['backgroundTask'] !== undefined
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function normalizeAssistantTextBlock(
+  block: DaemonTextTranscriptBlock,
+): DaemonTextTranscriptBlock | null {
+  if (isBackgroundNotificationAssistantBlock(block)) return null;
+  if (!block.text && !block.usage) return null;
+  return block;
+}
+
+function isTextBlockEmpty(block: DaemonTextTranscriptBlock): boolean {
+  return block.text.length === 0;
 }
 
 function parseDaemonTodoItemsFromEntries(
@@ -154,7 +185,10 @@ export function transcriptBlocksToDaemonMessages(
       }
 
       case 'assistant': {
-        const textBlock = block as DaemonTextTranscriptBlock;
+        const textBlock = normalizeAssistantTextBlock(
+          block as DaemonTextTranscriptBlock,
+        );
+        if (!textBlock) break;
 
         const parentSubAgent = textBlock.parentToolCallId
           ? toolsByCallId.get(textBlock.parentToolCallId)
@@ -220,7 +254,12 @@ export function transcriptBlocksToDaemonMessages(
           currentAssistantIdx !== null
             ? messages[currentAssistantIdx]
             : undefined;
-        if (target && target.role === 'assistant' && !needsNewContentMessage) {
+        if (
+          target &&
+          target.role === 'assistant' &&
+          !needsNewContentMessage &&
+          !isTextBlockEmpty(textBlock)
+        ) {
           const usage = mergeAssistantUsage(target.usage, textBlock.usage);
           messages[currentAssistantIdx!] = {
             ...target,
@@ -230,7 +269,7 @@ export function transcriptBlocksToDaemonMessages(
           };
           needsNewContentMessage = false;
           currentThinkingIdx = null;
-        } else {
+        } else if (!isTextBlockEmpty(textBlock)) {
           messages.push({
             id: block.id,
             role: 'assistant',
@@ -242,6 +281,12 @@ export function transcriptBlocksToDaemonMessages(
           currentAssistantIdx = messages.length - 1;
           currentThinkingIdx = null;
           needsNewContentMessage = false;
+        } else if (textBlock.usage && target && target.role === 'assistant') {
+          const usage = mergeAssistantUsage(target.usage, textBlock.usage);
+          messages[currentAssistantIdx!] = {
+            ...target,
+            ...(usage ? { usage } : {}),
+          };
         }
         break;
       }

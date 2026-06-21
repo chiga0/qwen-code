@@ -7,7 +7,7 @@
   border-radius: 4px;
   padding: 10px 14px;
   max-width: min(var(--chat-regular-content-width, 1000px), calc(100vw - 64px));
-  background: var(--bg-primary);
+  background: var(--command-panel-bg);
 }
 
 .title {

@@ -125,6 +125,36 @@ function toolBlock(
 }
 
 describe('transcriptBlocksToDaemonMessages', () => {
+  it('hides background task notifications by metadata', () => {
+    const messages = transcriptBlocksToDaemonMessages([
+      textBlock(
+        'bg-1',
+        'assistant',
+        'Background agent "general-purpose: 查询百度云活动信息" completed.',
+        1,
+        false,
+        {
+          meta: {
+            source: 'background_notification',
+            qwenDiscreteMessage: true,
+            backgroundTask: { taskId: 'task-1', status: 'completed' },
+          },
+        },
+      ),
+      textBlock('assistant-1', 'assistant', '正常回复', 2),
+    ]);
+
+    expect(messages).toEqual([
+      {
+        id: 'assistant-1',
+        role: 'assistant',
+        content: '正常回复',
+        isStreaming: false,
+        timestamp: 2,
+      },
+    ]);
+  });
+
   it('renders daemon plan status blocks as plan messages', () => {
     const plan = {
       sessionUpdate: 'plan',

@@ -7,7 +7,7 @@
   border: 1px solid var(--border-color);
   border-radius: 8px;
   color: var(--text-primary);
-  background: var(--bg-surface);
+  background: var(--command-panel-bg);
   font-family: var(--font-mono);
   font-size: 13px;
   line-height: 1.45;

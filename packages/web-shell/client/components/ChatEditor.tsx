@@ -7,7 +7,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { DAEMON_APPROVAL_MODES } from '@qwen-code/webui/daemon-react-sdk';
 import type { CommandInfo } from '../adapters/types';
 import type { UseDaemonFollowupSuggestionReturn } from '@qwen-code/webui/daemon-react-sdk';
@@ -22,10 +22,12 @@ import {
 import {
   useComposerCore,
   type EditorHandle,
+  type SlashMenuState,
   getComposerTagDisplay,
   getComposerTagLabel,
   getComposerTagValue,
 } from '../hooks/useComposerCore';
+import { ModeIcon } from './ModeIcon';
 import './Editor.module.css';
 import styles from './ChatEditor.module.css';
 
@@ -101,6 +103,18 @@ const CHAT_EDITOR_THEME = {
   '.cm-placeholder': {
     color: 'var(--text-dimmed, #666)',
   },
+  '.cm-followup-ghost': {
+    color: 'var(--text-dimmed, #666)',
+    opacity: '0.72',
+    pointerEvents: 'none',
+    userSelect: 'none',
+  },
+  '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
+    backgroundColor: 'var(--chat-editor-selection-bg)',
+  },
+  '.cm-content ::selection': {
+    backgroundColor: 'var(--chat-editor-selection-bg)',
+  },
   '.cm-cursor': {
     borderLeftColor: 'var(--accent-color, #4a9eff)',
     borderLeftWidth: '2px',
@@ -122,6 +136,105 @@ function SendIcon() {
 
 function StopIcon() {
   return <span className={styles.stopIcon} aria-hidden="true" />;
+}
+
+function QuickActionsIcon() {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path
+        d="M6.8 7.2h.01M12 7.2h.01M17.2 7.2h.01M6.8 12h.01M12 12h.01M17.2 12h.01M6.8 16.8h.01M12 16.8h.01M17.2 16.8h.01"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.4"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
+
+function attachComposerGlow(glowRootEl: HTMLElement, inputEl: HTMLElement) {
+  let glowRaf: number | undefined;
+  let pulseRaf: number | undefined;
+  let pulseDecayTimer: number | undefined;
+  let typingTimer: number | undefined;
+  let glowCurrent = 0;
+  let pulseCurrent = 0;
+
+  const apply = (on: number, pulse: number) => {
+    glowRootEl.style.setProperty('--dac-glow-on', on.toFixed(4));
+    glowRootEl.style.setProperty('--dac-glow-pulse', pulse.toFixed(4));
+  };
+
+  const animateGlow = (target: number) => {
+    if (glowRaf !== undefined) window.cancelAnimationFrame(glowRaf);
+    const start = glowCurrent;
+    const diff = target - start;
+    if (Math.abs(diff) < 0.001) {
+      glowCurrent = target;
+      apply(target, pulseCurrent);
+      return;
+    }
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - t0) / 220, 1);
+      glowCurrent = start + diff * (1 - (1 - t) ** 2);
+      apply(glowCurrent, pulseCurrent);
+      glowRaf = t < 1 ? window.requestAnimationFrame(tick) : undefined;
+    };
+    glowRaf = window.requestAnimationFrame(tick);
+  };
+
+  const animatePulseDecay = () => {
+    if (pulseRaf !== undefined) window.cancelAnimationFrame(pulseRaf);
+    const start = pulseCurrent;
+    const t0 = performance.now();
+    const tick = (now: number) => {
+      const t = Math.min((now - t0) / 300, 1);
+      pulseCurrent = start * (1 - t);
+      apply(glowCurrent, pulseCurrent);
+      pulseRaf = t < 1 ? window.requestAnimationFrame(tick) : undefined;
+    };
+    pulseRaf = window.requestAnimationFrame(tick);
+  };
+
+  const setTyping = (on: boolean) => {
+    if (on) glowRootEl.setAttribute('data-dac-typing', '');
+    else glowRootEl.removeAttribute('data-dac-typing');
+  };
+
+  const onFocus = () => animateGlow(1);
+  const onBlur = () => {
+    animateGlow(0);
+    setTyping(false);
+    if (typingTimer !== undefined) window.clearTimeout(typingTimer);
+  };
+  const onKeydown = () => {
+    if (pulseRaf !== undefined) window.cancelAnimationFrame(pulseRaf);
+    if (pulseDecayTimer !== undefined) window.clearTimeout(pulseDecayTimer);
+    pulseCurrent = 1;
+    apply(glowCurrent, 1);
+    pulseDecayTimer = window.setTimeout(animatePulseDecay, 100);
+    setTyping(true);
+    if (typingTimer !== undefined) window.clearTimeout(typingTimer);
+    typingTimer = window.setTimeout(() => setTyping(false), 650);
+  };
+
+  inputEl.addEventListener('focus', onFocus);
+  inputEl.addEventListener('blur', onBlur);
+  inputEl.addEventListener('keydown', onKeydown);
+  if (document.activeElement === inputEl) animateGlow(1);
+
+  return () => {
+    if (glowRaf !== undefined) window.cancelAnimationFrame(glowRaf);
+    if (pulseRaf !== undefined) window.cancelAnimationFrame(pulseRaf);
+    if (pulseDecayTimer !== undefined) window.clearTimeout(pulseDecayTimer);
+    if (typingTimer !== undefined) window.clearTimeout(typingTimer);
+    inputEl.removeEventListener('focus', onFocus);
+    inputEl.removeEventListener('blur', onBlur);
+    inputEl.removeEventListener('keydown', onKeydown);
+    apply(0, 0);
+    setTyping(false);
+  };
 }
 
 function WidthModeIcon({ mode }: { mode: '1000' | 'wide' }) {
@@ -185,80 +298,80 @@ interface DropdownItem {
   icon?: ReactNode;
 }
 
-function ModeIcon({ mode }: { mode: string }) {
-  if (mode === 'default') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M7.8 11.8V5.6a1.4 1.4 0 0 1 2.8 0v5.2M10.6 10V4.7a1.4 1.4 0 0 1 2.8 0v6.1M13.4 10.8V6.1a1.4 1.4 0 0 1 2.8 0v6.2M16.2 12.2V8.7a1.4 1.4 0 0 1 2.8 0v4.9c0 4-2.7 6.8-6.4 6.8h-.9c-2.4 0-4.2-1-5.5-3.1L4.4 14a1.45 1.45 0 0 1 2.5-1.45l1.2 2.1"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (mode === 'auto-edit' || mode === 'auto') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <rect
-          x="4"
-          y="5"
-          width="16"
-          height="14"
-          rx="4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
-        <path
-          d="M8 10h.01M8 14h.01M11 12h5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  if (mode === 'yolo') {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path
-          d="M12 3.5 19 6v5.2c0 4.1-2.8 7.8-7 9.3-4.2-1.5-7-5.2-7-9.3V6l7-2.5Z"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        <path
-          d="M12 8v4.2M12 15.6h.01"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path
-        d="M6 18c.7-2.7 2.2-4 4.5-4H12M7 6h10M7 10h7M17.5 14.5l2 2-2 2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
+interface QuickActionItem {
+  id: string;
+  label: string;
+  action:
+    | {
+        type: 'run';
+        command: string;
+      }
+    | {
+        type: 'insert';
+        text: string;
+      }
+    | {
+        type: 'shell';
+      };
 }
+
+interface QuickKeyItem {
+  id: string;
+  label: string;
+  descriptionKey: string;
+  event: KeyboardEventInit & { key: string };
+}
+
+const QUICK_KEY_ITEMS: QuickKeyItem[] = [
+  {
+    id: 'tab',
+    label: 'Tab',
+    descriptionKey: 'quickKeys.tab',
+    event: { key: 'Tab', code: 'Tab' },
+  },
+  {
+    id: 'escape',
+    label: 'Esc',
+    descriptionKey: 'quickKeys.escape',
+    event: { key: 'Escape', code: 'Escape' },
+  },
+  {
+    id: 'arrow-up',
+    label: '↑',
+    descriptionKey: 'quickKeys.history',
+    event: { key: 'ArrowUp', code: 'ArrowUp' },
+  },
+  {
+    id: 'arrow-down',
+    label: '↓',
+    descriptionKey: 'quickKeys.history',
+    event: { key: 'ArrowDown', code: 'ArrowDown' },
+  },
+  {
+    id: 'arrow-left',
+    label: '←',
+    descriptionKey: 'quickKeys.cursor',
+    event: { key: 'ArrowLeft', code: 'ArrowLeft' },
+  },
+  {
+    id: 'arrow-right',
+    label: '→',
+    descriptionKey: 'quickKeys.cursor',
+    event: { key: 'ArrowRight', code: 'ArrowRight' },
+  },
+  {
+    id: 'ctrl-l',
+    label: 'Ctrl+L',
+    descriptionKey: 'help.shortcut.clear',
+    event: { key: 'l', code: 'KeyL', ctrlKey: true },
+  },
+  {
+    id: 'ctrl-r',
+    label: 'Ctrl+R',
+    descriptionKey: 'quickKeys.searchHistory',
+    event: { key: 'r', code: 'KeyR', ctrlKey: true },
+  },
+];
 
 function CheckIcon() {
   return (
@@ -394,6 +507,214 @@ function ToolbarDropdown({
   );
 }
 
+function SlashCommandPanel({
+  menu,
+  onSelect,
+  onAccept,
+}: {
+  menu: SlashMenuState;
+  onSelect: (index: number) => boolean;
+  onAccept: (index?: number) => boolean;
+}) {
+  const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const [hoverDetail, setHoverDetail] = useState<{
+    label: string;
+    detail: string;
+    left: number;
+    top?: number;
+    bottom?: number;
+    maxHeight: number;
+  } | null>(null);
+
+  useEffect(() => {
+    itemRefs.current[menu.selectedIndex]?.scrollIntoView({
+      block: 'nearest',
+    });
+  }, [menu.items, menu.selectedIndex]);
+
+  useEffect(() => {
+    setHoverDetail(null);
+  }, [menu.items]);
+
+  const measureText = (text: string) => Array.from(text).length;
+  const maxLabelLength = Math.max(
+    ...menu.items.map((item) => measureText(item.label)),
+    0,
+  );
+  const maxDetailLength = Math.max(
+    ...menu.items.map((item) => measureText(item.detail ?? '')),
+    0,
+  );
+  const hasDetailColumn = maxDetailLength > 0;
+  const panelStyle = {
+    '--slash-command-col': `${Math.min(
+      Math.max(maxLabelLength + 1, 10),
+      24,
+    )}ch`,
+    '--slash-desc-col': hasDetailColumn
+      ? `${Math.min(Math.max(maxDetailLength + 1, 18), 36)}ch`
+      : '0px',
+    '--slash-column-gap': hasDetailColumn ? '2ch' : '0px',
+  } as CSSProperties;
+
+  let lastSection: string | undefined;
+
+  return (
+    <div
+      className={styles.slashPanel}
+      style={panelStyle}
+      role="listbox"
+      onMouseDown={(event) => event.preventDefault()}
+      onMouseLeave={() => setHoverDetail(null)}
+    >
+      <div className={styles.slashPanelBody}>
+        <div className={styles.slashList} onScroll={() => setHoverDetail(null)}>
+          {menu.items.map((item, index) => {
+            const section = item.section;
+            const canShowDetail =
+              item.type === 'command-info' || item.type === 'skill';
+            const showSection =
+              menu.kind === 'command' &&
+              index > 0 &&
+              section !== undefined &&
+              section !== lastSection;
+            lastSection = section ?? lastSection;
+            return (
+              <div key={`${item.id}:${index}`} className={styles.slashEntry}>
+                {showSection && <div className={styles.slashSection} />}
+                <button
+                  ref={(node) => {
+                    itemRefs.current[index] = node;
+                  }}
+                  type="button"
+                  role="option"
+                  aria-selected={index === menu.selectedIndex}
+                  className={`${styles.slashItem} ${
+                    index === menu.selectedIndex ? styles.slashItemActive : ''
+                  }`}
+                  onMouseEnter={(event) => {
+                    onSelect(index);
+                    if (!canShowDetail || !item.detail) {
+                      setHoverDetail(null);
+                      return;
+                    }
+                    const row = event.currentTarget;
+                    const gap = 8;
+                    const detailMaxHeight = 180;
+                    const rowRect = row.getBoundingClientRect();
+                    const detailWidth = 320;
+                    const left = Math.min(
+                      rowRect.left + Math.min(220, rowRect.width * 0.34),
+                      window.innerWidth - detailWidth - 12,
+                    );
+                    const spaceBelow =
+                      window.innerHeight - rowRect.bottom - gap - 12;
+                    const spaceAbove = rowRect.top - gap - 12;
+                    const showBelow =
+                      spaceBelow >= 96 || spaceBelow >= spaceAbove;
+                    const maxHeight = Math.max(
+                      72,
+                      Math.min(
+                        detailMaxHeight,
+                        showBelow ? spaceBelow : spaceAbove,
+                      ),
+                    );
+                    setHoverDetail({
+                      label: item.label,
+                      detail: item.detail,
+                      left: Math.max(12, left),
+                      ...(showBelow
+                        ? { top: rowRect.bottom + gap }
+                        : { bottom: window.innerHeight - rowRect.top + gap }),
+                      maxHeight,
+                    });
+                  }}
+                  onMouseDown={(event) => {
+                    event.preventDefault();
+                    event.stopPropagation();
+                    onAccept(index);
+                  }}
+                >
+                  <span className={styles.slashCommand}>{item.label}</span>
+                  {item.detail && (
+                    <span className={styles.slashDescription}>
+                      {item.detail}
+                    </span>
+                  )}
+                </button>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      {hoverDetail && (
+        <div
+          className={styles.slashDetail}
+          style={{
+            left: hoverDetail.left,
+            top: hoverDetail.top,
+            bottom: hoverDetail.bottom,
+            maxHeight: hoverDetail.maxHeight,
+          }}
+        >
+          <div className={styles.slashDetailCommand}>{hoverDetail.label}</div>
+          <div className={styles.slashDetailText}>{hoverDetail.detail}</div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function QuickActionsPanel({
+  actions,
+  onRun,
+  onPressKey,
+}: {
+  actions: readonly QuickActionItem[];
+  onRun: (action: QuickActionItem) => void;
+  onPressKey: (item: QuickKeyItem) => void;
+}) {
+  const { t } = useI18n();
+
+  return (
+    <div
+      className={styles.quickActionsPanel}
+      onMouseDown={(event) => event.stopPropagation()}
+      onClick={(event) => event.stopPropagation()}
+    >
+      <div className={styles.quickActionsHeader}>{t('quickActions.title')}</div>
+      <div className={styles.quickActionsLayout}>
+        <div className={styles.quickActionsGrid}>
+          {actions.map((action) => (
+            <button
+              key={action.id}
+              type="button"
+              className={styles.quickAction}
+              onClick={() => onRun(action)}
+            >
+              <span className={styles.quickActionLabel}>{action.label}</span>
+            </button>
+          ))}
+        </div>
+        <div className={styles.quickKeysGrid}>
+          {QUICK_KEY_ITEMS.map((item) => (
+            <button
+              key={item.id}
+              type="button"
+              className={styles.quickKey}
+              title={t(item.descriptionKey)}
+              onMouseDown={(event) => event.preventDefault()}
+              onClick={() => onPressKey(item)}
+            >
+              <span className={styles.quickKeyLabel}>{item.label}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export const ChatEditor = memo(
   forwardRef<EditorHandle, ChatEditorProps>(function ChatEditor(props, ref) {
     const {
@@ -466,10 +787,42 @@ export const ChatEditor = memo(
 
     const [modeDropdownOpen, setModeDropdownOpen] = useState(false);
     const [modelDropdownOpen, setModelDropdownOpen] = useState(false);
+    const [quickActionsOpen, setQuickActionsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
     const modeBtnRef = useRef<HTMLButtonElement>(null);
     const modelBtnRef = useRef<HTMLButtonElement>(null);
     const [widthToggleFits, setWidthToggleFits] = useState(false);
+    const slashMenu = core.slashMenu;
+    const closeSlashMenu = core.closeSlashMenu;
+    const editorViewRef = core.viewRef;
+
+    useEffect(() => {
+      if (!slashMenu) return;
+      const onPointerOutside = (event: Event) => {
+        const target = event.target;
+        const container = containerRef.current;
+        if (
+          target instanceof Node &&
+          container &&
+          !container.contains(target)
+        ) {
+          closeSlashMenu();
+        }
+      };
+      window.addEventListener('mousedown', onPointerOutside);
+      window.addEventListener('touchstart', onPointerOutside);
+      return () => {
+        window.removeEventListener('mousedown', onPointerOutside);
+        window.removeEventListener('touchstart', onPointerOutside);
+      };
+    }, [slashMenu, closeSlashMenu]);
+
+    useEffect(() => {
+      const glowRoot = containerRef.current;
+      const inputEl = editorViewRef.current?.contentDOM;
+      if (!glowRoot || !inputEl) return undefined;
+      return attachComposerGlow(glowRoot, inputEl);
+    }, [editorViewRef]);
 
     useEffect(() => {
       const container = containerRef.current;
@@ -504,6 +857,118 @@ export const ChatEditor = memo(
       if (!visibleActionSet) return true;
       return visibleActionSet.has(action);
     };
+    const commandNames = new Set(
+      commands.map((command) => command.name.replace(/^\/+/, '')),
+    );
+    const hasCommand = (name: string) => commandNames.has(name);
+    const quickActions = (
+      [
+        {
+          id: 'new',
+          label: t('quickActions.new'),
+          action: { type: 'run', command: '/new' },
+        },
+        {
+          id: 'resume',
+          label: t('quickActions.resume'),
+          action: { type: 'run', command: '/resume' },
+        },
+        {
+          id: 'delete',
+          label: t('quickActions.delete'),
+          action: { type: 'run', command: '/delete' },
+        },
+        {
+          id: 'recap',
+          label: t('quickActions.recap'),
+          action: { type: 'run', command: '/recap' },
+        },
+        {
+          id: 'stats',
+          label: t('quickActions.stats'),
+          action: { type: 'run', command: '/stats' },
+        },
+        {
+          id: 'context',
+          label: t('quickActions.context'),
+          action: { type: 'run', command: '/context' },
+        },
+        {
+          id: 'status',
+          label: t('quickActions.status'),
+          action: { type: 'run', command: '/status' },
+        },
+        {
+          id: 'skills',
+          label: t('quickActions.skills'),
+          action: { type: 'run', command: '/skills detail' },
+        },
+        {
+          id: 'tools',
+          label: t('quickActions.tools'),
+          action: { type: 'run', command: '/tools desc' },
+        },
+        {
+          id: 'agents',
+          label: t('quickActions.agents'),
+          action: { type: 'run', command: '/agents' },
+        },
+        {
+          id: 'mcp',
+          label: t('quickActions.mcp'),
+          action: { type: 'run', command: '/mcp' },
+        },
+        {
+          id: 'memory',
+          label: t('quickActions.memory'),
+          action: { type: 'run', command: '/memory' },
+        },
+        {
+          id: 'extensions',
+          label: t('quickActions.extensions'),
+          action: { type: 'run', command: '/extensions manage' },
+        },
+        {
+          id: 'help',
+          label: t('quickActions.help'),
+          action: { type: 'run', command: '/help' },
+        },
+        {
+          id: 'theme',
+          label: t('quickActions.theme'),
+          action: { type: 'run', command: '/theme' },
+        },
+        {
+          id: 'copy',
+          label: t('quickActions.copy'),
+          action: { type: 'run', command: '/copy' },
+        },
+        {
+          id: 'shell',
+          label: core.shellMode
+            ? t('quickActions.exitShellMode')
+            : t('quickActions.shellMode'),
+          action: { type: 'shell' },
+        },
+        {
+          id: 'goal',
+          label: t('quickActions.setGoal'),
+          action: { type: 'insert', text: '/goal ' },
+        },
+        {
+          id: 'auth',
+          label: t('quickActions.auth'),
+          action: { type: 'run', command: '/auth' },
+        },
+        {
+          id: 'settings',
+          label: t('quickActions.settings'),
+          action: { type: 'run', command: '/settings' },
+        },
+      ] satisfies QuickActionItem[]
+    ).filter(
+      (action) => action.action.type === 'shell' || hasCommand(action.id),
+    );
 
     const modelItems: DropdownItem[] = availableModels.map((m) => ({
       id: m.id,
@@ -527,6 +992,42 @@ export const ChatEditor = memo(
       },
       [onSelectModel, core],
     );
+    const runQuickAction = useCallback(
+      (action: QuickActionItem) => {
+        setQuickActionsOpen(false);
+        setModeDropdownOpen(false);
+        setModelDropdownOpen(false);
+        core.closeSlashMenu();
+        if (action.action.type === 'insert') {
+          core.insertText(action.action.text, { mode: 'replace' });
+          return;
+        }
+        if (action.action.type === 'shell') {
+          core.toggleShellMode();
+          return;
+        }
+        onSubmit(action.action.command);
+      },
+      [core, onSubmit],
+    );
+    const pressQuickKey = useCallback(
+      (item: QuickKeyItem) => {
+        const view = core.viewRef.current;
+        if (!view) return;
+        view.focus();
+        view.contentDOM.dispatchEvent(
+          new KeyboardEvent('keydown', {
+            ...item.event,
+            bubbles: true,
+            cancelable: true,
+          }),
+        );
+        if (item.id === 'ctrl-r') {
+          setQuickActionsOpen(false);
+        }
+      },
+      [core],
+    );
 
     const {
       searchMode,
@@ -539,15 +1040,6 @@ export const ChatEditor = memo(
       handleSearchKeyDown,
       handleSearchInput,
     } = core.searchState;
-
-    const visibleSearchStart = Math.max(
-      0,
-      Math.min(searchActiveIndex - 2, searchMatches.length - 6),
-    );
-    const visibleSearchMatches = searchMatches.slice(
-      visibleSearchStart,
-      visibleSearchStart + 6,
-    );
 
     const renderComposerTagContent = (tag: WebShellComposerTag) => {
       const tagLabel = getComposerTagLabel(tag);
@@ -570,9 +1062,26 @@ export const ChatEditor = memo(
     const modelLabel = currentModel;
 
     return (
-      <div ref={containerRef} className={styles.container} onClick={core.focus}>
+      <div
+        ref={containerRef}
+        className={styles.container}
+        data-dac-glow
+        onClick={() => {
+          setModeDropdownOpen(false);
+          setModelDropdownOpen(false);
+          setQuickActionsOpen(false);
+          core.focus();
+        }}
+      >
+        <div className={styles.dacAura} aria-hidden="true" />
+        <div className={styles.dacHalo} aria-hidden="true" />
         {searchMode && (
-          <div ref={searchUiRef}>
+          <div
+            ref={searchUiRef}
+            className={styles.searchPanel}
+            onMouseDown={(event) => event.stopPropagation()}
+            onClick={(event) => event.stopPropagation()}
+          >
             <div className={styles.searchBar}>
               <span className={styles.searchLabel}>
                 {t('editor.searchLabel')}
@@ -585,14 +1094,10 @@ export const ChatEditor = memo(
                 onKeyDown={handleSearchKeyDown}
                 placeholder={t('editor.searchPlaceholder')}
               />
-              <span className={styles.searchHint}>
-                {t('editor.searchHint')}
-              </span>
             </div>
             {searchMatches.length > 0 && (
               <div className={styles.searchResults}>
-                {visibleSearchMatches.map((match, index) => {
-                  const matchIndex = visibleSearchStart + index;
+                {searchMatches.map((match, matchIndex) => {
                   return (
                     <button
                       key={`${match}-${matchIndex}`}
@@ -622,226 +1127,274 @@ export const ChatEditor = memo(
             )}
           </div>
         )}
-        {core.composerTags.length > 0 && (
-          <div className={styles.tags}>
-            {core.composerTags.map((tag) => (
-              <span key={tag.id} className={styles.tag}>
-                {renderComposerTagContent(tag)}
-                {tag.removable !== false && (
+        <div className={styles.content}>
+          {core.composerTags.length > 0 && (
+            <div className={styles.tags}>
+              {core.composerTags.map((tag) => (
+                <span key={tag.id} className={styles.tag}>
+                  {renderComposerTagContent(tag)}
+                  {tag.removable !== false && (
+                    <button
+                      type="button"
+                      className={styles.tagRemove}
+                      aria-label={`Remove ${getComposerTagDisplay(tag)}`}
+                      onMouseDown={(event) => event.preventDefault()}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        core.removeTopTag(tag.id);
+                        core.viewRef.current?.focus();
+                      }}
+                      onKeyDown={(event) => {
+                        if (
+                          event.key !== 'Backspace' &&
+                          event.key !== 'Delete'
+                        ) {
+                          return;
+                        }
+                        event.preventDefault();
+                        core.removeTopTag(tag.id);
+                        core.viewRef.current?.focus();
+                      }}
+                    >
+                      ×
+                    </button>
+                  )}
+                </span>
+              ))}
+            </div>
+          )}
+          {core.pastedImages.length > 0 && (
+            <div className={styles.images}>
+              {core.pastedImages.map((img, i) => (
+                <div key={i} className={styles.imageThumb}>
+                  <img
+                    src={`data:${img.media_type};base64,${img.data}`}
+                    alt=""
+                  />
                   <button
-                    type="button"
-                    className={styles.tagRemove}
-                    aria-label={`Remove ${getComposerTagDisplay(tag)}`}
-                    onMouseDown={(event) => event.preventDefault()}
-                    onClick={(event) => {
-                      event.stopPropagation();
-                      core.removeTopTag(tag.id);
-                      core.viewRef.current?.focus();
-                    }}
-                    onKeyDown={(event) => {
-                      if (event.key !== 'Backspace' && event.key !== 'Delete') {
-                        return;
-                      }
-                      event.preventDefault();
-                      core.removeTopTag(tag.id);
-                      core.viewRef.current?.focus();
+                    className={styles.imageRemove}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      core.removeImage(i);
                     }}
                   >
                     ×
                   </button>
-                )}
-              </span>
-            ))}
-          </div>
-        )}
-        {core.pastedImages.length > 0 && (
-          <div className={styles.images}>
-            {core.pastedImages.map((img, i) => (
-              <div key={i} className={styles.imageThumb}>
-                <img src={`data:${img.media_type};base64,${img.data}`} alt="" />
-                <button
-                  className={styles.imageRemove}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    core.removeImage(i);
-                  }}
-                >
-                  ×
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className={styles.editorArea}>
-          {core.shellMode && (
-            <span className={styles.shellPrefix} aria-hidden="true">
-              !
-            </span>
-          )}
-          <div ref={core.containerRef} />
-        </div>
-        <div className={styles.toolbar}>
-          <div className={styles.toolbarLeading}>
-            {ToolbarStart && (
-              <div className={styles.toolbarStart}>
-                <ToolbarStart
-                  disabled={disabled}
-                  isRunning={isRunning}
-                  currentMode={currentMode}
-                  currentModel={currentModel}
-                  sessionName={sessionName}
-                />
-              </div>
-            )}
-            <div className={styles.toolbarLeft}>
-              {showToolbarAction('approvalMode') && (
-                <div className={styles.dropdownWrapper}>
-                  <ToolbarDropdown
-                    open={modeDropdownOpen}
-                    items={modeItems}
-                    activeId={currentMode}
-                    onClose={() => setModeDropdownOpen(false)}
-                    onSelect={handleModeSelect}
-                    anchorRef={modeBtnRef}
-                  />
-                  <button
-                    ref={modeBtnRef}
-                    className={styles.toolBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModeDropdownOpen((v) => !v);
-                      setModelDropdownOpen(false);
-                    }}
-                    aria-label={t('status.mode')}
-                  >
-                    <span className={styles.toolBtnModeIcon}>
-                      <ModeIcon mode={currentMode} />
-                    </span>
-                    <span className={styles.toolBtnText}>{modeLabel}</span>
-                    <span className={styles.toolBtnArrow}>
-                      <ChevronDownIcon />
-                    </span>
-                  </button>
                 </div>
-              )}
-              {showToolbarAction('model') && (
-                <div className={styles.dropdownWrapper}>
-                  <ToolbarDropdown
-                    open={modelDropdownOpen}
-                    items={modelItems}
-                    activeId={currentModel}
-                    onClose={() => setModelDropdownOpen(false)}
-                    onSelect={handleModelSelect}
-                    anchorRef={modelBtnRef}
-                    showCheck
-                  />
-                  <button
-                    ref={modelBtnRef}
-                    className={styles.toolBtn}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setModelDropdownOpen((v) => !v);
-                      setModeDropdownOpen(false);
-                    }}
-                    aria-label={t('model.select')}
-                  >
-                    <span className={styles.toolBtnModelIcon}>
-                      <ModelIcon />
-                    </span>
-                    <span className={styles.toolBtnText}>{modelLabel}</span>
-                    <span className={styles.toolBtnArrow}>
-                      <ChevronDownIcon />
-                    </span>
-                  </button>
-                </div>
-              )}
+              ))}
             </div>
+          )}
+          {core.slashMenu && (
+            <SlashCommandPanel
+              menu={core.slashMenu}
+              onSelect={core.selectSlashCompletion}
+              onAccept={core.acceptSlashCompletion}
+            />
+          )}
+          <div className={styles.editorArea}>
+            {core.shellMode && (
+              <span className={styles.shellPrefix} aria-hidden="true">
+                !
+              </span>
+            )}
+            <div ref={core.containerRef} />
           </div>
-          <div className={styles.toolbarRight}>
-            {showToolbarAction('commands') && (
-              <button
-                className={styles.toolBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  core.insertText('/');
-                }}
-                aria-label={t('editor.hintCommands')}
-                title={t('editor.hintCommands')}
-                data-tooltip={t('editor.hintCommands')}
-              >
-                <span className={styles.toolBtnIcon}>/</span>
-              </button>
-            )}
-            {showToolbarAction('files') && (
-              <button
-                className={styles.toolBtn}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  core.insertText('@');
-                }}
-                aria-label={t('editor.hintFiles')}
-                title={t('editor.hintFiles')}
-                data-tooltip={t('editor.hintFiles')}
-              >
-                <span className={styles.toolBtnIcon}>@</span>
-              </button>
-            )}
-            {showChatWidthToggle &&
-              widthToggleFits &&
-              showToolbarAction('widthMode') && (
+          <div className={styles.toolbar}>
+            <div className={styles.toolbarLeading}>
+              {ToolbarStart && (
+                <div className={styles.toolbarStart}>
+                  <ToolbarStart
+                    disabled={disabled}
+                    isRunning={isRunning}
+                    currentMode={currentMode}
+                    currentModel={currentModel}
+                    sessionName={sessionName}
+                  />
+                </div>
+              )}
+              <div className={styles.toolbarLeft}>
+                {showToolbarAction('approvalMode') && (
+                  <div className={styles.dropdownWrapper}>
+                    <ToolbarDropdown
+                      open={modeDropdownOpen}
+                      items={modeItems}
+                      activeId={currentMode}
+                      onClose={() => setModeDropdownOpen(false)}
+                      onSelect={handleModeSelect}
+                      anchorRef={modeBtnRef}
+                    />
+                    <button
+                      ref={modeBtnRef}
+                      className={styles.toolBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        core.closeSlashMenu();
+                        setQuickActionsOpen(false);
+                        setModeDropdownOpen((v) => !v);
+                        setModelDropdownOpen(false);
+                      }}
+                      aria-label={t('status.mode')}
+                    >
+                      <span className={styles.toolBtnModeIcon}>
+                        <ModeIcon mode={currentMode} />
+                      </span>
+                      <span className={styles.toolBtnText}>{modeLabel}</span>
+                      <span className={styles.toolBtnArrow}>
+                        <ChevronDownIcon />
+                      </span>
+                    </button>
+                  </div>
+                )}
+                {showToolbarAction('model') && (
+                  <div className={styles.dropdownWrapper}>
+                    <ToolbarDropdown
+                      open={modelDropdownOpen}
+                      items={modelItems}
+                      activeId={currentModel}
+                      onClose={() => setModelDropdownOpen(false)}
+                      onSelect={handleModelSelect}
+                      anchorRef={modelBtnRef}
+                      showCheck
+                    />
+                    <button
+                      ref={modelBtnRef}
+                      className={styles.toolBtn}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        core.closeSlashMenu();
+                        setQuickActionsOpen(false);
+                        setModelDropdownOpen((v) => !v);
+                        setModeDropdownOpen(false);
+                      }}
+                      aria-label={t('model.select')}
+                    >
+                      <span className={styles.toolBtnModelIcon}>
+                        <ModelIcon />
+                      </span>
+                      <span className={styles.toolBtnText}>{modelLabel}</span>
+                      <span className={styles.toolBtnArrow}>
+                        <ChevronDownIcon />
+                      </span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+            <div className={styles.toolbarRight}>
+              {showToolbarAction('commands') && (
                 <button
-                  className={`${styles.toolBtn} ${styles.widthModeBtn}`}
+                  className={styles.toolBtn}
                   onClick={(e) => {
                     e.stopPropagation();
-                    onChatWidthModeChange?.(
-                      chatWidthMode === 'wide' ? '1000' : 'wide',
-                    );
+                    setQuickActionsOpen(false);
+                    core.insertText('/');
                   }}
-                  disabled={!onChatWidthModeChange}
-                  aria-label={
-                    chatWidthMode === 'wide'
-                      ? t('settings.option.ui.chatWidth.1000')
-                      : t('settings.option.ui.chatWidth.wide')
-                  }
-                  title={
-                    chatWidthMode === 'wide'
-                      ? t('settings.option.ui.chatWidth.1000')
-                      : t('settings.option.ui.chatWidth.wide')
-                  }
-                  data-tooltip={
-                    chatWidthMode === 'wide'
-                      ? t('settings.option.ui.chatWidth.1000')
-                      : t('settings.option.ui.chatWidth.wide')
-                  }
+                  aria-label={t('editor.hintCommands')}
+                  title={t('editor.hintCommands')}
+                  data-tooltip={t('editor.hintCommands')}
+                >
+                  <span className={styles.toolBtnIcon}>/</span>
+                </button>
+              )}
+              {showToolbarAction('files') && (
+                <button
+                  className={styles.toolBtn}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setQuickActionsOpen(false);
+                    core.insertText('@');
+                  }}
+                  aria-label={t('editor.hintFiles')}
+                  title={t('editor.hintFiles')}
+                  data-tooltip={t('editor.hintFiles')}
+                >
+                  <span className={styles.toolBtnIcon}>@</span>
+                </button>
+              )}
+              {quickActions.length > 0 && (
+                <button
+                  className={`${styles.toolBtn} ${styles.quickActionsBtn}`}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    core.closeSlashMenu();
+                    setModeDropdownOpen(false);
+                    setModelDropdownOpen(false);
+                    setQuickActionsOpen((value) => !value);
+                  }}
+                  aria-expanded={quickActionsOpen}
+                  aria-label={t('quickActions.open')}
+                  title={t('quickActions.open')}
+                  data-tooltip={t('quickActions.open')}
                 >
                   <span className={styles.toolBtnIcon}>
-                    <WidthModeIcon mode={chatWidthMode} />
+                    <QuickActionsIcon />
                   </span>
                 </button>
               )}
-            <button
-              className={
-                isRunning
-                  ? `${styles.sendBtn} ${styles.sendBtnRunning}`
-                  : styles.sendBtn
-              }
-              disabled={
-                isRunning ? !onCancel : core.disabled || !core.hasContent
-              }
-              onClick={(e) => {
-                e.stopPropagation();
-                if (isRunning) {
-                  onCancel?.();
-                  return;
+              {showChatWidthToggle &&
+                widthToggleFits &&
+                showToolbarAction('widthMode') && (
+                  <button
+                    className={`${styles.toolBtn} ${styles.widthModeBtn}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onChatWidthModeChange?.(
+                        chatWidthMode === 'wide' ? '1000' : 'wide',
+                      );
+                    }}
+                    disabled={!onChatWidthModeChange}
+                    aria-label={
+                      chatWidthMode === 'wide'
+                        ? t('settings.option.ui.chatWidth.1000')
+                        : t('settings.option.ui.chatWidth.wide')
+                    }
+                    title={
+                      chatWidthMode === 'wide'
+                        ? t('settings.option.ui.chatWidth.1000')
+                        : t('settings.option.ui.chatWidth.wide')
+                    }
+                    data-tooltip={
+                      chatWidthMode === 'wide'
+                        ? t('settings.option.ui.chatWidth.1000')
+                        : t('settings.option.ui.chatWidth.wide')
+                    }
+                  >
+                    <span className={styles.toolBtnIcon}>
+                      <WidthModeIcon mode={chatWidthMode} />
+                    </span>
+                  </button>
+                )}
+              <button
+                className={
+                  isRunning
+                    ? `${styles.sendBtn} ${styles.sendBtnRunning}`
+                    : styles.sendBtn
                 }
-                core.submitText();
-              }}
-              aria-label={isRunning ? t('stream.cancel') : t('editor.send')}
-            >
-              {isRunning ? <StopIcon /> : <SendIcon />}
-            </button>
+                disabled={
+                  isRunning ? !onCancel : core.disabled || !core.hasContent
+                }
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (isRunning) {
+                    onCancel?.();
+                    return;
+                  }
+                  core.submitText();
+                }}
+                aria-label={isRunning ? t('stream.cancel') : t('editor.send')}
+              >
+                {isRunning ? <StopIcon /> : <SendIcon />}
+              </button>
+            </div>
           </div>
         </div>
+        {quickActionsOpen && quickActions.length > 0 && (
+          <QuickActionsPanel
+            actions={quickActions}
+            onRun={runQuickAction}
+            onPressKey={pressQuickKey}
+          />
+        )}
       </div>
     );
   }),

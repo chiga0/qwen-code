@@ -3,6 +3,7 @@
   align-items: center;
   justify-content: space-between;
   padding: 2px 2px;
+  margin-bottom: 10px;
   font-size: 13px;
   color: var(--text-dimmed);
   flex-shrink: 0;

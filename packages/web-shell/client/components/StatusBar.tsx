@@ -46,7 +46,7 @@ interface StatusBarProps {
   onSelectModel: () => void;
   /** Show the context-usage breakdown, exactly like typing /context. */
   onShowContext: () => void;
-  /** Open the inline settings panel so settings are reachable with the mouse. */
+  /** Open the settings dialog so settings are reachable with the mouse. */
   onOpenSettings: () => void;
   onOpenTasks?: () => void;
   onReturnToInput?: (text?: string) => void;
@@ -205,6 +205,11 @@ export const StatusBar = forwardRef<StatusBarHandle, StatusBarProps>(
     const goalLabel = activeGoal
       ? `◎ ${t('goal.statusActive')}${goalElapsed ? ` (${goalElapsed})` : ''}`
       : '';
+    const hasLeftContent = !!escapeHint || !!taskPillLabel || !compact;
+    const hasRightContent =
+      (!compact && !!currentModel) ||
+      (!compact && contextWindow > 0 && tokenCount > 0) ||
+      !!goalLabel;
 
     useImperativeHandle(
       ref,
@@ -217,6 +222,10 @@ export const StatusBar = forwardRef<StatusBarHandle, StatusBarProps>(
       }),
       [taskPillLabel],
     );
+
+    if (!hasLeftContent && !hasRightContent) {
+      return null;
+    }
 
     const handleTaskPillKeyDown = (event: KeyboardEvent<HTMLButtonElement>) => {
       if (

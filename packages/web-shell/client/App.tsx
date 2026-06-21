@@ -48,35 +48,22 @@ import {
 } from './components/ToastHost';
 import { TodoPanel } from './components/panels/TodoPanel';
 import { WelcomeHeader } from './components/WelcomeHeader';
-import {
-  APPROVAL_MODE_ACTIVE_EVENT,
-  ApprovalModeMessage,
-} from './components/messages/ApprovalModeMessage';
+import { ApprovalModeDialog } from './components/dialogs/ApprovalModeDialog';
 import { ResumeDialog } from './components/dialogs/ResumeDialog';
+import { DialogShell } from './components/dialogs/DialogShell';
 import {
-  AGENTS_ACTIVE_EVENT,
+  ModelDialog,
+  type ModelDialogMode,
+} from './components/dialogs/ModelDialog';
+import {
   AgentsMessage,
   type AgentsInitialMode,
 } from './components/messages/AgentsMessage';
-import {
-  MEMORY_ACTIVE_EVENT,
-  MemoryMessage,
-} from './components/messages/MemoryMessage';
-import {
-  MODEL_ACTIVE_EVENT,
-  ModelMessage,
-  type ModelInlineMode,
-} from './components/messages/ModelMessage';
-import {
-  AUTH_ACTIVE_EVENT,
-  AuthMessage,
-} from './components/messages/AuthMessage';
+import { MemoryMessage } from './components/messages/MemoryMessage';
+import { AuthMessage } from './components/messages/AuthMessage';
 import { ToolsDialog } from './components/dialogs/ToolsDialog';
 import { ExtensionsDialog } from './components/dialogs/ExtensionsDialog';
-import {
-  SETTINGS_ACTIVE_EVENT,
-  SettingsMessage,
-} from './components/messages/SettingsMessage';
+import { SettingsMessage } from './components/messages/SettingsMessage';
 import { resolveShellOutputMaxLines } from './components/messages/ToolGroup';
 import { HelpDialog } from './components/dialogs/HelpDialog';
 import { ThemeDialog } from './components/dialogs/ThemeDialog';
@@ -107,7 +94,6 @@ import {
   TasksStatusMessage,
   type SerializedTasksMessage,
 } from './components/messages/TasksStatusMessage';
-import { handleTasksSlashCommand } from './utils/tasksCommand';
 import { isBackgroundSubAgentToolCall } from './adapters/toolClassification';
 import {
   DAEMON_APPROVAL_MODES,
@@ -125,8 +111,9 @@ import {
 import {
   MCP_STATUS_ACTIVE_EVENT,
   parseMcpStatusMessage,
-  serializeMcpStatusMessage,
+  type SerializedMcpStatusMessage,
 } from './components/messages/McpStatusMessage';
+import { McpDialog } from './components/dialogs/McpDialog';
 import {
   GOAL_STATUS_ACTIVE_EVENT,
   parseGoalStatusMessage,
@@ -1000,6 +987,18 @@ export function App({
   const [showScrollToBottom, setShowScrollToBottom] = useState(false);
   const previousFooterRectRef = useRef<DOMRect | null>(null);
   const previousEmptyStateRef = useRef(false);
+  const resumeChatBottomFollow = useCallback(
+    (behavior: ScrollBehavior = 'smooth') => {
+      setShowScrollToBottom(false);
+      requestAnimationFrame(() => {
+        messageListRef.current?.scrollToBottom(behavior);
+        requestAnimationFrame(() => {
+          messageListRef.current?.scrollToBottom(behavior);
+        });
+      });
+    },
+    [],
+  );
   const setEditorHandle = useCallback(
     (handle: EditorHandle | null) => {
       editorRef.current = handle;
@@ -1100,9 +1099,9 @@ export function App({
       .catch(() => {});
   }, [connected, workspaceActions]);
 
-  const [modelInlineMode, setModelInlineMode] =
-    useState<ModelInlineMode | null>(null);
-  const [approvalModeInlineOpen, setApprovalModeInlineOpen] = useState(false);
+  const [modelDialogMode, setModelDialogMode] =
+    useState<ModelDialogMode | null>(null);
+  const [showApprovalModeDialog, setShowApprovalModeDialog] = useState(false);
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showReleaseDialog, setShowReleaseDialog] = useState(false);
@@ -1110,9 +1109,11 @@ export function App({
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showToolsDialog, setShowToolsDialog] = useState(false);
   const [showExtensionsDialog, setShowExtensionsDialog] = useState(false);
-  const [settingsInlineOpen, setSettingsInlineOpen] = useState(false);
-  const [memoryInlineOpen, setMemoryInlineOpen] = useState(false);
-  const [authInlineOpen, setAuthInlineOpen] = useState(false);
+  const [mcpDialogMessage, setMcpDialogMessage] =
+    useState<SerializedMcpStatusMessage | null>(null);
+  const [showSettingsDialog, setShowSettingsDialog] = useState(false);
+  const [showMemoryDialog, setShowMemoryDialog] = useState(false);
+  const [showAuthDialog, setShowAuthDialog] = useState(false);
   const [memoryRefreshSignal, setMemoryRefreshSignal] = useState(0);
   const [memoryAddSignal, setMemoryAddSignal] = useState(0);
 
@@ -1184,24 +1185,16 @@ export function App({
   const [memoryAddScope, setMemoryAddScope] = useState<'workspace' | 'global'>(
     'workspace',
   );
-  const [agentsInlineMode, setAgentsInlineMode] =
+  const [agentsDialogMode, setAgentsDialogMode] =
     useState<AgentsInitialMode | null>(null);
-  const [memoryPortalHost, setMemoryPortalHost] =
-    useState<HTMLDivElement | null>(null);
   const [showShortcuts, setShowShortcuts] = useState(false);
   const [escapeHintVisible, setEscapeHintVisible] = useState(false);
   const escPressCountRef = useRef(0);
   const escapeTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const approvalModePanelActive = usePanelActive(APPROVAL_MODE_ACTIVE_EVENT);
-  const [tasksPanelMessage, setTasksPanelMessage] =
+  const [tasksDialogMessage, setTasksDialogMessage] =
     useState<SerializedTasksMessage | null>(null);
   const mcpPanelActive = usePanelActive(MCP_STATUS_ACTIVE_EVENT);
   const tasksPanelActive = usePanelActive(TASKS_STATUS_ACTIVE_EVENT);
-  const agentsPanelActive = usePanelActive(AGENTS_ACTIVE_EVENT);
-  const memoryPanelActive = usePanelActive(MEMORY_ACTIVE_EVENT);
-  const modelPanelActive = usePanelActive(MODEL_ACTIVE_EVENT);
-  const settingsPanelActive = usePanelActive(SETTINGS_ACTIVE_EVENT);
-  const authPanelActive = usePanelActive(AUTH_ACTIVE_EVENT);
   const [selectedTheme, setSelectedTheme] = useState<WebShellTheme>(
     providedTheme ?? WebShellThemeId.Dark,
   );
@@ -1235,25 +1228,17 @@ export function App({
     showHelpDialog ||
     showThemeDialog ||
     showToolsDialog ||
-    showExtensionsDialog;
-  const inlinePanelOpen =
-    approvalModeInlineOpen ||
-    authInlineOpen ||
-    agentsInlineMode !== null ||
-    memoryInlineOpen ||
-    modelInlineMode !== null ||
-    settingsInlineOpen;
-  const bottomHidden =
-    dialogOpen ||
-    inlinePanelOpen ||
-    approvalModePanelActive ||
-    mcpPanelActive ||
-    tasksPanelActive ||
-    agentsPanelActive ||
-    memoryPanelActive ||
-    modelPanelActive ||
-    settingsPanelActive ||
-    authPanelActive;
+    showExtensionsDialog ||
+    modelDialogMode !== null ||
+    showApprovalModeDialog ||
+    tasksDialogMessage !== null ||
+    mcpDialogMessage !== null ||
+    agentsDialogMode !== null ||
+    showSettingsDialog ||
+    showMemoryDialog ||
+    showAuthDialog;
+  const bottomHidden = mcpPanelActive || tasksPanelActive;
+  const interactionBlocked = dialogOpen || bottomHidden;
 
   const reportError = useCallback(
     (error: unknown, fallback: string) => {
@@ -1296,7 +1281,7 @@ export function App({
     btwAbortControllerRef.current = null;
     setRecapMessage(null);
     setBtwMessage(null);
-    setTasksPanelMessage(null);
+    setTasksDialogMessage(null);
     lastRecapBlockCountRef.current = 0;
   }, [connection.sessionId]);
 
@@ -1399,7 +1384,7 @@ export function App({
 
   useEffect(() => {
     const onBtwShortcut = (e: KeyboardEvent) => {
-      if (bottomHidden || pendingApproval) return;
+      if (interactionBlocked || pendingApproval) return;
       const message = btwMessage;
       if (!message || message.role !== 'btw') return;
 
@@ -1438,7 +1423,7 @@ export function App({
 
     window.addEventListener('keydown', onBtwShortcut, true);
     return () => window.removeEventListener('keydown', onBtwShortcut, true);
-  }, [bottomHidden, btwMessage, dismissBtwMessage, pendingApproval]);
+  }, [interactionBlocked, btwMessage, dismissBtwMessage, pendingApproval]);
 
   useEffect(() => {
     queuedPromptsRef.current = queuedPrompts;
@@ -1599,7 +1584,8 @@ export function App({
   );
 
   const handleToggleShortcuts = useCallback(() => {
-    setShowShortcuts((prev) => !prev);
+    setShowShortcuts(false);
+    setShowHelpDialog(true);
   }, []);
 
   // Idempotent close for the shortcuts panel's outside-press / Escape dismissal.
@@ -1934,12 +1920,13 @@ export function App({
               text: serializeContextUsageMessage(result),
             },
           ]);
+          resumeChatBottomFollow('smooth');
         })
         .catch((error: unknown) => {
           reportError(error, 'Failed to load context usage');
         });
     },
-    [store, sessionActions, reportError],
+    [store, sessionActions, reportError, resumeChatBottomFollow],
   );
 
   // Stable reference: this travels through the memoized MessageList →
@@ -1952,7 +1939,7 @@ export function App({
     sessionActions
       .getTasks()
       .then((snapshot) => {
-        setTasksPanelMessage({ snapshot });
+        setTasksDialogMessage({ snapshot });
       })
       .catch((error: unknown) => {
         reportError(error, 'Failed to load tasks');
@@ -2071,18 +2058,19 @@ export function App({
         const match = text.match(/^\/([\w-]+)/);
         if (match) {
           const cmd = match[1];
+          if (hiddenCommands.has(normalizeHiddenCommand(cmd))) {
+            if (promptBlocked) return enqueuePrompt(text, images);
+            sendPrompt(text, images).catch((error: unknown) =>
+              reportError(error, 'Failed to send hidden slash command'),
+            );
+            return true;
+          }
           if (cmd === 'help') {
             setShowHelpDialog(true);
             return true;
           }
           if (cmd === 'tasks') {
-            store.appendLocalUserMessage(text);
-            handleTasksSlashCommand({
-              cmd,
-              getTasks: sessionActions.getTasks,
-              dispatch: (events) => store.dispatch(events),
-              reportError,
-            });
+            openTasksPanel();
             return true;
           }
           if (cmd === 'goal') {
@@ -2188,15 +2176,13 @@ export function App({
             return true;
           }
           if (cmd === 'auth') {
-            store.appendLocalUserMessage(text);
-            setAuthInlineOpen(true);
+            setShowAuthDialog(true);
             return true;
           }
           if (cmd === 'model') {
             const modelArg = text.slice(match[0].length).trim();
             if (modelArg === '--fast') {
-              store.appendLocalUserMessage(text);
-              setModelInlineMode('fast');
+              setModelDialogMode('fast');
               return true;
             }
             if (modelArg.startsWith('--fast ')) {
@@ -2216,8 +2202,7 @@ export function App({
                   reportError(error, t('model.switch'));
                 });
             } else {
-              store.appendLocalUserMessage(text);
-              setModelInlineMode('main');
+              setModelDialogMode('main');
             }
             return true;
           }
@@ -2244,14 +2229,12 @@ export function App({
             if (modeArg) {
               handleSetMode(modeArg);
             } else {
-              store.appendLocalUserMessage(text);
-              setApprovalModeInlineOpen(true);
+              setShowApprovalModeDialog(true);
             }
             return true;
           }
           if (cmd === 'mcp') {
             const mcpArg = text.slice(match[0].length).trim().toLowerCase();
-            store.appendLocalUserMessage(text);
             workspaceActions
               .loadMcpStatus()
               .then(async (status) => {
@@ -2269,18 +2252,13 @@ export function App({
                     }
                   }),
                 );
-                store.dispatch([
-                  {
-                    type: 'status',
-                    text: serializeMcpStatusMessage({
-                      status,
-                      toolsByServer,
-                      showDescriptions: mcpArg === 'desc',
-                      showSchema: mcpArg === 'schema',
-                      showTips: !mcpArg,
-                    }),
-                  },
-                ]);
+                setMcpDialogMessage({
+                  status,
+                  toolsByServer,
+                  showDescriptions: mcpArg === 'desc',
+                  showSchema: mcpArg === 'schema',
+                  showTips: !mcpArg,
+                });
               })
               .catch((error: unknown) => {
                 reportError(error, 'Failed to load MCP status');
@@ -2319,6 +2297,7 @@ export function App({
                       },
                     ]);
                   }
+                  resumeChatBottomFollow('smooth');
                 })
                 .catch((error: unknown) => {
                   reportError(error, 'Failed to load skills');
@@ -2349,6 +2328,7 @@ export function App({
                       },
                     ]);
                   }
+                  resumeChatBottomFollow('smooth');
                 })
                 .catch((error: unknown) => {
                   reportError(error, 'Failed to load tools');
@@ -2357,13 +2337,7 @@ export function App({
             return true;
           }
           if (cmd === 'settings') {
-            if (hideSettings) {
-              store.appendLocalUserMessage(text);
-              store.dispatch([{ type: 'status', text: t('command.hidden') }]);
-              return true;
-            }
-            store.appendLocalUserMessage(text);
-            setSettingsInlineOpen(true);
+            setShowSettingsDialog(true);
             return true;
           }
           if (cmd === 'context') {
@@ -2382,7 +2356,6 @@ export function App({
           }
           if (cmd === 'memory') {
             const memoryArg = text.slice(match[0].length).trim().toLowerCase();
-            store.appendLocalUserMessage(text);
             if (memoryArg === 'refresh') {
               setMemoryRefreshSignal((signal) => signal + 1);
             } else if (memoryArg === 'add' || memoryArg.startsWith('add ')) {
@@ -2394,12 +2367,11 @@ export function App({
               );
               setMemoryAddSignal((signal) => signal + 1);
             }
-            setMemoryInlineOpen(true);
+            setShowMemoryDialog(true);
             return true;
           }
           if (cmd === 'agents') {
             const subCommand = text.slice(match[0].length).trim().toLowerCase();
-            store.appendLocalUserMessage(text);
             let agentsMode: AgentsInitialMode = 'menu';
             if (subCommand === 'create') {
               agentsMode = 'create';
@@ -2416,14 +2388,13 @@ export function App({
             } else if (subCommand === 'manage') {
               agentsMode = 'manage';
             }
-            setAgentsInlineMode(agentsMode);
+            setAgentsDialogMode(agentsMode);
             return true;
           }
           if (cmd === 'extensions') {
             const args = text.slice(match[0].length).trim();
             const subCommand = args.split(/\s+/)[0]?.toLowerCase();
             if (!subCommand || subCommand === 'manage') {
-              store.appendLocalUserMessage(text);
               setShowExtensionsDialog(true);
               return true;
             }
@@ -2618,6 +2589,7 @@ export function App({
                     text: serializeStatsMessage(result, statsView),
                   },
                 ]);
+                resumeChatBottomFollow('smooth');
               })
               .catch(() => {});
             return true;
@@ -2683,6 +2655,7 @@ export function App({
               store.dispatch([
                 { type: 'status', text: serializeStatusMessage(info) },
               ]);
+              resumeChatBottomFollow('smooth');
             });
             return true;
           }
@@ -2771,11 +2744,13 @@ export function App({
       handleThemeChange,
       handleSetMode,
       handleLanguageChange,
-      hideSettings,
+      openTasksPanel,
+      hiddenCommands,
       pushToast,
       reportError,
       runVisibleRecap,
       runVisibleBtw,
+      resumeChatBottomFollow,
       selectedLanguage,
       showContextUsage,
       t,
@@ -2783,11 +2758,22 @@ export function App({
     ],
   );
 
+  const handleEditorSubmit = useCallback(
+    (text: string, images?: PromptImage[]) => {
+      const accepted = handleSubmit(text, images);
+      if (accepted !== false) {
+        resumeChatBottomFollow('smooth');
+      }
+      return accepted;
+    },
+    [handleSubmit, resumeChatBottomFollow],
+  );
+
   useEffect(() => {
     if (drainingQueueRef.current) return;
     if (!connected) return;
     if (streamingState !== 'idle') return;
-    if (bottomHidden) return;
+    if (interactionBlocked) return;
     if (pendingApproval) return;
     if (queuedPrompts.length === 0) return;
 
@@ -2819,7 +2805,7 @@ export function App({
     };
   }, [
     connected,
-    bottomHidden,
+    interactionBlocked,
     handleSubmit,
     pendingApproval,
     popNextQueuedPrompt,
@@ -2845,9 +2831,9 @@ export function App({
   }, [sessionActions, reportError]);
 
   const handleFocusTaskPill = useCallback((): boolean => {
-    if (bottomHidden) return false;
+    if (interactionBlocked) return false;
     return statusBarRef.current?.focusTaskPill() ?? false;
-  }, [bottomHidden]);
+  }, [interactionBlocked]);
 
   const handleReturnToEditor = useCallback((text?: string) => {
     if (text) {
@@ -2882,7 +2868,7 @@ export function App({
 
   useEffect(() => {
     const onGlobalShortcut = (e: KeyboardEvent) => {
-      if (bottomHidden) return;
+      if (interactionBlocked) return;
       if (e.ctrlKey && !e.metaKey && !e.altKey && !e.shiftKey) {
         if (e.key === 'l') {
           e.preventDefault();
@@ -2904,7 +2890,7 @@ export function App({
     window.addEventListener('keydown', onGlobalShortcut, true);
     return () => window.removeEventListener('keydown', onGlobalShortcut, true);
   }, [
-    bottomHidden,
+    interactionBlocked,
     handleClearScreen,
     handleToggleCompact,
     handleRetry,
@@ -2929,23 +2915,14 @@ export function App({
         if (escPressCountRef.current > 0) {
           resetEscapeState();
         }
-        if (e.key === 'Tab' && e.shiftKey && !bottomHidden) {
+        if (e.key === 'Tab' && e.shiftKey && !interactionBlocked) {
           e.preventDefault();
           handleCycleMode();
         }
         return;
       }
 
-      if (pendingApproval || bottomHidden) return;
-
-      if (tasksPanelMessage) {
-        e.preventDefault();
-        e.stopPropagation();
-        setTasksPanelMessage(null);
-        handleReturnToEditor();
-        resetEscapeState();
-        return;
-      }
+      if (pendingApproval || interactionBlocked) return;
 
       if (clearQueuedPrompts()) {
         e.preventDefault();
@@ -2993,13 +2970,11 @@ export function App({
     handleCancel,
     handleCycleMode,
     pendingApproval,
-    bottomHidden,
-    tasksPanelMessage,
-    handleReturnToEditor,
+    interactionBlocked,
     clearQueuedPrompts,
   ]);
 
-  const isDisabled = !connected;
+  const isDisabled = !connected || connection.catchingUp;
 
   const handleModelSelect = useCallback(
     (modelId: string) => {
@@ -3082,17 +3057,9 @@ export function App({
     displayMessages.length === 0 &&
     !showFloatingTodos &&
     !pendingApproval &&
-    !btwMessage &&
-    !tasksPanelMessage;
+    !btwMessage;
   const effectiveChatWidthMode = chatWidthMode;
   const chatWidthToggleMin = getChatMaxWidth(chatMaxWidth);
-  const hasInlineTail =
-    agentsInlineMode ||
-    memoryInlineOpen ||
-    modelInlineMode ||
-    authInlineOpen ||
-    approvalModeInlineOpen ||
-    settingsInlineOpen;
 
   const appClassName = [
     styles.app,
@@ -3149,85 +3116,259 @@ export function App({
       <I18nProvider language={selectedLanguage}>
         <div className={appClassName} style={appStyle} data-web-shell-root>
           {!onToast && <ToastHost toasts={toasts} onDismiss={dismissToast} />}
-          {dialogOpen && (
-            <div className={styles.dialogOverlay} data-keyboard-scope>
-              {showResumeDialog && (
-                <ResumeDialog
-                  onSelect={(sessionId) => {
-                    sessionActions
-                      .loadSession(sessionId)
-                      .catch((error: unknown) => {
-                        reportError(error, 'Failed to load session');
-                      });
-                  }}
-                  onClose={() => setShowResumeDialog(false)}
-                />
-              )}
-              {showDeleteDialog && (
-                <DeleteSessionDialog
-                  onDeleted={(sessionIds) => {
-                    store.dispatch([
-                      {
-                        type: 'status',
-                        text:
-                          sessionIds.length === 1
-                            ? `${t('delete.deleted')} (${sessionIds[0]!.slice(0, 8)})`
-                            : t('delete.deletedCount', {
-                                count: sessionIds.length,
-                              }),
-                      },
-                    ]);
-                  }}
-                  onError={(error) => {
-                    if (isAlreadyDispatched(error)) return;
-                    const reason =
-                      error instanceof Error ? error.message : String(error);
-                    pushToast('error', t('delete.failed', { reason }));
-                  }}
-                  onClose={() => setShowDeleteDialog(false)}
-                />
-              )}
-              {showReleaseDialog && (
-                <ReleaseSessionDialog
-                  onReleased={(sessionId) => {
-                    store.dispatch([
-                      {
-                        type: 'status',
-                        text: `${t('release.released')} (${sessionId.slice(0, 8)})`,
-                      },
-                    ]);
-                  }}
-                  onError={(error) => {
-                    if (isAlreadyDispatched(error)) return;
-                    const reason =
-                      error instanceof Error ? error.message : String(error);
-                    pushToast('error', t('release.failed', { reason }));
-                  }}
-                  onClose={() => setShowReleaseDialog(false)}
-                />
-              )}
-              {showHelpDialog && (
-                <HelpDialog
-                  commands={commands}
-                  onClose={() => setShowHelpDialog(false)}
-                />
-              )}
-              {showThemeDialog && (
-                <ThemeDialog
-                  currentTheme={selectedTheme}
-                  onSelect={handleThemeChange}
-                  onClose={() => setShowThemeDialog(false)}
-                />
-              )}
-              {showToolsDialog && (
-                <ToolsDialog onClose={() => setShowToolsDialog(false)} />
-              )}
-              {showExtensionsDialog && (
-                <ExtensionsDialog
-                  onClose={() => setShowExtensionsDialog(false)}
-                />
-              )}
-            </div>
+          {showResumeDialog && (
+            <DialogShell
+              title={t('resume.title')}
+              size="lg"
+              onClose={() => setShowResumeDialog(false)}
+            >
+              <ResumeDialog
+                onSelect={(sessionId) => {
+                  sessionActions
+                    .loadSession(sessionId)
+                    .catch((error: unknown) => {
+                      reportError(error, 'Failed to load session');
+                    });
+                }}
+                onClose={() => setShowResumeDialog(false)}
+              />
+            </DialogShell>
+          )}
+          {modelDialogMode && (
+            <DialogShell
+              title={
+                modelDialogMode === 'fast'
+                  ? t('model.setFast')
+                  : t('model.select')
+              }
+              size="lg"
+              onClose={() => setModelDialogMode(null)}
+            >
+              <ModelDialog
+                mode={modelDialogMode}
+                onSelect={(modelId) => {
+                  if (modelDialogMode === 'fast') {
+                    handleFastModelSelect(modelId);
+                  } else {
+                    handleModelSelect(modelId);
+                  }
+                  setModelDialogMode(null);
+                }}
+              />
+            </DialogShell>
+          )}
+          {showApprovalModeDialog && (
+            <DialogShell
+              title={t('mode.select')}
+              size="sm"
+              onClose={() => setShowApprovalModeDialog(false)}
+            >
+              <ApprovalModeDialog
+                currentMode={currentMode}
+                onSelect={(modeId) => {
+                  handleSetMode(modeId);
+                  setShowApprovalModeDialog(false);
+                }}
+              />
+            </DialogShell>
+          )}
+          {showToolsDialog && (
+            <DialogShell
+              title={t('tools.title')}
+              size="lg"
+              onClose={() => setShowToolsDialog(false)}
+            >
+              <ToolsDialog />
+            </DialogShell>
+          )}
+          {showExtensionsDialog && (
+            <DialogShell
+              title={t('extensions.manage.title')}
+              size="lg"
+              onClose={() => setShowExtensionsDialog(false)}
+            >
+              <ExtensionsDialog />
+            </DialogShell>
+          )}
+          {mcpDialogMessage && (
+            <DialogShell
+              title={t('mcp.manageServers')}
+              size="lg"
+              onClose={() => setMcpDialogMessage(null)}
+            >
+              <McpDialog
+                message={mcpDialogMessage}
+                onClose={() => setMcpDialogMessage(null)}
+              />
+            </DialogShell>
+          )}
+          {tasksDialogMessage && (
+            <DialogShell
+              title={t('tasks.title')}
+              size="lg"
+              onClose={() => setTasksDialogMessage(null)}
+            >
+              <TasksStatusMessage
+                message={tasksDialogMessage}
+                embedded
+                manageActiveEvent={false}
+                onClose={() => setTasksDialogMessage(null)}
+              />
+            </DialogShell>
+          )}
+          {agentsDialogMode && (
+            <DialogShell
+              title={
+                agentsDialogMode === 'manage'
+                  ? t('agent.manage')
+                  : agentsDialogMode === 'menu'
+                    ? t('agents.title')
+                    : t('agent.create')
+              }
+              size="lg"
+              onClose={() => setAgentsDialogMode(null)}
+            >
+              <AgentsMessage
+                mode={agentsDialogMode}
+                embedded
+                onMessage={(text) => store.dispatch([{ type: 'status', text }])}
+                onClose={() => setAgentsDialogMode(null)}
+              />
+            </DialogShell>
+          )}
+          {showSettingsDialog && (
+            <DialogShell
+              title={t('settings.title')}
+              size="lg"
+              onClose={() => setShowSettingsDialog(false)}
+            >
+              <SettingsMessage
+                settingsState={workspaceSettingsState}
+                embedded
+                onClose={() => setShowSettingsDialog(false)}
+                onLanguageChange={handleSettingsLanguageChange}
+                onThemeChange={handleThemeChange}
+                chatWidthMode={chatWidthMode}
+                onChatWidthModeChange={handleChatWidthModeChange}
+                onSubDialog={(key) => {
+                  setShowSettingsDialog(false);
+                  if (key === 'fastModel') setModelDialogMode('fast');
+                  else if (key === 'tools.approvalMode')
+                    setShowApprovalModeDialog(true);
+                }}
+              />
+            </DialogShell>
+          )}
+          {showMemoryDialog && (
+            <DialogShell
+              title={t('memory.menu')}
+              size="lg"
+              onClose={() => setShowMemoryDialog(false)}
+            >
+              <MemoryMessage
+                refreshSignal={memoryRefreshSignal}
+                addSignal={memoryAddSignal}
+                addScope={memoryAddScope}
+                onMessage={(text, type = 'status') => {
+                  store.dispatch([{ type, text }]);
+                }}
+              />
+            </DialogShell>
+          )}
+          {showHelpDialog && (
+            <DialogShell
+              title={t('help.title')}
+              size="md"
+              onClose={() => setShowHelpDialog(false)}
+            >
+              <HelpDialog commands={commands} />
+            </DialogShell>
+          )}
+          {showThemeDialog && (
+            <DialogShell
+              title={t('theme.title')}
+              size="sm"
+              onClose={() => setShowThemeDialog(false)}
+            >
+              <ThemeDialog
+                currentTheme={selectedTheme}
+                onSelect={handleThemeChange}
+                onClose={() => setShowThemeDialog(false)}
+              />
+            </DialogShell>
+          )}
+          {showAuthDialog && (
+            <DialogShell
+              title={t('auth.title')}
+              size="lg"
+              onClose={() => setShowAuthDialog(false)}
+            >
+              <AuthMessage
+                onMessage={(text, type = 'status') => {
+                  store.dispatch([
+                    type === 'error'
+                      ? { type: 'error', text }
+                      : { type: 'status', text },
+                  ]);
+                }}
+                onClose={() => setShowAuthDialog(false)}
+              />
+            </DialogShell>
+          )}
+          {showDeleteDialog && (
+            <DialogShell
+              title={t('delete.title')}
+              size="lg"
+              onClose={() => setShowDeleteDialog(false)}
+            >
+              <DeleteSessionDialog
+                onDeleted={(sessionIds) => {
+                  store.dispatch([
+                    {
+                      type: 'status',
+                      text:
+                        sessionIds.length === 1
+                          ? `${t('delete.deleted')} (${sessionIds[0]!.slice(0, 8)})`
+                          : t('delete.deletedCount', {
+                              count: sessionIds.length,
+                            }),
+                    },
+                  ]);
+                }}
+                onError={(error) => {
+                  if (isAlreadyDispatched(error)) return;
+                  const reason =
+                    error instanceof Error ? error.message : String(error);
+                  pushToast('error', t('delete.failed', { reason }));
+                }}
+                onClose={() => setShowDeleteDialog(false)}
+              />
+            </DialogShell>
+          )}
+          {showReleaseDialog && (
+            <DialogShell
+              title={t('release.title')}
+              size="lg"
+              onClose={() => setShowReleaseDialog(false)}
+            >
+              <ReleaseSessionDialog
+                onReleased={(sessionId) => {
+                  store.dispatch([
+                    {
+                      type: 'status',
+                      text: `${t('release.released')} (${sessionId.slice(0, 8)})`,
+                    },
+                  ]);
+                }}
+                onError={(error) => {
+                  if (isAlreadyDispatched(error)) return;
+                  const reason =
+                    error instanceof Error ? error.message : String(error);
+                  pushToast('error', t('release.failed', { reason }));
+                }}
+                onClose={() => setShowReleaseDialog(false)}
+              />
+            </DialogShell>
           )}
 
           <WebShellCustomizationProvider value={customization}>
@@ -3247,7 +3388,6 @@ export function App({
                   ]
                     .filter(Boolean)
                     .join(' ')}
-                  style={dialogOpen ? { visibility: 'hidden' } : undefined}
                 >
                   <MessageList
                     ref={messageListRef}
@@ -3263,94 +3403,8 @@ export function App({
                     showRetryHint={showRetryHint}
                     onRetryClick={handleRetry}
                     welcomeHeader={isChatEmptyState ? welcomeHeader : undefined}
-                    tailContent={
-                      hasInlineTail ? (
-                        <>
-                          {authInlineOpen && (
-                            <AuthMessage
-                              onMessage={(text, type = 'status') => {
-                                store.dispatch([
-                                  type === 'error'
-                                    ? { type: 'error', text }
-                                    : { type: 'status', text },
-                                ]);
-                              }}
-                              onClose={() => setAuthInlineOpen(false)}
-                            />
-                          )}
-                          {approvalModeInlineOpen && (
-                            <ApprovalModeMessage
-                              currentMode={currentMode}
-                              onSelect={handleSetMode}
-                              onClose={() => setApprovalModeInlineOpen(false)}
-                            />
-                          )}
-                          {modelInlineMode && (
-                            <ModelMessage
-                              mode={modelInlineMode}
-                              onSelect={
-                                modelInlineMode === 'fast'
-                                  ? handleFastModelSelect
-                                  : handleModelSelect
-                              }
-                              onClose={() => setModelInlineMode(null)}
-                            />
-                          )}
-                          {agentsInlineMode && (
-                            <AgentsMessage
-                              mode={agentsInlineMode}
-                              onMessage={(text) =>
-                                store.dispatch([{ type: 'status', text }])
-                              }
-                              onClose={() => setAgentsInlineMode(null)}
-                            />
-                          )}
-                          {memoryInlineOpen && (
-                            <MemoryMessage
-                              refreshSignal={memoryRefreshSignal}
-                              addSignal={memoryAddSignal}
-                              addScope={memoryAddScope}
-                              portalHost={memoryPortalHost}
-                              onMessage={(text, type = 'status') => {
-                                store.dispatch([{ type, text }]);
-                              }}
-                              onClose={() => setMemoryInlineOpen(false)}
-                            />
-                          )}
-                          {settingsInlineOpen && (
-                            <SettingsMessage
-                              settingsState={workspaceSettingsState}
-                              onClose={() => setSettingsInlineOpen(false)}
-                              onLanguageChange={handleSettingsLanguageChange}
-                              onThemeChange={handleThemeChange}
-                              chatWidthMode={chatWidthMode}
-                              onChatWidthModeChange={handleChatWidthModeChange}
-                              onSubDialog={(key) => {
-                                setSettingsInlineOpen(false);
-                                if (key === 'fastModel')
-                                  setModelInlineMode('fast');
-                                else if (key === 'tools.approvalMode')
-                                  setApprovalModeInlineOpen(true);
-                              }}
-                            />
-                          )}
-                        </>
-                      ) : undefined
-                    }
-                    tailKey={
-                      hasInlineTail
-                        ? `inline-${authInlineOpen ? 'auth' : 'none'}-${modelInlineMode ?? 'none'}-${agentsInlineMode ?? 'none'}-${memoryInlineOpen ? 'memory' : 'none'}-${approvalModeInlineOpen ? 'approval' : 'none'}-${settingsInlineOpen ? 'settings' : 'none'}`
-                        : undefined
-                    }
-                    // The approval-mode/model pickers and the settings panel are
-                    // reachable by mouse from the status bar, so they reveal
-                    // themselves when opened while the user is scrolled up; the
-                    // agents/memory panels keep the user's scroll position.
-                    autoScrollTailIntoView={
-                      approvalModeInlineOpen ||
-                      modelInlineMode !== null ||
-                      settingsInlineOpen
-                    }
+                    tailContent={undefined}
+                    tailKey={undefined}
                     onFollowStateChange={(isFollowing) =>
                       setShowScrollToBottom(!isFollowing)
                     }
@@ -3366,7 +3420,6 @@ export function App({
                     </div>
                   )}
                 </div>
-                <div ref={setMemoryPortalHost} data-web-shell-overlay-root />
               </TodoContextsProvider>
             </CompactModeContext.Provider>
 
@@ -3378,7 +3431,7 @@ export function App({
                   : styles.footer
               }
             >
-              {showScrollToBottom && !tasksPanelMessage && (
+              {showScrollToBottom && (
                 <div
                   className={
                     showFloatingTodos
@@ -3390,16 +3443,25 @@ export function App({
                     type="button"
                     className={styles.scrollToBottomButton}
                     aria-label={t('chat.scrollToBottom')}
-                    onClick={() => {
-                      setShowScrollToBottom(false);
-                      messageListRef.current?.scrollToBottom('smooth');
-                    }}
+                    onClick={() => resumeChatBottomFollow('smooth')}
                   >
-                    <span className={styles.scrollToBottomIcon} />
+                    <svg
+                      className={styles.scrollToBottomIcon}
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        d="M12 5v13M6.5 12.5 12 18l5.5-5.5"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                      />
+                    </svg>
                   </button>
                 </div>
               )}
-              {showFloatingTodos && !tasksPanelMessage && (
+              {showFloatingTodos && (
                 <div className={styles.bottomPanels}>
                   <TodoPanel todos={floatingTodos} />
                 </div>
@@ -3410,7 +3472,7 @@ export function App({
                   <QueuedPromptDisplay prompts={queuedPrompts} t={t} />
                   <ChatEditor
                     ref={setEditorHandle}
-                    onSubmit={handleSubmit}
+                    onSubmit={handleEditorSubmit}
                     onCycleMode={handleCycleMode}
                     onToggleShortcuts={handleToggleShortcuts}
                     onCancel={handleCancel}
@@ -3434,7 +3496,7 @@ export function App({
                     onSelectModel={handleSelectModel}
                     onChatWidthModeChange={handleChatWidthModeChange}
                     sessionName={sessionDisplayName}
-                    dialogOpen={bottomHidden || tasksPanelMessage !== null}
+                    dialogOpen={interactionBlocked}
                     followupState={followupState}
                     onAcceptFollowup={onAcceptFollowup}
                     onDismissFollowup={onDismissFollowup}
@@ -3443,7 +3505,7 @@ export function App({
                     draftText={editorDraft}
                     draftVersion={editorDraftVersion}
                     placeholderText={
-                      !connected
+                      !connected || connection.catchingUp
                         ? t('common.loading')
                         : streamingState !== 'idle'
                           ? t('editor.processing')
@@ -3452,20 +3514,7 @@ export function App({
                   />
                 </div>
               )}
-              {tasksPanelMessage && (
-                <div className={styles.tasksBottomPanel}>
-                  <TasksStatusMessage
-                    message={tasksPanelMessage}
-                    manageActiveEvent={false}
-                    onClose={() => {
-                      setTasksPanelMessage(null);
-                      handleReturnToEditor();
-                    }}
-                  />
-                </div>
-              )}
               {!shouldHideComposer &&
-                !tasksPanelMessage &&
                 (showShortcuts ? (
                   <ShortcutsPanel onClose={handleCloseShortcuts} />
                 ) : CustomFooter ? (
@@ -3495,12 +3544,12 @@ export function App({
                 ) : (
                   <StatusBar
                     escapeHint={escapeHintVisible}
-                    onSelectMode={() => setApprovalModeInlineOpen((v) => !v)}
+                    onSelectMode={() => setShowApprovalModeDialog((v) => !v)}
                     onSelectModel={() =>
-                      setModelInlineMode((v) => (v ? null : 'main'))
+                      setModelDialogMode((v) => (v ? null : 'main'))
                     }
                     onShowContext={() => showContextUsage('/context', false)}
-                    onOpenSettings={() => setSettingsInlineOpen((v) => !v)}
+                    onOpenSettings={() => setShowSettingsDialog(true)}
                     ref={statusBarRef}
                     onOpenTasks={() => openTasksPanel()}
                     onReturnToInput={handleReturnToEditor}
@@ -3511,14 +3560,9 @@ export function App({
                     compact={true}
                   />
                 ))}
-              {isChatEmptyState &&
-                !shouldHideComposer &&
-                !tasksPanelMessage &&
-                welcomeFooter && (
-                  <div className={styles.emptyWelcomeFooter}>
-                    {welcomeFooter}
-                  </div>
-                )}
+              {isChatEmptyState && !shouldHideComposer && welcomeFooter && (
+                <div className={styles.emptyWelcomeFooter}>{welcomeFooter}</div>
+              )}
             </div>
           </WebShellCustomizationProvider>
         </div>

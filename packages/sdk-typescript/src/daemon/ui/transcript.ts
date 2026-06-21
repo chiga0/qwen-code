@@ -524,12 +524,19 @@ function appendTextDelta(
     parentMap && parentId != null ? parentMap[parentId] : state[activeKey];
 
   const existing = getWritableBlockById(state, effectiveId);
-  if (existing && existing.kind === kind) {
+  if (
+    existing &&
+    existing.kind === kind &&
+    canMergeTextDelta(existing, event)
+  ) {
     existing.text = appendBoundedText(existing.text, text);
     existing.updatedAt = state.now;
     if (event.eventId !== undefined) existing.eventId = event.eventId;
     if (event.serverTimestamp !== undefined) {
       existing.serverTimestamp = event.serverTimestamp;
+    }
+    if ('meta' in event && event.meta) {
+      existing.meta = { ...event.meta };
     }
     if (kind === 'assistant' || kind === 'thought') existing.streaming = true;
     return;
@@ -541,6 +548,7 @@ function appendTextDelta(
     text,
     event.eventId,
     event.serverTimestamp,
+    'meta' in event ? event.meta : undefined,
   );
   if (kind === 'assistant' || kind === 'thought') block.streaming = true;
   if (kind === 'thought') block.collapsed = true;
@@ -567,6 +575,21 @@ function appendTextDelta(
     if (kind !== 'assistant') clearActiveAssistant(state);
     if (kind !== 'thought') clearActiveThought(state);
   }
+}
+
+function canMergeTextDelta(
+  existing: DaemonTranscriptBlock,
+  event: DaemonUiEvent,
+): boolean {
+  if (
+    existing.kind !== 'user' &&
+    existing.kind !== 'assistant' &&
+    existing.kind !== 'thought'
+  ) {
+    return false;
+  }
+  if (existing.meta?.['qwenDiscreteMessage'] === true) return false;
+  return !('meta' in event) || event.meta?.['qwenDiscreteMessage'] !== true;
 }
 
 function finishAssistant(
@@ -1018,6 +1041,7 @@ function createTextBlock(
   text: string,
   eventId?: number,
   serverTimestamp?: number,
+  meta?: Record<string, unknown>,
 ): DaemonTextTranscriptBlock {
   return {
     id: allocateBlockId(state, kind),
@@ -1028,6 +1052,7 @@ function createTextBlock(
     updatedAt: state.now,
     ...(eventId !== undefined ? { eventId } : {}),
     ...(serverTimestamp !== undefined ? { serverTimestamp } : {}),
+    ...(meta ? { meta: { ...meta } } : {}),
   };
 }
 

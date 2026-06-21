@@ -87,6 +87,7 @@ export interface DaemonUiTextEvent extends DaemonUiEventBase {
   type: 'user.text.delta' | 'assistant.text.delta' | 'thought.text.delta';
   text: string;
   parentToolCallId?: string;
+  meta?: Record<string, unknown>;
 }
 
 export interface DaemonUiUserImageEvent extends DaemonUiEventBase {
@@ -726,6 +727,8 @@ export interface DaemonTextTranscriptBlock extends DaemonTranscriptBlockBase {
   collapsed?: boolean;
   /** Used by the reducer for per-subAgent block routing; renderers may use it for nesting. */
   parentToolCallId?: string;
+  /** Raw ACP update metadata used by renderers for display-only routing. */
+  meta?: Record<string, unknown>;
   /**
    * Token usage folded onto this assistant block by the reducer from the
    * round's `assistant.usage` event(s). Summed across a turn's assistant blocks

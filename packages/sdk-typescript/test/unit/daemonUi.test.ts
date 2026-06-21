@@ -64,6 +64,105 @@ describe('daemon UI normalizer and transcript reducer', () => {
     ]);
   });
 
+  it('preserves assistant message metadata on transcript blocks', () => {
+    const events = normalizeDaemonEvent({
+      id: 10,
+      v: 1,
+      type: 'session_update',
+      data: {
+        update: {
+          sessionUpdate: 'agent_message_chunk',
+          content: { type: 'text', text: 'Background agent "x" completed.' },
+          _meta: {
+            source: 'background_notification',
+            qwenDiscreteMessage: true,
+            backgroundTask: { taskId: 'task-1', status: 'completed' },
+          },
+        },
+      },
+    });
+
+    expect(events[0]).toMatchObject({
+      type: 'assistant.text.delta',
+      meta: {
+        source: 'background_notification',
+        qwenDiscreteMessage: true,
+        backgroundTask: { taskId: 'task-1', status: 'completed' },
+      },
+    });
+
+    const state = reduceDaemonTranscriptEvents(
+      createDaemonTranscriptState({ now: 1 }),
+      events,
+      { now: 2 },
+    );
+    expect(state.blocks[0]).toMatchObject({
+      kind: 'assistant',
+      meta: {
+        source: 'background_notification',
+        qwenDiscreteMessage: true,
+        backgroundTask: { taskId: 'task-1', status: 'completed' },
+      },
+    });
+  });
+
+  it('keeps discrete assistant messages separate from normal text blocks', () => {
+    const normalBefore = normalizeDaemonEvent({
+      id: 11,
+      v: 1,
+      type: 'session_update',
+      data: {
+        update: {
+          sessionUpdate: 'agent_message_chunk',
+          content: { type: 'text', text: '前面的正常回复。' },
+        },
+      },
+    });
+    const notification = normalizeDaemonEvent({
+      id: 12,
+      v: 1,
+      type: 'session_update',
+      data: {
+        update: {
+          sessionUpdate: 'agent_message_chunk',
+          content: { type: 'text', text: 'Background agent "x" completed.' },
+          _meta: {
+            source: 'background_notification',
+            qwenDiscreteMessage: true,
+            backgroundTask: { taskId: 'task-1', status: 'completed' },
+          },
+        },
+      },
+    });
+    const normalAfter = normalizeDaemonEvent({
+      id: 13,
+      v: 1,
+      type: 'session_update',
+      data: {
+        update: {
+          sessionUpdate: 'agent_message_chunk',
+          content: { type: 'text', text: '后面的正常回复。' },
+        },
+      },
+    });
+
+    const state = reduceDaemonTranscriptEvents(
+      createDaemonTranscriptState({ now: 1 }),
+      [...normalBefore, ...notification, ...normalAfter],
+      { now: 2 },
+    );
+
+    expect(state.blocks).toMatchObject([
+      { kind: 'assistant', text: '前面的正常回复。' },
+      {
+        kind: 'assistant',
+        text: 'Background agent "x" completed.',
+        meta: { qwenDiscreteMessage: true },
+      },
+      { kind: 'assistant', text: '后面的正常回复。' },
+    ]);
+  });
+
   it('passes the agent-stamped plan stats snapshot through to rawOutput', () => {
     const events = normalizeDaemonEvent({
       id: 5,

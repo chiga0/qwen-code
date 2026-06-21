@@ -476,6 +476,7 @@ function normalizeSessionUpdate(
     case 'agent_message_chunk': {
       const text = getTextContent(update['content']);
       const parentToolCallId = extractParentToolCallId(update);
+      const meta = extractUpdateMeta(update);
       const events: DaemonUiEvent[] = [];
       if (text) {
         events.push({
@@ -483,6 +484,7 @@ function normalizeSessionUpdate(
           type: 'assistant.text.delta' as const,
           text,
           ...(parentToolCallId ? { parentToolCallId } : {}),
+          ...(meta ? { meta } : {}),
         });
       }
       // A turn's per-round token usage rides on an otherwise-empty
@@ -568,6 +570,13 @@ function extractParentToolCallId(
 ): string | undefined {
   const meta = isRecord(update['_meta']) ? update['_meta'] : undefined;
   return meta ? getString(meta, 'parentToolCallId') : undefined;
+}
+
+function extractUpdateMeta(
+  update: Record<string, unknown>,
+): Record<string, unknown> | undefined {
+  const meta = isRecord(update['_meta']) ? update['_meta'] : undefined;
+  return meta ? { ...meta } : undefined;
 }
 
 /**
