@@ -87,7 +87,9 @@ const CHAT_EDITOR_THEME = {
     outline: 'none',
   },
   '.cm-scroller': {
-    overflow: 'visible',
+    maxHeight: 'var(--chat-editor-input-max-height, 300px)',
+    overflowX: 'hidden',
+    overflowY: 'auto',
   },
   '.cm-content': {
     padding: '0',
@@ -110,10 +112,18 @@ const CHAT_EDITOR_THEME = {
     userSelect: 'none',
   },
   '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
+    backgroundColor: 'var(--chat-editor-selection-bg) !important',
+  },
+  '&.cm-focused > .cm-scroller > .cm-selectionLayer .cm-selectionBackground': {
+    backgroundColor: 'var(--chat-editor-selection-bg) !important',
+  },
+  '&.cm-focused .cm-content ::selection': {
     backgroundColor: 'var(--chat-editor-selection-bg)',
+    color: 'var(--chat-editor-selection-color)',
   },
   '.cm-content ::selection': {
     backgroundColor: 'var(--chat-editor-selection-bg)',
+    color: 'var(--chat-editor-selection-color)',
   },
   '.cm-cursor': {
     borderLeftColor: 'var(--accent-color, #4a9eff)',

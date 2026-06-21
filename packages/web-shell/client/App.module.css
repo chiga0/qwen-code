@@ -66,7 +66,8 @@
   --thinking-pre-color: #757575;
   --processed-label-color: #a4a4a4;
   --chat-editor-container-bg: #2f2f2f;
-  --chat-editor-selection-bg: rgba(138, 123, 255, 0.32);
+  --chat-editor-selection-bg: #3d5a7a;
+  --chat-editor-selection-color: #ffffff;
   --command-panel-bg: #2f2f2f;
   --subtle-bg: rgba(255, 255, 255, 0.04);
   --subtle-bg-strong: rgba(255, 255, 255, 0.06);
@@ -110,6 +111,7 @@
   --processed-label-color: #777879;
   --chat-editor-container-bg: var(--bg-primary);
   --chat-editor-selection-bg: rgba(11, 102, 195, 0.18);
+  --chat-editor-selection-color: var(--text-primary);
   --command-panel-bg: var(--bg-primary);
   --subtle-bg: rgba(32, 31, 25, 0.05);
   --subtle-bg-strong: rgba(32, 31, 25, 0.08);

@@ -4,6 +4,7 @@
   border-radius: 16px;
   margin: 0 0 14px;
   cursor: text;
+  --chat-editor-input-max-height: 300px;
   --dac-glow-on: 0;
   --dac-glow-pulse: 0;
   --dac-g1: #6a78ff;
@@ -422,6 +423,24 @@
   font-family: var(--font-sans, system-ui, sans-serif);
   font-size: 14px;
   line-height: 1.6;
+}
+
+.editorArea .cm-scroller {
+  scrollbar-color: var(--border-color) transparent;
+  scrollbar-width: thin;
+}
+
+.editorArea .cm-scroller::-webkit-scrollbar {
+  width: 6px;
+}
+
+.editorArea .cm-scroller::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.editorArea .cm-scroller::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  background: var(--border-color);
 }
 
 .toolbar {

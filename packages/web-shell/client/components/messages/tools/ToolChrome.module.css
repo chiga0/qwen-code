@@ -74,36 +74,29 @@
 }
 
 .chatSummaryTextActive {
-  position: relative;
-  overflow: hidden;
-}
-
-.chatSummaryTextActive::after {
-  content: '';
-  position: absolute;
-  top: -35%;
-  bottom: -35%;
-  left: -60%;
-  width: 45%;
-  background: linear-gradient(
-    100deg,
-    transparent 0%,
-    rgba(255, 255, 255, 0.15) 25%,
-    rgba(255, 255, 255, 0.82) 50%,
-    rgba(255, 255, 255, 0.15) 75%,
-    transparent 100%
+  color: #a1a2a3;
+  background-image: linear-gradient(
+    105deg,
+    #a1a2a3 0%,
+    #a1a2a3 42%,
+    rgba(255, 255, 255, 0.92) 50%,
+    #a1a2a3 58%,
+    #a1a2a3 100%
   );
-  transform: skewX(-22deg);
+  background-size: 220% 100%;
+  background-position: 120% 0;
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   animation: chat-summary-shine 2.4s ease-in-out infinite;
-  pointer-events: none;
 }
 
 @keyframes chat-summary-shine {
   0% {
-    left: -60%;
+    background-position: 120% 0;
   }
   100% {
-    left: 115%;
+    background-position: -120% 0;
   }
 }
 
