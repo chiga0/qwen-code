@@ -972,9 +972,12 @@ export function App({
     () => getBackgroundTaskActivityKey(messages),
     [messages],
   );
+  const [backgroundTasksRefreshTrigger, setBackgroundTasksRefreshTrigger] =
+    useState(0);
   const backgroundTasks = useBackgroundTasks(
     backgroundTaskActivityKey,
     connection.status === 'connected',
+    backgroundTasksRefreshTrigger,
   );
   const footerTasks = useMemo(
     () => (renderFooter ? backgroundTasks.map(mapToWebShellTaskInfo) : []),
@@ -2202,6 +2205,49 @@ export function App({
           }
           if (cmd === 'rewind') {
             setShowRewindDialog(true);
+            return true;
+          }
+          if (cmd === 'branch') {
+            if (promptBlocked) return enqueuePrompt(text, images);
+            const branchName = text.slice(match[0].length).trim();
+            sessionActions
+              .branchSession(branchName || undefined)
+              .then((result) => {
+                store.dispatch([
+                  {
+                    type: 'status',
+                    text: t('branch.success', {
+                      name: result.displayName,
+                    }),
+                  },
+                ]);
+              })
+              .catch((error: unknown) => {
+                reportError(error, t('branch.failed'));
+              });
+            return true;
+          }
+          if (cmd === 'fork') {
+            if (promptBlocked) return enqueuePrompt(text, images);
+            const directive = text.slice(match[0].length).trim();
+            if (!directive) {
+              pushToast('error', t('fork.empty'));
+              return true;
+            }
+            sessionActions
+              .forkSession(directive)
+              .then((result) => {
+                setBackgroundTasksRefreshTrigger((value) => value + 1);
+                pushToast(
+                  'success',
+                  t('fork.started', { name: result.description }),
+                );
+              })
+              .catch((error: unknown) => {
+                const reason =
+                  error instanceof Error ? error.message : String(error);
+                pushToast('error', t('fork.failed', { reason }));
+              });
             return true;
           }
           if (cmd === 'auth') {

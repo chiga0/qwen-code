@@ -44,6 +44,7 @@ type ExtendedDaemonTextTranscriptBlock = DaemonTextTranscriptBlock & {
 
 interface TranscriptMessageLabels {
   promptCancelled?: string;
+  branchSuccess?: (name: string) => string;
 }
 
 interface TranscriptMessageOptions {
@@ -55,6 +56,20 @@ function isIgnoredWebShellStatus(text: string): boolean {
     text.startsWith('language_changed (unrecognized daemon event):') ||
     text.startsWith('Model switched: ')
   );
+}
+
+function getSessionBranchDisplayName(data: unknown): string | null {
+  if (!data || typeof data !== 'object') return null;
+  const branchData = data as {
+    displayName?: unknown;
+    newSessionId?: unknown;
+  };
+  if (typeof branchData.displayName === 'string' && branchData.displayName) {
+    return branchData.displayName;
+  }
+  return typeof branchData.newSessionId === 'string'
+    ? branchData.newSessionId.slice(0, 8)
+    : null;
 }
 
 function isBackgroundNotificationAssistantBlock(
@@ -498,7 +513,14 @@ export function transcriptBlocksToDaemonMessages(
       case 'status':
       case 'debug': {
         const statusBlock = block as ExtendedDaemonStatusTranscriptBlock;
-        const text = statusBlock.text;
+        const branchDisplayName =
+          statusBlock.source === 'session_branched'
+            ? getSessionBranchDisplayName(statusBlock.data)
+            : null;
+        const text =
+          branchDisplayName && options.labels?.branchSuccess
+            ? options.labels.branchSuccess(branchDisplayName)
+            : statusBlock.text;
         if (isIgnoredWebShellStatus(text)) break;
         const todos = parsePlanTodos(text);
         if (todos) {

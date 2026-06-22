@@ -84,6 +84,16 @@ export function getLocalCommands(t: Translate): CommandInfo[] {
     { name: 'tasks', description: t('local.tasks') },
     { name: 'recap', description: t('local.recap') },
     { name: 'rewind', description: t('local.rewind') },
+    {
+      name: 'branch',
+      description: t('local.branch'),
+      argumentHint: '[<name>]',
+    },
+    {
+      name: 'fork',
+      description: t('local.fork'),
+      argumentHint: '<directive>',
+    },
     { name: 'clear', description: t('local.clear') },
     { name: 'new', description: t('local.new') },
     { name: 'reset', description: t('local.reset') },

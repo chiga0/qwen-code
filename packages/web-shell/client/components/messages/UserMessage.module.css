@@ -46,7 +46,7 @@
 
 .chatBubble {
   display: inline-block;
-  max-width: 60%;
+  max-width: 80%;
   padding: 8px 12px;
   border-radius: 16px;
   background: var(--bg-tertiary);
