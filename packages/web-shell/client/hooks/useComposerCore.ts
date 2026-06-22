@@ -999,6 +999,13 @@ export function useComposerCore(
         setSlashMenu(null);
         return;
       }
+      // While browsing history, a recalled slash command (e.g. "/theme")
+      // should not pop its argument menu — the user is browsing, not composing.
+      // Editing the line re-arms it (historyBrowseActiveRef clears on edit).
+      if (historyBrowseActiveRef.current) {
+        setSlashMenu(null);
+        return;
+      }
       const selection = view.state.selection.main;
       if (!selection.empty) {
         setSlashMenu(null);

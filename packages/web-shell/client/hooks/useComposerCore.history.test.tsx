@@ -10,9 +10,9 @@
 //   2. After browsing history earlier in the same composition, typing "/"
 //      again still lets ArrowUp drive the menu — guards the sticky-flag
 //      regression (history.isNavigating() never resets until submit).
-//   3. While actually paging through history, a recalled slash command (which
-//      pops its own menu) does NOT trap ArrowUp inside that menu — the edge
-//      case: ArrowUp keeps walking history.
+//   3. A "/..." entry recalled from history does NOT pop its argument menu,
+//      and ArrowUp keeps walking history instead of being captured by it.
+//   4. Editing a recalled "/..." entry re-arms the menu so it opens again.
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { act } from 'react';
 import { createRoot, type Root } from 'react-dom/client';
@@ -67,6 +67,20 @@ function typeText(text: string) {
       changes: { from: 0, to: v.state.doc.length, insert: text },
       selection: { anchor: text.length },
       userEvent: 'input.type',
+    });
+  });
+}
+
+/** Simulate deleting the last character (carries a delete userEvent). */
+function backspace() {
+  act(() => {
+    const v = view();
+    v.dispatch({
+      changes: {
+        from: Math.max(0, v.state.doc.length - 1),
+        to: v.state.doc.length,
+      },
+      userEvent: 'delete.backward',
     });
   });
 }
@@ -136,15 +150,28 @@ describe('composer arrow-key arbitration (slash menu vs history)', () => {
     );
   });
 
-  it('keeps paging history on ArrowUp even when a recalled slash command opens its menu', () => {
+  it('does not pop the slash menu for a slash command recalled from history, and keeps paging', () => {
     mount();
-    // First ArrowUp recalls the newest entry, a slash command that pops a menu.
+    // Recalling a "/..." entry while browsing must NOT open its argument menu.
     pressArrow('ArrowUp');
     expect(coreRef.current?.getText()).toBe('/the');
-    expect(coreRef.current?.slashMenu).not.toBeNull();
+    expect(coreRef.current?.slashMenu).toBeNull();
 
-    // Second ArrowUp must continue history, not get trapped in the menu.
+    // And ArrowUp keeps walking history rather than being captured by a menu.
     pressArrow('ArrowUp');
     expect(coreRef.current?.getText()).toBe('hello world');
+  });
+
+  it('opens the slash menu once the user edits a slash command recalled from history', () => {
+    mount();
+    pressArrow('ArrowUp');
+    expect(coreRef.current?.getText()).toBe('/the');
+    expect(coreRef.current?.slashMenu).toBeNull();
+
+    // Editing the recalled line (here: deleting a char) ends browse mode, so
+    // the menu is allowed to open again.
+    backspace();
+    expect(coreRef.current?.getText()).toBe('/th');
+    expect(coreRef.current?.slashMenu).not.toBeNull();
   });
 });
