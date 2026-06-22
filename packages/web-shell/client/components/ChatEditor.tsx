@@ -1049,6 +1049,7 @@ export const ChatEditor = memo(
       closeSearch,
       handleSearchKeyDown,
       handleSearchInput,
+      handleSearchCompositionEnd,
     } = core.searchState;
 
     const renderComposerTagContent = (tag: WebShellComposerTag) => {
@@ -1102,6 +1103,7 @@ export const ChatEditor = memo(
                   className={styles.searchInput}
                   value={searchQuery}
                   onChange={handleSearchInput}
+                  onCompositionEnd={handleSearchCompositionEnd}
                   onKeyDown={handleSearchKeyDown}
                   placeholder={t('editor.searchPlaceholder')}
                 />

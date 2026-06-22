@@ -769,6 +769,9 @@ export interface SearchState {
   submitSearchMatch: (match: string) => void;
   handleSearchKeyDown: (e: React.KeyboardEvent<HTMLInputElement>) => void;
   handleSearchInput: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleSearchCompositionEnd: (
+    e: React.CompositionEvent<HTMLInputElement>,
+  ) => void;
 }
 
 export interface SlashMenuState extends SlashCommandCompletionResult {
@@ -2434,6 +2437,10 @@ export function useComposerCore(
   );
 
   const handleSearchKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    // While an IME is composing, keys belong to the IME — e.g. Enter commits
+    // the candidate and Esc cancels composition. Letting them through here
+    // would submit or close the search mid-composition.
+    if (e.nativeEvent.isComposing) return;
     if (e.key === 'Escape') {
       e.preventDefault();
       closeSearch(true);
@@ -2460,15 +2467,32 @@ export function useComposerCore(
     }
   };
 
-  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const q = e.target.value;
-    setSearchQuery(q);
+  const runHistorySearch = (q: string) => {
     const history = shellModeRef.current
       ? shellHistoryActionsRef.current
       : historyActionsRef.current;
     setSearchMatches(getSearchMatches(q));
     setSearchActiveIndex(0);
     history.resetSearch();
+  };
+
+  const handleSearchInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const q = e.target.value;
+    setSearchQuery(q);
+    // Mid IME composition the value is intermediate pinyin; re-filtering on
+    // every keystroke makes the results list flicker. Defer to compositionend,
+    // which re-runs the search with the committed text. (nativeEvent is an
+    // InputEvent at runtime; React types it as the base Event.)
+    if ((e.nativeEvent as InputEvent).isComposing) return;
+    runHistorySearch(q);
+  };
+
+  const handleSearchCompositionEnd = (
+    e: React.CompositionEvent<HTMLInputElement>,
+  ) => {
+    const q = e.currentTarget.value;
+    setSearchQuery(q);
+    runHistorySearch(q);
   };
 
   const removeImage = useCallback((index: number) => {
@@ -2543,6 +2567,7 @@ export function useComposerCore(
       submitSearchMatch,
       handleSearchKeyDown,
       handleSearchInput,
+      handleSearchCompositionEnd,
     },
     navigatePrevHistory,
     navigateNextHistory,
