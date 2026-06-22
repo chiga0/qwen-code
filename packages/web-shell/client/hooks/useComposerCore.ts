@@ -262,6 +262,22 @@ function ensureTooltipStyles() {
   document.head.appendChild(style);
 }
 
+/**
+ * Compute the next selected index for an open slash-command menu, wrapping
+ * around at both ends. Wrapping (rather than clamping) keeps arrow keys
+ * captured by the menu so they never leak through to input-history navigation.
+ * Returns null when there is nothing to select.
+ */
+function nextSlashSelectionIndex(
+  selectedIndex: number,
+  count: number,
+  direction: 'up' | 'down',
+): number | null {
+  if (count <= 0) return null;
+  const delta = direction === 'up' ? -1 : 1;
+  return (((selectedIndex + delta) % count) + count) % count;
+}
+
 function isSlashCommandCompletion(completion: Completion): boolean {
   return (
     typeof completion.apply === 'string' &&
@@ -964,6 +980,14 @@ export function useComposerCore(
   const [slashMenu, setSlashMenuState] = useState<SlashMenuState | null>(null);
   const slashMenuRef = useRef<SlashMenuState | null>(null);
 
+  // True while the user is paging through input history with the arrow keys
+  // and has not typed since. Unlike history.isNavigating() (which stays set
+  // until submit), this resets the moment the user edits the text, so a
+  // recalled slash command like "/theme" can pop its menu yet still let the
+  // next arrow keep browsing history — while a freshly typed "/" lets arrows
+  // drive the menu. See the ArrowUp/ArrowDown keymap handlers.
+  const historyBrowseActiveRef = useRef(false);
+
   const setSlashMenu = useCallback((next: SlashMenuState | null) => {
     slashMenuRef.current = next;
     setSlashMenuState(next);
@@ -1025,11 +1049,12 @@ export function useComposerCore(
     (direction: 'up' | 'down') => {
       const current = slashMenuRef.current;
       if (!current) return false;
-      const delta = direction === 'up' ? -1 : 1;
-      const nextIndex = current.selectedIndex + delta;
-      if (nextIndex < 0 || nextIndex >= current.items.length) {
-        return false;
-      }
+      const nextIndex = nextSlashSelectionIndex(
+        current.selectedIndex,
+        current.items.length,
+        direction,
+      );
+      if (nextIndex === null) return false;
       setSlashMenu({ ...current, selectedIndex: nextIndex });
       return true;
     },
@@ -1276,6 +1301,7 @@ export function useComposerCore(
         historyActionsRef.current.push(text);
         historyActionsRef.current.reset();
       }
+      historyBrowseActiveRef.current = false;
       setComposerTags([]);
       setPastedImages([]);
       view.dispatch({
@@ -1430,16 +1456,22 @@ export function useComposerCore(
       {
         key: 'ArrowUp',
         run: (view) => {
-          if (moveSlashCompletionSelection('up')) return true;
           const history = shellModeRef.current
             ? shellHistoryActionsRef.current
             : historyActionsRef.current;
-          const isBrowsingHistory = history.isNavigating();
-          if (completionStatus(view.state) === 'active' && !isBrowsingHistory) {
-            return moveCompletionSelection(false)(view);
-          }
-          if (isBrowsingHistory) {
+          const isBrowsingHistory = historyBrowseActiveRef.current;
+          // Not browsing history → arrows drive the slash menu / native
+          // completion. While browsing → arrows keep walking history and any
+          // auto-opened menu is closed. (Gate uses historyBrowseActiveRef, not
+          // the sticky history.isNavigating — see its declaration.)
+          if (!isBrowsingHistory) {
+            if (moveSlashCompletionSelection('up')) return true;
+            if (completionStatus(view.state) === 'active') {
+              return moveCompletionSelection(false)(view);
+            }
+          } else {
             closeCompletion(view);
+            closeSlashMenu();
           }
           const multilineBoundary = handleMultilineHistoryBoundary(view, 'up');
           if (multilineBoundary === 'handled') return true;
@@ -1448,6 +1480,7 @@ export function useComposerCore(
             const current = view.state.doc.toString();
             const prev = history.navigateUp(current);
             if (prev === null) return true;
+            historyBrowseActiveRef.current = true;
             view.dispatch({
               changes: { from: 0, to: view.state.doc.length, insert: prev },
               selection: { anchor: prev.length },
@@ -1471,6 +1504,7 @@ export function useComposerCore(
           const current = view.state.doc.toString();
           const prev = history.navigateUp(current);
           if (prev === null) return false;
+          historyBrowseActiveRef.current = true;
           view.dispatch({
             changes: { from: 0, to: view.state.doc.length, insert: prev },
             selection: { anchor: prev.length },
@@ -1481,16 +1515,21 @@ export function useComposerCore(
       {
         key: 'ArrowDown',
         run: (view) => {
-          if (moveSlashCompletionSelection('down')) return true;
           const history = shellModeRef.current
             ? shellHistoryActionsRef.current
             : historyActionsRef.current;
-          const isBrowsingHistory = history.isNavigating();
-          if (completionStatus(view.state) === 'active' && !isBrowsingHistory) {
-            return moveCompletionSelection(true)(view);
-          }
-          if (isBrowsingHistory) {
+          const isBrowsingHistory = historyBrowseActiveRef.current;
+          // Symmetric with ArrowUp: history navigation wins while browsing;
+          // the slash menu and native completion only capture arrows once the
+          // user is no longer paging through history.
+          if (!isBrowsingHistory) {
+            if (moveSlashCompletionSelection('down')) return true;
+            if (completionStatus(view.state) === 'active') {
+              return moveCompletionSelection(true)(view);
+            }
+          } else {
             closeCompletion(view);
+            closeSlashMenu();
           }
           const multilineBoundary = handleMultilineHistoryBoundary(
             view,
@@ -1501,6 +1540,7 @@ export function useComposerCore(
           if (shellModeRef.current) {
             const next = history.navigateDown();
             if (next === null) return true;
+            historyBrowseActiveRef.current = history.isNavigating();
             view.dispatch({
               changes: { from: 0, to: view.state.doc.length, insert: next },
               selection: { anchor: next.length },
@@ -1511,6 +1551,7 @@ export function useComposerCore(
           if (next === null) {
             return onFocusFooterRef.current?.() ?? false;
           }
+          historyBrowseActiveRef.current = history.isNavigating();
           view.dispatch({
             changes: { from: 0, to: view.state.doc.length, insert: next },
             selection: { anchor: next.length },
@@ -1602,6 +1643,15 @@ export function useComposerCore(
         if (nextPasteId !== null) {
           nextPasteIdRef.current = nextPasteId;
         }
+      }
+      // A genuine edit (typing/deleting/pasting) ends history-browse mode, so
+      // arrows go back to driving any open menu. Programmatic history recall
+      // dispatches carry no user event, so they do not clear the flag.
+      const userEdited = update.transactions.some(
+        (tr) => tr.isUserEvent('input') || tr.isUserEvent('delete'),
+      );
+      if (userEdited) {
+        historyBrowseActiveRef.current = false;
       }
       if (update.docChanged || update.selectionSet) {
         refreshSlashMenuForView(update.view);
