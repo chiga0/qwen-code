@@ -5058,6 +5058,7 @@ class QwenAgent implements Agent {
         }
         const fhs = session.getConfig().getFileHistoryService();
         const snapshots = fhs.getSnapshots();
+        const rewindableTurnCount = session.getRewindableUserTurnCount();
         const prefix = (sessionId as string) + '########';
         const results = await Promise.all(
           snapshots
@@ -5067,6 +5068,7 @@ class QwenAgent implements Agent {
                 s.promptId.startsWith(prefix) &&
                 /^\d+$/.test(s.promptId.slice(prefix.length)),
             )
+            .filter(({ idx }) => idx < rewindableTurnCount)
             .map(async ({ s, idx }) => {
               const stats = await fhs.getDiffStats(s.promptId);
               return {
@@ -6160,10 +6162,13 @@ class QwenAgent implements Agent {
           );
         }
 
+        const rewindFiles = params['rewindFiles'] !== false;
         const historyBeforeRewind = session.captureHistorySnapshot();
         let rewindResult;
         try {
-          rewindResult = session.rewindToTurn(turnIndex as number);
+          rewindResult = session.rewindToTurn(turnIndex as number, {
+            rewindFiles,
+          });
         } catch (err) {
           if (err instanceof RequestError) {
             const msg = err.message;
@@ -6183,7 +6188,6 @@ class QwenAgent implements Agent {
 
         let filesChanged: string[] = [];
         let filesFailed: string[] = [];
-        const rewindFiles = params['rewindFiles'] !== false;
         if (rewindFiles && promptId) {
           const fhs = session.getConfig().getFileHistoryService();
           try {

@@ -1,8 +1,14 @@
+.editorShell {
+  position: relative;
+  container-type: inline-size;
+  margin: 0 0 14px;
+}
+
 .container {
   position: relative;
   container-type: inline-size;
   border-radius: 16px;
-  margin: 0 0 14px;
+  margin: 0;
   cursor: text;
   --chat-editor-input-max-height: 300px;
   --dac-glow-on: 0;

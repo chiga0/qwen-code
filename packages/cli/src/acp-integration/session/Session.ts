@@ -857,7 +857,10 @@ export class Session implements SessionContext {
     await this.historyReplayer.replay(records);
   }
 
-  rewindToTurn(targetTurnIndex: number): {
+  rewindToTurn(
+    targetTurnIndex: number,
+    opts?: { rewindFiles?: boolean },
+  ): {
     targetTurnIndex: number;
     apiTruncateIndex: number;
   } {
@@ -898,12 +901,15 @@ export class Session implements SessionContext {
     chat.truncateHistory(apiTruncateIndex);
     chat.stripThoughtsFromHistory();
 
+    const rewindFiles = opts?.rewindFiles !== false;
     const fileHistoryService = this.config.getFileHistoryService();
-    const survivingSnapshots = fileHistoryService
-      .getSnapshots()
-      .slice(0, targetTurnIndex + 1);
+    const survivingSnapshots = rewindFiles
+      ? fileHistoryService.getSnapshots().slice(0, targetTurnIndex + 1)
+      : undefined;
 
-    fileHistoryService.restoreFromSnapshots(survivingSnapshots);
+    if (survivingSnapshots) {
+      fileHistoryService.restoreFromSnapshots(survivingSnapshots);
+    }
 
     this.config
       .getChatRecordingService()
@@ -918,6 +924,20 @@ export class Session implements SessionContext {
 
   captureHistorySnapshot(): Content[] {
     return this.config.getGeminiClient()!.getChat().getHistoryShallow();
+  }
+
+  getRewindableUserTurnCount(): number {
+    const apiHistory = this.captureHistorySnapshot();
+    const startIndex = getStartupContextLength(apiHistory);
+    let count = 0;
+
+    for (let i = startIndex; i < apiHistory.length; i++) {
+      if (this.#isUserTextContent(apiHistory[i]!)) {
+        count += 1;
+      }
+    }
+
+    return count;
   }
 
   restoreHistory(history: Content[]): void {

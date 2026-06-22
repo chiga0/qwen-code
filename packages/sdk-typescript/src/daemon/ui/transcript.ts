@@ -327,6 +327,9 @@ function applyDaemonTranscriptEvent(
       // stream (or `selectors`) to drop a catch-up indicator. No
       // transcript mutation.
       break;
+    case 'session.rewound':
+      rewindTranscriptToUserTurn(next, event.targetTurnIndex);
+      break;
     case 'workspace.memory.changed':
     case 'workspace.agent.changed':
     case 'workspace.tool.toggled':
@@ -1214,6 +1217,61 @@ function takeBlocksOwnership(state: DaemonTranscriptState): void {
   state.blocks = [...state.blocks];
   state.blockIndexById = { ...state.blockIndexById };
   ownedBlocks.set(state, state.blocks);
+}
+
+function rewindTranscriptToUserTurn(
+  state: DaemonTranscriptState,
+  targetTurnIndex: number,
+): void {
+  let userTurnIndex = 0;
+  let truncateAt = -1;
+
+  for (let index = 0; index < state.blocks.length; index += 1) {
+    if (state.blocks[index]?.kind !== 'user') continue;
+    if (userTurnIndex === targetTurnIndex) {
+      truncateAt = index;
+      break;
+    }
+    userTurnIndex += 1;
+  }
+
+  if (truncateAt < 0) return;
+
+  takeBlocksOwnership(state);
+  state.blocks = state.blocks.slice(0, truncateAt);
+  ownedBlocks.set(state, state.blocks);
+  rebuildTranscriptIndexes(state);
+}
+
+function rebuildTranscriptIndexes(state: DaemonTranscriptState): void {
+  state.blockIndexById = rebuildDaemonTranscriptBlockIndex(state.blocks);
+  state.toolBlockByCallId = {};
+  state.permissionBlockByRequestId = {};
+  state.trimmedToolNotificationByCallId = {};
+  state.activeUserBlockId = undefined;
+  state.activeAssistantBlockId = undefined;
+  state.activeThoughtBlockId = undefined;
+  state.activeAssistantBlockByParent = {};
+  state.activeThoughtBlockByParent = {};
+  state.currentToolCallId = undefined;
+  state.pendingUserShellCommand = undefined;
+  state.lastFollowupSuggestion = undefined;
+
+  const liveToolCallIds = new Set<string>();
+  for (const block of state.blocks) {
+    if (block.kind === 'tool') {
+      state.toolBlockByCallId[block.toolCallId] = block.id;
+      liveToolCallIds.add(block.toolCallId);
+    } else if (block.kind === 'permission') {
+      state.permissionBlockByRequestId[block.requestId] = block.id;
+    }
+  }
+
+  for (const toolCallId of Object.keys(state.toolProgress)) {
+    if (!liveToolCallIds.has(toolCallId)) {
+      delete state.toolProgress[toolCallId];
+    }
+  }
 }
 
 function appendBlock(

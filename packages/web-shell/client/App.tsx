@@ -69,6 +69,7 @@ import { HelpDialog } from './components/dialogs/HelpDialog';
 import { ThemeDialog } from './components/dialogs/ThemeDialog';
 import { DeleteSessionDialog } from './components/dialogs/DeleteSessionDialog';
 import { ReleaseSessionDialog } from './components/dialogs/ReleaseSessionDialog';
+import { RewindDialog } from './components/dialogs/RewindDialog';
 import { getLocalCommands } from './constants/localCommands';
 import { mergeCommands } from './hooks/daemonSessionMappers';
 import { useAnimationFrameValue } from './hooks/useAnimationFrameValue';
@@ -1105,6 +1106,7 @@ export function App({
   const [showResumeDialog, setShowResumeDialog] = useState(false);
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showReleaseDialog, setShowReleaseDialog] = useState(false);
+  const [showRewindDialog, setShowRewindDialog] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
   const [showToolsDialog, setShowToolsDialog] = useState(false);
@@ -1225,6 +1227,7 @@ export function App({
     showResumeDialog ||
     showDeleteDialog ||
     showReleaseDialog ||
+    showRewindDialog ||
     showHelpDialog ||
     showThemeDialog ||
     showToolsDialog ||
@@ -1992,6 +1995,28 @@ export function App({
     [reportError, sessionActions, store],
   );
 
+  const loadRewindSnapshots = useCallback(
+    () => sessionActions.getRewindSnapshots(),
+    [sessionActions],
+  );
+
+  const rewindConversationOnly = useCallback(
+    (promptId: string) =>
+      sessionActions
+        .rewindSession(promptId, { rewindFiles: false })
+        .then(() => undefined),
+    [sessionActions],
+  );
+
+  const handleRewindError = useCallback(
+    (error: unknown) => {
+      if (isAlreadyDispatched(error)) return;
+      const reason = error instanceof Error ? error.message : String(error);
+      pushToast('error', t('rewind.failed', { reason }));
+    },
+    [pushToast, t],
+  );
+
   const handleGoalSlashCommand = useCallback(
     (
       text: string,
@@ -2173,6 +2198,10 @@ export function App({
           }
           if (cmd === 'release') {
             setShowReleaseDialog(true);
+            return true;
+          }
+          if (cmd === 'rewind') {
+            setShowRewindDialog(true);
             return true;
           }
           if (cmd === 'auth') {
@@ -3367,6 +3396,22 @@ export function App({
                   pushToast('error', t('release.failed', { reason }));
                 }}
                 onClose={() => setShowReleaseDialog(false)}
+              />
+            </DialogShell>
+          )}
+          {showRewindDialog && (
+            <DialogShell
+              title={t('rewind.title')}
+              subtitle={t('rewind.subtitle')}
+              size="lg"
+              onClose={() => setShowRewindDialog(false)}
+            >
+              <RewindDialog
+                blocks={blocks}
+                loadSnapshots={loadRewindSnapshots}
+                rewind={rewindConversationOnly}
+                onError={handleRewindError}
+                onClose={() => setShowRewindDialog(false)}
               />
             </DialogShell>
           )}

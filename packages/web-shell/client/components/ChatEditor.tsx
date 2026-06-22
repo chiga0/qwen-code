@@ -1072,329 +1072,333 @@ export const ChatEditor = memo(
     const modelLabel = currentModel;
 
     return (
-      <div
-        ref={containerRef}
-        className={styles.container}
-        data-dac-glow
-        onClick={() => {
-          setModeDropdownOpen(false);
-          setModelDropdownOpen(false);
-          setQuickActionsOpen(false);
-          core.focus();
-        }}
-      >
-        <div className={styles.dacAura} aria-hidden="true" />
-        <div className={styles.dacHalo} aria-hidden="true" />
-        {searchMode && (
-          <div
-            ref={searchUiRef}
-            className={styles.searchPanel}
-            onMouseDown={(event) => event.stopPropagation()}
-            onClick={(event) => event.stopPropagation()}
-          >
-            <div className={styles.searchBar}>
-              <span className={styles.searchLabel}>
-                {t('editor.searchLabel')}
-              </span>
-              <input
-                ref={searchInputRef}
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={handleSearchInput}
-                onKeyDown={handleSearchKeyDown}
-                placeholder={t('editor.searchPlaceholder')}
-              />
+      <div className={styles.editorShell}>
+        <div
+          ref={containerRef}
+          className={styles.container}
+          data-dac-glow
+          onClick={() => {
+            setModeDropdownOpen(false);
+            setModelDropdownOpen(false);
+            setQuickActionsOpen(false);
+            core.focus();
+          }}
+        >
+          <div className={styles.dacAura} aria-hidden="true" />
+          <div className={styles.dacHalo} aria-hidden="true" />
+          {searchMode && (
+            <div
+              ref={searchUiRef}
+              className={styles.searchPanel}
+              onMouseDown={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <div className={styles.searchBar}>
+                <span className={styles.searchLabel}>
+                  {t('editor.searchLabel')}
+                </span>
+                <input
+                  ref={searchInputRef}
+                  className={styles.searchInput}
+                  value={searchQuery}
+                  onChange={handleSearchInput}
+                  onKeyDown={handleSearchKeyDown}
+                  placeholder={t('editor.searchPlaceholder')}
+                />
+              </div>
+              {searchMatches.length > 0 && (
+                <div className={styles.searchResults}>
+                  {searchMatches.map((match, matchIndex) => {
+                    return (
+                      <button
+                        key={`${match}-${matchIndex}`}
+                        type="button"
+                        className={`${styles.searchResult} ${
+                          matchIndex === searchActiveIndex
+                            ? styles.searchResultActive
+                            : ''
+                        }`}
+                        onMouseDown={(event) => {
+                          event.preventDefault();
+                          core.replaceEditorText(match);
+                          closeSearch(false);
+                        }}
+                      >
+                        <span className={styles.searchResultMarker}>
+                          {matchIndex === searchActiveIndex ? '›' : ''}
+                        </span>
+                        <span className={styles.searchResultText}>{match}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+              {searchMatches.length === 0 && (
+                <div className={styles.searchEmpty}>
+                  {t('editor.noHistory')}
+                </div>
+              )}
             </div>
-            {searchMatches.length > 0 && (
-              <div className={styles.searchResults}>
-                {searchMatches.map((match, matchIndex) => {
-                  return (
-                    <button
-                      key={`${match}-${matchIndex}`}
-                      type="button"
-                      className={`${styles.searchResult} ${
-                        matchIndex === searchActiveIndex
-                          ? styles.searchResultActive
-                          : ''
-                      }`}
-                      onMouseDown={(event) => {
-                        event.preventDefault();
-                        core.replaceEditorText(match);
-                        closeSearch(false);
-                      }}
-                    >
-                      <span className={styles.searchResultMarker}>
-                        {matchIndex === searchActiveIndex ? '›' : ''}
-                      </span>
-                      <span className={styles.searchResultText}>{match}</span>
-                    </button>
-                  );
-                })}
+          )}
+          <div className={styles.content}>
+            {core.composerTags.length > 0 && (
+              <div className={styles.tags}>
+                {core.composerTags.map((tag) => (
+                  <span key={tag.id} className={styles.tag}>
+                    {renderComposerTagContent(tag)}
+                    {tag.removable !== false && (
+                      <button
+                        type="button"
+                        className={styles.tagRemove}
+                        aria-label={`Remove ${getComposerTagDisplay(tag)}`}
+                        onMouseDown={(event) => event.preventDefault()}
+                        onClick={(event) => {
+                          event.stopPropagation();
+                          core.removeTopTag(tag.id);
+                          core.viewRef.current?.focus();
+                        }}
+                        onKeyDown={(event) => {
+                          if (
+                            event.key !== 'Backspace' &&
+                            event.key !== 'Delete'
+                          ) {
+                            return;
+                          }
+                          event.preventDefault();
+                          core.removeTopTag(tag.id);
+                          core.viewRef.current?.focus();
+                        }}
+                      >
+                        ×
+                      </button>
+                    )}
+                  </span>
+                ))}
               </div>
             )}
-            {searchMatches.length === 0 && (
-              <div className={styles.searchEmpty}>{t('editor.noHistory')}</div>
-            )}
-          </div>
-        )}
-        <div className={styles.content}>
-          {core.composerTags.length > 0 && (
-            <div className={styles.tags}>
-              {core.composerTags.map((tag) => (
-                <span key={tag.id} className={styles.tag}>
-                  {renderComposerTagContent(tag)}
-                  {tag.removable !== false && (
+            {core.pastedImages.length > 0 && (
+              <div className={styles.images}>
+                {core.pastedImages.map((img, i) => (
+                  <div key={i} className={styles.imageThumb}>
+                    <img
+                      src={`data:${img.media_type};base64,${img.data}`}
+                      alt=""
+                    />
                     <button
-                      type="button"
-                      className={styles.tagRemove}
-                      aria-label={`Remove ${getComposerTagDisplay(tag)}`}
-                      onMouseDown={(event) => event.preventDefault()}
-                      onClick={(event) => {
-                        event.stopPropagation();
-                        core.removeTopTag(tag.id);
-                        core.viewRef.current?.focus();
-                      }}
-                      onKeyDown={(event) => {
-                        if (
-                          event.key !== 'Backspace' &&
-                          event.key !== 'Delete'
-                        ) {
-                          return;
-                        }
-                        event.preventDefault();
-                        core.removeTopTag(tag.id);
-                        core.viewRef.current?.focus();
+                      className={styles.imageRemove}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        core.removeImage(i);
                       }}
                     >
                       ×
                     </button>
-                  )}
-                </span>
-              ))}
-            </div>
-          )}
-          {core.pastedImages.length > 0 && (
-            <div className={styles.images}>
-              {core.pastedImages.map((img, i) => (
-                <div key={i} className={styles.imageThumb}>
-                  <img
-                    src={`data:${img.media_type};base64,${img.data}`}
-                    alt=""
-                  />
-                  <button
-                    className={styles.imageRemove}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      core.removeImage(i);
-                    }}
-                  >
-                    ×
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-          {core.slashMenu && (
-            <SlashCommandPanel
-              menu={core.slashMenu}
-              onSelect={core.selectSlashCompletion}
-              onAccept={core.acceptSlashCompletion}
-            />
-          )}
-          <div className={styles.editorArea}>
-            {core.shellMode && (
-              <span className={styles.shellPrefix} aria-hidden="true">
-                !
-              </span>
-            )}
-            <div ref={core.containerRef} />
-          </div>
-          <div className={styles.toolbar}>
-            <div className={styles.toolbarLeading}>
-              {ToolbarStart && (
-                <div className={styles.toolbarStart}>
-                  <ToolbarStart
-                    disabled={disabled}
-                    isRunning={isRunning}
-                    currentMode={currentMode}
-                    currentModel={currentModel}
-                    sessionName={sessionName}
-                  />
-                </div>
-              )}
-              <div className={styles.toolbarLeft}>
-                {showToolbarAction('approvalMode') && (
-                  <div className={styles.dropdownWrapper}>
-                    <ToolbarDropdown
-                      open={modeDropdownOpen}
-                      items={modeItems}
-                      activeId={currentMode}
-                      onClose={() => setModeDropdownOpen(false)}
-                      onSelect={handleModeSelect}
-                      anchorRef={modeBtnRef}
-                    />
-                    <button
-                      ref={modeBtnRef}
-                      className={styles.toolBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        core.closeSlashMenu();
-                        setQuickActionsOpen(false);
-                        setModeDropdownOpen((v) => !v);
-                        setModelDropdownOpen(false);
-                      }}
-                      aria-label={t('status.mode')}
-                    >
-                      <span className={styles.toolBtnModeIcon}>
-                        <ModeIcon mode={currentMode} />
-                      </span>
-                      <span className={styles.toolBtnText}>{modeLabel}</span>
-                      <span className={styles.toolBtnArrow}>
-                        <ChevronDownIcon />
-                      </span>
-                    </button>
                   </div>
-                )}
-                {showToolbarAction('model') && (
-                  <div className={styles.dropdownWrapper}>
-                    <ToolbarDropdown
-                      open={modelDropdownOpen}
-                      items={modelItems}
-                      activeId={currentModel}
-                      onClose={() => setModelDropdownOpen(false)}
-                      onSelect={handleModelSelect}
-                      anchorRef={modelBtnRef}
-                      showCheck
-                    />
-                    <button
-                      ref={modelBtnRef}
-                      className={styles.toolBtn}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        core.closeSlashMenu();
-                        setQuickActionsOpen(false);
-                        setModelDropdownOpen((v) => !v);
-                        setModeDropdownOpen(false);
-                      }}
-                      aria-label={t('model.select')}
-                    >
-                      <span className={styles.toolBtnModelIcon}>
-                        <ModelIcon />
-                      </span>
-                      <span className={styles.toolBtnText}>{modelLabel}</span>
-                      <span className={styles.toolBtnArrow}>
-                        <ChevronDownIcon />
-                      </span>
-                    </button>
-                  </div>
-                )}
+                ))}
               </div>
+            )}
+            {core.slashMenu && (
+              <SlashCommandPanel
+                menu={core.slashMenu}
+                onSelect={core.selectSlashCompletion}
+                onAccept={core.acceptSlashCompletion}
+              />
+            )}
+            <div className={styles.editorArea}>
+              {core.shellMode && (
+                <span className={styles.shellPrefix} aria-hidden="true">
+                  !
+                </span>
+              )}
+              <div ref={core.containerRef} />
             </div>
-            <div className={styles.toolbarRight}>
-              {showToolbarAction('commands') && (
-                <button
-                  className={styles.toolBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setQuickActionsOpen(false);
-                    core.insertText('/');
-                  }}
-                  aria-label={t('editor.hintCommands')}
-                  title={t('editor.hintCommands')}
-                  data-tooltip={t('editor.hintCommands')}
-                >
-                  <span className={styles.toolBtnIcon}>/</span>
-                </button>
-              )}
-              {showToolbarAction('files') && (
-                <button
-                  className={styles.toolBtn}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setQuickActionsOpen(false);
-                    core.insertText('@');
-                  }}
-                  aria-label={t('editor.hintFiles')}
-                  title={t('editor.hintFiles')}
-                  data-tooltip={t('editor.hintFiles')}
-                >
-                  <span className={styles.toolBtnIcon}>@</span>
-                </button>
-              )}
-              {quickActions.length > 0 && (
-                <button
-                  className={`${styles.toolBtn} ${styles.quickActionsBtn}`}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    core.closeSlashMenu();
-                    setModeDropdownOpen(false);
-                    setModelDropdownOpen(false);
-                    setQuickActionsOpen((value) => !value);
-                  }}
-                  aria-expanded={quickActionsOpen}
-                  aria-label={t('quickActions.open')}
-                  title={t('quickActions.open')}
-                  data-tooltip={t('quickActions.open')}
-                >
-                  <span className={styles.toolBtnIcon}>
-                    <QuickActionsIcon />
-                  </span>
-                </button>
-              )}
-              {showChatWidthToggle &&
-                widthToggleFits &&
-                showToolbarAction('widthMode') && (
+            <div className={styles.toolbar}>
+              <div className={styles.toolbarLeading}>
+                {ToolbarStart && (
+                  <div className={styles.toolbarStart}>
+                    <ToolbarStart
+                      disabled={disabled}
+                      isRunning={isRunning}
+                      currentMode={currentMode}
+                      currentModel={currentModel}
+                      sessionName={sessionName}
+                    />
+                  </div>
+                )}
+                <div className={styles.toolbarLeft}>
+                  {showToolbarAction('approvalMode') && (
+                    <div className={styles.dropdownWrapper}>
+                      <ToolbarDropdown
+                        open={modeDropdownOpen}
+                        items={modeItems}
+                        activeId={currentMode}
+                        onClose={() => setModeDropdownOpen(false)}
+                        onSelect={handleModeSelect}
+                        anchorRef={modeBtnRef}
+                      />
+                      <button
+                        ref={modeBtnRef}
+                        className={styles.toolBtn}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          core.closeSlashMenu();
+                          setQuickActionsOpen(false);
+                          setModeDropdownOpen((v) => !v);
+                          setModelDropdownOpen(false);
+                        }}
+                        aria-label={t('status.mode')}
+                      >
+                        <span className={styles.toolBtnModeIcon}>
+                          <ModeIcon mode={currentMode} />
+                        </span>
+                        <span className={styles.toolBtnText}>{modeLabel}</span>
+                        <span className={styles.toolBtnArrow}>
+                          <ChevronDownIcon />
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                  {showToolbarAction('model') && (
+                    <div className={styles.dropdownWrapper}>
+                      <ToolbarDropdown
+                        open={modelDropdownOpen}
+                        items={modelItems}
+                        activeId={currentModel}
+                        onClose={() => setModelDropdownOpen(false)}
+                        onSelect={handleModelSelect}
+                        anchorRef={modelBtnRef}
+                        showCheck
+                      />
+                      <button
+                        ref={modelBtnRef}
+                        className={styles.toolBtn}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          core.closeSlashMenu();
+                          setQuickActionsOpen(false);
+                          setModelDropdownOpen((v) => !v);
+                          setModeDropdownOpen(false);
+                        }}
+                        aria-label={t('model.select')}
+                      >
+                        <span className={styles.toolBtnModelIcon}>
+                          <ModelIcon />
+                        </span>
+                        <span className={styles.toolBtnText}>{modelLabel}</span>
+                        <span className={styles.toolBtnArrow}>
+                          <ChevronDownIcon />
+                        </span>
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+              <div className={styles.toolbarRight}>
+                {showToolbarAction('commands') && (
                   <button
-                    className={`${styles.toolBtn} ${styles.widthModeBtn}`}
+                    className={styles.toolBtn}
                     onClick={(e) => {
                       e.stopPropagation();
-                      onChatWidthModeChange?.(
-                        chatWidthMode === 'wide' ? '1000' : 'wide',
-                      );
+                      setQuickActionsOpen(false);
+                      core.insertText('/');
                     }}
-                    disabled={!onChatWidthModeChange}
-                    aria-label={
-                      chatWidthMode === 'wide'
-                        ? t('settings.option.ui.chatWidth.1000')
-                        : t('settings.option.ui.chatWidth.wide')
-                    }
-                    title={
-                      chatWidthMode === 'wide'
-                        ? t('settings.option.ui.chatWidth.1000')
-                        : t('settings.option.ui.chatWidth.wide')
-                    }
-                    data-tooltip={
-                      chatWidthMode === 'wide'
-                        ? t('settings.option.ui.chatWidth.1000')
-                        : t('settings.option.ui.chatWidth.wide')
-                    }
+                    aria-label={t('editor.hintCommands')}
+                    title={t('editor.hintCommands')}
+                    data-tooltip={t('editor.hintCommands')}
+                  >
+                    <span className={styles.toolBtnIcon}>/</span>
+                  </button>
+                )}
+                {showToolbarAction('files') && (
+                  <button
+                    className={styles.toolBtn}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setQuickActionsOpen(false);
+                      core.insertText('@');
+                    }}
+                    aria-label={t('editor.hintFiles')}
+                    title={t('editor.hintFiles')}
+                    data-tooltip={t('editor.hintFiles')}
+                  >
+                    <span className={styles.toolBtnIcon}>@</span>
+                  </button>
+                )}
+                {quickActions.length > 0 && (
+                  <button
+                    className={`${styles.toolBtn} ${styles.quickActionsBtn}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      core.closeSlashMenu();
+                      setModeDropdownOpen(false);
+                      setModelDropdownOpen(false);
+                      setQuickActionsOpen((value) => !value);
+                    }}
+                    aria-expanded={quickActionsOpen}
+                    aria-label={t('quickActions.open')}
+                    title={t('quickActions.open')}
+                    data-tooltip={t('quickActions.open')}
                   >
                     <span className={styles.toolBtnIcon}>
-                      <WidthModeIcon mode={chatWidthMode} />
+                      <QuickActionsIcon />
                     </span>
                   </button>
                 )}
-              <button
-                className={
-                  isRunning
-                    ? `${styles.sendBtn} ${styles.sendBtnRunning}`
-                    : styles.sendBtn
-                }
-                disabled={
-                  isRunning ? !onCancel : core.disabled || !core.hasContent
-                }
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (isRunning) {
-                    onCancel?.();
-                    return;
+                {showChatWidthToggle &&
+                  widthToggleFits &&
+                  showToolbarAction('widthMode') && (
+                    <button
+                      className={`${styles.toolBtn} ${styles.widthModeBtn}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onChatWidthModeChange?.(
+                          chatWidthMode === 'wide' ? '1000' : 'wide',
+                        );
+                      }}
+                      disabled={!onChatWidthModeChange}
+                      aria-label={
+                        chatWidthMode === 'wide'
+                          ? t('settings.option.ui.chatWidth.1000')
+                          : t('settings.option.ui.chatWidth.wide')
+                      }
+                      title={
+                        chatWidthMode === 'wide'
+                          ? t('settings.option.ui.chatWidth.1000')
+                          : t('settings.option.ui.chatWidth.wide')
+                      }
+                      data-tooltip={
+                        chatWidthMode === 'wide'
+                          ? t('settings.option.ui.chatWidth.1000')
+                          : t('settings.option.ui.chatWidth.wide')
+                      }
+                    >
+                      <span className={styles.toolBtnIcon}>
+                        <WidthModeIcon mode={chatWidthMode} />
+                      </span>
+                    </button>
+                  )}
+                <button
+                  className={
+                    isRunning
+                      ? `${styles.sendBtn} ${styles.sendBtnRunning}`
+                      : styles.sendBtn
                   }
-                  core.submitText();
-                }}
-                aria-label={isRunning ? t('stream.cancel') : t('editor.send')}
-              >
-                {isRunning ? <StopIcon /> : <SendIcon />}
-              </button>
+                  disabled={
+                    isRunning ? !onCancel : core.disabled || !core.hasContent
+                  }
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    if (isRunning) {
+                      onCancel?.();
+                      return;
+                    }
+                    core.submitText();
+                  }}
+                  aria-label={isRunning ? t('stream.cancel') : t('editor.send')}
+                >
+                  {isRunning ? <StopIcon /> : <SendIcon />}
+                </button>
+              </div>
             </div>
           </div>
         </div>

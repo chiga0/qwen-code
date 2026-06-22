@@ -16,6 +16,8 @@ import type {
   DaemonSessionContextStatus,
   DaemonSessionContextUsageStatus,
   DaemonSessionRecapResult,
+  DaemonRewindResult,
+  DaemonRewindSnapshotInfo,
   DaemonSessionSummary,
   DaemonSessionSupportedCommandsStatus,
   DaemonSessionTaskStatus,
@@ -158,6 +160,8 @@ export type DaemonNoticeOperation =
   | 'cancel_task'
   | 'clear_goal'
   | 'load_stats'
+  | 'rewind_snapshots'
+  | 'rewind_session'
   | 'refresh_commands'
   | 'recap_session'
   | 'btw_session'
@@ -285,6 +289,11 @@ export interface DaemonSessionActions {
   }): Promise<DaemonSessionContextUsageStatus>;
   renameSession(displayName: string): Promise<SessionMetadataResult>;
   recapSession(): Promise<DaemonSessionRecapResult>;
+  getRewindSnapshots(): Promise<{ snapshots: DaemonRewindSnapshotInfo[] }>;
+  rewindSession(
+    promptId: string,
+    opts?: { rewindFiles?: boolean },
+  ): Promise<DaemonRewindResult>;
   btwSession(
     question: string,
     opts?: { signal?: AbortSignal },
