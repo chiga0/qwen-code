@@ -16,6 +16,7 @@ import {
   type SubscribeOptions,
 } from './DaemonClient.js';
 import type {
+  DaemonForkSessionResult,
   DaemonEvent,
   DaemonRewindResult,
   DaemonRewindSnapshotInfo,
@@ -345,6 +346,14 @@ export class DaemonSessionClient {
         ? { rewindFiles: opts.rewindFiles }
         : {}),
     });
+  }
+
+  async fork(directive: string): Promise<DaemonForkSessionResult> {
+    return await this.client.forkSession(
+      this.sessionId,
+      { directive },
+      this.clientId,
+    );
   }
 
   /**

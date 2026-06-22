@@ -179,6 +179,9 @@ export function normalizeDaemonEvent(
     case 'session_rewound':
       return normalizeSessionRewound(event, base);
 
+    case 'session_branched':
+      return normalizeSessionBranched(event, base);
+
     case 'prompt_cancelled': {
       // Forward the optional `reason` (e.g. `'forward_failed'` from the
       // bridge's C3 compensating broadcast) so consumers can distinguish a
@@ -354,6 +357,27 @@ function normalizeSessionRewound(
       promptId,
       targetTurnIndex,
       ...(sessionId ? { sessionId } : {}),
+    },
+  ];
+}
+
+function normalizeSessionBranched(
+  event: DaemonEvent,
+  base: NormalizedEventBase,
+): DaemonUiEvent[] {
+  const sourceSessionId = getString(event.data, 'sourceSessionId');
+  const newSessionId = getString(event.data, 'newSessionId');
+  const displayName = getString(event.data, 'displayName');
+  if (!sourceSessionId || !newSessionId || !displayName) {
+    return fallbackDebug(event, base, 'malformed session_branched payload');
+  }
+  return [
+    {
+      ...base,
+      type: 'session.branched',
+      sourceSessionId,
+      newSessionId,
+      displayName,
     },
   ];
 }

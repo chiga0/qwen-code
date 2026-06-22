@@ -1263,6 +1263,45 @@ describe('daemon UI normalizer and transcript reducer', () => {
     expect((malformed[0] as { text: string }).text).not.toContain('secret');
   });
 
+  it('normalizes session branch events as structured sidechannel events', () => {
+    const events = normalizeDaemonEvent({
+      id: 59,
+      v: 1,
+      type: 'session_branched',
+      data: {
+        sourceSessionId: '9976ed52-1bd3-48cd-b8dc-0f045009ad7d',
+        newSessionId: '7497af5d-b62f-42f4-82d7-6f2a81daf439',
+        displayName: 'support-branch-new3 (Branch 2)',
+      },
+    });
+
+    expect(events).toEqual([
+      expect.objectContaining({
+        type: 'session.branched',
+        sourceSessionId: '9976ed52-1bd3-48cd-b8dc-0f045009ad7d',
+        newSessionId: '7497af5d-b62f-42f4-82d7-6f2a81daf439',
+        displayName: 'support-branch-new3 (Branch 2)',
+      }),
+    ]);
+
+    const state = reduceDaemonTranscriptEvents(
+      createDaemonTranscriptState({ now: 1 }),
+      events,
+      { now: 2 },
+    );
+    expect(state.blocks).toEqual([
+      expect.objectContaining({
+        kind: 'status',
+        source: 'session_branched',
+        data: {
+          sourceSessionId: '9976ed52-1bd3-48cd-b8dc-0f045009ad7d',
+          newSessionId: '7497af5d-b62f-42f4-82d7-6f2a81daf439',
+          displayName: 'support-branch-new3 (Branch 2)',
+        },
+      }),
+    ]);
+  });
+
   it('normalizes plan session updates as visible tool blocks', () => {
     const state = reduceDaemonTranscriptEvents(
       createDaemonTranscriptState({ now: 1 }),

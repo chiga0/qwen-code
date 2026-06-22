@@ -11,6 +11,7 @@ import type {
   DaemonApprovalMode,
   DaemonApprovalModeResult,
   DaemonAvailableCommand,
+  DaemonForkSessionResult,
   DaemonSessionBtwResult,
   DaemonMidTurnMessageResult,
   DaemonSessionContextStatus,
@@ -165,6 +166,8 @@ export type DaemonNoticeOperation =
   | 'refresh_commands'
   | 'recap_session'
   | 'btw_session'
+  | 'branch_session'
+  | 'fork_session'
   | 'stream'
   | 'normalize_event';
 
@@ -316,6 +319,10 @@ export interface DaemonSessionActions {
   ): Promise<{ cancelled: boolean }>;
   clearGoal(): Promise<{ cleared: boolean; condition?: string }>;
   getStats(): Promise<DaemonSessionStatsStatus>;
+  branchSession(
+    name?: string,
+  ): Promise<{ sessionId: string; displayName: string }>;
+  forkSession(directive: string): Promise<DaemonForkSessionResult>;
 }
 
 export interface DaemonSessionContextValue {

@@ -39,6 +39,7 @@ export type DaemonUiEventType =
   | 'session.state_resync_required'
   | 'session.replay_complete'
   | 'session.rewound'
+  | 'session.branched'
   // Prompt lifecycle (cross-client)
   | 'prompt.cancelled'
   // Daemon assist push (server-side ghost-text suggestion)
@@ -368,6 +369,13 @@ export interface DaemonUiSessionRewoundEvent extends DaemonUiEventBase {
   targetTurnIndex: number;
 }
 
+export interface DaemonUiSessionBranchedEvent extends DaemonUiEventBase {
+  type: 'session.branched';
+  sourceSessionId: string;
+  newSessionId: string;
+  displayName: string;
+}
+
 /* ──────────────────────────────────────────────────────────────────────────
  * Workspace events (Wave 3-4)
  * ──────────────────────────────────────────────────────────────────────── */
@@ -527,6 +535,7 @@ export type DaemonUiEvent =
   | DaemonUiStateResyncRequiredEvent
   | DaemonUiReplayCompleteEvent
   | DaemonUiSessionRewoundEvent
+  | DaemonUiSessionBranchedEvent
   // Prompt lifecycle (cross-client)
   | DaemonUiPromptCancelledEvent
   // Daemon assist push (server-side ghost-text suggestion)

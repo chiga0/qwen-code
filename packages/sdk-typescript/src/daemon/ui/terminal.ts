@@ -86,6 +86,12 @@ export function daemonUiEventToTerminalText(event: DaemonUiEvent): string {
         `${event.promptId} → turn ${event.targetTurnIndex}`,
         '2',
       );
+    case 'session.branched':
+      return terminalLine(
+        'branched',
+        `${event.sourceSessionId} → ${event.newSessionId} (${event.displayName})`,
+        '2',
+      );
     case 'prompt.cancelled':
       return terminalLine('cancelled', 'prompt cancelled', '33');
     case 'followup.suggestion':

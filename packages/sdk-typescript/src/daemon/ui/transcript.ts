@@ -330,6 +330,14 @@ function applyDaemonTranscriptEvent(
     case 'session.rewound':
       rewindTranscriptToUserTurn(next, event.targetTurnIndex);
       break;
+    case 'session.branched':
+      appendStatusBlock(
+        next,
+        'status',
+        `Branched conversation "${event.displayName}". You are now in the branch.`,
+        event,
+      );
+      break;
     case 'workspace.memory.changed':
     case 'workspace.agent.changed':
     case 'workspace.tool.toggled':
@@ -1012,6 +1020,16 @@ function appendStatusBlock(
     ...((event?.type === 'status' || event?.type === 'debug') &&
     event.data !== undefined
       ? { data: event.data }
+      : {}),
+    ...(event?.type === 'session.branched'
+      ? {
+          source: 'session_branched',
+          data: {
+            sourceSessionId: event.sourceSessionId,
+            newSessionId: event.newSessionId,
+            displayName: event.displayName,
+          },
+        }
       : {}),
   };
   appendBlock(state, block);

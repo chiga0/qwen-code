@@ -3394,14 +3394,14 @@ export function createAcpSessionBridge(opts: BridgeOptions): AcpSessionBridge {
 
         let restored;
         try {
-          restored = await restoreSession('resume', {
+          restored = await restoreSession('load', {
             sessionId: result.newSessionId,
             workspaceCwd: boundWorkspace,
             clientId: context?.clientId,
           });
         } catch (restoreErr) {
           writeStderrLine(
-            `qwen serve: branchSession resume failed for ${result.newSessionId}, attempting cleanup...`,
+            `qwen serve: branchSession load failed for ${result.newSessionId}, attempting cleanup...`,
           );
           try {
             await ci.connection.extMethod(
@@ -4347,6 +4347,49 @@ export function createAcpSessionBridge(opts: BridgeOptions): AcpSessionBridge {
       return {
         sessionId: entry.sessionId,
         answer: response.answer ?? null,
+      };
+    },
+
+    async launchSessionForkAgent(sessionId, directive, context) {
+      const entry = byId.get(sessionId);
+      if (!entry) throw new SessionNotFoundError(sessionId);
+      const info = channelInfoForEntry(entry);
+      if (!info || info.isDying) throw new SessionNotFoundError(sessionId);
+      resolveTrustedClientId(entry, context?.clientId);
+
+      const trimmed = directive.trim();
+      if (!trimmed) {
+        throw new Error('Fork directive is required');
+      }
+      if (entry.pendingPromptCount > 0 || entry.promptActive) {
+        throw new SessionBusyError(
+          sessionId,
+          'Cannot fork while a response or tool call is in progress',
+        );
+      }
+
+      const response = (await Promise.race([
+        withTimeout(
+          entry.connection.extMethod(
+            SERVE_CONTROL_EXT_METHODS.sessionForkAgent,
+            {
+              sessionId,
+              directive: trimmed,
+            },
+          ),
+          initTimeoutMs,
+          SERVE_CONTROL_EXT_METHODS.sessionForkAgent,
+        ),
+        getTransportClosedReject(entry),
+      ])) as {
+        description?: string;
+        launched?: boolean;
+      };
+
+      return {
+        sessionId: entry.sessionId,
+        description: response.description ?? trimmed.slice(0, 60),
+        launched: response.launched === true,
       };
     },
 
