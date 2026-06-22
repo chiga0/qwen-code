@@ -1018,6 +1018,7 @@
   align-items: center;
   gap: 8px;
   width: 100%;
+  flex: none;
   height: 30px;
   padding: 5px 8px;
   overflow: hidden;
