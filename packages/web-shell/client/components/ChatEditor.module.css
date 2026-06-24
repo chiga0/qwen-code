@@ -923,6 +923,12 @@
   display: inline-block;
   width: 16px;
   height: 16px;
+  /* Optical centering: the arrow's visual mass sits left while its tip
+     extends into empty space on the right, so a geometrically centered
+     glyph reads as left-shifted. The fill's area-centroid sits ~2px left of
+     center; the rightward tip adds visual counterweight, so a 1.5px nudge
+     lands the perceived center in the middle. */
+  transform: translateX(1.5px);
 }
 
 .stopIcon {
