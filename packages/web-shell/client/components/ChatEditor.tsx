@@ -17,6 +17,7 @@ import type { UseDaemonFollowupSuggestionReturn } from '@qwen-code/webui/daemon-
 import type { CommandDisplayCategoryOrder } from '../utils/commandDisplay';
 import type { SkillInfo } from '../completions/slashCompletion';
 import { useI18n } from '../i18n';
+import { useWebShellPortalRoot } from '../portalRoot';
 import {
   useWebShellCustomization,
   type WebShellComposerInput,
@@ -42,6 +43,21 @@ import { ModeIcon } from './ModeIcon';
 import { planSlashSectionRows } from '../utils/slashSectionPlan';
 import { getModelDisplayName } from '../utils/modelDisplay';
 import { VoiceButton } from '../voice/VoiceButton';
+import { FolderIcon } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from './ui/tooltip';
 import styles from './ChatEditor.module.css';
 
 export type ComposerToolbarAction =
@@ -93,6 +109,10 @@ interface ChatEditorProps {
   availableModels?: Array<{ id: string; label?: string }>;
   onSelectMode?: (mode: string) => void;
   onSelectModel?: (model: string) => void;
+  workspaces?: Array<{ cwd: string; label: string; primary: boolean }>;
+  selectedWorkspaceCwd?: string;
+  workspaceSelectionDisabled?: boolean;
+  onSelectWorkspace?: (workspaceCwd: string | undefined) => void;
   onChatWidthModeChange?: (mode: '1000' | 'wide') => void;
   onFocusFooter?: () => boolean;
   dialogOpen?: boolean;
@@ -615,6 +635,7 @@ function SlashCommandPanel({
   onSelect: (index: number) => boolean;
   onAccept: (index?: number) => boolean;
 }) {
+  const portalRoot = useWebShellPortalRoot();
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
   const [anchorRect, setAnchorRect] = useState<{
     left: number;
@@ -840,7 +861,7 @@ function SlashCommandPanel({
         </div>
       )}
     </div>,
-    document.body,
+    portalRoot ?? document.body,
   );
 }
 
@@ -920,6 +941,10 @@ export const ChatEditor = memo(
       availableModels = [],
       onSelectMode,
       onSelectModel,
+      workspaces,
+      selectedWorkspaceCwd,
+      workspaceSelectionDisabled = false,
+      onSelectWorkspace,
       onChatWidthModeChange,
       onFocusFooter,
       dialogOpen = false,
@@ -1326,6 +1351,14 @@ export const ChatEditor = memo(
 
     // Model display label
     const modelLabel = getModelDisplayName(currentModel);
+    const selectedWorkspace = workspaces?.find((entry) =>
+      selectedWorkspaceCwd ? entry.cwd === selectedWorkspaceCwd : entry.primary,
+    );
+    const selectedWorkspaceLabel = selectedWorkspace
+      ? `${selectedWorkspace.label}${
+          selectedWorkspace.primary ? ` · ${t('sidebar.workspacePrimary')}` : ''
+        }`
+      : '';
     const showCancelButton = isRunning && !core.hasContent;
 
     return (
@@ -1616,6 +1649,54 @@ export const ChatEditor = memo(
                         </span>
                       </button>
                     </div>
+                  )}
+                  {workspaces && workspaces.length > 1 && onSelectWorkspace && (
+                    <Select
+                      value={selectedWorkspaceCwd ?? '__primary__'}
+                      disabled={workspaceSelectionDisabled}
+                      onValueChange={(value) =>
+                        onSelectWorkspace(
+                          value === '__primary__' ? undefined : value,
+                        )
+                      }
+                    >
+                      <TooltipProvider delayDuration={300}>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span
+                              className={styles.workspaceSelectTooltipTrigger}
+                            >
+                              <SelectTrigger
+                                size="sm"
+                                className={`${styles.toolBtn} ${styles.workspaceSelectTrigger}`}
+                                aria-label={t('sidebar.workspaceSelectLabel')}
+                              >
+                                <FolderIcon />
+                                <SelectValue />
+                              </SelectTrigger>
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            {selectedWorkspaceLabel}
+                          </TooltipContent>
+                        </Tooltip>
+                      </TooltipProvider>
+                      <SelectContent position="popper" align="start">
+                        <SelectGroup>
+                          {workspaces.map((entry) => (
+                            <SelectItem
+                              key={entry.cwd}
+                              value={entry.primary ? '__primary__' : entry.cwd}
+                            >
+                              {entry.label}
+                              {entry.primary
+                                ? ` · ${t('sidebar.workspacePrimary')}`
+                                : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
                   )}
                   {ToolbarEnd && (
                     <div className={styles.toolbarEnd}>

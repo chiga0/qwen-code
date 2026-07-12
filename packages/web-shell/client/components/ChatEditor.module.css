@@ -921,6 +921,10 @@
   .toolbarLeft .toolBtnText {
     display: none;
   }
+
+  .toolbarLeft .workspaceSelectTrigger [data-slot='select-value'] {
+    display: none;
+  }
 }
 
 .dropdownWrapper {
@@ -1070,6 +1074,26 @@
 .toolBtn:hover {
   background: var(--chat-editor-bg-tertiary);
   color: var(--chat-editor-text-primary);
+}
+
+.workspaceSelectTrigger {
+  min-width: 0;
+  max-width: 176px;
+  box-shadow: none;
+}
+
+.workspaceSelectTooltipTrigger {
+  display: inline-flex;
+  min-width: 0;
+  max-width: 176px;
+}
+
+.workspaceSelectTrigger [data-slot='select-value'] {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .toolBtn[data-tooltip]:hover::after,

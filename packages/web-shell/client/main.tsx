@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import {
   DaemonWorkspaceProvider,
   DaemonSessionProvider,
+  useWorkspace,
 } from '@qwen-code/webui/daemon-react-sdk';
 import { App } from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -90,9 +91,23 @@ function getSessionIdFromUrl(): string | undefined {
   }
 }
 
-function replaceStandaloneSessionUrl(sessionId: string | undefined): void {
+function getWorkspaceIdFromUrl(): string | undefined {
+  return (
+    new URLSearchParams(window.location.search).get('workspace') || undefined
+  );
+}
+
+function replaceStandaloneSessionUrl(
+  sessionId: string | undefined,
+  workspaceId?: string,
+): void {
   const url = new URL(window.location.href);
   url.pathname = sessionId ? `/session/${encodeURIComponent(sessionId)}` : '/';
+  if (sessionId && workspaceId) {
+    url.searchParams.set('workspace', workspaceId);
+  } else {
+    url.searchParams.delete('workspace');
+  }
   // Strip one-shot query params so bookmarked / shared URLs do not
   // permanently override stored preferences on every page load.
   url.searchParams.delete('theme');
@@ -105,20 +120,54 @@ function replaceStandaloneSessionUrl(sessionId: string | undefined): void {
   window.history.replaceState(null, '', url);
 }
 
+function StandaloneSessionApp({
+  sessionId,
+  workspaceId,
+  ...props
+}: {
+  sessionId?: string;
+  workspaceId?: string;
+} & React.ComponentProps<typeof App>) {
+  const workspace = useWorkspace();
+  const targetWorkspace = workspace.capabilities?.workspaces?.find(
+    (entry) => entry.id === workspaceId,
+  );
+
+  if (workspaceId && !workspace.capabilities) return null;
+  if (workspaceId && !targetWorkspace) {
+    throw new Error(`Workspace "${workspaceId}" is not registered.`);
+  }
+
+  return (
+    <DaemonSessionProvider
+      key={`${workspaceId ?? 'primary'}:${sessionId ?? 'new'}`}
+      sessionId={sessionId}
+      workspaceCwd={targetWorkspace?.cwd}
+      suppressOwnUserEcho
+    >
+      <App {...props} />
+    </DaemonSessionProvider>
+  );
+}
+
 function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
   const [theme, setTheme] = useState<WebShellTheme>(() => getInitialTheme());
   const [language, setLanguage] = useState<WebShellLanguage>(() =>
     getInitialLanguage(),
   );
   const [sessionId] = useState<string | undefined>(() => getSessionIdFromUrl());
+  const [workspaceId] = useState<string | undefined>(() =>
+    getWorkspaceIdFromUrl(),
+  );
   const baseUrl = DAEMON_BASE_URL || window.location.origin;
   // Keep the <html> theme class and <meta name="theme-color"> in sync with
   // the React theme so mobile status bars / overscroll backgrounds stay
   // consistent when the user toggles or when ?theme= lands via URL.
   useEffect(() => {
     const root = document.documentElement;
-    root.classList.remove('theme-dark', 'theme-light');
+    root.classList.remove('theme-dark', 'theme-light', 'dark');
     root.classList.add(`theme-${theme}`);
+    root.classList.toggle('dark', theme === WebShellThemeId.Dark);
     const meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute('content', theme === 'light' ? '#ffffff' : '#0d0d0d');
@@ -132,9 +181,12 @@ function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
     setLanguage(nextLanguage);
     storeLanguage(nextLanguage);
   }, []);
-  const handleSessionIdChange = useCallback((nextSessionId?: string) => {
-    replaceStandaloneSessionUrl(nextSessionId);
-  }, []);
+  const handleSessionIdChange = useCallback(
+    (nextSessionId?: string, nextWorkspaceId?: string) => {
+      replaceStandaloneSessionUrl(nextSessionId, nextWorkspaceId);
+    },
+    [],
+  );
 
   return (
     <ErrorBoundary
@@ -144,21 +196,17 @@ function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
       )}
     >
       <DaemonWorkspaceProvider baseUrl={baseUrl} token={daemonToken}>
-        <DaemonSessionProvider
-          key={sessionId ?? 'new'}
+        <StandaloneSessionApp
           sessionId={sessionId}
-          suppressOwnUserEcho
-        >
-          <App
-            theme={theme}
-            onThemeChange={handleThemeChange}
-            language={language}
-            onLanguageChange={handleLanguageChange}
-            onSessionIdChange={handleSessionIdChange}
-            sidebar
-            compactThinking
-          />
-        </DaemonSessionProvider>
+          workspaceId={workspaceId}
+          theme={theme}
+          onThemeChange={handleThemeChange}
+          language={language}
+          onLanguageChange={handleLanguageChange}
+          onSessionIdChange={handleSessionIdChange}
+          sidebar
+          compactThinking
+        />
       </DaemonWorkspaceProvider>
     </ErrorBoundary>
   );

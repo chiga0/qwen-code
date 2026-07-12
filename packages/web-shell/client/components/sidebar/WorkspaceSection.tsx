@@ -1,9 +1,16 @@
-import { useEffect, useState, useCallback, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from 'react';
 import type { DaemonClient } from '@qwen-code/sdk/daemon';
 import type {
   DaemonSessionSummary,
   DaemonWorkspaceCapability,
 } from '@qwen-code/sdk/daemon';
+import { FolderIcon as LucideFolderIcon, FolderOpenIcon } from 'lucide-react';
 import styles from './WorkspaceSection.module.css';
 
 function cx(...classes: Array<string | false | undefined>): string {
@@ -21,30 +28,8 @@ function getSessionLabel(session: DaemonSessionSummary): string {
 }
 
 function FolderIcon({ open }: { open: boolean }) {
-  return (
-    <svg
-      className={styles.folderIcon}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="1.6"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      aria-hidden="true"
-    >
-      {open ? (
-        <>
-          <path d="M3.25 8.6V7.4A2.4 2.4 0 0 1 5.65 5h4.1l2.1 2.1h6.5a2.4 2.4 0 0 1 2.4 2.4v1.1" />
-          <path d="M4.3 10.6h14.9a1.75 1.75 0 0 1 1.68 2.24l-1.32 4.5A2.4 2.4 0 0 1 17.25 19H5.05a2.4 2.4 0 0 1-2.34-2.94l.86-3.75A2.2 2.2 0 0 1 5.72 10.6" />
-        </>
-      ) : (
-        <>
-          <path d="M3.25 8.2V7.4A2.4 2.4 0 0 1 5.65 5h4.1l2.1 2.1h6.5a2.4 2.4 0 0 1 2.4 2.4v.7" />
-          <path d="M3.25 8.2h17.5v7.9a2.4 2.4 0 0 1-2.4 2.4H5.65a2.4 2.4 0 0 1-2.4-2.4V8.2Z" />
-        </>
-      )}
-    </svg>
-  );
+  const Icon = open ? FolderOpenIcon : LucideFolderIcon;
+  return <Icon className={styles.folderIcon} aria-hidden="true" />;
 }
 
 interface WorkspaceSectionProps {
@@ -58,12 +43,19 @@ interface WorkspaceSectionProps {
   trustToOpenLabel: string;
   noSessionsLabel: string;
   formatTime: (iso: string) => string;
+  searchQuery?: string;
+  expanded?: boolean;
+  onExpandedChange?: (expanded: boolean) => void;
+  content?: ReactNode;
   onSelectWorkspace: (cwd: string | undefined) => void;
   /**
-   * Render a trusted session row with the sidebar's shared interactions and
-   * styling. Untrusted rows stay non-interactive in this component.
+   * Render one session row. The sidebar passes its shared `renderSessionRow`
+   * so per-workspace sessions match the single-workspace list exactly — same
+   * type scale, hover actions (pin, archive, export, more…), and states —
+   * instead of a bespoke, feature-poor row.
    */
   renderSession: (session: DaemonSessionSummary) => ReactNode;
+  headerActions?: (visible: boolean) => ReactNode;
 }
 
 export function WorkspaceSection({
@@ -77,18 +69,31 @@ export function WorkspaceSection({
   trustToOpenLabel,
   noSessionsLabel,
   formatTime,
+  searchQuery = '',
+  expanded: controlledExpanded,
+  onExpandedChange,
+  content,
   onSelectWorkspace,
   renderSession,
+  headerActions,
 }: WorkspaceSectionProps) {
   const [sessions, setSessions] = useState<DaemonSessionSummary[]>([]);
-  const [expanded, setExpanded] = useState(workspace.primary);
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  const [actionsVisible, setActionsVisible] = useState(false);
+  const expanded = controlledExpanded ?? internalExpanded;
   const readOnly = !workspace.primary && !workspace.trusted;
   const disabled = workspace.primary && !workspace.trusted;
 
-  // Sync if the primary flag changes after mount (e.g. capabilities refresh).
+  // A workspace always starts collapsed, including the primary workspace.
   useEffect(() => {
-    setExpanded(workspace.primary);
-  }, [workspace.primary]);
+    if (controlledExpanded === undefined) setInternalExpanded(false);
+  }, [controlledExpanded, workspace.id]);
+
+  useEffect(() => {
+    if (controlledExpanded === undefined && isActive) {
+      setInternalExpanded(true);
+    }
+  }, [controlledExpanded, isActive]);
 
   const loadSessions = useCallback(async () => {
     if (disabled) return;
@@ -106,12 +111,24 @@ export function WorkspaceSection({
   }, [client, disabled, workspace.cwd]);
 
   useEffect(() => {
-    if (!expanded) return;
+    if (content !== undefined) return;
+    if (!expanded && !searchQuery.trim()) return;
     void loadSessions();
     if (readOnly) return;
     const timer = setInterval(() => void loadSessions(), 10_000);
     return () => clearInterval(timer);
-  }, [expanded, loadSessions, readOnly, reloadToken]);
+  }, [content, expanded, loadSessions, readOnly, reloadToken, searchQuery]);
+
+  const visibleSessions = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return sessions;
+    return sessions.filter((session) => {
+      const label = (session.displayName || '').toLowerCase();
+      return (
+        label.includes(query) || session.sessionId.toLowerCase().includes(query)
+      );
+    });
+  }, [searchQuery, sessions]);
 
   return (
     <div className={styles.section}>
@@ -123,31 +140,56 @@ export function WorkspaceSection({
         )}
         disabled={disabled}
         aria-expanded={expanded}
+        onMouseEnter={() => setActionsVisible(true)}
+        onMouseLeave={() => setActionsVisible(false)}
+        onFocus={() => setActionsVisible(true)}
+        onBlur={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget)) {
+            setActionsVisible(false);
+          }
+        }}
         onClick={() => {
           if (!readOnly) {
             onSelectWorkspace(workspace.primary ? undefined : workspace.cwd);
           }
-          setExpanded((v) => !v);
+          const nextExpanded = !expanded;
+          setInternalExpanded(nextExpanded);
+          onExpandedChange?.(nextExpanded);
         }}
       >
         <span className={cx(styles.chevron, expanded && styles.chevronOpen)}>
           <FolderIcon open={expanded} />
         </span>
-        <span className={styles.name}>{getWorkspaceName(workspace.cwd)}</span>
-        {workspace.primary && (
-          <span className={styles.badge}>{primaryLabel}</span>
-        )}
+        <span
+          style={{
+            display: 'flex',
+            minWidth: 0,
+            flex: '1 1 auto',
+            alignItems: 'center',
+            gap: 6,
+          }}
+        >
+          <span className={styles.name} style={{ flex: '0 1 auto' }}>
+            {getWorkspaceName(workspace.cwd)}
+          </span>
+          {workspace.primary && (
+            <span className={styles.badge}>{primaryLabel}</span>
+          )}
+        </span>
         {!workspace.trusted && (
           <span className={styles.badge}>{untrustedLabel}</span>
         )}
         {readOnly && <span className={styles.badge}>{readOnlyLabel}</span>}
+        {!readOnly && headerActions?.(actionsVisible)}
       </button>
-      {expanded && !disabled && (
+      {(expanded || Boolean(searchQuery.trim())) && !disabled && (
         <div className={styles.sessions}>
-          {sessions.length === 0 ? (
+          {content !== undefined ? (
+            content
+          ) : visibleSessions.length === 0 ? (
             <div className={styles.empty}>{noSessionsLabel}</div>
           ) : (
-            sessions.map((session) => {
+            visibleSessions.map((session) => {
               if (!readOnly) return renderSession(session);
               const label = getSessionLabel(session);
               const time = session.createdAt

@@ -467,6 +467,7 @@ function createActionsHarness(
     },
     setPromptStatus: vi.fn(),
     setRestoreSessionId: vi.fn(),
+    setRestoreWorkspaceCwd: vi.fn(),
     setRestoreMode: vi.fn(),
     setRestoreSessionNonce: vi.fn(),
     setAttachSessionNonce: opts.setAttachSessionNonce ?? vi.fn(),
