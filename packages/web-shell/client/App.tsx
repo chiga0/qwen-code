@@ -68,7 +68,8 @@ import {
 } from './components/messages/AgentsMessage';
 import { MemoryMessage } from './components/messages/MemoryMessage';
 import { AuthMessage } from './components/messages/AuthMessage';
-import { ToolsDialog } from './components/dialogs/ToolsDialog';
+import { ToolsManagerPage } from './components/tools/ToolsManagerPage';
+import { SkillsManagerPage } from './components/skills/SkillsManagerPage';
 import { DaemonStatusDialog } from './components/dialogs/DaemonStatusDialog';
 import { SessionOverviewPanel } from './components/SessionOverviewPanel';
 import { SplitView } from './components/SplitView';
@@ -91,8 +92,9 @@ import {
 import { useIsLargeScreen } from './hooks/useIsLargeScreen';
 import { MAX_SPLIT_PANES, parseSplitSessionIds } from './utils/splitUrl';
 import { ScheduledTasksDialog } from './components/dialogs/ScheduledTasksDialog';
-import { ExtensionsDialog } from './components/dialogs/ExtensionsDialog';
+import { ExtensionsManagerPage } from './components/extensions/ExtensionsManagerPage';
 import { SettingsMessage } from './components/messages/SettingsMessage';
+import { Spinner } from './components/ui/spinner';
 import { isAskUserPermission } from './utils/askUserPermission';
 import { ToolApproval } from './components/messages/ToolApproval';
 import { AskUserQuestion } from './components/messages/AskUserQuestion';
@@ -155,7 +157,8 @@ import {
   type StatusInfo,
 } from './components/messages/StatusMessage';
 import type { SerializedMcpStatusMessage } from './components/messages/McpStatusMessage';
-import { McpDialog } from './components/dialogs/McpDialog';
+import { McpManagerPage } from './components/mcp/McpManagerPage';
+import { PluginManagerPage } from './components/plugins/PluginManagerPage';
 import {
   GOAL_STATUS_ACTIVE_EVENT,
   parseGoalStatusMessage,
@@ -1924,7 +1927,6 @@ export function App({
   const [showRewindDialog, setShowRewindDialog] = useState(false);
   const [showHelpDialog, setShowHelpDialog] = useState(false);
   const [showThemeDialog, setShowThemeDialog] = useState(false);
-  const [showToolsDialog, setShowToolsDialog] = useState(false);
   // Main content view. The scheduled-tasks page replaces the chat pane inline
   // (not a modal overlay), mirroring the reference design; creating or opening
   // a chat returns to 'chat'. (Daemon Status is no longer a boolean dialog — it
@@ -1934,14 +1936,21 @@ export function App({
   );
   // Sessions to seed the split view with (e.g. the selection from the overview).
   const [splitSessionIds, setSplitSessionIds] = useState<string[]>([]);
-  const [showExtensionsDialog, setShowExtensionsDialog] = useState(false);
   const [mcpDialogMessage, setMcpDialogMessage] =
     useState<SerializedMcpStatusMessage | null>(null);
   // Settings and Daemon Status are shown as an in-place panel that replaces the
   // chat view (message list + composer), not as a modal overlay. Only one may be
   // active at a time; null means the normal chat view is shown.
   const [activePanel, setActivePanel] = useState<
-    'settings' | 'status' | 'sessions' | null
+    | 'settings'
+    | 'status'
+    | 'sessions'
+    | 'mcp'
+    | 'extensions'
+    | 'tools'
+    | 'skills'
+    | 'plugins'
+    | null
   >(null);
   const closePanel = useCallback(() => setActivePanel(null), []);
   // The Settings/Status panel (activePanel) and the Scheduled Tasks page
@@ -1950,10 +1959,64 @@ export function App({
   // one closes the other. Without this, opening Scheduled Tasks then Daemon
   // Status left the panel rendered behind the Scheduled Tasks overlay, looking
   // like the button did nothing.
-  const openPanel = useCallback((panel: 'settings' | 'status' | 'sessions') => {
-    setMainView('chat');
-    setActivePanel(panel);
-  }, []);
+  const openPanel = useCallback(
+    (
+      panel:
+        | 'settings'
+        | 'status'
+        | 'sessions'
+        | 'mcp'
+        | 'extensions'
+        | 'tools'
+        | 'skills'
+        | 'plugins',
+    ) => {
+      setMainView('chat');
+      setActivePanel(panel);
+    },
+    [],
+  );
+  const loadMcpManagerMessage = useCallback(async () => {
+    const status = await workspaceActions.loadMcpStatus();
+    const toolsByServer: Record<
+      string,
+      Awaited<ReturnType<typeof workspaceActions.loadMcpTools>>
+    > = {};
+    const resourcesByServer: Record<
+      string,
+      Awaited<ReturnType<typeof workspaceActions.loadMcpResources>>
+    > = {};
+    await Promise.all(
+      (status?.servers ?? []).map(async (server) => {
+        await Promise.all([
+          workspaceActions
+            .loadMcpTools(server.name)
+            .then((tools) => {
+              toolsByServer[server.name] = tools;
+            })
+            .catch(() => undefined),
+          server.resourceCount
+            ? workspaceActions
+                .loadMcpResources(server.name)
+                .then((resources) => {
+                  resourcesByServer[server.name] = resources;
+                })
+                .catch(() => undefined)
+            : Promise.resolve(),
+        ]);
+      }),
+    );
+    const message: SerializedMcpStatusMessage = {
+      status,
+      toolsByServer,
+      resourcesByServer,
+      showDescriptions: false,
+      showSchema: false,
+      showTips: true,
+    };
+    setMcpDialogMessage(message);
+    return message;
+  }, [workspaceActions]);
   const openScheduledTasks = useCallback(() => {
     setActivePanel(null);
     setMainView('scheduledTasks');
@@ -2488,12 +2551,9 @@ export function App({
     showRewindDialog ||
     showHelpDialog ||
     showThemeDialog ||
-    showToolsDialog ||
-    showExtensionsDialog ||
     modelDialogMode !== null ||
     showApprovalModeDialog ||
     tasksDialogMessage !== null ||
-    mcpDialogMessage !== null ||
     agentsDialogMode !== null ||
     showMemoryDialog ||
     showAuthDialog ||
@@ -4063,65 +4123,17 @@ export function App({
             return true;
           }
           if (cmd === 'mcp') {
-            const mcpArg = text.slice(match[0].length).trim().toLowerCase();
-            workspaceActions
-              .loadMcpStatus()
-              .then(async (status) => {
-                const toolsByServer: Record<
-                  string,
-                  Awaited<ReturnType<typeof workspaceActions.loadMcpTools>>
-                > = {};
-                const resourcesByServer: Record<
-                  string,
-                  Awaited<ReturnType<typeof workspaceActions.loadMcpResources>>
-                > = {};
-                await Promise.all(
-                  (status?.servers ?? []).map(async (server) => {
-                    // Tools and resources load in parallel; a failure in one
-                    // must not hide the other, and per-server failures still
-                    // let sibling servers render.
-                    await Promise.all([
-                      (async () => {
-                        try {
-                          toolsByServer[server.name] =
-                            await workspaceActions.loadMcpTools(server.name);
-                        } catch {
-                          // Allow partial failure — other servers still render
-                        }
-                      })(),
-                      (async () => {
-                        // Skip the round-trip for servers that advertise no
-                        // resources (or older daemons that omit the count).
-                        if (!server.resourceCount) return;
-                        try {
-                          resourcesByServer[server.name] =
-                            await workspaceActions.loadMcpResources(
-                              server.name,
-                            );
-                        } catch {
-                          // Allow partial failure — other servers still render
-                        }
-                      })(),
-                    ]);
-                  }),
-                );
-                setMcpDialogMessage({
-                  status,
-                  toolsByServer,
-                  resourcesByServer,
-                  showDescriptions: mcpArg === 'desc',
-                  showSchema: mcpArg === 'schema',
-                  showTips: !mcpArg,
-                });
-              })
-              .catch((error: unknown) => {
-                reportError(error, 'Failed to load MCP status');
-              });
+            openPanel('mcp');
+            void loadMcpManagerMessage().catch((error: unknown) => {
+              reportError(error, 'Failed to load MCP status');
+            });
             return true;
           }
           if (cmd === 'skills') {
             const skillArg = text.slice(match[0].length).trim();
-            if (skillArg) {
+            if (skillArg === 'detail' || skillArg === 'details') {
+              openPanel('skills');
+            } else if (skillArg) {
               if (promptBlocked) {
                 return enqueuePrompt(
                   text,
@@ -4168,7 +4180,7 @@ export function App({
           if (cmd === 'tools') {
             const toolsArg = text.slice(match[0].length).trim().toLowerCase();
             if (toolsArg === 'desc' || toolsArg === 'descriptions') {
-              setShowToolsDialog(true);
+              openPanel('tools');
             } else {
               if (echoOrDeferLocalCommand(text, images)) return true;
               workspaceActions
@@ -4259,7 +4271,7 @@ export function App({
             const args = text.slice(match[0].length).trim();
             const subCommand = args.split(/\s+/)[0]?.toLowerCase();
             if (!subCommand || subCommand === 'manage') {
-              setShowExtensionsDialog(true);
+              openPanel('extensions');
               return true;
             }
             if (subCommand === 'install') {
@@ -4626,6 +4638,7 @@ export function App({
       branchCurrentSession,
       closeMobileDrawer,
       closePanel,
+      loadMcpManagerMessage,
       openPanel,
       openScheduledTasks,
       createNewSession,
@@ -5259,36 +5272,6 @@ export function App({
                 />
               </DialogShell>
             )}
-            {showToolsDialog && (
-              <DialogShell
-                title={t('tools.title')}
-                size="lg"
-                onClose={() => setShowToolsDialog(false)}
-              >
-                <ToolsDialog />
-              </DialogShell>
-            )}
-            {showExtensionsDialog && (
-              <DialogShell
-                title={t('extensions.manage.title')}
-                size="lg"
-                onClose={() => setShowExtensionsDialog(false)}
-              >
-                <ExtensionsDialog />
-              </DialogShell>
-            )}
-            {mcpDialogMessage && (
-              <DialogShell
-                title={t('mcp.manageServers')}
-                size="lg"
-                onClose={() => setMcpDialogMessage(null)}
-              >
-                <McpDialog
-                  message={mcpDialogMessage}
-                  onClose={() => setMcpDialogMessage(null)}
-                />
-              </DialogShell>
-            )}
             {tasksDialogMessage && (
               <DialogShell
                 title={t('tasks.title')}
@@ -5491,7 +5474,10 @@ export function App({
                     }}
                     onOpenPlugins={() => {
                       closeMobileDrawer();
-                      setShowExtensionsDialog(true);
+                      openPanel('plugins');
+                      void loadMcpManagerMessage().catch((error: unknown) => {
+                        reportError(error, 'Failed to load MCP status');
+                      });
                     }}
                     onOpenDaemonStatus={() => {
                       closeMobileDrawer();
@@ -5581,38 +5567,54 @@ export function App({
                         ? t('settings.title')
                         : activePanel === 'status'
                           ? t('daemon.title')
-                          : t('sessionsOverview.title')
+                          : activePanel === 'mcp'
+                            ? t('mcp.title')
+                            : activePanel === 'extensions'
+                              ? t('extensions.manage.title')
+                              : activePanel === 'tools'
+                                ? t('tools.title')
+                                : activePanel === 'skills'
+                                  ? t('skills.title')
+                                  : activePanel === 'plugins'
+                                    ? t('plugins.title')
+                                    : t('sessionsOverview.title')
                     }
                   >
-                    <div className={styles.panelHeader}>
-                      <button
-                        ref={panelBackRef}
-                        type="button"
-                        className={styles.panelBack}
-                        data-testid="panel-back"
-                        onClick={closePanel}
-                        aria-label={t('common.back')}
-                        title={t('common.back')}
-                      >
-                        <svg viewBox="0 0 24 24" aria-hidden="true">
-                          <path
-                            d="M15 5l-7 7 7 7"
-                            fill="none"
-                            stroke="currentColor"
-                            strokeWidth="2"
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                          />
-                        </svg>
-                      </button>
-                      <div className={styles.panelTitle}>
-                        {activePanel === 'settings'
-                          ? t('settings.title')
-                          : activePanel === 'status'
-                            ? t('daemon.title')
-                            : t('sessionsOverview.title')}
-                      </div>
-                    </div>
+                    {activePanel !== 'mcp' &&
+                      activePanel !== 'extensions' &&
+                      activePanel !== 'tools' &&
+                      activePanel !== 'skills' &&
+                      activePanel !== 'plugins' && (
+                        <div className={styles.panelHeader}>
+                          <button
+                            ref={panelBackRef}
+                            type="button"
+                            className={styles.panelBack}
+                            data-testid="panel-back"
+                            onClick={closePanel}
+                            aria-label={t('common.back')}
+                            title={t('common.back')}
+                          >
+                            <svg viewBox="0 0 24 24" aria-hidden="true">
+                              <path
+                                d="M15 5l-7 7 7 7"
+                                fill="none"
+                                stroke="currentColor"
+                                strokeWidth="2"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                              />
+                            </svg>
+                          </button>
+                          <div className={styles.panelTitle}>
+                            {activePanel === 'settings'
+                              ? t('settings.title')
+                              : activePanel === 'status'
+                                ? t('daemon.title')
+                                : t('sessionsOverview.title')}
+                          </div>
+                        </div>
+                      )}
                     <div className={styles.panelBody} key={activePanel}>
                       {activePanel === 'settings' ? (
                         <SettingsMessage
@@ -5632,6 +5634,48 @@ export function App({
                         />
                       ) : activePanel === 'status' ? (
                         <DaemonStatusDialog />
+                      ) : activePanel === 'mcp' ? (
+                        mcpDialogMessage ? (
+                          <McpManagerPage
+                            message={mcpDialogMessage}
+                            onClose={closePanel}
+                          />
+                        ) : (
+                          <div className="flex min-h-48 items-center justify-center gap-2 text-sm text-muted-foreground">
+                            <Spinner />
+                            <span>{t('mcp.loadingStatus')}</span>
+                          </div>
+                        )
+                      ) : activePanel === 'extensions' ? (
+                        <ExtensionsManagerPage onClose={closePanel} />
+                      ) : activePanel === 'tools' ? (
+                        <ToolsManagerPage onClose={closePanel} />
+                      ) : activePanel === 'skills' ? (
+                        <SkillsManagerPage
+                          onClose={closePanel}
+                          onUseSkill={(name) => {
+                            closePanel();
+                            window.setTimeout(() => {
+                              editorRef.current?.setText(`/${name} `);
+                              editorRef.current?.focus();
+                            }, 0);
+                          }}
+                        />
+                      ) : activePanel === 'plugins' ? (
+                        <PluginManagerPage
+                          mcpMessage={mcpDialogMessage}
+                          onClose={closePanel}
+                          onUseSkill={(name) => {
+                            closePanel();
+                            window.setTimeout(() => {
+                              editorRef.current?.setText(`/${name} `);
+                              editorRef.current?.focus();
+                            }, 0);
+                          }}
+                          onMessage={(text) =>
+                            store.dispatch([{ type: 'status', text }])
+                          }
+                        />
                       ) : (
                         <SessionOverviewPanel
                           onOpenSession={handleOpenSessionFromOverview}
