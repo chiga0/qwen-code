@@ -4,6 +4,7 @@ import { App, type WebShellProps } from './App';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RootErrorFallback } from './components/RootErrorFallback';
 import { WorkspaceSessionProvider } from './components/WorkspaceSessionProvider';
+import { WebShellSurface } from './components/WebShellSurface';
 import { normalizeLanguage, type WebShellLanguage } from './i18n';
 
 export interface WebShellWithProvidersProps extends WebShellProps {
@@ -64,12 +65,25 @@ function RootBoundary({
  * owns those providers, so this boundary covers only what we render (`App`).
  */
 export function WebShell(props: WebShellProps) {
+  const { isolation = 'scoped', className, style, ...appProps } = props;
   return (
-    <RootBoundary
-      language={props.language ? normalizeLanguage(props.language) : undefined}
+    <WebShellSurface
+      isolation={isolation}
+      className={isolation === 'shadow-dom' ? className : undefined}
+      style={isolation === 'shadow-dom' ? style : undefined}
     >
-      <App {...props} />
-    </RootBoundary>
+      <RootBoundary
+        language={
+          props.language ? normalizeLanguage(props.language) : undefined
+        }
+      >
+        <App
+          {...appProps}
+          className={isolation === 'scoped' ? className : undefined}
+          style={isolation === 'scoped' ? style : undefined}
+        />
+      </RootBoundary>
+    </WebShellSurface>
   );
 }
 
@@ -87,29 +101,42 @@ export function WebShellWithProviders(props: WebShellWithProvidersProps) {
     workspaceCwd,
     lockWorkspaceCwd,
     clientId,
+    isolation = 'scoped',
+    className,
+    style,
     ...webShellProps
   } = props;
   const resolvedBaseUrl = resolveBaseUrl(baseUrl);
 
   return (
-    <RootBoundary
-      language={
-        webShellProps.language
-          ? normalizeLanguage(webShellProps.language)
-          : undefined
-      }
+    <WebShellSurface
+      isolation={isolation}
+      className={isolation === 'shadow-dom' ? className : undefined}
+      style={isolation === 'shadow-dom' ? style : undefined}
     >
-      <DaemonWorkspaceProvider baseUrl={resolvedBaseUrl} token={token}>
-        <WorkspaceSessionProvider
-          sessionId={sessionId}
-          workspaceId={workspaceId}
-          workspaceCwd={workspaceCwd}
-          lockWorkspaceCwd={lockWorkspaceCwd}
-          clientId={clientId}
-          webShellProps={webShellProps}
-        />
-      </DaemonWorkspaceProvider>
-    </RootBoundary>
+      <RootBoundary
+        language={
+          webShellProps.language
+            ? normalizeLanguage(webShellProps.language)
+            : undefined
+        }
+      >
+        <DaemonWorkspaceProvider baseUrl={resolvedBaseUrl} token={token}>
+          <WorkspaceSessionProvider
+            sessionId={sessionId}
+            workspaceId={workspaceId}
+            workspaceCwd={workspaceCwd}
+            lockWorkspaceCwd={lockWorkspaceCwd}
+            clientId={clientId}
+            webShellProps={{
+              ...webShellProps,
+              className: isolation === 'scoped' ? className : undefined,
+              style: isolation === 'scoped' ? style : undefined,
+            }}
+          />
+        </DaemonWorkspaceProvider>
+      </RootBoundary>
+    </WebShellSurface>
   );
 }
 
@@ -133,6 +160,7 @@ export type {
   WebShellSidebarLockedWorkspace,
 } from './components/sidebar/WebShellSidebar';
 export type { WebShellLanguage } from './i18n';
+export type { WebShellIsolation } from './isolation';
 export type { WebShellTheme } from './themeContext';
 export type {
   CommandDisplayCategory,

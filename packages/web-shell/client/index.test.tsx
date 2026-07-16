@@ -100,6 +100,36 @@ describe('WebShellWithProviders top-level boundary', () => {
     expect(container.querySelector('[role="alert"]')).toBeNull();
   });
 
+  it('renders providers inside the opt-in Shadow DOM surface', () => {
+    const container = render(
+      <WebShellWithProviders
+        isolation="shadow-dom"
+        className="consumer-shell"
+        style={{ width: 320 }}
+      />,
+    );
+    const host = container.querySelector<HTMLElement>(
+      '[data-web-shell-shadow-host]',
+    );
+    const overlayHost = document.body.querySelector<HTMLElement>(
+      '[data-web-shell-shadow-overlay-host]',
+    );
+
+    expect(host?.className).toBe('consumer-shell');
+    expect(host?.style.width).toBe('320px');
+    expect(
+      host?.shadowRoot?.querySelector('[data-testid="app-ok"]'),
+    ).not.toBeNull();
+    expect(
+      overlayHost?.shadowRoot?.querySelector('[data-web-shell-portal-root]'),
+    ).not.toBeNull();
+    expect(appProps[0]).not.toHaveProperty('isolation');
+    expect(appProps[0]).toMatchObject({
+      className: undefined,
+      style: undefined,
+    });
+  });
+
   it('starts on an empty session by default', () => {
     render(<WebShellWithProviders />);
     expect(sessionProviderProps[0]).toMatchObject({

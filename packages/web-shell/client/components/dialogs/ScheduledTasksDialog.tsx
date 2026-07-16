@@ -28,6 +28,7 @@ import { useI18n } from '../../i18n';
 import { getComposerTagIconUrl } from '../../utils/composerTag';
 import { cssUrlValue } from '../../utils/cssUrlVar';
 import { DialogShell } from './DialogShell';
+import { useWebShellPortalRoot } from '../../portalRoot';
 import {
   buildCron,
   describeCron,
@@ -462,6 +463,7 @@ export function ScheduledTasksDialog({
   lockedWorkspace,
   onError,
 }: ScheduledTasksDialogProps) {
+  const portalRoot = useWebShellPortalRoot();
   const { t } = useI18n();
   const actions = useWorkspaceActions();
 
@@ -1081,7 +1083,7 @@ export function ScheduledTasksDialog({
               ))
             )}
           </div>,
-          document.body,
+          portalRoot ?? document.body,
         )
       : null;
 

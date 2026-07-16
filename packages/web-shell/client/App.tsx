@@ -229,7 +229,8 @@ import {
   type WebShellBottomStatusItem,
 } from './customization';
 import type { CommandDisplayCategoryOrder } from './utils/commandDisplay';
-import { WebShellPortalRootContext } from './portalRoot';
+import { useWebShellPortalRoot, WebShellPortalRootContext } from './portalRoot';
+import type { WebShellIsolation } from './isolation';
 import './styles/globals.css';
 import styles from './App.module.css';
 
@@ -449,6 +450,8 @@ export type WebShellComposerPlaceholders = Readonly<
 >;
 
 export interface WebShellProps {
+  /** DOM and CSS isolation strategy. Defaults to the existing scoped mode. */
+  isolation?: WebShellIsolation;
   /** Called whenever the attached daemon session or workspace changes. */
   onSessionIdChange?: (
     sessionId: string | undefined,
@@ -1037,6 +1040,7 @@ export function App({
   lockedWorkspaceCwd,
   lockedWorkspaceCapability,
 }: AppProps = {}) {
+  const inheritedPortalRoot = useWebShellPortalRoot();
   const [chatWidthMode, setChatWidthMode] =
     useState<ChatWidthMode>(readChatWidthMode);
   const [selectedLanguage, setSelectedLanguage] = useState<WebShellLanguage>(
@@ -1912,7 +1916,10 @@ export function App({
     showFloatingTodos || floatingBottomStatusItems.length > 0;
   const footerRef = useRef<HTMLDivElement>(null);
   const appRootRef = useRef<HTMLDivElement>(null);
-  const [portalRoot, setPortalRoot] = useState<HTMLElement | null>(null);
+  const [ownedPortalRoot, setOwnedPortalRoot] = useState<HTMLElement | null>(
+    null,
+  );
+  const portalRoot = inheritedPortalRoot ?? ownedPortalRoot;
   const portalRootVariableNamesRef = useRef<Set<string>>(new Set());
   const bottomPanelsRef = useRef<HTMLDivElement>(null);
   const [bottomPanelInset, setBottomPanelInset] = useState(0);
@@ -5592,16 +5599,17 @@ export function App({
   }, [isChatEmptyState]);
 
   useLayoutEffect(() => {
+    if (inheritedPortalRoot) return;
     const root = document.createElement('div');
     root.dataset.webShellPortalRoot = '';
     root.dataset.webShellShadcn = '';
     document.body.appendChild(root);
-    setPortalRoot(root);
+    setOwnedPortalRoot(root);
     return () => {
       root.remove();
-      setPortalRoot(null);
+      setOwnedPortalRoot(null);
     };
-  }, []);
+  }, [inheritedPortalRoot]);
 
   useLayoutEffect(() => {
     const root = appRootRef.current;
@@ -5642,7 +5650,15 @@ export function App({
         attributes: true,
         attributeFilter: ['class', 'style', 'data-theme', 'lang'],
       });
-      element = element.parentElement;
+      if (element.parentElement) {
+        element = element.parentElement;
+        continue;
+      }
+      const rootNode = element.getRootNode();
+      element =
+        rootNode instanceof ShadowRoot && rootNode.host instanceof HTMLElement
+          ? rootNode.host
+          : null;
     }
     window.addEventListener('resize', scheduleSync);
     return () => {

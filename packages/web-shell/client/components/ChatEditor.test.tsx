@@ -28,6 +28,7 @@ const composerCoreState = vi.hoisted(() => ({
   slashMenu: null as SlashMenuState | null,
   focus: vi.fn(),
   closeSlashMenu: vi.fn(),
+  portalRoot: null as HTMLElement | null,
 }));
 
 Object.defineProperty(window, 'matchMedia', {
@@ -45,76 +46,79 @@ vi.mock('../hooks/useComposerCore', async (importOriginal) => {
     await importOriginal<typeof import('../hooks/useComposerCore')>();
   return {
     ...actual,
-    useComposerCore: () => ({
-      containerRef: React.createRef<HTMLDivElement>(),
-      viewRef: { current: null },
-      focus: composerCoreState.focus,
-      submitText: vi.fn(),
-      clearText: vi.fn(),
-      getText: vi.fn(() => ''),
-      hasInput: vi.fn(() => false),
-      hasContent: false,
-      handle: {
-        focus: vi.fn(),
-        insertText: vi.fn(),
-        setText: vi.fn(),
-        clear: vi.fn(),
-        retryLast: vi.fn(),
+    useComposerCore: (options) => {
+      composerCoreState.portalRoot = options.portalRoot ?? null;
+      return {
+        containerRef: React.createRef<HTMLDivElement>(),
+        viewRef: { current: null },
+        focus: composerCoreState.focus,
+        submitText: vi.fn(),
+        clearText: vi.fn(),
+        getText: vi.fn(() => ''),
+        hasInput: vi.fn(() => false),
+        hasContent: false,
+        handle: {
+          focus: vi.fn(),
+          insertText: vi.fn(),
+          setText: vi.fn(),
+          clear: vi.fn(),
+          retryLast: vi.fn(),
+          addTags: vi.fn(),
+          removeInlineTags: vi.fn(),
+          submit: vi.fn(),
+        },
+        pastedImages: [],
+        removeImage: vi.fn(),
+        composerTags: mockComposerCoreState.composerTags,
+        removeTopTag: mockComposerCoreState.removeTopTag,
         addTags: vi.fn(),
         removeInlineTags: vi.fn(),
+        insertText: vi.fn(),
+        setText: vi.fn(),
         submit: vi.fn(),
-      },
-      pastedImages: [],
-      removeImage: vi.fn(),
-      composerTags: mockComposerCoreState.composerTags,
-      removeTopTag: mockComposerCoreState.removeTopTag,
-      addTags: vi.fn(),
-      removeInlineTags: vi.fn(),
-      insertText: vi.fn(),
-      setText: vi.fn(),
-      submit: vi.fn(),
-      clear: vi.fn(),
-      retryLast: vi.fn(),
-      replaceEditorText: vi.fn(),
-      shellMode: false,
-      setShellMode: vi.fn(),
-      toggleShellMode: vi.fn(),
-      currentMode: 'default',
-      sessionName: undefined,
-      searchState: {
-        searchMode: false,
-        searchQuery: '',
-        searchMatches: [],
-        searchActiveIndex: 0,
-        searchInputRef: React.createRef<HTMLInputElement>(),
-        searchUiRef: React.createRef<HTMLDivElement>(),
-        openHistorySearch: vi.fn(),
-        closeSearch: vi.fn(),
-        submitSearchMatch: vi.fn(),
-        handleSearchKeyDown: vi.fn(),
-        handleSearchInput: vi.fn(),
-        handleSearchCompositionEnd: vi.fn(),
-      },
-      navigatePrevHistory: vi.fn(),
-      navigateNextHistory: vi.fn(),
-      showShortcutHints: false,
-      followupState: { isVisible: false, suggestion: '' },
-      disabled: false,
-      onAcceptFollowup: vi.fn(),
-      onDismissFollowup: vi.fn(),
-      slashMenu: composerCoreState.slashMenu,
-      closeSlashMenu: composerCoreState.closeSlashMenu,
-      selectSlashCompletion: vi.fn(),
-      acceptSlashCompletion: vi.fn(),
-      atMenu: null,
-      closeAtMenu: vi.fn(),
-      selectAtCompletion: vi.fn(),
-      acceptAtCompletion: vi.fn(),
-      enterAtCategory: vi.fn(),
-      backAtCategories: vi.fn(),
-      updateAtSearch: vi.fn(),
-      selectAtTab: vi.fn(),
-    }),
+        clear: vi.fn(),
+        retryLast: vi.fn(),
+        replaceEditorText: vi.fn(),
+        shellMode: false,
+        setShellMode: vi.fn(),
+        toggleShellMode: vi.fn(),
+        currentMode: 'default',
+        sessionName: undefined,
+        searchState: {
+          searchMode: false,
+          searchQuery: '',
+          searchMatches: [],
+          searchActiveIndex: 0,
+          searchInputRef: React.createRef<HTMLInputElement>(),
+          searchUiRef: React.createRef<HTMLDivElement>(),
+          openHistorySearch: vi.fn(),
+          closeSearch: vi.fn(),
+          submitSearchMatch: vi.fn(),
+          handleSearchKeyDown: vi.fn(),
+          handleSearchInput: vi.fn(),
+          handleSearchCompositionEnd: vi.fn(),
+        },
+        navigatePrevHistory: vi.fn(),
+        navigateNextHistory: vi.fn(),
+        showShortcutHints: false,
+        followupState: { isVisible: false, suggestion: '' },
+        disabled: false,
+        onAcceptFollowup: vi.fn(),
+        onDismissFollowup: vi.fn(),
+        slashMenu: composerCoreState.slashMenu,
+        closeSlashMenu: composerCoreState.closeSlashMenu,
+        selectSlashCompletion: vi.fn(),
+        acceptSlashCompletion: vi.fn(),
+        atMenu: null,
+        closeAtMenu: vi.fn(),
+        selectAtCompletion: vi.fn(),
+        acceptAtCompletion: vi.fn(),
+        enterAtCategory: vi.fn(),
+        backAtCategories: vi.fn(),
+        updateAtSearch: vi.fn(),
+        selectAtTab: vi.fn(),
+      };
+    },
   };
 });
 
@@ -128,6 +132,7 @@ afterEach(() => {
   composerCoreState.slashMenu = null;
   composerCoreState.focus.mockReset();
   composerCoreState.closeSlashMenu.mockReset();
+  composerCoreState.portalRoot = null;
   for (const { root, container, portalRoot } of mounted.splice(0)) {
     act(() => root.unmount());
     container.remove();
@@ -190,6 +195,8 @@ function renderChatEditor(props: {
       </WebShellPortalRootContext.Provider>,
     );
   });
+
+  expect(composerCoreState.portalRoot).toBe(portalRoot);
 
   return container;
 }

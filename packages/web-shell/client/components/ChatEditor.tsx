@@ -1163,6 +1163,7 @@ export const ChatEditor = memo(
       renderComposerTagTooltip,
       onComposerTagClick,
     } = useWebShellCustomization();
+    const portalRoot = useWebShellPortalRoot();
 
     const core = useComposerCore({
       onSubmit,
@@ -1191,6 +1192,7 @@ export const ChatEditor = memo(
       renderComposerTag,
       renderComposerTagTooltip,
       onComposerTagClick,
+      portalRoot,
       editorTheme: CHAT_EDITOR_THEME,
     });
 

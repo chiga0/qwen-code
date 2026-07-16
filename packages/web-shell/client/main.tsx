@@ -5,6 +5,7 @@ import { DaemonWorkspaceProvider } from '@qwen-code/webui/daemon-react-sdk';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { RootErrorFallback } from './components/RootErrorFallback';
 import { WorkspaceSessionProvider } from './components/WorkspaceSessionProvider';
+import { WebShellSurface } from './components/WebShellSurface';
 import {
   getDaemonBaseUrl,
   getDaemonToken,
@@ -93,6 +94,14 @@ function getWorkspaceIdFromUrl(): string | undefined {
   );
 }
 
+function getIsolationFromUrl() {
+  return import.meta.env.DEV &&
+    new URLSearchParams(window.location.search).get('isolation') ===
+      'shadow-dom'
+    ? ('shadow-dom' as const)
+    : ('scoped' as const);
+}
+
 function replaceStandaloneSessionUrl(
   sessionId: string | undefined,
   workspaceId?: string,
@@ -126,6 +135,7 @@ function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
     getWorkspaceIdFromUrl(),
   );
   const baseUrl = DAEMON_BASE_URL || window.location.origin;
+  const isolation = getIsolationFromUrl();
   // Keep the <html> theme class and <meta name="theme-color"> in sync with
   // the React theme so mobile status bars / overscroll backgrounds stay
   // consistent when the user toggles or when ?theme= lands via URL.
@@ -155,29 +165,35 @@ function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
   );
 
   return (
-    <ErrorBoundary
-      label="web-shell-root"
-      fallback={(error, reset) => (
-        <RootErrorFallback error={error} onRetry={reset} language={language} />
-      )}
-    >
-      <DaemonWorkspaceProvider baseUrl={baseUrl} token={daemonToken}>
-        <WorkspaceSessionProvider
-          sessionId={sessionId}
-          workspaceId={workspaceId}
-          webShellProps={{
-            theme,
-            onThemeChange: handleThemeChange,
-            language,
-            onLanguageChange: handleLanguageChange,
-            onSessionIdChange: handleSessionIdChange,
-            sidebar: true,
-            compactThinking: true,
-            markdownTableMode: 'advanced',
-          }}
-        />
-      </DaemonWorkspaceProvider>
-    </ErrorBoundary>
+    <WebShellSurface isolation={isolation}>
+      <ErrorBoundary
+        label="web-shell-root"
+        fallback={(error, reset) => (
+          <RootErrorFallback
+            error={error}
+            onRetry={reset}
+            language={language}
+          />
+        )}
+      >
+        <DaemonWorkspaceProvider baseUrl={baseUrl} token={daemonToken}>
+          <WorkspaceSessionProvider
+            sessionId={sessionId}
+            workspaceId={workspaceId}
+            webShellProps={{
+              theme,
+              onThemeChange: handleThemeChange,
+              language,
+              onLanguageChange: handleLanguageChange,
+              onSessionIdChange: handleSessionIdChange,
+              sidebar: true,
+              compactThinking: true,
+              markdownTableMode: 'advanced',
+            }}
+          />
+        </DaemonWorkspaceProvider>
+      </ErrorBoundary>
+    </WebShellSurface>
   );
 }
 

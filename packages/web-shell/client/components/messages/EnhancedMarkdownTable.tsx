@@ -22,6 +22,7 @@ import { createPortal } from 'react-dom';
 import { useI18n } from '../../i18n';
 import { useInteractionBlocker } from '../../interactionBlockContext';
 import { useTheme, WebShellThemeId } from '../../themeContext';
+import { useWebShellPortalRoot } from '../../portalRoot';
 import styles from './EnhancedMarkdownTable.module.css';
 
 type TableElement = ReactElement<{
@@ -1315,6 +1316,7 @@ export function EnhancedTable({
   table: EnhancedTableData;
   toolbarExtra?: ReactNode;
 }) {
+  const portalRoot = useWebShellPortalRoot();
   const { language, t } = useI18n();
   const theme = useTheme();
   const registerInteractionBlocker = useInteractionBlocker();
@@ -2873,7 +2875,7 @@ export function EnhancedTable({
               </div>
             </div>
           </div>,
-          document.body,
+          portalRoot ?? document.body,
         )}
     </div>
   );

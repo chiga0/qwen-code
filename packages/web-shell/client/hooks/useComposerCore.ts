@@ -298,12 +298,20 @@ const TOOLTIP_STYLES = `
 }
 `;
 
-function ensureTooltipStyles() {
-  if (document.getElementById(TOOLTIP_STYLE_ID)) return;
+function ensureTooltipStyles(root: Document | ShadowRoot) {
+  if (root.getElementById(TOOLTIP_STYLE_ID)) return;
+  const document =
+    root.nodeType === Node.DOCUMENT_NODE
+      ? (root as Document)
+      : (root as ShadowRoot).ownerDocument;
   const style = document.createElement('style');
   style.id = TOOLTIP_STYLE_ID;
   style.textContent = TOOLTIP_STYLES;
-  document.head.appendChild(style);
+  if (root.nodeType === Node.DOCUMENT_NODE) {
+    (root as Document).head.appendChild(style);
+  } else {
+    root.appendChild(style);
+  }
 }
 
 /**
@@ -357,7 +365,7 @@ function showCompletionHoverInfo(
 
   let info = portal.querySelector<HTMLElement>('.cm-completionInfo-hover');
   if (!info) {
-    info = document.createElement('div');
+    info = portal.ownerDocument.createElement('div');
     info.className =
       'cm-tooltip cm-completionInfo cm-completionInfo-hover cm-completionInfo-right-narrow';
     portal.appendChild(info);
@@ -1062,6 +1070,7 @@ export interface UseComposerCoreOptions {
   renderComposerTag?: ComposerTagRenderer;
   renderComposerTagTooltip?: ComposerTagRenderer;
   onComposerTagClick?: ComposerTagClickHandler;
+  portalRoot?: HTMLElement | null;
   /** CodeMirror theme extension for the editor view. Each variant provides its own. */
   editorTheme: Parameters<typeof EditorView.theme>[0];
 }
@@ -1705,8 +1714,13 @@ export function useComposerCore(
   useEffect(() => {
     if (!containerRef.current) return;
 
-    ensureTooltipStyles();
-    const tooltipPortal = document.createElement('div');
+    const ownerDocument = containerRef.current.ownerDocument;
+    const tooltipPortal = ownerDocument.createElement('div');
+    const tooltipParent = options.portalRoot ?? ownerDocument.body;
+    const tooltipStyleRoot = tooltipParent.getRootNode();
+    ensureTooltipStyles(
+      tooltipStyleRoot instanceof ShadowRoot ? tooltipStyleRoot : ownerDocument,
+    );
     tooltipPortal.setAttribute('data-web-shell-tooltip-portal', '');
     tooltipPortal.style.position = 'fixed';
     tooltipPortal.style.inset = '0';
@@ -1749,9 +1763,15 @@ export function useComposerCore(
       }
     };
     syncTheme();
-    document.body.appendChild(tooltipPortal);
+    tooltipParent.appendChild(tooltipPortal);
 
     const observer = new MutationObserver(syncTheme);
+    if (tooltipParent !== ownerDocument.body) {
+      observer.observe(tooltipParent, {
+        attributes: true,
+        attributeFilter: ['class', 'style', 'data-theme', 'lang'],
+      });
+    }
     let el: Element | null = containerRef.current;
     while (el) {
       observer.observe(el, {

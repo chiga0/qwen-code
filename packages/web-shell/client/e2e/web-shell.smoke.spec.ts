@@ -20,6 +20,53 @@ import {
 
 const COMPOSER_VIEWPORT_HEIGHTS = [1000, 800, 600] as const;
 
+test('renders the app and dialogs in separate shadow roots @smoke', async ({
+  page,
+}, testInfo) => {
+  const scenario = createWebShellDaemonScenario();
+  const daemon = await installScenario(page, scenario, testInfo);
+
+  await page.goto(
+    `/session/${encodeURIComponent(scenario.sessionId)}?isolation=shadow-dom`,
+  );
+  await expect(page.locator('[data-web-shell-root]')).toBeVisible();
+  await completeReplay(page, daemon, scenario.sessionId);
+
+  expect(
+    await page.evaluate(() => {
+      const mainHost = document.querySelector<HTMLElement>(
+        '[data-web-shell-shadow-host]',
+      );
+      const overlayHost = document.querySelector<HTMLElement>(
+        '[data-web-shell-shadow-overlay-host]',
+      );
+      return {
+        mainRoot: Boolean(
+          mainHost?.shadowRoot?.querySelector('[data-web-shell-root]'),
+        ),
+        portalRoot: Boolean(
+          overlayHost?.shadowRoot?.querySelector(
+            '[data-web-shell-portal-root]',
+          ),
+        ),
+        leakedRoot: Boolean(document.querySelector('[data-web-shell-root]')),
+      };
+    }),
+  ).toEqual({ mainRoot: true, portalRoot: true, leakedRoot: false });
+
+  await submitLocalCommand(page, '/theme');
+  await expect(page.locator('[data-web-shell-theme-dialog]')).toBeVisible();
+  expect(
+    await page.locator('[data-web-shell-theme-dialog]').evaluate((element) => {
+      const root = element.getRootNode();
+      return (
+        root instanceof ShadowRoot &&
+        root.host.matches('[data-web-shell-shadow-overlay-host]')
+      );
+    }),
+  ).toBe(true);
+});
+
 test('loads replayed transcript and connects to fake daemon @smoke', async ({
   page,
 }, testInfo) => {

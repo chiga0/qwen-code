@@ -161,6 +161,17 @@ export function App() {
 | `onThemeChange`     | `(theme: WebShellTheme) => void`                                                        | `/theme` 命令切换主题后触发                                                      |
 | `language`          | `'en' \| 'zh-CN' \| 'zh' \| 'zh-cn'`                                                    | UI 语言                                                                          |
 | `onLanguageChange`  | `(language: WebShellLanguage) => void`                                                  | `/language ui` 切换 UI 语言后触发                                                |
+| `isolation`         | `'scoped' \| 'shadow-dom'`                                                              | CSS 隔离方式，默认 `scoped`；`shadow-dom` 使用应用与浮层两个 ShadowRoot          |
+
+需要更强的宿主样式隔离时，可显式启用双 ShadowRoot：
+
+```tsx
+<WebShellWithProviders isolation="shadow-dom" {...providerProps} />
+```
+
+该模式会将 `className` 和 `style` 应用到主 Shadow DOM host；Dialog、Popover、
+Tooltip 等浮层渲染到 `body` 下独立的 overlay ShadowRoot。它是样式边界而非安全边界，
+并且当前仍沿用包内运行时 CSS 注入方式。
 
 锁定工作区时，可以自定义 Sidebar 文件夹行的内容：
 
