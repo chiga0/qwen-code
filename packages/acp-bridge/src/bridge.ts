@@ -2540,8 +2540,18 @@ export function createAcpSessionBridge(opts: BridgeOptions): AcpSessionBridge {
               const guardAck =
                 response._meta?.[EXTERNAL_TOOL_GUARD_READY_META_KEY];
               if (guardAck !== EXTERNAL_TOOL_GUARD_REQUIRED_VALUE) {
+                // Distinguish "ack missing" from "ack present but wrong" —
+                // the child implementer's next step differs between the two.
+                const detail =
+                  response._meta === undefined ||
+                  !Object.hasOwn(
+                    response._meta,
+                    EXTERNAL_TOOL_GUARD_READY_META_KEY,
+                  )
+                    ? `initialize response _meta omits "${EXTERNAL_TOOL_GUARD_READY_META_KEY}"`
+                    : `received: ${JSON.stringify(guardAck)}`;
                 throw new Error(
-                  `ACP child did not acknowledge the required external tool guard (received: ${JSON.stringify(guardAck)}).`,
+                  `ACP child did not acknowledge the required external tool guard (${detail}).`,
                 );
               }
             }

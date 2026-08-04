@@ -2764,6 +2764,10 @@ async function runQwenServeImpl(
     [PRIVATE_EXTERNAL_TOOL_GUARD_ENV]: externalToolGuardHandler
       ? EXTERNAL_TOOL_GUARD_REQUIRED_VALUE
       : undefined,
+    // The CLI wrapper already deletes the ambient token before this point;
+    // re-scrub it per handle so a scrubbing-order regression cannot leak the
+    // daemon secret into ACP children or channel workers.
+    [EXTERNAL_TOOL_GUARD_TOKEN_ENV]: undefined,
   };
 
   const cliVersionPromise = getCliVersion();

@@ -262,7 +262,11 @@ export class RequiredExternalToolGuard {
           headers: {
             authorization: `Bearer ${this.token}`,
             'content-type': 'application/json',
+            // Node's http client does not decompress responses; a compressed
+            // allow would parse as malformed JSON and fail closed into a
+            // denial. Decline encoding so the wire shape is unambiguous.
             accept: 'application/json',
+            'accept-encoding': 'identity',
             host: this.endpoint.host,
             'content-length': String(body.byteLength),
           },

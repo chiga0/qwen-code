@@ -7,7 +7,9 @@
 import { afterEach, describe, expect, it, vi, type MockInstance } from 'vitest';
 import * as http from 'node:http';
 import type { AddressInfo } from 'node:net';
+import { gzipSync } from 'node:zlib';
 import {
+  DEFAULT_EXTERNAL_TOOL_GUARD_TIMEOUT_MS,
   EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
   RequiredExternalToolGuard,
 } from './external-tool-guard-provider.js';
@@ -15,6 +17,7 @@ import {
 interface RecordedRequest {
   path: string;
   authorization?: string;
+  acceptEncoding?: string;
   body: Record<string, unknown>;
 }
 
@@ -31,6 +34,7 @@ async function startFakeGuard(
       const recorded: RecordedRequest = {
         path: request.url ?? '',
         authorization: request.headers.authorization,
+        acceptEncoding: request.headers['accept-encoding'],
         body: JSON.parse(Buffer.concat(chunks).toString('utf8')) as Record<
           string,
           unknown
@@ -114,6 +118,99 @@ describe('RequiredExternalToolGuard', () => {
       toolName: 'run_shell_command',
       arguments: { command: 'pwd' },
     });
+  });
+
+  it('declines content encoding so allows cannot arrive compressed', async () => {
+    const fake = await startFakeGuard((request, response) => {
+      if (request.path === '/v1/handshake') {
+        sendJson(response, {
+          protocolVersion: EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
+          nonce: request.body['nonce'],
+          capabilities: { prepare: true },
+        });
+        return;
+      }
+      sendJson(response, {
+        protocolVersion: EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
+        requestId: request.body['requestId'],
+        allowed: true,
+      });
+    });
+    const provider = new RequiredExternalToolGuard({
+      endpoint: fake.endpoint,
+      token: 'secret',
+    });
+
+    await provider.initialize();
+    await provider.prepare({
+      sessionId: 'session-1',
+      promptId: 'prompt-1',
+      toolCallId: 'call-1',
+      toolName: 'write_file',
+      arguments: {},
+    });
+
+    expect(
+      fake.requests.every((request) => request.acceptEncoding === 'identity'),
+    ).toBe(true);
+  });
+
+  it('fails closed when the provider compresses a response anyway', async () => {
+    const body = gzipSync(
+      JSON.stringify({
+        protocolVersion: EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
+        nonce: 'ignored',
+        capabilities: { prepare: true },
+      }),
+    );
+    const fake = await startFakeGuard((_request, response) => {
+      response.statusCode = 200;
+      response.setHeader('content-type', 'application/json');
+      response.setHeader('content-encoding', 'gzip');
+      response.end(body);
+    });
+    const provider = new RequiredExternalToolGuard({
+      endpoint: fake.endpoint,
+      token: 'secret',
+    });
+
+    await expect(provider.initialize()).rejects.toThrow('malformed JSON');
+  });
+
+  it('unrefs the request timeout so it cannot hold the event loop', async () => {
+    const fake = await startFakeGuard((request, response) => {
+      if (request.path === '/v1/handshake') {
+        sendJson(response, {
+          protocolVersion: EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
+          nonce: request.body['nonce'],
+          capabilities: { prepare: true },
+        });
+        return;
+      }
+      sendJson(response, {
+        protocolVersion: EXTERNAL_TOOL_GUARD_PROTOCOL_VERSION,
+        requestId: request.body['requestId'],
+        allowed: true,
+      });
+    });
+    const setTimeoutSpy = vi.spyOn(globalThis, 'setTimeout');
+    let guardTimer: NodeJS.Timeout | undefined;
+    try {
+      const provider = new RequiredExternalToolGuard({
+        endpoint: fake.endpoint,
+        token: 'secret',
+      });
+      await provider.initialize();
+      const guardTimerIndex = setTimeoutSpy.mock.calls.findIndex(
+        (call) => call[1] === DEFAULT_EXTERNAL_TOOL_GUARD_TIMEOUT_MS,
+      );
+      expect(guardTimerIndex).toBeGreaterThanOrEqual(0);
+      guardTimer = setTimeoutSpy.mock.results[guardTimerIndex]
+        ?.value as NodeJS.Timeout;
+    } finally {
+      setTimeoutSpy.mockRestore();
+    }
+    expect(guardTimer?.hasRef()).toBe(false);
   });
 
   it('preserves a validated explicit denial', async () => {
