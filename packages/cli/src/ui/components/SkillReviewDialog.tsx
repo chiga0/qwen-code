@@ -364,35 +364,29 @@ export const SkillReviewDialog = ({
       : preview;
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.warning}
-      paddingX={1}
-      width="100%"
-    >
-      <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, width: "100%" }} paddingX={1}>
+      <text bold color={theme.text.primary}>
         {t('Auto-generated skill — keep it?')} ({index + 1}/{snapshot.length})
-      </Text>
-      <Box marginTop={1} flexDirection="column">
+      </text>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {/* Name and description are model-generated too — sanitize them just
             like the preview body, or an escape sequence in the frontmatter
             would reach the terminal through the header. */}
-        <Text color={theme.text.primary}>
+        <text color={theme.text.primary}>
           {sanitizeFilenameForDisplay(current.name)}
-        </Text>
+        </text>
         {current.description ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {sanitizeMultilineForDisplay(current.description)}
-          </Text>
+          </text>
         ) : null}
-      </Box>
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {visiblePreview.status === 'loading' ? (
-          <Text color={theme.text.secondary}>{t('Loading preview…')}</Text>
+          <text color={theme.text.secondary}>{t('Loading preview…')}</text>
         ) : visiblePreview.status === 'error' ? (
-          <Text color={theme.text.secondary}>{t('Preview unavailable')}</Text>
+          <text color={theme.text.secondary}>{t('Preview unavailable')}</text>
         ) : (
           <>
             <MaxSizedBox
@@ -402,46 +396,46 @@ export const SkillReviewDialog = ({
               additionalHiddenLinesCount={visiblePreview.hiddenLines}
             >
               {visiblePreview.lines.map((line, i) => (
-                <Box key={i}>
+                <box key={i}>
                   {/* wrap MUST be explicit: MaxSizedBox's layout treats a Text
                       with props but no wrap="wrap" as non-wrapping, while Ink
                       wraps it at render — long lines would then render more
                       rows than the height cap accounts for. */}
-                  <Text wrap="wrap" color={theme.text.secondary}>
+                  <text wrap="wrap" color={theme.text.secondary}>
                     {line === '' ? ' ' : line}
-                  </Text>
-                </Box>
+                  </text>
+                </box>
               ))}
             </MaxSizedBox>
             {/* Byte-cap truncation is a distinct omission from the line-hidden
                 marker above, and can happen with no lines hidden at all. */}
             {visiblePreview.truncated ? (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {t('… preview truncated (file too large) …')}
-              </Text>
+              </text>
             ) : null}
           </>
         )}
-      </Box>
+      </box>
 
       {actionError ? (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           {/* Error messages can embed the staged path, whose basename derives
               from the model-generated skill name — sanitize like the rest. */}
-          <Text color={theme.status.error}>
+          <text color={theme.status.error}>
             {sanitizeMultilineForDisplay(actionError)}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : null}
 
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <RadioButtonSelect items={options} onSelect={handleSelect} isFocused />
-      </Box>
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      </box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('o open in editor · Esc decide later')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

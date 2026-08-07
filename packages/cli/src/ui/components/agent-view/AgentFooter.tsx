@@ -38,28 +38,23 @@ export const AgentFooter: React.FC<AgentFooterProps> = ({
   }
 
   return (
-    <Box
-      justifyContent="space-between"
-      width="100%"
-      flexDirection="row"
-      alignItems="center"
-    >
-      <Box marginLeft={2}>
+    <box style={{ justifyContent: "space-between", width: "100%", flexDirection: "row", alignItems: "center" }}>
+      <box marginLeft={2}>
         {showApproval ? (
           <AutoAcceptIndicator approvalMode={approvalMode} />
         ) : null}
-      </Box>
-      <Box marginRight={2}>
+      </box>
+      <box marginRight={2}>
         {showContext && (
-          <Text color={theme.text.accent}>
+          <text color={theme.text.accent}>
             <ContextUsageDisplay
               promptTokenCount={promptTokenCount}
               terminalWidth={terminalWidth}
               contextWindowSize={contextWindowSize!}
             />
-          </Text>
+          </text>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

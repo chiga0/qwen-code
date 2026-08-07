@@ -50,12 +50,12 @@ const GoalStateCard: React.FC<GoalStateMessageProps> = ({
   if (!goal) {
     if (cause !== 'clear') return null;
     return (
-      <Box flexDirection="row">
-        <Box width={2} flexShrink={0}>
-          <Text color={theme.text.secondary}>{ICON.CIRCLE_EMPTY}</Text>
-        </Box>
-        <Text color={theme.text.secondary}>Goal cleared</Text>
-      </Box>
+      <box style={{ flexDirection: "row" }}>
+        <box style={{ width: 2, flexShrink: 0 }}>
+          <text color={theme.text.secondary}>{ICON.CIRCLE_EMPTY}</text>
+        </box>
+        <text color={theme.text.secondary}>Goal cleared</text>
+      </box>
     );
   }
 
@@ -120,32 +120,32 @@ const GoalStateCard: React.FC<GoalStateMessageProps> = ({
       : undefined;
 
   return (
-    <Box flexDirection="row">
-      <Box width={2} flexShrink={0}>
-        <Text color={lifecycle.color}>{lifecycle.prefix}</Text>
-      </Box>
-      <Box flexGrow={1} flexDirection="column">
-        <Text color={lifecycle.color}>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: 2, flexShrink: 0 }}>
+        <text color={lifecycle.color}>{lifecycle.prefix}</text>
+      </box>
+      <box style={{ flexGrow: 1, flexDirection: "column" }}>
+        <text color={lifecycle.color}>
           {lifecycle.title}
           {subtitle ? (
-            <Text color={theme.text.secondary}> · {subtitle}</Text>
+            <text color={theme.text.secondary}> · {subtitle}</text>
           ) : null}
-        </Text>
-        <Box flexDirection="row">
-          <Box flexShrink={0} marginRight={1}>
-            <Text color={theme.text.secondary}>Goal:</Text>
-          </Box>
-          <Box flexGrow={1}>
-            <Text wrap="wrap">{goal.objective}</Text>
-          </Box>
-        </Box>
+        </text>
+        <box style={{ flexDirection: "row" }}>
+          <box style={{ flexShrink: 0 }} marginRight={1}>
+            <text color={theme.text.secondary}>Goal:</text>
+          </box>
+          <box style={{ flexGrow: 1 }}>
+            <text wrap="wrap">{goal.objective}</text>
+          </box>
+        </box>
         {reason ? (
-          <Text color={theme.text.secondary} wrap="wrap">
+          <text color={theme.text.secondary} wrap="wrap">
             Reason: {reason}
-          </Text>
+          </text>
         ) : null}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 
@@ -155,28 +155,28 @@ const GoalStatusMessageInternal: React.FC<GoalStatusMessageProps> = (props) => {
   if (kind === 'checking') {
     const reason = lastReason?.trim();
     return (
-      <Box flexDirection="row">
-        <Box width={2} flexShrink={0}>
-          <Text color={theme.text.secondary}>{ICON.CIRCLE_EMPTY}</Text>
-        </Box>
-        <Box flexGrow={1} flexDirection="column">
-          <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "row" }}>
+        <box style={{ width: 2, flexShrink: 0 }}>
+          <text color={theme.text.secondary}>{ICON.CIRCLE_EMPTY}</text>
+        </box>
+        <box style={{ flexGrow: 1, flexDirection: "column" }}>
+          <text color={theme.text.secondary}>
             Goal check
             {typeof iterations === 'number' && iterations > 0
               ? ` · turn ${iterations}`
               : ''}{' '}
             · not yet met
-          </Text>
-          <Text color={theme.text.secondary} wrap="wrap">
+          </text>
+          <text color={theme.text.secondary} wrap="wrap">
             Goal: {condition}
-          </Text>
+          </text>
           {reason ? (
-            <Text color={theme.text.secondary} wrap="wrap">
+            <text color={theme.text.secondary} wrap="wrap">
               Judge: {reason}
-            </Text>
+            </text>
           ) : null}
-        </Box>
-      </Box>
+        </box>
+      </box>
     );
   }
 
@@ -233,32 +233,32 @@ const GoalStatusMessageInternal: React.FC<GoalStatusMessageProps> = (props) => {
   const subtitle = stats.length > 0 ? stats.join(' · ') : null;
 
   return (
-    <Box flexDirection="row">
-      <Box width={2} flexShrink={0}>
-        <Text color={prefixColor}>{prefix}</Text>
-      </Box>
-      <Box flexGrow={1} flexDirection="column">
-        <Text color={prefixColor}>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: 2, flexShrink: 0 }}>
+        <text color={prefixColor}>{prefix}</text>
+      </box>
+      <box style={{ flexGrow: 1, flexDirection: "column" }}>
+        <text color={prefixColor}>
           {title}
           {subtitle ? (
-            <Text color={theme.text.secondary}> · {subtitle}</Text>
+            <text color={theme.text.secondary}> · {subtitle}</text>
           ) : null}
-        </Text>
-        <Box flexDirection="row">
-          <Box flexShrink={0} marginRight={1}>
-            <Text color={theme.text.secondary}>Goal:</Text>
-          </Box>
-          <Box flexGrow={1}>
-            <Text wrap="wrap">{condition}</Text>
-          </Box>
-        </Box>
+        </text>
+        <box style={{ flexDirection: "row" }}>
+          <box style={{ flexShrink: 0 }} marginRight={1}>
+            <text color={theme.text.secondary}>Goal:</text>
+          </box>
+          <box style={{ flexGrow: 1 }}>
+            <text wrap="wrap">{condition}</text>
+          </box>
+        </box>
         {isTerminalGoalStatusKind(kind) && lastReason?.trim() ? (
-          <Text color={theme.text.secondary} wrap="wrap">
+          <text color={theme.text.secondary} wrap="wrap">
             Last check: {lastReason.trim()}
-          </Text>
+          </text>
         ) : null}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 

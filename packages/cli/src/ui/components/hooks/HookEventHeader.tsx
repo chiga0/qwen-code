@@ -22,16 +22,16 @@ export function HookEventHeader({
 }: HookEventHeaderProps): React.JSX.Element {
   return (
     <>
-      <Box marginBottom={1}>
-        <Text bold color={theme.text.primary}>
+      <box marginBottom={1}>
+        <text bold color={theme.text.primary}>
           {title}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {description && (
-        <Box marginBottom={1}>
-          <Text color={theme.text.secondary}>{description}</Text>
-        </Box>
+        <box marginBottom={1}>
+          <text color={theme.text.secondary}>{description}</text>
+        </box>
       )}
 
       <ExitCodesBlock exitCodes={exitCodes} />
@@ -46,20 +46,20 @@ function ExitCodesBlock({
 }): React.JSX.Element | null {
   if (exitCodes.length === 0) return null;
   return (
-    <Box flexDirection="column" marginBottom={1}>
+    <box style={{ flexDirection: "column" }} marginBottom={1}>
       {exitCodes.map((ec, index) => {
         const label =
           typeof ec.code === 'number'
             ? `${t('Exit code')} ${ec.code}`
             : `${t('Other exit codes')}`;
         return (
-          <Box key={index}>
-            <Text color={theme.text.secondary}>
+          <box key={index}>
+            <text color={theme.text.secondary}>
               {label} - {ec.description}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
       })}
-    </Box>
+    </box>
   );
 }

@@ -85,19 +85,13 @@ export function QwenOAuthProgress({
   // Handle timeout state
   if (authStatus === 'timeout') {
     return (
-      <Box
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-        width="100%"
-      >
-        <Text bold color={theme.status.error}>
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+        <text bold color={theme.status.error}>
           {t('Qwen OAuth Authentication Timeout')}
-        </Text>
+        </text>
 
-        <Box marginTop={1}>
-          <Text>
+        <box marginTop={1}>
+          <text>
             {authMessage ||
               t(
                 'OAuth token expired (over {{seconds}} seconds). Please select authentication method again.',
@@ -105,106 +99,88 @@ export function QwenOAuthProgress({
                   seconds: defaultTimeout.toString(),
                 },
               )}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('Press any key to return to authentication type selection.')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   if (authStatus === 'error') {
     return (
-      <Box
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-        width="100%"
-      >
-        <Text bold color={theme.status.error}>
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+        <text bold color={theme.status.error}>
           {t('Qwen OAuth Authentication Error')}
-        </Text>
+        </text>
 
-        <Box marginTop={1}>
-          <Text>
+        <box marginTop={1}>
+          <text>
             {authMessage ||
               t('An error occurred during authentication. Please try again.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('Press any key to return to authentication type selection.')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   // Show loading state when no device auth is available yet
   if (!deviceAuth) {
     return (
-      <Box
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-        width="100%"
-      >
-        <Text bold>{t('Qwen OAuth Authentication')}</Text>
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+        <text bold>{t('Qwen OAuth Authentication')}</text>
 
-        <Box marginTop={1} flexDirection="column">
-          <Text>{t('Waiting for Qwen OAuth authentication...')}</Text>
-          <Text>
+        <box marginTop={1} style={{ flexDirection: "column" }}>
+          <text>{t('Waiting for Qwen OAuth authentication...')}</text>
+          <text>
             {t('Time remaining:')} {formatTime(timeRemaining)}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>{t('Esc to cancel')}</Text>
-        </Box>
-      </Box>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>{t('Esc to cancel')}</text>
+        </box>
+      </box>
     );
   }
 
   return (
-    <Box
-      borderStyle="single"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>{t('Qwen OAuth Authentication')}</Text>
+    <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>{t('Qwen OAuth Authentication')}</text>
 
-      <Box marginTop={1}>
-        <Text>{t('Please visit this URL to authorize:')}</Text>
-      </Box>
+      <box marginTop={1}>
+        <text>{t('Please visit this URL to authorize:')}</text>
+      </box>
 
       <Link url={deviceAuth.verification_uri_complete || ''} fallback={false}>
-        <Text color={theme.text.link} bold>
+        <text color={theme.text.link} bold>
           {deviceAuth.verification_uri_complete}
-        </Text>
+        </text>
       </Link>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text>
           {t('Waiting for authorization')}
           {dots}
-        </Text>
-        <Text>
+        </text>
+        <text>
           {t('Time remaining:')} {formatTime(timeRemaining)}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>{t('Esc to cancel')}</Text>
-      </Box>
-    </Box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>{t('Esc to cancel')}</text>
+      </box>
+    </box>
   );
 }

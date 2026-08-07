@@ -73,35 +73,30 @@ export function TrustDialog({
 
   return (
     <>
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-      >
-        <Box flexDirection="column" paddingBottom={1}>
-          <Text bold>{'> '}Modify Trust Level</Text>
-          <Box marginTop={1} />
-          <Text>Folder: {cwd}</Text>
-          <Text>
-            Current Level: <Text bold>{currentTrustLevel || 'Not Set'}</Text>
-          </Text>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1 }}>
+        <box style={{ flexDirection: "column" }} paddingBottom={1}>
+          <text bold>{'> '}Modify Trust Level</text>
+          <box marginTop={1} />
+          <text>Folder: {cwd}</text>
+          <text>
+            Current Level: <text bold>{currentTrustLevel || 'Not Set'}</text>
+          </text>
           {isInheritedTrustFromParent && (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               Note: This folder behaves as a trusted folder because one of the
               parent folders is trusted. It will remain trusted even if you set
               a different trust level here. To change this, you need to modify
               the trust setting in the parent folder.
-            </Text>
+            </text>
           )}
           {isInheritedTrustFromIde && (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               Note: This folder behaves as a trusted folder because the
               connected IDE workspace is trusted. It will remain trusted even if
               you set a different trust level here.
-            </Text>
+            </text>
           )}
-        </Box>
+        </box>
 
         <RadioButtonSelect
           items={TRUST_LEVEL_ITEMS}
@@ -109,17 +104,17 @@ export function TrustDialog({
           isFocused={true}
           initialIndex={initialIndex}
         />
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>(Use Enter to select)</Text>
-        </Box>
-      </Box>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>(Use Enter to select)</text>
+        </box>
+      </box>
       {needsRestart && (
-        <Box marginLeft={1} marginTop={1}>
-          <Text color={theme.status.warning}>
+        <box marginLeft={1} marginTop={1}>
+          <text color={theme.status.warning}>
             To apply the trust changes, Qwen Code must be restarted. Press
             &apos;r&apos; to restart CLI now.
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
     </>
   );

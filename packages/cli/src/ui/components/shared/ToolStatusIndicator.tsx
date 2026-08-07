@@ -37,9 +37,9 @@ export const ToolStatusIndicator: React.FC<ToolStatusIndicatorProps> = ({
   return (
     // minWidth (not width) so the box can grow for wider content like the
     // tmux spinner frames or test mocks; all production glyphs are ≤2 cols.
-    <Box minWidth={STATUS_INDICATOR_WIDTH} flexShrink={0}>
+    <box minWidth={STATUS_INDICATOR_WIDTH} style={{ flexShrink: 0 }}>
       {status === ToolCallStatus.Pending && (
-        <Text color={theme.status.success}>{TOOL_STATUS.PENDING}</Text>
+        <text color={theme.status.success}>{TOOL_STATUS.PENDING}</text>
       )}
       {status === ToolCallStatus.Executing && (
         <GeminiRespondingSpinner
@@ -48,25 +48,25 @@ export const ToolStatusIndicator: React.FC<ToolStatusIndicatorProps> = ({
         />
       )}
       {status === ToolCallStatus.Success && (
-        <Text color={theme.status.success} aria-label={'Success:'}>
+        <text color={theme.status.success} aria-label={'Success:'}>
           {TOOL_STATUS.SUCCESS}
-        </Text>
+        </text>
       )}
       {status === ToolCallStatus.Confirming && (
-        <Text color={statusColor} aria-label={'Confirming:'}>
+        <text color={statusColor} aria-label={'Confirming:'}>
           {TOOL_STATUS.CONFIRMING}
-        </Text>
+        </text>
       )}
       {status === ToolCallStatus.Canceled && (
-        <Text color={statusColor} aria-label={'Canceled:'} bold>
+        <text color={statusColor} aria-label={'Canceled:'} bold>
           {TOOL_STATUS.CANCELED}
-        </Text>
+        </text>
       )}
       {status === ToolCallStatus.Error && (
-        <Text color={theme.status.error} aria-label={'Error:'} bold>
+        <text color={theme.status.error} aria-label={'Error:'} bold>
           {TOOL_STATUS.ERROR}
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };

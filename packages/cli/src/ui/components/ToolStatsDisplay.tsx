@@ -36,20 +36,20 @@ const StatRow: React.FC<{
   });
 
   return (
-    <Box>
-      <Box width={TOOL_NAME_COL_WIDTH}>
-        <Text color={theme.text.link}>{name}</Text>
-      </Box>
-      <Box width={CALLS_COL_WIDTH} justifyContent="flex-end">
-        <Text color={theme.text.primary}>{stats.count}</Text>
-      </Box>
-      <Box width={SUCCESS_RATE_COL_WIDTH} justifyContent="flex-end">
-        <Text color={successColor}>{successRate.toFixed(1)}%</Text>
-      </Box>
-      <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-        <Text color={theme.text.primary}>{formatDuration(avgDuration)}</Text>
-      </Box>
-    </Box>
+    <box>
+      <box style={{ width: TOOL_NAME_COL_WIDTH }}>
+        <text color={theme.text.link}>{name}</text>
+      </box>
+      <box style={{ width: CALLS_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={theme.text.primary}>{stats.count}</text>
+      </box>
+      <box style={{ width: SUCCESS_RATE_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={successColor}>{successRate.toFixed(1)}%</text>
+      </box>
+      <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={theme.text.primary}>{formatDuration(avgDuration)}</text>
+      </box>
+    </box>
   );
 };
 
@@ -68,17 +68,11 @@ export const ToolStatsDisplay: React.FC<ToolStatsDisplayProps> = ({
 
   if (activeTools.length === 0) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        paddingY={1}
-        paddingX={2}
-        width={width}
-      >
-        <Text color={theme.text.primary}>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, width: width }} paddingY={1} paddingX={2}>
+        <text color={theme.text.primary}>
           {t('No tool calls have been made in this session.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -102,133 +96,100 @@ export const ToolStatsDisplay: React.FC<ToolStatsDisplayProps> = ({
   });
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      width={width}
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: width }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {t('Tool Stats For Nerds')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
 
       {/* Header */}
-      <Box>
-        <Box width={TOOL_NAME_COL_WIDTH}>
-          <Text bold color={theme.text.primary}>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH }}>
+          <text bold color={theme.text.primary}>
             {t('Tool Name')}
-          </Text>
-        </Box>
-        <Box width={CALLS_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: CALLS_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Calls')}
-          </Text>
-        </Box>
-        <Box width={SUCCESS_RATE_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: SUCCESS_RATE_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Success Rate')}
-          </Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Avg Duration')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
       {/* Divider */}
-      <Box
-        borderStyle="single"
-        borderBottom={true}
-        borderTop={false}
-        borderLeft={false}
-        borderRight={false}
-        borderColor={theme.border.default}
-        width="100%"
-      />
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, width: "100%" }} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false} />
 
       {/* Tool Rows */}
       {activeTools.map(([name, stats]) => (
         <StatRow key={name} name={name} stats={stats as ToolCallStats} />
       ))}
 
-      <Box height={1} />
+      <box style={{ height: 1 }} />
 
       {/* User Decision Summary */}
-      <Text bold color={theme.text.primary}>
+      <text bold color={theme.text.primary}>
         {t('User Decision Summary')}
-      </Text>
-      <Box>
-        <Box
-          width={TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH}
-        >
-          <Text color={theme.text.link}>
+      </text>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH }}>
+          <text color={theme.text.link}>
             {t('Total Reviewed Suggestions:')}
-          </Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text color={theme.text.primary}>{totalReviewed}</Text>
-        </Box>
-      </Box>
-      <Box>
-        <Box
-          width={TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH}
-        >
-          <Text color={theme.text.primary}>{t(' » Accepted:')}</Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text color={theme.status.success}>{totalDecisions.accept}</Text>
-        </Box>
-      </Box>
-      <Box>
-        <Box
-          width={TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH}
-        >
-          <Text color={theme.text.primary}>{t(' » Rejected:')}</Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text color={theme.status.error}>{totalDecisions.reject}</Text>
-        </Box>
-      </Box>
-      <Box>
-        <Box
-          width={TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH}
-        >
-          <Text color={theme.text.primary}>{t(' » Modified:')}</Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text color={theme.status.warning}>{totalDecisions.modify}</Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text color={theme.text.primary}>{totalReviewed}</text>
+        </box>
+      </box>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH }}>
+          <text color={theme.text.primary}>{t(' » Accepted:')}</text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text color={theme.status.success}>{totalDecisions.accept}</text>
+        </box>
+      </box>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH }}>
+          <text color={theme.text.primary}>{t(' » Rejected:')}</text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text color={theme.status.error}>{totalDecisions.reject}</text>
+        </box>
+      </box>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH }}>
+          <text color={theme.text.primary}>{t(' » Modified:')}</text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text color={theme.status.warning}>{totalDecisions.modify}</text>
+        </box>
+      </box>
 
       {/* Divider */}
-      <Box
-        borderStyle="single"
-        borderBottom={true}
-        borderTop={false}
-        borderLeft={false}
-        borderRight={false}
-        borderColor={theme.border.default}
-        width="100%"
-      />
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, width: "100%" }} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false} />
 
-      <Box>
-        <Box
-          width={TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH}
-        >
-          <Text color={theme.text.primary}>
+      <box>
+        <box style={{ width: TOOL_NAME_COL_WIDTH + CALLS_COL_WIDTH + SUCCESS_RATE_COL_WIDTH }}>
+          <text color={theme.text.primary}>
             {t(' Overall Agreement Rate:')}
-          </Text>
-        </Box>
-        <Box width={AVG_DURATION_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={totalReviewed > 0 ? agreementColor : undefined}>
+          </text>
+        </box>
+        <box style={{ width: AVG_DURATION_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={totalReviewed > 0 ? agreementColor : undefined}>
             {totalReviewed > 0 ? `${agreementRate.toFixed(1)}%` : '--'}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          </text>
+        </box>
+      </box>
+    </box>
   );
 };

@@ -24,7 +24,7 @@ afterEach(() => {
 
 describe('ScreenBuffer (Ink frame-controller M0)', () => {
   it('exposes the composited frame as addressable cells', () => {
-    current = render(<Text>hello 中文</Text>);
+    current = render(<text>hello 中文</text>);
     const buffer = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     );
@@ -36,7 +36,7 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
   });
 
   it('handles wide characters with a leading cell and a spacer', () => {
-    current = render(<Text>hello 中文</Text>);
+    current = render(<text>hello 中文</text>);
     const buffer = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     )!;
@@ -50,7 +50,7 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
   });
 
   it('highlights the selected range before serialization and clears it', () => {
-    current = render(<Text>hello world</Text>);
+    current = render(<text>hello world</text>);
     const buffer = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     )!;
@@ -66,7 +66,7 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('does not leak the highlight onto identical text elsewhere on screen', () => {
     // "abc" appears twice; selecting the first must not highlight the second.
-    current = render(<Text>abc{'\n'}abc</Text>);
+    current = render(<text>abc{'\n'}abc</text>);
     const buffer = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     )!;
@@ -80,7 +80,7 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
   });
 
   it('publishes exactly one frame per distinct selection change (no loop, deduped)', () => {
-    current = render(<Text>hello world</Text>);
+    current = render(<text>hello world</text>);
     const buffer = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     )!;
@@ -104,9 +104,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('publishes soft boundaries and preserves omitted whitespace', () => {
     current = render(
-      <Box width={5}>
-        <Text>hello world</Text>
-      </Box>,
+      <box style={{ width: 5 }}>
+        <text>hello world</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -144,9 +144,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
     ['a tab', 'hello\tworld'],
   ])('preserves %s across a direct Ink word wrap', (_name, source) => {
     current = render(
-      <Box width={5}>
-        <Text>{source}</Text>
-      </Box>,
+      <box style={{ width: 5 }}>
+        <text>{source}</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -167,9 +167,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
     ['whitespace-only content', '   '],
   ])('preserves wrapped %s', (_name, source) => {
     current = render(
-      <Box width={2}>
-        <Text>{source}</Text>
-      </Box>,
+      <box style={{ width: 2 }}>
+        <text>{source}</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -187,9 +187,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('keeps renderer background fill out of selected text', () => {
     current = render(
-      <Box width={5} backgroundColor="blue">
-        <Text>hi</Text>
-      </Box>,
+      <box style={{ width: 5, backgroundColor: "blue" }}>
+        <text>hi</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -207,9 +207,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('distinguishes explicit hard newlines from exact-width wraps', () => {
     current = render(
-      <Box width={5}>
-        <Text>{'hello\nworld'}</Text>
-      </Box>,
+      <box style={{ width: 5 }}>
+        <text>{'hello\nworld'}</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -231,7 +231,7 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('preserves empty and whitespace-only hard lines', () => {
     const source = 'alpha\n\n   \nomega';
-    current = render(<Text>{source}</Text>);
+    current = render(<text>{source}</text>);
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
     )!.frame!;
@@ -249,9 +249,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
   it('rejoins styled CJK and emoji text without duplicating wide cells', () => {
     const source = '你好 世界🙂';
     current = render(
-      <Box width={5}>
-        <Text color="cyan">{source}</Text>
-      </Box>,
+      <box style={{ width: 5 }}>
+        <text color="cyan">{source}</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -269,20 +269,20 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('keeps a newline when sibling flows make a boundary ambiguous', () => {
     current = render(
-      <Box flexDirection="column">
-        <Box>
-          <Text selectionFlow="a" selectionBreakAfter="soft">
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <text selectionFlow="a" selectionBreakAfter="soft">
             A
-          </Text>
-          <Text selectionFlow="b" selectionBreakAfter="soft">
+          </text>
+          <text selectionFlow="b" selectionBreakAfter="soft">
             B
-          </Text>
-        </Box>
-        <Box>
-          <Text selectionFlow="a">C</Text>
-          <Text selectionFlow="b">D</Text>
-        </Box>
-      </Box>,
+          </text>
+        </box>
+        <box>
+          <text selectionFlow="a">C</text>
+          <text selectionFlow="b">D</text>
+        </box>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -300,12 +300,12 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('clears a boundary claim when a later write overlaps it', () => {
     current = render(
-      <Box width={3} height={1}>
-        <Text selectionBreakAfter="soft">abc</Text>
-        <Box position="absolute">
-          <Text selectable={false}>xyz</Text>
-        </Box>
-      </Box>,
+      <box style={{ width: 3, height: 1 }}>
+        <text selectionBreakAfter="soft">abc</text>
+        <box position="absolute">
+          <text selectable={false}>xyz</text>
+        </box>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -322,11 +322,11 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('does not publish a boundary outside a clipping rectangle', () => {
     current = render(
-      <Box width={3} height={1} overflow="hidden">
-        <Box position="absolute" marginLeft={3}>
-          <Text selectionBreakAfter="soft">abc</Text>
-        </Box>
-      </Box>,
+      <box style={{ width: 3, height: 1 }} overflow="hidden">
+        <box position="absolute" marginLeft={3}>
+          <text selectionBreakAfter="soft">abc</text>
+        </box>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -337,23 +337,23 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('covers visible text after left clipping with boundary claims', () => {
     current = render(
-      <Box width={3} height={2} flexDirection="column">
-        <Box width={3} height={1} overflow="hidden">
-          <Box position="absolute" marginLeft={-2}>
-            <Text
+      <box style={{ width: 3, height: 2, flexDirection: "column" }}>
+        <box style={{ width: 3, height: 1 }} overflow="hidden">
+          <box position="absolute" marginLeft={-2}>
+            <text
               selectionFlow="flow"
               selectionBreakAfter="soft"
               selectionJoiner=" "
             >
               abcde
-            </Text>
-          </Box>
-          <Box position="absolute">
-            <Text selectable={false}>X</Text>
-          </Box>
-        </Box>
-        <Text selectionFlow="flow">fgh</Text>
-      </Box>,
+            </text>
+          </box>
+          <box position="absolute">
+            <text selectable={false}>X</text>
+          </box>
+        </box>
+        <text selectionFlow="flow">fgh</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -376,9 +376,9 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('limits boundary claims to the rendered text width', () => {
     current = render(
-      <Box width={5}>
-        <Text selectionBreakAfter="soft">hi</Text>
-      </Box>,
+      <box style={{ width: 5 }}>
+        <text selectionBreakAfter="soft">hi</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,
@@ -389,17 +389,17 @@ describe('ScreenBuffer (Ink frame-controller M0)', () => {
 
   it('propagates selectability and producer-supplied boundaries', () => {
     current = render(
-      <Box flexDirection="column">
-        <Text
+      <box style={{ flexDirection: "column" }}>
+        <text
           selectionFlow="flow"
           selectionBreakAfter="soft"
           selectionJoiner=" "
         >
           hello
-        </Text>
-        <Text selectionFlow="flow">world</Text>
-        <Text selectable={false}> gutter</Text>
-      </Box>,
+        </text>
+        <text selectionFlow="flow">world</text>
+        <text selectable={false}> gutter</text>
+      </box>,
     );
     const frame = getScreenBuffer(
       current.stdout as unknown as NodeJS.WriteStream,

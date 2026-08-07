@@ -60,14 +60,14 @@ export const ServerListStep: React.FC<ServerListStepProps> = ({
 
   if (servers.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No MCP servers configured.')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t('Add MCP servers to your settings to get started.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -88,24 +88,20 @@ export const ServerListStep: React.FC<ServerListStepProps> = ({
   const currentPosition = getSelectionPosition(selectedIndex);
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* 分组服务器列表 */}
       {groupedServers.map((group, groupIndex) => (
-        <Box
-          key={group.source}
-          flexDirection="column"
-          marginBottom={groupIndex === groupedServers.length - 1 ? 0 : 1}
-        >
-          <Text bold color={theme.text.primary}>
+        <box key={group.source} style={{ flexDirection: "column" }} marginBottom={groupIndex === groupedServers.length - 1 ? 0 : 1}>
+          <text bold color={theme.text.primary}>
             {`  ${group.displayName}`}
             {group.servers[0]?.configPath && (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {' '}
                 ({group.servers[0].configPath})
-              </Text>
+              </text>
             )}
-          </Text>
-          <Box flexDirection="column">
+          </text>
+          <box style={{ flexDirection: "column" }}>
             {group.servers.map((server, itemIndex) => {
               const isSelected =
                 groupIndex === currentPosition.groupIndex &&
@@ -127,30 +123,30 @@ export const ServerListStep: React.FC<ServerListStepProps> = ({
                   : getStatusColor(server.status);
 
               return (
-                <Box key={server.name}>
-                  <Box minWidth={2}>
-                    <Text
+                <box key={server.name}>
+                  <box minWidth={2}>
+                    <text
                       color={
                         isSelected ? theme.text.accent : theme.text.primary
                       }
                     >
                       {isSelected ? '❯' : ' '}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                   {/* 服务器名称 - 固定宽度 */}
-                  <Box width={serverNameWidth}>
-                    <Text
+                  <box style={{ width: serverNameWidth }}>
+                    <text
                       color={
                         isSelected ? theme.text.accent : theme.text.primary
                       }
                       wrap="truncate"
                     >
                       {server.name}
-                    </Text>
-                  </Box>
-                  <Text color={theme.text.secondary}> · </Text>
+                    </text>
+                  </box>
+                  <text color={theme.text.secondary}> · </text>
                   {/* 状态图标和文本 */}
-                  <Text
+                  <text
                     color={
                       statusColor === 'green'
                         ? theme.status.success
@@ -169,21 +165,21 @@ export const ServerListStep: React.FC<ServerListStepProps> = ({
                         : needsAuth
                           ? t('needs authentication')
                           : t(server.status)}
-                  </Text>
+                  </text>
                   {/* 显示无效工具警告 */}
                   {!!server.invalidToolCount && server.invalidToolCount > 0 && (
-                    <Text color={theme.status.warning}>
+                    <text color={theme.status.warning}>
                       {' '}
                       {t('{{count}} invalid tools', {
                         count: String(server.invalidToolCount),
                       })}
-                    </Text>
+                    </text>
                   )}
-                </Box>
+                </box>
               );
             })}
-          </Box>
-        </Box>
+          </box>
+        </box>
       ))}
 
       {/* 提示信息：仅针对"真正连接失败"的 server；被门控跳过（awaiting
@@ -191,12 +187,12 @@ export const ServerListStep: React.FC<ServerListStepProps> = ({
       {servers.some(
         (s) => s.status === 'disconnected' && !s.isDisabled && !s.approvalState,
       ) && (
-        <Box marginTop={1}>
-          <Text color={theme.status.warning}>
+        <box marginTop={1}>
+          <text color={theme.status.warning}>
             {ICON.REFERENCE} {t('Run qwen --debug to see error logs')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

@@ -90,13 +90,13 @@ export const ActionSelectionStep = ({
     : 0;
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       <RadioButtonSelect
         items={actions}
         initialIndex={selectedIndex}
         onSelect={handleActionSelect}
         showNumbers={false}
       />
-    </Box>
+    </box>
   );
 };

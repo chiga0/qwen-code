@@ -31,7 +31,7 @@ export const App = () => {
   if (settings.corruptedPath && !dismissed) {
     return (
       <StreamingContext.Provider value={uiState.streamingState}>
-        <Box marginX={2}>
+        <box marginX={2}>
           <SettingsCorruptedDialog
             corruptedPath={settings.corruptedPath}
             wasRecovered={settings.wasRecovered}
@@ -80,7 +80,7 @@ export const App = () => {
               setDismissed(true);
             }}
           />
-        </Box>
+        </box>
       </StreamingContext.Provider>
     );
   }

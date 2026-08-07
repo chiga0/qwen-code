@@ -146,27 +146,20 @@ export const AgentTabBar: React.FC = () => {
   const hint = isFocused ? '\u2190/\u2192 switch  \u2191 input' : '\u2193 tabs';
 
   return (
-    <Box flexDirection="row" paddingX={1}>
+    <box style={{ flexDirection: "row" }} paddingX={1}>
       {/* Main tab */}
-      <Box marginRight={1}>
-        <Text
-          bold={activeView === 'main'}
-          dimColor={!isFocused}
-          backgroundColor={
-            activeView === 'main' ? theme.border.default : undefined
-          }
-          color={
+      <box marginRight={1}>
+        <text bold={activeView === 'main'} dimColor={!isFocused} style={{ backgroundColor: activeView === 'main' ? theme.border.default : undefined }} color={
             activeView === 'main' ? theme.text.primary : theme.text.secondary
-          }
-        >
+          }>
           {' Main '}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Separator */}
-      <Text dimColor={!isFocused} color={theme.border.default}>
+      <text dimColor={!isFocused} color={theme.border.default}>
         {'\u2502'}
-      </Text>
+      </text>
 
       {/* Agent tabs */}
       {[...agents.entries()].map(([agentId, agent]) => {
@@ -174,26 +167,21 @@ export const AgentTabBar: React.FC = () => {
         const { symbol, color: indicatorColor } = statusIndicator(agent);
 
         return (
-          <Box key={agentId} marginLeft={1}>
-            <Text
-              bold={isActive}
-              dimColor={!isFocused}
-              backgroundColor={isActive ? theme.border.default : undefined}
-              color={isActive ? undefined : agent.color || theme.text.secondary}
-            >
+          <box key={agentId} marginLeft={1}>
+            <text bold={isActive} dimColor={!isFocused} style={{ backgroundColor: isActive ? theme.border.default : undefined }} color={isActive ? undefined : agent.color || theme.text.secondary}>
               {` ${agent.modelId} `}
-            </Text>
-            <Text dimColor={!isFocused} color={indicatorColor}>
+            </text>
+            <text dimColor={!isFocused} color={indicatorColor}>
               {` ${symbol}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
       })}
 
       {/* Navigation hint */}
-      <Box marginLeft={2}>
-        <Text color={theme.text.secondary}>{hint}</Text>
-      </Box>
-    </Box>
+      <box marginLeft={2}>
+        <text color={theme.text.secondary}>{hint}</text>
+      </box>
+    </box>
   );
 };

@@ -39,29 +39,23 @@ export const ScreenReaderAppLayout: React.FC = () => {
     uiState.streamingState === StreamingState.Responding;
 
   return (
-    <Box flexDirection="column" width="90%" height="100%">
+    <box style={{ flexDirection: "column", width: "90%", height: "100%" }}>
       {!uiState.dialogsVisible && uiState.updateInfo && (
         <UpdateNotification message={uiState.updateInfo.message} />
       )}
       <Notifications />
       <Footer />
-      <Box flexGrow={1} overflow="hidden">
+      <box style={{ flexGrow: 1 }} overflow="hidden">
         <MainContent />
-      </Box>
+      </box>
 
       {uiState.dialogsVisible ? (
-        <Box
-          marginX={2}
-          flexDirection="column"
-          width={uiState.mainAreaWidth}
-          height={dialogHeight}
-          overflow={uiState.constrainHeight ? 'hidden' : undefined}
-        >
+        <box marginX={2} style={{ flexDirection: "column", width: uiState.mainAreaWidth, height: dialogHeight }} overflow={uiState.constrainHeight ? 'hidden' : undefined}>
           <DialogManager
             terminalWidth={uiState.terminalWidth}
             addItem={uiState.historyManager.addItem}
           />
-        </Box>
+        </box>
       ) : (
         <>
           {shouldShowStickyTodos && (
@@ -72,18 +66,18 @@ export const ScreenReaderAppLayout: React.FC = () => {
             />
           )}
           {uiState.btwItem && (
-            <Box marginX={2} width={uiState.mainAreaWidth}>
+            <box marginX={2} style={{ width: uiState.mainAreaWidth }}>
               <BtwMessage
                 btw={uiState.btwItem.btw}
                 containerWidth={uiState.mainAreaWidth}
               />
-            </Box>
+            </box>
           )}
           <Composer />
         </>
       )}
 
       <ExitWarning />
-    </Box>
+    </box>
   );
 };

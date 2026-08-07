@@ -123,7 +123,7 @@ const VirtualizedListItem = memo(
     }, [itemKey, height, hasMeasured]);
 
     return (
-      <Box width="100%" flexDirection="column" flexShrink={0} ref={itemRef}>
+      <box style={{ width: "100%", flexDirection: "column", flexShrink: 0 }} ref={itemRef}>
         {shouldBeStatic ? (
           <StaticRender
             width={typeof width === 'number' ? width : containerWidth}
@@ -138,7 +138,7 @@ const VirtualizedListItem = memo(
         ) : (
           content
         )}
-      </Box>
+      </box>
     );
   },
 );
@@ -543,9 +543,9 @@ function VirtualizedList<T>(
         } catch (err) {
           debugLogger.debug(`renderItem threw at index ${i}`, err);
           content = (
-            <Box flexDirection="column" flexShrink={0}>
-              <Text color="red">[render error]</Text>
-            </Box>
+            <box style={{ flexDirection: "column", flexShrink: 0 }}>
+              <text color="red">[render error]</text>
+            </box>
           );
         }
         const key = keyExtractor(item, i);
@@ -838,7 +838,7 @@ function VirtualizedList<T>(
       (clampedScrollTop / maxScroll) * (trackLen - thumbLen),
     );
     return (
-      <Box width={1} flexDirection="column" flexShrink={0}>
+      <box style={{ width: 1, flexDirection: "column", flexShrink: 0 }}>
         {Array.from({ length: trackLen }, (_, i) => {
           const inThumb = i >= thumbTop && i < thumbTop + thumbLen;
           // Overlay-style auto-hide: while idle (no recent scroll) the whole
@@ -850,18 +850,18 @@ function VirtualizedList<T>(
           // re-measure + visible jitter).
           if (!scrollbarThumbActive) {
             return (
-              <Text key={i} selectable={false}>
+              <text key={i} selectable={false}>
                 {' '}
-              </Text>
+              </text>
             );
           }
           return (
-            <Text key={i} dimColor={!inThumb} selectable={false}>
+            <text key={i} dimColor={!inThumb} selectable={false}>
               {inThumb ? '█' : '│'}
-            </Text>
+            </text>
           );
         })}
-      </Box>
+      </box>
     );
   }, [
     showScrollbar,
@@ -887,27 +887,16 @@ function VirtualizedList<T>(
       : '100%';
 
   return (
-    <Box ref={rootRef} width="100%" height={rootHeight} flexDirection="row">
-      <Box
-        ref={containerRef}
-        overflowY="hidden"
-        overflowX="hidden"
-        flexGrow={1}
-        flexDirection="column"
-      >
-        <Box
-          flexShrink={0}
-          width="100%"
-          flexDirection="column"
-          marginTop={-clampedScrollTop}
-        >
-          <Box height={topSpacerHeight} flexShrink={0} />
+    <box ref={rootRef} style={{ width: "100%", height: rootHeight, flexDirection: "row" }}>
+      <box ref={containerRef} overflowY="hidden" overflowX="hidden" style={{ flexGrow: 1, flexDirection: "column" }}>
+        <box style={{ flexShrink: 0, width: "100%", flexDirection: "column" }} marginTop={-clampedScrollTop}>
+          <box style={{ height: topSpacerHeight, flexShrink: 0 }} />
           {renderedItems}
-          <Box height={bottomSpacerHeight} flexShrink={0} />
-        </Box>
-      </Box>
+          <box style={{ height: bottomSpacerHeight, flexShrink: 0 }} />
+        </box>
+      </box>
       {scrollbarContent}
-    </Box>
+    </box>
   );
 }
 

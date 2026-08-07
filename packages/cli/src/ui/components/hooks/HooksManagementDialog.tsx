@@ -494,23 +494,23 @@ export function HooksManagementDialog({
 
     if (isLoading) {
       return (
-        <Box flexDirection="column" paddingX={1}>
-          <Text color={theme.text.secondary}>{t('Loading hooks...')}</Text>
-        </Box>
+        <box style={{ flexDirection: "column" }} paddingX={1}>
+          <text color={theme.text.secondary}>{t('Loading hooks...')}</text>
+        </box>
       );
     }
 
     if (loadError) {
       return (
-        <Box flexDirection="column" paddingX={1}>
-          <Text color={theme.status.error}>{t('Error loading hooks:')}</Text>
-          <Text color={theme.text.secondary}>{loadError}</Text>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+        <box style={{ flexDirection: "column" }} paddingX={1}>
+          <text color={theme.status.error}>{t('Error loading hooks:')}</text>
+          <text color={theme.text.secondary}>{loadError}</text>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t('Press Escape to close')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       );
     }
 
@@ -530,9 +530,9 @@ export function HooksManagementDialog({
           );
         }
         return (
-          <Box flexDirection="column" paddingX={1}>
-            <Text color={theme.text.secondary}>{t('No hook selected')}</Text>
-          </Box>
+          <box style={{ flexDirection: "column" }} paddingX={1}>
+            <text color={theme.text.secondary}>{t('No hook selected')}</text>
+          </box>
         );
 
       case HOOKS_MANAGEMENT_STEPS.HOOK_MATCHER_DETAIL:
@@ -546,9 +546,9 @@ export function HooksManagementDialog({
           );
         }
         return (
-          <Box flexDirection="column" paddingX={1}>
-            <Text color={theme.text.secondary}>{t('No matcher selected')}</Text>
-          </Box>
+          <box style={{ flexDirection: "column" }} paddingX={1}>
+            <text color={theme.text.secondary}>{t('No matcher selected')}</text>
+          </box>
         );
 
       case HOOKS_MANAGEMENT_STEPS.HOOK_CONFIG_DETAIL:
@@ -561,11 +561,11 @@ export function HooksManagementDialog({
           );
         }
         return (
-          <Box flexDirection="column" paddingX={1}>
-            <Text color={theme.text.secondary}>
+          <box style={{ flexDirection: "column" }} paddingX={1}>
+            <text color={theme.text.secondary}>
               {t('No hook config selected')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
 
       default:
@@ -574,15 +574,8 @@ export function HooksManagementDialog({
   };
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.border.default}
-      width={boxWidth}
-      paddingX={1}
-      paddingY={1}
-    >
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth }} paddingX={1} paddingY={1}>
       {renderContent()}
-    </Box>
+    </box>
   );
 }

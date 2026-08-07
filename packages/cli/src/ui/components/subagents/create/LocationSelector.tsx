@@ -40,7 +40,7 @@ export function LocationSelector({ state, dispatch, onNext }: WizardStepProps) {
   };
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       <RadioButtonSelect
         items={locationOptions.map((option) => ({
           key: option.value,
@@ -53,6 +53,6 @@ export function LocationSelector({ state, dispatch, onNext }: WizardStepProps) {
         onSelect={handleSelect}
         isFocused={true}
       />
-    </Box>
+    </box>
   );
 }

@@ -42,9 +42,9 @@ const PasteProgressBar: React.FC<{ progress: PasteProgress }> = ({
   const label = kb >= 1 ? `${kb.toFixed(0)} KB` : `${receivedBytes} B`;
 
   return (
-    <Text dimColor>
+    <text dimColor>
       {t('Pasting…')} {label}
-    </Text>
+    </text>
   );
 };
 
@@ -100,39 +100,39 @@ export const Footer: React.FC = () => {
   // launched with YOLO / auto-accept-edits still see the ~1s startup progress;
   // the approval-mode indicator takes over as soon as init finishes.
   const leftBottomContent = uiState.ctrlCPressedOnce ? (
-    <Text color={theme.status.warning}>{t('Press Ctrl+C again to exit.')}</Text>
+    <text color={theme.status.warning}>{t('Press Ctrl+C again to exit.')}</text>
   ) : uiState.ctrlDPressedOnce ? (
-    <Text color={theme.status.warning}>{t('Press Ctrl+D again to exit.')}</Text>
+    <text color={theme.status.warning}>{t('Press Ctrl+D again to exit.')}</text>
   ) : uiState.showEscapePrompt ? (
-    <Text color={theme.text.secondary}>{t('Press Esc again to clear.')}</Text>
+    <text color={theme.text.secondary}>{t('Press Esc again to clear.')}</text>
   ) : pasteProgress.active ? (
     <PasteProgressBar progress={pasteProgress} />
   ) : uiState.rewindEscPending ? (
-    <Text color={theme.text.secondary}>
+    <text color={theme.text.secondary}>
       {t('Press Esc again to rewind conversation.')}
-    </Text>
+    </text>
   ) : vimEnabled && vimMode === 'INSERT' ? (
-    <Text color={theme.text.secondary}>-- INSERT --</Text>
+    <text color={theme.text.secondary}>-- INSERT --</text>
   ) : vimEnabled && vimMode === 'NORMAL' ? (
-    <Text color={theme.text.secondary}>-- NORMAL --</Text>
+    <text color={theme.text.secondary}>-- NORMAL --</text>
   ) : uiState.shellModeActive ? (
     <ShellModeIndicator />
   ) : configInitMessage ? (
-    <Text color={theme.text.secondary}>
+    <text color={theme.text.secondary}>
       <GeminiSpinner /> {configInitMessage}
-    </Text>
+    </text>
   ) : uiState.startupIdeConnectionStatus.state === 'connecting' ? (
-    <Text color={theme.text.secondary}>
+    <text color={theme.text.secondary}>
       <GeminiSpinner /> {t('IDE connecting... context may be unavailable')}
-    </Text>
+    </text>
   ) : uiState.startupIdeConnectionStatus.state === 'failed' ? (
-    <Text color={theme.status.warning}>
+    <text color={theme.status.warning}>
       {t('IDE connection unavailable: {{message}}', {
         message: uiState.startupIdeConnectionStatus.message,
       })}
-    </Text>
+    </text>
   ) : uiState.streamingState === StreamingState.Responding ? (
-    <Text color={theme.text.secondary}>
+    <text color={theme.text.secondary}>
       {t('Enter to steer · Ctrl+Q to queue')}
       {showAutoAcceptIndicator !== undefined && (
         <>
@@ -140,30 +140,30 @@ export const Footer: React.FC = () => {
           <AutoAcceptIndicator approvalMode={showAutoAcceptIndicator} />
         </>
       )}
-    </Text>
+    </text>
   ) : showAutoAcceptIndicator !== undefined ? (
     <AutoAcceptIndicator approvalMode={showAutoAcceptIndicator} />
   ) : suppressHint ? null : (
-    <Text color={theme.text.secondary}>{t('? for shortcuts')}</Text>
+    <text color={theme.text.secondary}>{t('? for shortcuts')}</text>
   );
 
   const rightItems: Array<{ key: string; node: React.ReactNode }> = [];
   if (sandboxInfo) {
     rightItems.push({
       key: 'sandbox',
-      node: <Text color={theme.status.success}>{sandboxInfo}</Text>,
+      node: <text color={theme.status.success}>{sandboxInfo}</text>,
     });
   }
   if (config.isSafeMode()) {
     rightItems.push({
       key: 'safe-mode',
-      node: <Text color={theme.status.warning}>⚠ Safe Mode</Text>,
+      node: <text color={theme.status.warning}>⚠ Safe Mode</text>,
     });
   }
   if (debugMode) {
     rightItems.push({
       key: 'debug',
-      node: <Text color={theme.status.warning}>Debug Mode</Text>,
+      node: <text color={theme.status.warning}>Debug Mode</text>,
     });
   }
   // Dream tasks now surface via the BackgroundTasksPill (e.g. "1 dream")
@@ -174,13 +174,13 @@ export const Footer: React.FC = () => {
     rightItems.push({
       key: 'context',
       node: (
-        <Text color={theme.text.accent}>
+        <text color={theme.text.accent}>
           <ContextUsageDisplay
             promptTokenCount={promptTokenCount}
             terminalWidth={terminalWidth}
             contextWindowSize={contextWindowSize}
           />
-        </Text>
+        </text>
       ),
     });
   }
@@ -202,30 +202,14 @@ export const Footer: React.FC = () => {
   // Layout matches upstream: left column has status line (top) + hints/mode
   // (bottom), right section has indicators. Status line and hints coexist.
   return (
-    <Box
-      flexDirection={isNarrow ? 'column' : 'row'}
-      justifyContent={isNarrow ? 'flex-start' : 'space-between'}
-      width="100%"
-      paddingX={2}
-      gap={isNarrow ? 0 : 1}
-    >
+    <box style={{ flexDirection: isNarrow ? 'column' : 'row', justifyContent: isNarrow ? 'flex-start' : 'space-between', width: "100%", gap: isNarrow ? 0 : 1 }} paddingX={2}>
       {/* Left column — status line on top, hints/mode on bottom */}
-      <Box
-        flexDirection="column"
-        flexGrow={1}
-        flexShrink={isNarrow ? 0 : 1}
-        minWidth={0}
-      >
+      <box style={{ flexDirection: "column", flexGrow: 1, flexShrink: isNarrow ? 0 : 1 }} minWidth={0}>
         {statusLineLines.length > 0 &&
           !uiState.ctrlCPressedOnce &&
           !uiState.ctrlDPressedOnce && (
-            <Box
-              flexDirection="column"
-              maxHeight={MAX_STATUS_LINES}
-              overflow="hidden"
-              width="100%"
-            >
-              <Text
+            <box style={{ flexDirection: "column", width: "100%" }} maxHeight={MAX_STATUS_LINES} overflow="hidden">
+              <text
                 color={
                   respectUserColors
                     ? undefined
@@ -237,8 +221,8 @@ export const Footer: React.FC = () => {
                 wrap="wrap"
               >
                 {statusLineLines.join('\n')}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
         {/* Built-in worktree indicator. Shown by default whenever a
             worktree is active so the user always has a UI affordance,
@@ -255,9 +239,9 @@ export const Footer: React.FC = () => {
           !settings.merged.ui?.hideBuiltinWorktreeIndicator &&
           !uiState.ctrlCPressedOnce &&
           !uiState.ctrlDPressedOnce && (
-            <Text dimColor wrap="truncate">
+            <text dimColor wrap="truncate">
               {`⎇ ${uiState.activeWorktree.branch} (${uiState.activeWorktree.slug})`}
-            </Text>
+            </text>
           )}
         {/* P7-trigger: the current turn was steered toward the Workflow tool
             by the `workflow` keyword. Hidden during ctrl-quit warnings so they
@@ -265,35 +249,35 @@ export const Footer: React.FC = () => {
         {uiState.workflowKeywordActive &&
           !uiState.ctrlCPressedOnce &&
           !uiState.ctrlDPressedOnce && (
-            <Text color={theme.text.accent} wrap="truncate">
+            <text color={theme.text.accent} wrap="truncate">
               {`▷ ${t('workflow active')}`}
-            </Text>
+            </text>
           )}
-        <Box flexDirection="row" flexShrink={1}>
-          <Text wrap="truncate">{leftBottomContent}</Text>
+        <box style={{ flexDirection: "row", flexShrink: 1 }}>
+          <text wrap="truncate">{leftBottomContent}</text>
           <BackgroundTasksPill />
           <MCPHealthPill />
           {!uiState.isSkillReviewDialogOpen &&
             (uiState.skillReviewPending?.skills.length ?? 0) > 0 && (
-              <Text color={theme.status.warning}>
+              <text color={theme.status.warning}>
                 {` ⚠ ${t('{{count}} skill(s) pending review', {
                   count: String(uiState.skillReviewPending!.skills.length),
                 })}`}
-              </Text>
+              </text>
             )}
-        </Box>
-      </Box>
+        </box>
+      </box>
 
       {/* Right Section — never compressed, aligns to top so multi-line
           status lines on the left don't push the indicators to the center. */}
-      <Box flexShrink={0} gap={1} alignItems="flex-start">
+      <box style={{ flexShrink: 0, gap: 1, alignItems: "flex-start" }}>
         {rightItems.map(({ key, node }, index) => (
-          <Box key={key} alignItems="center">
-            {index > 0 && <Text color={theme.text.secondary}> | </Text>}
+          <box key={key} style={{ alignItems: "center" }}>
+            {index > 0 && <text color={theme.text.secondary}> | </text>}
             {node}
-          </Box>
+          </box>
         ))}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

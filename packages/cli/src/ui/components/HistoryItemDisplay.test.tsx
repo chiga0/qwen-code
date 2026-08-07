@@ -33,7 +33,7 @@ vi.mock('./messages/ToolGroupMessage.js', () => ({
 
 vi.mock('./TerminalImage.js', () => ({
   TerminalImage: ({ image }: { image: { mimeType: string } }) => (
-    <Text>MockTerminalImage:{image.mimeType}</Text>
+    <text>MockTerminalImage:{image.mimeType}</text>
   ),
 }));
 

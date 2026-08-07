@@ -167,15 +167,9 @@ export function WorktreeExitDialog({
 
   if (loading) {
     return (
-      <Box
-        flexDirection="column"
-        borderStyle="round"
-        borderColor={Colors.AccentBlue}
-        padding={1}
-        marginLeft={1}
-      >
-        <Text>Checking worktree status…</Text>
-      </Box>
+      <box style={{ flexDirection: "column", borderStyle: "round", borderColor: Colors.AccentBlue, padding: 1 }} marginLeft={1}>
+        <text>Checking worktree status…</text>
+      </box>
     );
   }
 
@@ -195,52 +189,45 @@ export function WorktreeExitDialog({
   ];
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={Colors.AccentBlue}
-      padding={1}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box flexDirection="column" marginBottom={1}>
-        <Text color={Colors.AccentBlue} bold>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: Colors.AccentBlue, padding: 1, width: "100%" }} marginLeft={1}>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
+        <text color={Colors.AccentBlue} bold>
           {`⎇ Active worktree: "${slug}" (${branch})`}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {probeError && (
-        <Box flexDirection="column" marginBottom={1} paddingLeft={2}>
-          <Text color={Colors.AccentRed}>
+        <box style={{ flexDirection: "column" }} marginBottom={1} paddingLeft={2}>
+          <text color={Colors.AccentRed}>
             {`⚠ Could not measure worktree state (${probeError}).`}
-          </Text>
-          <Text color={Colors.Gray}>
+          </text>
+          <text color={Colors.Gray}>
             Dirty-state counts below may be unreliable.
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
       {dirty && (
-        <Box flexDirection="column" marginBottom={1} paddingLeft={2}>
+        <box style={{ flexDirection: "column" }} marginBottom={1} paddingLeft={2}>
           {newCommitCount > 0 && (
-            <Text color={Colors.Gray}>
+            <text color={Colors.Gray}>
               {`• ${newCommitCount} new commit(s) on ${branch}`}
-            </Text>
+            </text>
           )}
           {changedFilesCount > 0 && (
-            <Text color={Colors.Gray}>
+            <text color={Colors.Gray}>
               {`• ${changedFilesCount} uncommitted file(s)`}
-            </Text>
+            </text>
           )}
-          <Text color={Colors.Gray}>
+          <text color={Colors.Gray}>
             Removing the worktree will discard everything above.
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
-      <Box flexDirection="column" marginBottom={1}>
-        <Text bold>What would you like to do?</Text>
-      </Box>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
+        <text bold>What would you like to do?</text>
+      </box>
 
       <RadioButtonSelect
         items={options}
@@ -251,6 +238,6 @@ export function WorktreeExitDialog({
         }}
         isFocused
       />
-    </Box>
+    </box>
   );
 }

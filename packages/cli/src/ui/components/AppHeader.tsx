@@ -72,7 +72,7 @@ export const AppHeader = ({ version }: AppHeaderProps) => {
   );
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {showBanner && (
         <Header
           version={version}
@@ -85,6 +85,6 @@ export const AppHeader = ({ version }: AppHeaderProps) => {
         />
       )}
       {showTips && <Tips />}
-    </Box>
+    </box>
   );
 };

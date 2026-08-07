@@ -494,21 +494,21 @@ export const DiscoverTab = ({
 
   if (loading) {
     return (
-      <Text color={theme.text.secondary}>{t('Discovering extensions...')}</Text>
+      <text color={theme.text.secondary}>{t('Discovering extensions...')}</text>
     );
   }
 
   if (view === 'scope-select') {
     const count = pendingInstall().length;
     return (
-      <Box flexDirection="column" gap={1}>
-        <Text color={theme.text.primary}>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <text color={theme.text.primary}>
           {t('Install {{count}} extension(s) to which scope?', {
             count: String(count),
           })}
-        </Text>
+        </text>
         {installing ? (
-          <Text color={theme.text.secondary}>{t('Installing...')}</Text>
+          <text color={theme.text.secondary}>{t('Installing...')}</text>
         ) : (
           <RadioButtonSelect
             items={scopeItems()}
@@ -517,7 +517,7 @@ export const DiscoverTab = ({
             onSelect={(scope) => void installWithScope(scope)}
           />
         )}
-      </Box>
+      </box>
     );
   }
 
@@ -537,60 +537,60 @@ export const DiscoverTab = ({
       });
 
     return (
-      <Box flexDirection="column" gap={1}>
-        <Text color={theme.text.primary} bold>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <text color={theme.text.primary} bold>
           {t('Extension details')}
-        </Text>
+        </text>
 
-        <Box flexDirection="column">
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary} bold>
             {selected.name}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('from {{marketplace}}', {
               marketplace: selected.marketplaceName,
             })}
-          </Text>
+          </text>
           {selected.lastUpdated ? (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {t('Last updated: {{date}}', { date: selected.lastUpdated })}
-            </Text>
+            </text>
           ) : selected.version ? (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {t('Version: {{v}}', { v: selected.version })}
-            </Text>
+            </text>
           ) : null}
-        </Box>
+        </box>
 
-        {selected.description ? <Text>{selected.description}</Text> : null}
+        {selected.description ? <text>{selected.description}</text> : null}
 
         {selected.author ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t('By: {{a}}', { a: selected.author })}
-          </Text>
+          </text>
         ) : null}
 
         {componentLines.length > 0 ? (
-          <Box flexDirection="column">
-            <Text color={theme.text.primary} bold>
+          <box style={{ flexDirection: "column" }}>
+            <text color={theme.text.primary} bold>
               {t('Will install:')}
-            </Text>
+            </text>
             {componentLines.map((line) => (
-              <Text key={line.label} color={theme.text.secondary}>
+              <text key={line.label} color={theme.text.secondary}>
                 {`· ${line.label}: ${line.names.join(', ')}`}
-              </Text>
+              </text>
             ))}
-          </Box>
+          </box>
         ) : null}
 
-        <Text color={theme.text.secondary} italic>
+        <text color={theme.text.secondary} italic>
           {t(
             '⚠ Make sure you trust an extension before installing, updating, or using it. We cannot verify what MCP servers, files, or other software an extension includes, or that it works as intended. See the extension homepage for more information.',
           )}
-        </Text>
+        </text>
 
         {installing ? (
-          <Text color={theme.text.secondary}>{t('Installing...')}</Text>
+          <text color={theme.text.secondary}>{t('Installing...')}</text>
         ) : (
           <RadioButtonSelect
             items={detailActionItems()}
@@ -599,20 +599,20 @@ export const DiscoverTab = ({
             onSelect={handleDetailAction}
           />
         )}
-      </Box>
+      </box>
     );
   }
 
   if (plugins.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No extensions discovered.')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t('Add a marketplace in the Sources tab to discover extensions.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -621,47 +621,42 @@ export const DiscoverTab = ({
   const hasBelow = scrollOffset + visibleCount < filtered.length;
 
   return (
-    <Box flexDirection="column">
-      <Box>
-        <Text color={theme.text.primary} bold>
+    <box style={{ flexDirection: "column" }}>
+      <box>
+        <text color={theme.text.primary} bold>
           {t('Discover extensions')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {` (${filtered.length ? cursor + 1 : 0}/${filtered.length})`}
-        </Text>
+        </text>
         {marketplaceFilter ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t(' · {{marketplace}} (Tab to clear)', {
               marketplace: marketplaceFilter,
             })}
-          </Text>
+          </text>
         ) : null}
-      </Box>
+      </box>
 
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        paddingX={1}
-        width={availableWidth}
-      >
-        <Text color={theme.text.secondary}>{'⌕ '}</Text>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, width: availableWidth }} paddingX={1}>
+        <text color={theme.text.secondary}>{'⌕ '}</text>
         {query ? (
-          <Text color={theme.text.primary}>{query}</Text>
+          <text color={theme.text.primary}>{query}</text>
         ) : (
-          <Text color={theme.text.secondary}>{t('Search…')}</Text>
+          <text color={theme.text.secondary}>{t('Search…')}</text>
         )}
-      </Box>
+      </box>
 
       {filtered.length === 0 ? (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('No extensions match your search.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : (
-        <Box flexDirection="column" marginTop={1}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
           {hasAbove ? (
-            <Text color={theme.text.secondary}>{t('↑ more above')}</Text>
+            <text color={theme.text.secondary}>{t('↑ more above')}</text>
           ) : null}
           {windowItems.map((plugin, i) => {
             const absIndex = scrollOffset + i;
@@ -677,15 +672,15 @@ export const DiscoverTab = ({
               (installs ? ` · ${installs} installs` : '') +
               (plugin.installed ? ` · ${t('installed')}` : '');
             return (
-              <Box key={keyOf(plugin)} flexDirection="column" marginBottom={1}>
-                <Box>
-                  <Box minWidth={2} flexShrink={0}>
-                    <Text color={theme.text.accent}>
+              <box key={keyOf(plugin)} style={{ flexDirection: "column" }} marginBottom={1}>
+                <box>
+                  <box minWidth={2} style={{ flexShrink: 0 }}>
+                    <text color={theme.text.accent}>
                       {isCursor ? '›' : ' '}
-                    </Text>
-                  </Box>
-                  <Box minWidth={2} flexShrink={0}>
-                    <Text
+                    </text>
+                  </box>
+                  <box minWidth={2} style={{ flexShrink: 0 }}>
+                    <text
                       color={
                         plugin.installed
                           ? theme.status.success
@@ -693,28 +688,28 @@ export const DiscoverTab = ({
                       }
                     >
                       {checkbox}
-                    </Text>
-                  </Box>
-                  <Text bold color={titleColor}>
+                    </text>
+                  </box>
+                  <text bold color={titleColor}>
                     {plugin.name}
-                  </Text>
-                  <Text color={theme.text.secondary}>{meta}</Text>
-                </Box>
+                  </text>
+                  <text color={theme.text.secondary}>{meta}</text>
+                </box>
                 {plugin.description ? (
-                  <Box paddingLeft={4}>
-                    <Text color={theme.text.secondary}>
+                  <box paddingLeft={4}>
+                    <text color={theme.text.secondary}>
                       {truncateText(plugin.description, availableWidth - 4)}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                 ) : null}
-              </Box>
+              </box>
             );
           })}
           {hasBelow ? (
-            <Text color={theme.text.secondary}>{t('↓ more below')}</Text>
+            <text color={theme.text.secondary}>{t('↓ more below')}</text>
           ) : null}
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

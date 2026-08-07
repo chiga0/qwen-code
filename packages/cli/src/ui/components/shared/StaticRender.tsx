@@ -28,9 +28,9 @@ interface StaticRenderProps {
  */
 const StaticRender = memo(
   ({ children, width }: StaticRenderProps) => (
-    <Box width={width} flexDirection="column" flexShrink={0}>
+    <box style={{ width: width, flexDirection: "column", flexShrink: 0 }}>
       {children}
-    </Box>
+    </box>
   ),
   (prev, next) => prev.children === next.children && prev.width === next.width,
 );

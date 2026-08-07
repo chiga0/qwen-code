@@ -82,14 +82,14 @@ export const ExtensionListStep = ({
 
   if (extensions.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No extensions installed.')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t("Use '/extensions install' to install your first extension.")}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -175,57 +175,53 @@ export const ExtensionListStep = ({
       : [];
 
     return (
-      <Box
-        key={extension.name}
-        flexDirection="column"
-        marginBottom={descLines.length > 0 ? 1 : 0}
-      >
-        <Box alignItems="center">
-          <Box minWidth={2} flexShrink={0}>
-            <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+      <box key={extension.name} style={{ flexDirection: "column" }} marginBottom={descLines.length > 0 ? 1 : 0}>
+        <box style={{ alignItems: "center" }}>
+          <box minWidth={2} style={{ flexShrink: 0 }}>
+            <text color={isSelected ? theme.text.accent : theme.text.primary}>
               {isSelected ? '●' : ' '}
-            </Text>
-          </Box>
-          <Box width={maxNameWidth} flexShrink={0}>
-            <Text
+            </text>
+          </box>
+          <box style={{ width: maxNameWidth, flexShrink: 0 }}>
+            <text
               color={isSelected ? theme.text.accent : theme.text.primary}
               wrap="truncate"
             >
               {getExtensionDisplayName(extension, locale)}
-            </Text>
-          </Box>
-          <Box marginLeft={2} width={maxStatusWidth + 2} flexShrink={0}>
-            <Text color={activeColor}>({activeString})</Text>
-          </Box>
-          {stateText && <Text color={stateColor}>[{stateText}]</Text>}
-        </Box>
+            </text>
+          </box>
+          <box marginLeft={2} style={{ width: maxStatusWidth + 2, flexShrink: 0 }}>
+            <text color={activeColor}>({activeString})</text>
+          </box>
+          {stateText && <text color={stateColor}>[{stateText}]</text>}
+        </box>
         {descLines.length > 0 && (
-          <Box paddingLeft={2} flexDirection="column">
+          <box paddingLeft={2} style={{ flexDirection: "column" }}>
             {descLines.map((line, i) => (
-              <Text key={i} color={theme.text.secondary}>
+              <text key={i} color={theme.text.secondary}>
                 {line}
-              </Text>
+              </text>
             ))}
-          </Box>
+          </box>
         )}
-      </Box>
+      </box>
     );
   };
 
   return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color={theme.text.secondary}>
+    <box style={{ flexDirection: "column" }}>
+      <box marginBottom={1}>
+        <text color={theme.text.secondary}>
           {t('{{count}} extensions installed', {
             count: extensions.length.toString(),
           })}
-        </Text>
-      </Box>
-      <Box flexDirection="column">
+        </text>
+      </box>
+      <box style={{ flexDirection: "column" }}>
         {extensions.map((extension, index) =>
           renderExtensionItem(extension, index, index === selectedIndex),
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

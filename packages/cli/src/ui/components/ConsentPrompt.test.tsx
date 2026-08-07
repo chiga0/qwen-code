@@ -142,7 +142,7 @@ describe('ConsentPrompt', () => {
   });
 
   it('renders a ReactNode prompt directly', () => {
-    const prompt = <Text>Are you sure?</Text>;
+    const prompt = <text>Are you sure?</text>;
     const { lastFrame } = render(
       <ConsentPrompt
         prompt={prompt}

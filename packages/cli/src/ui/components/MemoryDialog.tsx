@@ -469,17 +469,11 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>{t('Memory')}</Text>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>{t('Memory')}</text>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text
           color={
             focusedSection === 'autoMemory'
               ? theme.status.success
@@ -490,8 +484,8 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
           {t('Auto-memory: {{status}}', {
             status: autoMemoryOn ? t('on') : t('off'),
           })}
-        </Text>
-        <Text
+        </text>
+        <text
           color={
             focusedSection === 'autoDream'
               ? theme.status.success
@@ -503,8 +497,8 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
             status: autoDreamOn ? t('on') : t('off'),
             lastDream: dreamStatusText,
           })}
-        </Text>
-        <Text
+        </text>
+        <text
           color={
             focusedSection === 'autoSkill'
               ? theme.status.success
@@ -515,8 +509,8 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
           {t('Auto-skill: {{status}}', {
             status: autoSkillOn ? t('on') : t('off'),
           })}
-        </Text>
-        <Text
+        </text>
+        <text
           color={
             focusedSection === 'autoSkillConfirm'
               ? theme.status.success
@@ -527,40 +521,40 @@ export function MemoryDialog({ onClose }: MemoryDialogProps) {
           {t('Confirm auto-skills before saving: {{status}}', {
             status: autoSkillConfirmOn ? t('on') : t('off'),
           })}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {error && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{error}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{error}</text>
+        </box>
       )}
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {items.map((item, index) => {
           const isSelected =
             focusedSection === 'list' && index === highlightedIndex;
           return (
-            <Box key={`${item.value}-${item.action}`} flexDirection="row">
-              <Text color={isSelected ? theme.status.success : undefined}>
+            <box key={`${item.value}-${item.action}`} style={{ flexDirection: "row" }}>
+              <text color={isSelected ? theme.status.success : undefined}>
                 {isSelected ? '› ' : '  '}
                 {index + 1}. {item.label}
-              </Text>
+              </text>
               {item.description ? (
-                <Text
+                <text
                   color={theme.text.secondary}
-                >{`  ${item.description}`}</Text>
+                >{`  ${item.description}`}</text>
               ) : null}
-            </Box>
+            </box>
           );
         })}
-      </Box>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Enter to confirm · Esc to cancel')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

@@ -34,7 +34,7 @@ describe('ErrorBoundary', () => {
   it('renders children when no error is thrown', () => {
     const { lastFrame } = render(
       <ErrorBoundary>
-        <Text>healthy child</Text>
+        <text>healthy child</text>
       </ErrorBoundary>,
     );
     expect(lastFrame()).toContain('healthy child');
@@ -53,7 +53,7 @@ describe('ErrorBoundary', () => {
 
   it('renders a custom fallback with the caught error', () => {
     const { lastFrame } = render(
-      <ErrorBoundary fallback={(error) => <Text>custom: {error.message}</Text>}>
+      <ErrorBoundary fallback={(error) => <text>custom: {error.message}</text>}>
         <Thrower message="boom" />
       </ErrorBoundary>,
     );
@@ -84,13 +84,13 @@ describe('ErrorBoundary', () => {
       if (shouldThrow) {
         throw new Error('transient');
       }
-      return <Text>recovered</Text>;
+      return <text>recovered</text>;
     };
     const tree = (
       <ErrorBoundary
         fallback={(error, reset) => {
           capturedReset = reset;
-          return <Text>err: {error.message}</Text>;
+          return <text>err: {error.message}</text>;
         }}
       >
         <Maybe />

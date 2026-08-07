@@ -66,7 +66,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   it('routes wheel SGR events to viewport scroll (window shifts)', async () => {
     // When scrolled to top, item-0 is in the visible window; after enough
     // wheel-down events it should be scrolled out; wheel-up brings it back.
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
 
     const Wrapper = () => (
       <ScrollableList<Item>
@@ -105,7 +105,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('does not crash when hasFocus is false (mouse pipeline inactive)', () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus={false}
@@ -127,7 +127,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('does not move the rendered window on content-area clicks', async () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -157,7 +157,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('drags the scrollbar to scroll the viewport', async () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -189,7 +189,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('drags the scrollbar to an intermediate viewport position', async () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -222,7 +222,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('keeps dragging after the pointer leaves the scrollbar column', async () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -257,7 +257,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
     // Regression: a wheel burst schedules a coalesced flush; clicking the
     // scrollbar within that window must drop the queued wheel delta so the
     // timer can't yank the view off the just-clicked row.
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -292,7 +292,7 @@ describe('<ScrollableList /> mouse scrolling', () => {
   });
 
   it('does not start a scrollbar drag when content fits the viewport', async () => {
-    const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+    const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
     const Wrapper = () => (
       <ScrollableList<Item>
         hasFocus
@@ -334,7 +334,7 @@ const CTRL_HOME = `${ESC}[1;5H`;
 const CTRL_END = `${ESC}[1;5F`;
 
 describe('<ScrollableList /> keyboard scroll', () => {
-  const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+  const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
 
   it('Shift+Up scrolls up by 1 line', async () => {
     const Wrapper = () => (

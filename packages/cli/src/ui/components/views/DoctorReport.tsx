@@ -65,67 +65,56 @@ export const DoctorReport: React.FC<DoctorReportProps> = ({
   const nameColWidth = Math.max(20, ...checks.map((c) => c.name.length + 2));
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      width={width}
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: width }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {t('Doctor Report')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
 
       {categoryEntries.map(([category, items], groupIdx) => (
-        <Box
-          key={category}
-          flexDirection="column"
-          marginTop={groupIdx > 0 ? 1 : 0}
-        >
-          <Text bold color={theme.text.link}>
+        <box key={category} style={{ flexDirection: "column" }} marginTop={groupIdx > 0 ? 1 : 0}>
+          <text bold color={theme.text.link}>
             {category}
-          </Text>
+          </text>
           {items.map((check) => (
-            <Box key={`${category}-${check.name}`} flexDirection="column">
-              <Box flexDirection="row">
-                <Text color={getStatusColor(check.status)}>
+            <box key={`${category}-${check.name}`} style={{ flexDirection: "column" }}>
+              <box style={{ flexDirection: "row" }}>
+                <text color={getStatusColor(check.status)}>
                   {'  '}
                   {STATUS_ICONS[check.status]}{' '}
-                </Text>
-                <Box width={nameColWidth}>
-                  <Text color={theme.text.primary}>{check.name}</Text>
-                </Box>
-                <Text dimColor>{check.message}</Text>
-              </Box>
+                </text>
+                <box style={{ width: nameColWidth }}>
+                  <text color={theme.text.primary}>{check.name}</text>
+                </box>
+                <text dimColor>{check.message}</text>
+              </box>
               {check.detail && (
-                <Box marginLeft={6}>
-                  <Text dimColor>
+                <box marginLeft={6}>
+                  <text dimColor>
                     {'-> '}
                     {check.detail}
-                  </Text>
-                </Box>
+                  </text>
+                </box>
               )}
-            </Box>
+            </box>
           ))}
-        </Box>
+        </box>
       ))}
 
-      <Box marginTop={1}>
-        <Text dimColor>{'-- '}</Text>
-        <Text color={theme.status.success}>
+      <box marginTop={1}>
+        <text dimColor>{'-- '}</text>
+        <text color={theme.status.success}>
           {summary.pass} {t('passed')}
-        </Text>
-        <Text dimColor>{', '}</Text>
-        <Text color={theme.status.warning}>
+        </text>
+        <text dimColor>{', '}</text>
+        <text color={theme.status.warning}>
           {summary.warn} {t('warnings')}
-        </Text>
-        <Text dimColor>{', '}</Text>
-        <Text color={theme.status.error}>
+        </text>
+        <text dimColor>{', '}</text>
+        <text color={theme.status.error}>
           {summary.fail} {t('failures')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

@@ -227,19 +227,12 @@ export const ToolConfirmationMessage: React.FC<
   if (confirmationDetails.type === 'edit') {
     if (confirmationDetails.isModifying) {
       return (
-        <Box
-          minWidth="90%"
-          borderStyle="round"
-          borderColor={theme.border.default}
-          justifyContent="space-around"
-          padding={1}
-          overflow="hidden"
-        >
-          <Text color={theme.text.primary}>{t('Modify in progress:')} </Text>
-          <Text color={theme.status.success}>
+        <box minWidth="90%" style={{ borderStyle: "round", borderColor: theme.border.default, justifyContent: "space-around", padding: 1 }} overflow="hidden">
+          <text color={theme.text.primary}>{t('Modify in progress:')} </text>
+          <text color={theme.status.success}>
             {t('Save and close external editor to continue')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     }
 
@@ -320,24 +313,19 @@ export const ToolConfirmationMessage: React.FC<
           settings={settings}
         />
       ) : diffHeight === 1 ? (
-        <Text color={theme.text.secondary} wrap="truncate">
+        <text color={theme.text.secondary} wrap="truncate">
           ... diff hidden ...
-        </Text>
+        </text>
       ) : null;
 
     bodyContent = (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {warnings.length > 0 ? (
-          <Box
-            flexDirection="column"
-            paddingX={1}
-            marginLeft={1}
-            marginBottom={warningMarginBottom}
-          >
+          <box style={{ flexDirection: "column" }} paddingX={1} marginLeft={1} marginBottom={warningMarginBottom}>
             {constrainWarnings && warningMaxHeight === 1 ? (
-              <Text color={theme.status.warning} wrap="truncate">
+              <text color={theme.status.warning} wrap="truncate">
                 ⚠ {warnings.at(-1)?.replace(/\r\n?|\n/g, ' ↵ ')}
-              </Text>
+              </text>
             ) : constrainWarnings ? (
               <MaxSizedBox
                 maxHeight={warningMaxHeight}
@@ -345,24 +333,24 @@ export const ToolConfirmationMessage: React.FC<
                 overflowDirection="bottom"
               >
                 {warnings.map((warning, idx) => (
-                  <Box key={idx}>
-                    <Text color={theme.status.warning} wrap="truncate">
+                  <box key={idx}>
+                    <text color={theme.status.warning} wrap="truncate">
                       ⚠ {warning.replace(/\r\n?|\n/g, ' ↵ ')}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                 ))}
               </MaxSizedBox>
             ) : (
               warnings.map((warning, idx) => (
-                <Text key={idx} color={theme.status.warning}>
+                <text key={idx} color={theme.status.warning}>
                   ⚠ {warning}
-                </Text>
+                </text>
               ))
             )}
-          </Box>
+          </box>
         ) : null}
         {renderedDiff}
-      </Box>
+      </box>
     );
   } else if (confirmationDetails.type === 'exec') {
     const executionProps =
@@ -439,28 +427,28 @@ export const ToolConfirmationMessage: React.FC<
       );
     }
     bodyContent = (
-      <Box flexDirection="column">
-        <Box paddingX={1} marginLeft={1}>
+      <box style={{ flexDirection: "column" }}>
+        <box paddingX={1} marginLeft={1}>
           <MaxSizedBox
             maxHeight={bodyContentHeight}
             maxWidth={Math.max(contentWidth, 1)}
             overflowDirection="bottom"
           >
-            <Box>
-              <Text color={theme.text.link}>{executionProps.command}</Text>
-            </Box>
+            <box>
+              <text color={theme.text.link}>{executionProps.command}</text>
+            </box>
           </MaxSizedBox>
-        </Box>
+        </box>
         {warningsCount > 0 ? (
-          <Box flexDirection="column" paddingX={1} marginLeft={1} marginTop={1}>
+          <box style={{ flexDirection: "column" }} paddingX={1} marginLeft={1} marginTop={1}>
             {warnings.map((warning, idx) => (
-              <Text key={idx} color={theme.status.warning}>
+              <text key={idx} color={theme.status.warning}>
                 ⚠ {warning}
-              </Text>
+              </text>
             ))}
-          </Box>
+          </box>
         ) : null}
-      </Box>
+      </box>
     );
   } else if (confirmationDetails.type === 'plan') {
     const planProps = confirmationDetails;
@@ -499,7 +487,7 @@ export const ToolConfirmationMessage: React.FC<
     const planHeight =
       rawPlanHeight === undefined ? undefined : Math.max(rawPlanHeight - 1, 1);
     bodyContent = (
-      <Box flexDirection="column" paddingX={1} marginLeft={1}>
+      <box style={{ flexDirection: "column" }} paddingX={1} marginLeft={1}>
         <MarkdownDisplay
           text={planProps.plan}
           isPending={false}
@@ -516,15 +504,15 @@ export const ToolConfirmationMessage: React.FC<
         {/* The plan can be height-truncated above, and the user is about to
             approve it — always offer a way to read the WHOLE thing. See #7001. */}
         {planViewError ? (
-          <Text color={theme.status.error} wrap="truncate">
+          <text color={theme.status.error} wrap="truncate">
             {planViewError}
-          </Text>
+          </text>
         ) : (
-          <Text color={theme.text.secondary} wrap="truncate">
+          <text color={theme.text.secondary} wrap="truncate">
             {t('o open full plan in editor')}
-          </Text>
+          </text>
         )}
-      </Box>
+      </box>
     );
   } else if (confirmationDetails.type === 'info') {
     const infoProps = confirmationDetails;
@@ -570,22 +558,22 @@ export const ToolConfirmationMessage: React.FC<
     });
 
     bodyContent = (
-      <Box flexDirection="column" paddingX={1} marginLeft={1}>
-        <Text color={theme.text.link}>
+      <box style={{ flexDirection: "column" }} paddingX={1} marginLeft={1}>
+        <text color={theme.text.link}>
           <RenderInline text={infoProps.prompt} textColor={theme.text.link} />
-        </Text>
+        </text>
         {displayUrls && infoProps.urls && infoProps.urls.length > 0 && (
-          <Box flexDirection="column" marginTop={1}>
-            <Text color={theme.text.primary}>{t('URLs to fetch:')}</Text>
+          <box style={{ flexDirection: "column" }} marginTop={1}>
+            <text color={theme.text.primary}>{t('URLs to fetch:')}</text>
             {infoProps.urls.map((url) => (
-              <Text key={url}>
+              <text key={url}>
                 {' '}
                 - <RenderInline text={url} />
-              </Text>
+              </text>
             ))}
-          </Box>
+          </box>
         )}
-      </Box>
+      </box>
     );
   } else if (confirmationDetails.type === 'ask_user_question') {
     // Use dedicated dialog for ask_user_question type
@@ -602,14 +590,14 @@ export const ToolConfirmationMessage: React.FC<
     const mcpProps = confirmationDetails as ToolMcpConfirmationDetails;
 
     bodyContent = (
-      <Box flexDirection="column" paddingX={1} marginLeft={1}>
-        <Text color={theme.text.link}>
+      <box style={{ flexDirection: "column" }} paddingX={1} marginLeft={1}>
+        <text color={theme.text.link}>
           {t('MCP Server: {{server}}', { server: mcpProps.serverName })}
-        </Text>
-        <Text color={theme.text.link}>
+        </text>
+        <text color={theme.text.link}>
           {t('Tool: {{tool}}', { tool: mcpProps.toolName })}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
 
     question = t(
@@ -669,14 +657,14 @@ export const ToolConfirmationMessage: React.FC<
       switchOption,
     );
     bodyContent = (
-      <Box flexDirection="column">
-        <Box paddingX={1} marginLeft={1} marginBottom={1}>
-          <Text color={theme.status.warning}>
+      <box style={{ flexDirection: "column" }}>
+        <box paddingX={1} marginLeft={1} marginBottom={1}>
+          <text color={theme.status.warning}>
             ⚠ {autoModeFallback.message}
-          </Text>
-        </Box>
+          </text>
+        </box>
         {bodyContent}
-      </Box>
+      </box>
     );
   }
 
@@ -737,29 +725,24 @@ export const ToolConfirmationMessage: React.FC<
   const outerWidth = compactMode ? undefined : contentWidth;
 
   return (
-    <Box flexDirection="column" padding={outerPadding} width={outerWidth}>
-      <Box
-        flexGrow={1}
-        flexShrink={1}
-        overflow="hidden"
-        marginBottom={sectionMargin}
-      >
+    <box style={{ flexDirection: "column", padding: outerPadding, width: outerWidth }}>
+      <box style={{ flexGrow: 1, flexShrink: 1 }} overflow="hidden" marginBottom={sectionMargin}>
         {bodyContent}
-      </Box>
+      </box>
 
-      <Box marginBottom={sectionMargin} flexShrink={0}>
-        <Text color={theme.text.primary} wrap="truncate">
+      <box marginBottom={sectionMargin} style={{ flexShrink: 0 }}>
+        <text color={theme.text.primary} wrap="truncate">
           {renderedQuestion}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box flexShrink={0}>
+      <box style={{ flexShrink: 0 }}>
         <RadioButtonSelect
           items={renderedOptions}
           onSelect={handleSelect}
           isFocused={isFocused}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

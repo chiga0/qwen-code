@@ -21,35 +21,24 @@ export const Notifications = () => {
   return (
     <>
       {showStartupWarnings && (
-        <Box
-          borderStyle="round"
-          borderColor={theme.status.warning}
-          paddingX={1}
-          marginY={1}
-          flexDirection="column"
-        >
+        <box style={{ borderStyle: "round", borderColor: theme.status.warning, flexDirection: "column" }} paddingX={1} marginY={1}>
           {startupWarnings.map((warning, index) => (
-            <Text key={index} color={theme.status.warning}>
+            <text key={index} color={theme.status.warning}>
               {warning}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       )}
       {showInitError && (
-        <Box
-          borderStyle="round"
-          borderColor={theme.status.error}
-          paddingX={1}
-          marginBottom={1}
-        >
-          <Text color={theme.status.error}>
+        <box style={{ borderStyle: "round", borderColor: theme.status.error }} paddingX={1} marginBottom={1}>
+          <text color={theme.status.error}>
             Initialization Error: {initError}
-          </Text>
-          <Text color={theme.status.error}>
+          </text>
+          <text color={theme.status.error}>
             {' '}
             Please check API key and configuration.
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
     </>
   );

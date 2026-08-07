@@ -35,9 +35,9 @@ export function HooksListStep({
 
   if (hooks.length === 0) {
     return (
-      <Box flexDirection="column" paddingX={1}>
-        <Text color={theme.text.secondary}>{t('No hook events found.')}</Text>
-      </Box>
+      <box style={{ flexDirection: "column" }} paddingX={1}>
+        <text color={theme.text.secondary}>{t('No hook events found.')}</text>
+      </box>
     );
   }
 
@@ -52,21 +52,21 @@ export function HooksListStep({
       : t('{{count}} hooks configured', { count: String(totalConfigured) });
 
   return (
-    <Box flexDirection="column" paddingX={1}>
-      <Box marginBottom={1}>
-        <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
+      <box marginBottom={1}>
+        <text bold color={theme.text.primary}>
           {t('Hooks')}
-        </Text>
-        <Text color={theme.text.secondary}>{` · ${hooksConfiguredText}`}</Text>
-      </Box>
+        </text>
+        <text color={theme.text.secondary}>{` · ${hooksConfiguredText}`}</text>
+      </box>
 
-      <Box marginBottom={1}>
-        <Text color={theme.text.secondary}>
+      <box marginBottom={1}>
+        <text color={theme.text.secondary}>
           {t(
             'This menu is read-only. To add or modify hooks, edit settings.json directly or ask Qwen Code.',
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {hooks.map((hook, index) => {
         const isSelected = index === selectedIndex;
@@ -75,33 +75,33 @@ export function HooksListStep({
         const paddedIndex = String(index + 1).padStart(maxDigits);
 
         return (
-          <Box key={hook.event}>
-            <Box minWidth={2}>
-              <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+          <box key={hook.event}>
+            <box minWidth={2}>
+              <text color={isSelected ? theme.text.accent : theme.text.primary}>
                 {isSelected ? '❯' : ' '}
-              </Text>
-            </Box>
-            <Box width={hookNameWidth}>
-              <Text
+              </text>
+            </box>
+            <box style={{ width: hookNameWidth }}>
+              <text
                 color={isSelected ? theme.text.accent : theme.text.primary}
                 bold={isSelected}
               >
                 {paddedIndex}. {hook.event}
                 {configCount > 0 && (
-                  <Text color={theme.status.success}> ({configCount})</Text>
+                  <text color={theme.status.success}> ({configCount})</text>
                 )}
-              </Text>
-            </Box>
-            <Text color={theme.text.secondary}>{hook.shortDescription}</Text>
-          </Box>
+              </text>
+            </box>
+            <text color={theme.text.secondary}>{hook.shortDescription}</text>
+          </box>
         );
       })}
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Enter to select · Esc to cancel')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

@@ -40,16 +40,8 @@ export const ConsentPrompt = (props: ConsentPromptProps) => {
       : Math.max(1, availablePromptRows - (showPromptTruncationNotice ? 1 : 0));
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      height={constrainedHeight}
-      overflow="hidden"
-    >
-      <Box flexDirection="column" flexShrink={1} overflow="hidden">
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", height: constrainedHeight }} paddingY={1} paddingX={2} overflow="hidden">
+      <box style={{ flexDirection: "column", flexShrink: 1 }} overflow="hidden">
         {typeof prompt === 'string' ? (
           <MarkdownDisplay
             isPending={true}
@@ -62,13 +54,13 @@ export const ConsentPrompt = (props: ConsentPromptProps) => {
         ) : (
           prompt
         )}
-      </Box>
+      </box>
       {showPromptTruncationNotice && (
-        <Text color={theme.text.secondary} wrap="truncate">
+        <text color={theme.text.secondary} wrap="truncate">
           {t('Content truncated - resize terminal to review')}
-        </Text>
+        </text>
       )}
-      <Box marginTop={1} flexShrink={0}>
+      <box marginTop={1} style={{ flexShrink: 0 }}>
         <RadioButtonSelect
           items={[
             { label: 'Yes', value: true, key: 'Yes' },
@@ -76,7 +68,7 @@ export const ConsentPrompt = (props: ConsentPromptProps) => {
           ]}
           onSelect={onConfirm}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

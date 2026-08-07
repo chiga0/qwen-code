@@ -65,8 +65,8 @@ export const ToolElapsedTime: React.FC<ToolElapsedTimeProps> = ({
     : elapsedStr;
 
   return (
-    <Box flexShrink={0} marginLeft={1}>
-      <Text color={theme.text.secondary}>{label}</Text>
-    </Box>
+    <box style={{ flexShrink: 0 }} marginLeft={1}>
+      <text color={theme.text.secondary}>{label}</text>
+    </box>
   );
 };

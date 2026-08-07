@@ -31,11 +31,11 @@ export const TodoDisplay: React.FC<TodoDisplayProps> = ({ todos }) => {
   }
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {todos.map((todo) => (
         <TodoItemRow key={todo.id} todo={todo} />
       ))}
-    </Box>
+    </box>
   );
 };
 
@@ -56,18 +56,18 @@ const TodoItemRow: React.FC<TodoItemRowProps> = ({ todo }) => {
       : Colors.Foreground;
 
   return (
-    <Box flexDirection="row" minHeight={1}>
+    <box style={{ flexDirection: "row" }} minHeight={1}>
       {/* Status Icon */}
-      <Box width={3}>
-        <Text color={itemColor}>{statusIcon}</Text>
-      </Box>
+      <box style={{ width: 3 }}>
+        <text color={itemColor}>{statusIcon}</text>
+      </box>
 
       {/* Content */}
-      <Box flexGrow={1}>
-        <Text color={itemColor} strikethrough={isCompleted} wrap="wrap">
+      <box style={{ flexGrow: 1 }}>
+        <text color={itemColor} strikethrough={isCompleted} wrap="wrap">
           {todo.content}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

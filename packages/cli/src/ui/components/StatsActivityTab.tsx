@@ -75,16 +75,16 @@ export const ActivityTab: React.FC<{
   const lineChart = buildBrailleLineChart(lineData, bodyWidth - 8, 8);
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* KPI Row */}
-      <Box flexDirection="row" marginBottom={1}>
-        <Box width={col1Width}>
-          <Text color={theme.text.secondary}>{t('Sessions')} </Text>
-          <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "row" }} marginBottom={1}>
+        <box style={{ width: col1Width }}>
+          <text color={theme.text.secondary}>{t('Sessions')} </text>
+          <text bold color={theme.text.primary}>
             {data.report.sessionCount}
-          </Text>
+          </text>
           {data.delta?.sessions != null && (
-            <Text
+            <text
               color={
                 data.delta.sessions >= 0
                   ? theme.status.success
@@ -94,16 +94,16 @@ export const ActivityTab: React.FC<{
               {' '}
               {data.delta.sessions >= 0 ? '\u25B2' : '\u25BC'}
               {Math.abs(data.delta.sessions).toFixed(0)}%
-            </Text>
+            </text>
           )}
-        </Box>
-        <Box width={col1Width}>
-          <Text color={theme.text.secondary}>{t('Duration')} </Text>
-          <Text bold color={theme.text.primary}>
+        </box>
+        <box style={{ width: col1Width }}>
+          <text color={theme.text.secondary}>{t('Duration')} </text>
+          <text bold color={theme.text.primary}>
             {fmtDurationShort(data.report.totalDurationMs)}
-          </Text>
+          </text>
           {data.delta?.duration != null && (
-            <Text
+            <text
               color={
                 data.delta.duration >= 0
                   ? theme.status.success
@@ -113,16 +113,16 @@ export const ActivityTab: React.FC<{
               {' '}
               {data.delta.duration >= 0 ? '\u25B2' : '\u25BC'}
               {Math.abs(data.delta.duration).toFixed(0)}%
-            </Text>
+            </text>
           )}
-        </Box>
-        <Box>
-          <Text color={theme.text.secondary}>{t('Tokens')} </Text>
-          <Text bold color={theme.status.warning}>
+        </box>
+        <box>
+          <text color={theme.text.secondary}>{t('Tokens')} </text>
+          <text bold color={theme.status.warning}>
             {fmtTokens(totalTokens)}
-          </Text>
+          </text>
           {data.delta?.tokens != null && (
-            <Text
+            <text
               color={
                 data.delta.tokens >= 0
                   ? theme.status.success
@@ -132,99 +132,99 @@ export const ActivityTab: React.FC<{
               {' '}
               {data.delta.tokens >= 0 ? '\u25B2' : '\u25BC'}
               {Math.abs(data.delta.tokens).toFixed(0)}%
-            </Text>
+            </text>
           )}
-        </Box>
-      </Box>
+        </box>
+      </box>
 
       {/* Heatmap with streak */}
-      <Box flexDirection="row">
-        <Box flexDirection="column" flexGrow={1}>
+      <box style={{ flexDirection: "row" }}>
+        <box style={{ flexDirection: "column", flexGrow: 1 }}>
           <HeatmapView
             data={data}
             weeks={heatmapWeeks}
             monthOffset={clampedOffset}
           />
-        </Box>
-        <Box marginLeft={2} flexDirection="column">
-          <Box>
-            <Text color={theme.text.secondary}>{t('streak')}: </Text>
-            <Text color={theme.status.success} bold>
+        </box>
+        <box marginLeft={2} style={{ flexDirection: "column" }}>
+          <box>
+            <text color={theme.text.secondary}>{t('streak')}: </text>
+            <text color={theme.status.success} bold>
               {data.currentStreak}
               {t('d')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.secondary}>{t('best')}: </Text>
-            <Text color={theme.status.warning} bold>
+            </text>
+          </box>
+          <box>
+            <text color={theme.text.secondary}>{t('best')}: </text>
+            <text color={theme.status.warning} bold>
               {data.longestStreak}
               {t('d')}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+            </text>
+          </box>
+        </box>
+      </box>
 
       {/* Token Trend Chart */}
-      <Box flexDirection="column" marginTop={1}>
-        <Box>
-          <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <box>
+          <text bold color={theme.text.primary}>
             {t('Token Trend')}
-          </Text>
+          </text>
           {chartMonthLabel && (
-            <Text color={theme.text.accent}>
+            <text color={theme.text.accent}>
               {'  '}
               {canGoLeft ? '\u2190 ' : '  '}
               {chartMonthLabel}
               {canGoRight ? ' \u2192' : ''}
-            </Text>
+            </text>
           )}
-        </Box>
+        </box>
         {lineChart ? (
-          <Box flexDirection="column">
+          <box style={{ flexDirection: "column" }}>
             {lineChart.rows.map((row, ri) => (
-              <Box key={ri}>
-                <Text color={theme.text.secondary}>
+              <box key={ri}>
+                <text color={theme.text.secondary}>
                   {lineChart.yLabels[ri]?.padStart(6) ?? '      '}
                   {'\u2502'}
-                </Text>
+                </text>
                 {row.map((cell, ci) => (
-                  <Text
+                  <text
                     key={ci}
                     color={
                       cell.filled ? theme.text.accent : theme.text.secondary
                     }
                   >
                     {cell.char}
-                  </Text>
+                  </text>
                 ))}
-              </Box>
+              </box>
             ))}
-            <Box>
-              <Text color={theme.text.secondary}>
+            <box>
+              <text color={theme.text.secondary}>
                 {'      \u2514'}
                 {lineChart.xLabels}
-              </Text>
-            </Box>
-            <Box marginTop={0}>
-              <Text color={theme.text.secondary}>
+              </text>
+            </box>
+            <box marginTop={0}>
+              <text color={theme.text.secondary}>
                 {'       '}peak {fmtTokens(lineChart.peak)}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         ) : (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {'  '}
             {t('(no data)')}
-          </Text>
+          </text>
         )}
-      </Box>
+      </box>
 
       {/* Project Ranking */}
       {data.report.projects.length > 0 && (
-        <Box flexDirection="column" marginTop={1}>
-          <Text bold color={theme.text.primary}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text bold color={theme.text.primary}>
             {t('Projects')}
-          </Text>
+          </text>
           <TableRow
             cells={[
               {
@@ -268,8 +268,8 @@ export const ActivityTab: React.FC<{
               />
             );
           })}
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

@@ -278,44 +278,38 @@ export function DiffDialog({
   const hiddenIsUpperBound = activeSource?.kind === 'turn';
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.border.default}
-      paddingX={1}
-      width={dialogWidth}
-    >
-      <Box flexDirection="row" justifyContent="space-between">
-        <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: dialogWidth }} paddingX={1}>
+      <box style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <text bold color={theme.text.primary}>
           /diff · {headerTitle}
           {headerSubtitle ? (
-            <Text color={theme.text.secondary}> {headerSubtitle}</Text>
+            <text color={theme.text.secondary}> {headerSubtitle}</text>
           ) : null}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {stats.filesCount} {stats.filesCount === 1 ? t('file') : t('files')}
           {stats.linesAdded > 0 ? (
-            <Text color={theme.status.success}> +{stats.linesAdded}</Text>
+            <text color={theme.status.success}> +{stats.linesAdded}</text>
           ) : null}
           {stats.linesRemoved > 0 ? (
-            <Text color={theme.status.error}> -{stats.linesRemoved}</Text>
+            <text color={theme.status.error}> -{stats.linesRemoved}</text>
           ) : null}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       <SourceSwitcher sources={sources} sourceIndex={safeSourceIndex} />
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {loadingNow ? (
-          <Text color={theme.text.secondary}>{t('Loading diff…')}</Text>
+          <text color={theme.text.secondary}>{t('Loading diff…')}</text>
         ) : !activeSource || files.length === 0 ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {emptyMessage(
               activeSource,
               current.result,
               fileCheckpointingEnabled,
             )}
-          </Text>
+          </text>
         ) : viewMode === 'list' ? (
           <>
             <FileList
@@ -324,7 +318,7 @@ export function DiffDialog({
               contentWidth={dialogWidth - 4}
             />
             {hiddenFileCount > 0 ? (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {' '}
                 {hiddenIsUpperBound
                   ? t('…and up to {{n}} more (showing first {{shown}})', {
@@ -335,7 +329,7 @@ export function DiffDialog({
                       n: String(hiddenFileCount),
                       shown: String(files.length),
                     })}
-              </Text>
+              </text>
             ) : null}
           </>
         ) : selectedFile ? (
@@ -347,10 +341,10 @@ export function DiffDialog({
             contentWidth={dialogWidth - 4}
           />
         ) : null}
-      </Box>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={keyHint ? theme.status.warning : theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={keyHint ? theme.status.warning : theme.text.secondary}>
           {keyHint && viewMode === 'list'
             ? keyHint
             : viewMode === 'list'
@@ -358,9 +352,9 @@ export function DiffDialog({
                 ? t('←/→ source · ↑/↓ file · Enter view · Esc close')
                 : t('↑/↓ file · Enter view · Esc close')
               : t('← back · Esc close')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }
 
@@ -373,29 +367,29 @@ function SourceSwitcher({
 }): React.JSX.Element | null {
   if (sources.length <= 1) return null;
   return (
-    <Box marginTop={1} flexDirection="row">
+    <box marginTop={1} style={{ flexDirection: "row" }}>
       {sourceIndex > 0 ? (
-        <Text color={theme.text.secondary}>◀ </Text>
+        <text color={theme.text.secondary}>◀ </text>
       ) : (
-        <Text> </Text>
+        <text> </text>
       )}
       {sources.map((s, i) => {
         const selected = i === sourceIndex;
         return (
-          <Text
+          <text
             key={`${s.kind}:${i}`}
             bold={selected}
             color={selected ? theme.text.accent : theme.text.secondary}
           >
             {i > 0 ? ' · ' : ''}
             {s.label}
-          </Text>
+          </text>
         );
       })}
       {sourceIndex < sources.length - 1 ? (
-        <Text color={theme.text.secondary}> ▶</Text>
+        <text color={theme.text.secondary}> ▶</text>
       ) : null}
-    </Box>
+    </box>
   );
 }
 
@@ -422,12 +416,12 @@ function FileList({
   const TAG_AND_STATS_BUDGET = 32;
   const maxPathChars = Math.max(8, contentWidth - 2 - TAG_AND_STATS_BUDGET);
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {aboveCount > 0 ? (
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {' '}
           ↑ {aboveCount} {aboveCount === 1 ? t('more file') : t('more files')}
-        </Text>
+        </text>
       ) : null}
       {visible.map((f, idx) => (
         <FileRow
@@ -438,12 +432,12 @@ function FileList({
         />
       ))}
       {belowCount > 0 ? (
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {' '}
           ↓ {belowCount} {belowCount === 1 ? t('more file') : t('more files')}
-        </Text>
+        </text>
       ) : null}
-    </Box>
+    </box>
   );
 }
 
@@ -483,41 +477,41 @@ function FileRow({
     : maxPathChars;
   const path = truncatePathStart(file.displayPath, pathBudget);
   return (
-    <Box flexDirection="row">
-      <Text
+    <box style={{ flexDirection: "row" }}>
+      <text
         color={selected ? theme.text.accent : theme.text.primary}
         bold={selected}
       >
         {pointer}
-      </Text>
+      </text>
       {renameFits ? (
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {truncatePathStart(file.oldDisplayPath!, pathBudget)} →{' '}
-        </Text>
+        </text>
       ) : null}
-      <Text
+      <text
         color={selected ? theme.text.accent : theme.text.primary}
         bold={selected}
       >
         {path}
-      </Text>
-      <Text color={theme.text.secondary}>{tag} </Text>
+      </text>
+      <text color={theme.text.secondary}>{tag} </text>
       {file.isBinary ? (
-        <Text color={theme.text.secondary} italic>
+        <text color={theme.text.secondary} italic>
           {t('binary')}
-        </Text>
+        </text>
       ) : (
         <>
           {file.added > 0 ? (
-            <Text color={theme.status.success}>+{file.added}</Text>
+            <text color={theme.status.success}>+{file.added}</text>
           ) : null}
-          {file.added > 0 && file.removed > 0 ? <Text> </Text> : null}
+          {file.added > 0 && file.removed > 0 ? <text> </text> : null}
           {file.removed > 0 ? (
-            <Text color={theme.status.error}>-{file.removed}</Text>
+            <text color={theme.status.error}>-{file.removed}</text>
           ) : null}
         </>
       )}
-    </Box>
+    </box>
   );
 }
 
@@ -550,38 +544,38 @@ function FileDetail({
 
   if (file.isBinary) {
     return (
-      <Text color={theme.text.secondary}>{t('Binary file — no diff.')}</Text>
+      <text color={theme.text.secondary}>{t('Binary file — no diff.')}</text>
     );
   }
   if (file.oversized) {
     return (
-      <Text color={theme.text.secondary}>
+      <text color={theme.text.secondary}>
         {t('Oversized file — diff omitted. Use `git diff` to inspect.')}
-      </Text>
+      </text>
     );
   }
   if (!diffText) {
     return (
-      <Text color={theme.text.secondary}>
+      <text color={theme.text.secondary}>
         {t('No hunks available for {{path}}.', { path: file.displayPath })}
-      </Text>
+      </text>
     );
   }
 
   return (
-    <Box flexDirection="column">
-      <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <text bold color={theme.text.primary}>
         {truncatePathStart(file.displayPath, contentWidth)}
-      </Text>
-      <Box marginTop={1}>
+      </text>
+      <box marginTop={1}>
         <DiffRenderer
           diffContent={diffText}
           filename={file.displayPath}
           availableTerminalHeight={availableHeight}
           contentWidth={contentWidth}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }
 

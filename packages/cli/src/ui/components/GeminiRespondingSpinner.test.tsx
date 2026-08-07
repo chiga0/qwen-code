@@ -31,9 +31,9 @@ describe('<GeminiSpinner />', () => {
 
     expect(() =>
       render(
-        <Text>
+        <text>
           <GeminiSpinner /> startup message
-        </Text>,
+        </text>,
       ),
     ).not.toThrow();
   });

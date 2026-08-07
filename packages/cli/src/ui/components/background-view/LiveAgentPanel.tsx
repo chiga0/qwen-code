@@ -413,21 +413,21 @@ const LiveAgentPanelBody: React.FC<{
   const clampedIndex = Math.min(selectedIndex, totalItems - 1);
 
   return (
-    <Box flexDirection="column" marginTop={1} width={width} paddingX={2}>
-      <Box>
-        <Text color={focused ? theme.text.accent : theme.text.secondary}>
+    <box style={{ flexDirection: "column", width: width }} marginTop={1} paddingX={2}>
+      <box>
+        <text color={focused ? theme.text.accent : theme.text.secondary}>
           {focused && clampedIndex === 0 ? '▸ ' : '  '}
-        </Text>
-        <Text bold color={theme.text.accent}>
+        </text>
+        <text bold color={theme.text.accent}>
           main
-        </Text>
-      </Box>
+        </text>
+      </box>
       {overflow > 0 && (
-        <Box>
-          <Text
+        <box>
+          <text
             color={theme.text.secondary}
-          >{`    ^ ${overflow} more above (↓ to view all)`}</Text>
-        </Box>
+          >{`    ^ ${overflow} more above (↓ to view all)`}</text>
+        </box>
       )}
       {visible.map((entry, idx) => (
         <AgentRow
@@ -439,13 +439,13 @@ const LiveAgentPanelBody: React.FC<{
         />
       ))}
       {focused && (
-        <Box>
-          <Text color={theme.text.secondary}>
+        <box>
+          <text color={theme.text.secondary}>
             {'  ↑↓ navigate · Enter detail · Esc back'}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -520,34 +520,34 @@ const AgentRow: React.FC<{
       : ' · nested'
     : '';
   return (
-    <Box flexDirection="row">
-      <Box flexShrink={0}>
-        <Text color={selected ? theme.text.accent : theme.text.secondary}>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ flexShrink: 0 }}>
+        <text color={selected ? theme.text.accent : theme.text.secondary}>
           {prefix}
-        </Text>
-      </Box>
-      <Box flexShrink={1}>
-        <Text wrap="truncate-end">
+        </text>
+      </box>
+      <box style={{ flexShrink: 1 }}>
+        <text wrap="truncate-end">
           {treePrefix !== '' && (
-            <Text color={theme.text.secondary}>{treePrefix}</Text>
+            <text color={theme.text.secondary}>{treePrefix}</text>
           )}
-          <Text color={color}>{`${glyph} `}</Text>
+          <text color={color}>{`${glyph} `}</text>
           {showType && (
             <>
-              <Text bold>{safeSubagentType}</Text>
-              <Text color={theme.text.secondary}>{': '}</Text>
+              <text bold>{safeSubagentType}</text>
+              <text color={theme.text.secondary}>{': '}</text>
             </>
           )}
-          <Text color={theme.text.secondary}>{label}</Text>
+          <text color={theme.text.secondary}>{label}</text>
           {activity && (
-            <Text color={theme.text.secondary}>{` (${activity})`}</Text>
+            <text color={theme.text.secondary}>{` (${activity})`}</text>
           )}
-          {orphanNote && <Text color={theme.text.secondary}>{orphanNote}</Text>}
-        </Text>
-      </Box>
-      <Box flexShrink={0}>
-        <Text color={theme.text.secondary}>{tail}</Text>
-      </Box>
-    </Box>
+          {orphanNote && <text color={theme.text.secondary}>{orphanNote}</text>}
+        </text>
+      </box>
+      <box style={{ flexShrink: 0 }}>
+        <text color={theme.text.secondary}>{tail}</text>
+      </box>
+    </box>
   );
 };

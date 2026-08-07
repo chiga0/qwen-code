@@ -45,7 +45,7 @@ export function GenerationMethodSelector({
   };
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       <RadioButtonSelect
         items={generationOptions.map((option) => ({
           key: option.value,
@@ -58,6 +58,6 @@ export function GenerationMethodSelector({
         onSelect={handleSelect}
         isFocused={true}
       />
-    </Box>
+    </box>
   );
 }

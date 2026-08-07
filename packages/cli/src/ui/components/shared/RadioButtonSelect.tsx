@@ -73,17 +73,17 @@ export function RadioButtonSelect<T>({
         // Handle special theme display case for ThemeDialog compatibility
         if (item.themeNameDisplay && item.themeTypeDisplay) {
           return (
-            <Text color={titleColor} wrap="truncate" key={item.key}>
+            <text color={titleColor} wrap="truncate" key={item.key}>
               {item.themeNameDisplay}{' '}
-              <Text color={theme.text.secondary}>{item.themeTypeDisplay}</Text>
-            </Text>
+              <text color={theme.text.secondary}>{item.themeTypeDisplay}</text>
+            </text>
           );
         }
         // Regular label display
         return (
-          <Text color={titleColor} wrap="truncate">
+          <text color={titleColor} wrap="truncate">
             {item.label}
-          </Text>
+          </text>
         );
       }}
     />

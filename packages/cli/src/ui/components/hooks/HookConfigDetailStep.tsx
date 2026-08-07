@@ -66,137 +66,119 @@ export function HookConfigDetailStep({
   const showMatcher = supportsMatchers(hookEvent.event);
 
   return (
-    <Box flexDirection="column" paddingX={1}>
-      <Box marginBottom={1}>
-        <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
+      <box marginBottom={1}>
+        <text bold color={theme.text.primary}>
           {t('Hook details')}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box>
-        <Box width={labelWidth}>
-          <Text color={theme.text.secondary}>{t('Event:')}</Text>
-        </Box>
-        <Text color={theme.text.primary}>{hookEvent.event}</Text>
-      </Box>
+      <box>
+        <box style={{ width: labelWidth }}>
+          <text color={theme.text.secondary}>{t('Event:')}</text>
+        </box>
+        <text color={theme.text.primary}>{hookEvent.event}</text>
+      </box>
 
       {showMatcher && (
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Matcher:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>{hookConfig.matcher || '*'}</Text>
-        </Box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Matcher:')}</text>
+          </box>
+          <text color={theme.text.primary}>{hookConfig.matcher || '*'}</text>
+        </box>
       )}
 
-      <Box>
-        <Box width={labelWidth}>
-          <Text color={theme.text.secondary}>{t('Type:')}</Text>
-        </Box>
-        <Text color={theme.text.primary}>{getHookTypeDisplay()}</Text>
-      </Box>
+      <box>
+        <box style={{ width: labelWidth }}>
+          <text color={theme.text.secondary}>{t('Type:')}</text>
+        </box>
+        <text color={theme.text.primary}>{getHookTypeDisplay()}</text>
+      </box>
 
-      <Box>
-        <Box width={labelWidth}>
-          <Text color={theme.text.secondary}>{t('Source:')}</Text>
-        </Box>
-        <Text color={theme.text.primary}>{sourceDisplay}</Text>
+      <box>
+        <box style={{ width: labelWidth }}>
+          <text color={theme.text.secondary}>{t('Source:')}</text>
+        </box>
+        <text color={theme.text.primary}>{sourceDisplay}</text>
         {hookConfig.sourcePath && (
-          <Text color={theme.text.secondary}> ({hookConfig.sourcePath})</Text>
+          <text color={theme.text.secondary}> ({hookConfig.sourcePath})</text>
         )}
-      </Box>
+      </box>
 
       {isFromExtension && hookConfig.sourceDisplay && (
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Extension:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>{hookConfig.sourceDisplay}</Text>
-        </Box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Extension:')}</text>
+          </box>
+          <text color={theme.text.primary}>{hookConfig.sourceDisplay}</text>
+        </box>
       )}
 
       {hookConfig.config.name && (
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Name:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>{hookConfig.config.name}</Text>
-        </Box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Name:')}</text>
+          </box>
+          <text color={theme.text.primary}>{hookConfig.config.name}</text>
+        </box>
       )}
 
       {hookConfig.config.description && (
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Desc:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Desc:')}</text>
+          </box>
+          <text color={theme.text.primary}>
             {hookConfig.config.description}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
       {hookConfig.config.type === 'command' && (
         <>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('Command:')}</Text>
-          </Box>
-          <Box
-            flexDirection="column"
-            borderStyle="round"
-            borderColor={theme.border.default}
-            paddingX={1}
-            width={commandBoxWidth}
-          >
-            <Text color={theme.text.primary}>{getCommand()}</Text>
-          </Box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('Command:')}</text>
+          </box>
+          <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: commandBoxWidth }} paddingX={1}>
+            <text color={theme.text.primary}>{getCommand()}</text>
+          </box>
         </>
       )}
 
       {hookConfig.config.type === 'prompt' && (
         <>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('Prompt:')}</Text>
-          </Box>
-          <Box
-            flexDirection="column"
-            borderStyle="round"
-            borderColor={theme.border.default}
-            paddingX={1}
-            width={commandBoxWidth}
-          >
-            <Text color={theme.text.primary}>{getPrompt()}</Text>
-          </Box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('Prompt:')}</text>
+          </box>
+          <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: commandBoxWidth }} paddingX={1}>
+            <text color={theme.text.primary}>{getPrompt()}</text>
+          </box>
         </>
       )}
 
       {hookConfig.config.type === 'http' && (
         <>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('URL:')}</Text>
-          </Box>
-          <Box
-            flexDirection="column"
-            borderStyle="round"
-            borderColor={theme.border.default}
-            paddingX={1}
-            width={commandBoxWidth}
-          >
-            <Text color={theme.text.primary}>{getUrl()}</Text>
-          </Box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('URL:')}</text>
+          </box>
+          <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: commandBoxWidth }} paddingX={1}>
+            <text color={theme.text.primary}>{getUrl()}</text>
+          </box>
         </>
       )}
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t(
             'To modify or remove this hook, edit settings.json directly or ask Qwen to help.',
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>{t('Esc to go back')}</Text>
-      </Box>
-    </Box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>{t('Esc to go back')}</text>
+      </box>
+    </box>
   );
 }

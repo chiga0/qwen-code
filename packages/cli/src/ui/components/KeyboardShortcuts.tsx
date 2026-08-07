@@ -49,9 +49,9 @@ const getShortcuts = (): Shortcut[] => [
 ];
 
 const ShortcutItem: React.FC<{ shortcut: Shortcut }> = ({ shortcut }) => (
-  <Text color={theme.text.secondary}>
-    <Text color={theme.text.accent}>{shortcut.key}</Text> {shortcut.description}
-  </Text>
+  <text color={theme.text.secondary}>
+    <text color={theme.text.accent}>{shortcut.key}</text> {shortcut.description}
+  </text>
 );
 
 // Layout constants
@@ -107,22 +107,14 @@ export const KeyboardShortcuts: React.FC = () => {
   }
 
   return (
-    <Box
-      flexDirection="row"
-      marginLeft={MARGIN_LEFT}
-      marginRight={MARGIN_RIGHT}
-    >
+    <box style={{ flexDirection: "row" }} marginLeft={MARGIN_LEFT} marginRight={MARGIN_RIGHT}>
       {columns.map((column, colIndex) => (
-        <Box
-          key={colIndex}
-          flexDirection="column"
-          marginRight={colIndex < numColumns - 1 ? COLUMN_GAP : 0}
-        >
+        <box key={colIndex} style={{ flexDirection: "column" }} marginRight={colIndex < numColumns - 1 ? COLUMN_GAP : 0}>
           {column.map((shortcut) => (
             <ShortcutItem key={shortcut.key} shortcut={shortcut} />
           ))}
-        </Box>
+        </box>
       ))}
-    </Box>
+    </box>
   );
 };

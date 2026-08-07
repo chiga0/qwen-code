@@ -46,20 +46,20 @@ export const StatusMessage: React.FC<StatusMessageProps> = ({
   const prefixWidth = stringWidth(prefix) + 1;
 
   return (
-    <Box flexDirection="row">
-      <Box width={prefixWidth} flexShrink={0}>
-        <Text color={prefixColor}>{prefix}</Text>
-      </Box>
-      <Box flexGrow={1} flexDirection="column">
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: prefixWidth, flexShrink: 0 }}>
+        <text color={prefixColor}>{prefix}</text>
+      </box>
+      <box style={{ flexGrow: 1, flexDirection: "column" }}>
         {text && text.trim() !== '' && (
-          <Text wrap="wrap" color={textColor}>
+          <text wrap="wrap" color={textColor}>
             <RenderInline text={text} />
             {children}
-          </Text>
+          </text>
         )}
         {footer}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 
@@ -76,9 +76,9 @@ export const InfoMessage: React.FC<StatusTextProps> = ({
     footer={
       linkUrl && (
         <Link url={linkUrl}>
-          <Text color={theme.text.link} underline>
+          <text color={theme.text.link} underline>
             {linkText ?? linkUrl}
-          </Text>
+          </text>
         </Link>
       )
     }
@@ -113,7 +113,7 @@ export const ErrorMessage: React.FC<StatusTextProps & { hint?: string }> = ({
     prefixColor={theme.status.error}
     textColor={theme.status.error}
   >
-    {hint && <Text color={theme.text.secondary}> ({hint})</Text>}
+    {hint && <text color={theme.text.secondary}> ({hint})</text>}
   </StatusMessage>
 );
 
@@ -144,17 +144,17 @@ export const VisionNoticeMessage: React.FC<StatusTextProps> = ({ text }) => (
 // dim-colored. Rendered as a regular history item so it scrolls with
 // the conversation instead of pinning above the input.
 export const AwayRecapMessage: React.FC<StatusTextProps> = ({ text }) => (
-  <Box flexDirection="row">
-    <Box width={2} flexShrink={0}>
-      <Text color={theme.text.secondary}>{ICON.REFERENCE}</Text>
-    </Box>
-    <Text wrap="wrap">
-      <Text color={theme.text.secondary} bold>
+  <box style={{ flexDirection: "row" }}>
+    <box style={{ width: 2, flexShrink: 0 }}>
+      <text color={theme.text.secondary}>{ICON.REFERENCE}</text>
+    </box>
+    <text wrap="wrap">
+      <text color={theme.text.secondary} bold>
         recap:{' '}
-      </Text>
-      <Text color={theme.text.secondary} italic>
+      </text>
+      <text color={theme.text.secondary} italic>
         {text}
-      </Text>
-    </Text>
-  </Box>
+      </text>
+    </text>
+  </box>
 );

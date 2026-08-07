@@ -25,32 +25,32 @@ const ProviderDiffSection = ({ entry }: { entry: ProviderUpdateEntry }) => {
   const hasModelChanges = diff.added.length > 0 || diff.removed.length > 0;
 
   return (
-    <Box flexDirection="column">
-      <Text bold color={theme.text.secondary}>
+    <box style={{ flexDirection: "column" }}>
+      <text bold color={theme.text.secondary}>
         {providerLabel}
-      </Text>
+      </text>
       {hasModelChanges ? (
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {diff.added.map((model) => (
-            <Text key={model} color={theme.status.success}>
+            <text key={model} color={theme.status.success}>
               {'  + '}
               {model}
-            </Text>
+            </text>
           ))}
           {diff.removed.map((model) => (
-            <Text key={model} color={theme.status.error}>
+            <text key={model} color={theme.status.error}>
               {'  - '}
               {model}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       ) : (
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {'  '}
           {t('Model parameters updated (context window, capabilities, etc.)')}
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -78,36 +78,30 @@ export const ProviderUpdatePrompt = ({
       : t('Built-in Provider Updates');
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-    >
-      <Text bold>{title}</Text>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column" }} paddingY={1} paddingX={2}>
+      <text bold>{title}</text>
 
-      <Box flexDirection="column" marginTop={1} gap={1}>
+      <box style={{ flexDirection: "column", gap: 1 }} marginTop={1}>
         {entries.map((entry) => (
           <ProviderDiffSection key={entry.providerLabel} entry={entry} />
         ))}
-      </Box>
+      </box>
 
-      <Box flexDirection="column" marginTop={1}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
         {affectedEntry && (
-          <Text color={theme.status.warning}>
+          <text color={theme.status.warning}>
             {t(
               'Note: Your selected model is being removed. It will switch to "{{model}}" after update.',
               { model: affectedEntry.diff.fallbackModel ?? '' },
             )}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {t('Tips: Your credentials will not be modified.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <RadioButtonSelect
           items={[
             {
@@ -128,7 +122,7 @@ export const ProviderUpdatePrompt = ({
           ]}
           onSelect={onConfirm}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

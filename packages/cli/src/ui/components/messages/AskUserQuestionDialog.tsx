@@ -360,96 +360,96 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
   // Submit tab (for multiple questions)
   if (isSubmitTab) {
     return (
-      <Box flexDirection="column" padding={1}>
+      <box style={{ flexDirection: "column", padding: 1 }}>
         {/* Tabs */}
-        <Box marginBottom={1} flexDirection="row" gap={1}>
+        <box marginBottom={1} style={{ flexDirection: "row", gap: 1 }}>
           {confirmationDetails.questions.map((q, idx) => {
             const isAnswered = getAnswerForQuestion(idx) !== undefined;
             return (
-              <Box key={idx}>
-                <Text dimColor>
+              <box key={idx}>
+                <text dimColor>
                   {'  '}
                   {truncateToWidth(q.header, headerCap)}
                   {isAnswered ? ' ✓' : ''}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
-          <Box>
-            <Text color={theme.text.accent} bold>
+          <box>
+            <text color={theme.text.accent} bold>
               ▸ {t('Submit')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
 
         {/* Show selected answers */}
-        <Box flexDirection="column" marginBottom={1}>
-          <Text bold>{t('Your answers:')}</Text>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text bold>{t('Your answers:')}</text>
           {confirmationDetails.questions.map((q, idx) => {
             const answer = getAnswerForQuestion(idx);
             return (
-              <Box key={idx} marginLeft={2}>
-                <Text>
+              <box key={idx} marginLeft={2}>
+                <text>
                   {q.header}:{' '}
                   {answer ? (
-                    <Text color={theme.text.accent}>{answer}</Text>
+                    <text color={theme.text.accent}>{answer}</text>
                   ) : (
-                    <Text dimColor>{t('(not answered)')}</Text>
+                    <text dimColor>{t('(not answered)')}</text>
                   )}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
-        </Box>
+        </box>
 
-        <Box marginTop={1} marginBottom={1}>
-          <Text>{t('Ready to submit your answers?')}</Text>
-        </Box>
+        <box marginTop={1} marginBottom={1}>
+          <text>{t('Ready to submit your answers?')}</text>
+        </box>
 
         {/* Submit/Cancel options */}
-        <Box flexDirection="column">
-          <Box>
-            <Text
+        <box style={{ flexDirection: "column" }}>
+          <box>
+            <text
               color={
                 selectedIndex === 0 ? theme.text.accent : theme.text.primary
               }
               bold={selectedIndex === 0}
             >
               {selectedIndex === 0 ? '❯ ' : '  '}1. {t('Submit answers')}
-            </Text>
-          </Box>
-          <Box>
-            <Text
+            </text>
+          </box>
+          <box>
+            <text
               color={
                 selectedIndex === 1 ? theme.text.accent : theme.text.primary
               }
               bold={selectedIndex === 1}
             >
               {selectedIndex === 1 ? '❯ ' : '  '}2. {t('Cancel')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
 
-        <Box marginTop={1}>
-          <Text dimColor>
+        <box marginTop={1}>
+          <text dimColor>
             {t('↑/↓: Navigate | ←/→: Switch tabs | Enter: Select')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   // Question tab
   return (
-    <Box flexDirection="column" padding={1}>
+    <box style={{ flexDirection: "column", padding: 1 }}>
       {/* Tabs for multiple questions */}
       {hasMultipleQuestions && (
-        <Box marginBottom={1} flexDirection="row" gap={1}>
+        <box marginBottom={1} style={{ flexDirection: "row", gap: 1 }}>
           {confirmationDetails.questions.map((q, idx) => {
             const isAnswered = getAnswerForQuestion(idx) !== undefined;
             return (
-              <Box key={idx}>
-                <Text
+              <box key={idx}>
+                <text
                   color={
                     idx === currentQuestionIndex
                       ? theme.text.accent
@@ -461,30 +461,30 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                   {idx === currentQuestionIndex ? '▸ ' : '  '}
                   {truncateToWidth(q.header, headerCap)}
                   {isAnswered ? ' ✓' : ''}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
-          <Box>
-            <Text dimColor> {t('Submit')}</Text>
-          </Box>
-        </Box>
+          <box>
+            <text dimColor> {t('Submit')}</text>
+          </box>
+        </box>
       )}
 
       {/* Question */}
-      <Box flexDirection="column" marginBottom={1}>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
         {!hasMultipleQuestions && (
-          <Box marginBottom={1}>
-            <Text color={theme.text.accent} bold>
+          <box marginBottom={1}>
+            <text color={theme.text.accent} bold>
               {currentQuestion!.header}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-        <Text>{currentQuestion!.question}</Text>
-      </Box>
+        <text>{currentQuestion!.question}</text>
+      </box>
 
       {/* Options */}
-      <Box flexDirection="column" marginBottom={1}>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
         {currentQuestion!.options.map((opt, index) => {
           const isSelected = selectedIndex === index;
           const isMultiChecked =
@@ -501,9 +501,9 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
           const prefixWidth =
             2 + (isMultiSelect ? 4 : 0) + String(index + 1).length + 2;
           return (
-            <Box key={index} flexDirection="column">
-              <Box>
-                <Text
+            <box key={index} style={{ flexDirection: "column" }}>
+              <box>
+                <text
                   color={isHighlighted ? theme.text.accent : theme.text.primary}
                   bold={isHighlighted}
                 >
@@ -511,23 +511,23 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                   {isMultiSelect ? (isMultiChecked ? '[✓] ' : '[ ] ') : ''}
                   {index + 1}. {opt.label}
                   {isAnswered ? ' ✓' : ''}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {opt.description && (
-                <Box marginLeft={prefixWidth}>
-                  <Text dimColor>{opt.description}</Text>
-                </Box>
+                <box marginLeft={prefixWidth}>
+                  <text dimColor>{opt.description}</text>
+                </box>
               )}
-            </Box>
+            </box>
           );
         })}
 
         {/* Type something option/input */}
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {isCustomInputSelected ? (
             // Inline TextInput replaces the option text
-            <Box>
-              <Text color={theme.text.accent} bold>
+            <box>
+              <text color={theme.text.accent} bold>
                 ❯{' '}
                 {isMultiSelect
                   ? customInputChecked[currentQuestionIndex]
@@ -535,7 +535,7 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                     : '[ ] '
                   : ''}
                 {currentQuestion!.options.length + 1}.{' '}
-              </Text>
+              </text>
               <TextInput
                 value={currentCustomInputValue}
                 initialCursorOffset={currentCustomInputValue.length}
@@ -564,11 +564,11 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                 isActive={true}
                 inputWidth={50}
               />
-            </Box>
+            </box>
           ) : (
             // Show typed value or placeholder when not selected
-            <Box>
-              <Text
+            <box>
+              <text
                 color={
                   isCustomInputAnswer ||
                   customInputChecked[currentQuestionIndex]
@@ -596,16 +596,16 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                 {currentQuestion!.options.length + 1}.{' '}
                 {currentCustomInputValue || t('Type something...')}
                 {isCustomInputAnswer ? ' ✓' : ''}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
-        </Box>
-      </Box>
+        </box>
+      </box>
 
       {/* Help text */}
-      <Box flexDirection="column" marginTop={1}>
-        <Box>
-          <Text dimColor>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <box>
+          <text dimColor>
             {hasMultipleQuestions
               ? isMultiSelect
                 ? t(
@@ -619,9 +619,9 @@ export const AskUserQuestionDialog: React.FC<AskUserQuestionDialogProps> = ({
                     '↑/↓: Navigate | Space: Toggle | Enter: Confirm | Esc: Cancel',
                   )
                 : t('↑/↓: Navigate | Enter: Select | Esc: Cancel')}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          </text>
+        </box>
+      </box>
+    </box>
   );
 };

@@ -41,18 +41,18 @@ export const ContextUsageDisplay = ({
   if (isOverLimit) {
     return (
       <>
-        <Text color={theme.status.error}>
+        <text color={theme.status.error}>
           {percentageUsed}
           {label}
-        </Text>
+        </text>
       </>
     );
   }
 
   return (
-    <Text color={theme.text.secondary}>
+    <text color={theme.text.secondary}>
       {percentageUsed}
       {label}
-    </Text>
+    </text>
   );
 };

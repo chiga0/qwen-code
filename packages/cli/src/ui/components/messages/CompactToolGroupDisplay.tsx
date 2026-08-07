@@ -481,28 +481,28 @@ export const CompactToolGroupDisplay: React.FC<
   const hint = getActiveToolHint(toolCalls);
 
   return (
-    <Box flexDirection="column" width={contentWidth} gap={0}>
-      <Box flexDirection="row">
+    <box style={{ flexDirection: "column", width: contentWidth, gap: 0 }}>
+      <box style={{ flexDirection: "row" }}>
         <ToolStatusIndicator status={overallStatus} name={activeTool.name} />
-        <Box flexGrow={1}>
-          <Text wrap="wrap" bold>
+        <box style={{ flexGrow: 1 }}>
+          <text wrap="wrap" bold>
             {buildToolSummary(toolCalls, isActive)}
-            {isActive && <Text key="ellipsis">…</Text>}
-          </Text>
-        </Box>
+            {isActive && <text key="ellipsis">…</text>}
+          </text>
+        </box>
         <ToolElapsedTime
           status={overallStatus}
           executionStartTime={activeTool.executionStartTime}
           timeoutMs={getShellTimeoutMs(activeTool)}
         />
-      </Box>
+      </box>
       {hint && (
-        <Box paddingLeft={STATUS_INDICATOR_WIDTH}>
-          <Text dimColor wrap="truncate-end">
+        <box paddingLeft={STATUS_INDICATOR_WIDTH}>
+          <text dimColor wrap="truncate-end">
             ⎿ {hint}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

@@ -61,7 +61,7 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
     !(enableInlineMath && text.includes('$')) &&
     !text.includes('\\$')
   ) {
-    return <Text color={textColor}>{text}</Text>;
+    return <text color={textColor}>{text}</text>;
   }
 
   const nodes: React.ReactNode[] = [];
@@ -80,19 +80,19 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
     if (index > lastIndex) {
       const prose = text.slice(lastIndex, index);
       nodes.push(
-        <Text key={`t-${lastIndex}`}>
+        <text key={`t-${lastIndex}`}>
           {token.kind === 'math'
             ? unescapeMarkdownBeforeMath(prose)
             : unescapeMarkdownDollars(prose)}
-        </Text>,
+        </text>,
       );
     }
 
     if (token.kind === 'math') {
       nodes.push(
-        <Text key={`m-${index}`} color={theme.text.accent}>
+        <text key={`m-${index}`} color={theme.text.accent}>
           {renderInlineLatex(unescapeMarkdownDollars(token.span.content))}
-        </Text>,
+        </text>,
       );
       lastIndex = index + token.span.raw.length;
       continue;
@@ -110,11 +110,11 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
         fullMatch.length > BOLD_MARKER_LENGTH * 2
       ) {
         renderedNode = (
-          <Text key={key} bold>
+          <text key={key} bold>
             {unescapeMarkdownDollars(
               fullMatch.slice(BOLD_MARKER_LENGTH, -BOLD_MARKER_LENGTH),
             )}
-          </Text>
+          </text>
         );
       } else if (
         fullMatch.length > ITALIC_MARKER_LENGTH * 2 &&
@@ -136,11 +136,11 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
         )
       ) {
         renderedNode = (
-          <Text key={key} italic>
+          <text key={key} italic>
             {unescapeMarkdownDollars(
               fullMatch.slice(ITALIC_MARKER_LENGTH, -ITALIC_MARKER_LENGTH),
             )}
-          </Text>
+          </text>
         );
       } else if (
         fullMatch.startsWith('~~') &&
@@ -148,14 +148,14 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
         fullMatch.length > STRIKETHROUGH_MARKER_LENGTH * 2
       ) {
         renderedNode = (
-          <Text key={key} strikethrough>
+          <text key={key} strikethrough>
             {unescapeMarkdownDollars(
               fullMatch.slice(
                 STRIKETHROUGH_MARKER_LENGTH,
                 -STRIKETHROUGH_MARKER_LENGTH,
               ),
             )}
-          </Text>
+          </text>
         );
       } else if (
         fullMatch.startsWith('`') &&
@@ -165,9 +165,9 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
         const codeMatch = fullMatch.match(/^(`+)(.+?)\1$/s);
         if (codeMatch && codeMatch[2]) {
           renderedNode = (
-            <Text key={key} color={theme.text.code}>
+            <text key={key} color={theme.text.code}>
               {codeMatch[2]}
-            </Text>
+            </text>
           );
         }
       } else if (
@@ -208,21 +208,21 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
           // present a clickable "google.com" that resolves elsewhere.
           const showUrlSuffix = wrapOsc8 && labelMayDeceive(safeLabel, safeUrl);
           renderedNode = wrapOsc8 ? (
-            <Text key={key}>
-              <Text color={theme.text.link}>
+            <text key={key}>
+              <text color={theme.text.link}>
                 {osc8Open(url)}
                 {safeLabel || safeUrl}
                 {osc8Close()}
-              </Text>
+              </text>
               {showUrlSuffix ? (
-                <Text color={theme.text.link}> ({safeUrl})</Text>
+                <text color={theme.text.link}> ({safeUrl})</text>
               ) : null}
-            </Text>
+            </text>
           ) : (
-            <Text key={key}>
+            <text key={key}>
               {renderedLinkText}
-              <Text color={theme.text.link}> ({url})</Text>
-            </Text>
+              <text color={theme.text.link}> ({url})</text>
+            </text>
           );
         }
       } else if (
@@ -232,14 +232,14 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
           UNDERLINE_TAG_START_LENGTH + UNDERLINE_TAG_END_LENGTH - 1 // -1 because length is compared to combined length of start and end tags
       ) {
         renderedNode = (
-          <Text key={key} underline>
+          <text key={key} underline>
             {unescapeMarkdownDollars(
               fullMatch.slice(
                 UNDERLINE_TAG_START_LENGTH,
                 -UNDERLINE_TAG_END_LENGTH,
               ),
             )}
-          </Text>
+          </text>
         );
       } else if (fullMatch.match(/^https?:\/\//)) {
         // The bare-URL regex greedily eats trailing punctuation (`.`, `)`,
@@ -253,11 +253,11 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
           : fullMatch;
         const wrapOsc8 = canHyperlink && isSafeOscScheme(trimmedUrl);
         renderedNode = (
-          <Text key={key} color={theme.text.link}>
+          <text key={key} color={theme.text.link}>
             {wrapOsc8 ? osc8Open(trimmedUrl) : null}
             {fullMatch}
             {wrapOsc8 ? osc8Close() : null}
-          </Text>
+          </text>
         );
       }
     } catch (e) {
@@ -267,7 +267,7 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
 
     nodes.push(
       renderedNode ?? (
-        <Text key={key}>{unescapeMarkdownDollars(fullMatch)}</Text>
+        <text key={key}>{unescapeMarkdownDollars(fullMatch)}</text>
       ),
     );
     lastIndex = index + fullMatch.length;
@@ -275,9 +275,9 @@ const RenderInlineInternal: React.FC<RenderInlineProps> = ({
 
   if (lastIndex < text.length) {
     nodes.push(
-      <Text key={`t-${lastIndex}`}>
+      <text key={`t-${lastIndex}`}>
         {unescapeMarkdownDollars(text.slice(lastIndex))}
-      </Text>,
+      </text>,
     );
   }
 

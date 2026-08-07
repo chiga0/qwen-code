@@ -103,31 +103,27 @@ export const DiffRenderer: React.FC<DiffRendererProps> = ({
 }) => {
   const screenReaderEnabled = useIsScreenReaderEnabled();
   if (!diffContent || typeof diffContent !== 'string') {
-    return <Text color={semanticTheme.status.warning}>No diff content.</Text>;
+    return <text color={semanticTheme.status.warning}>No diff content.</text>;
   }
 
   const parsedLines = parseDiffWithLineNumbers(diffContent);
 
   if (parsedLines.length === 0) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={semanticTheme.border.default}
-        padding={1}
-      >
-        <Text dimColor>No changes detected.</Text>
-      </Box>
+      <box style={{ borderStyle: "round", borderColor: semanticTheme.border.default, padding: 1 }}>
+        <text dimColor>No changes detected.</text>
+      </box>
     );
   }
   if (screenReaderEnabled) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {parsedLines.map((line, index) => (
-          <Text key={index}>
+          <text key={index}>
             {line.type}: {line.content}
-          </Text>
+          </text>
         ))}
-      </Box>
+      </box>
     );
   }
 
@@ -196,13 +192,9 @@ const renderDiffContent = (
 
   if (displayableLines.length === 0) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={semanticTheme.border.default}
-        padding={1}
-      >
-        <Text dimColor>No changes detected.</Text>
-      </Box>
+      <box style={{ borderStyle: "round", borderColor: semanticTheme.border.default, padding: 1 }}>
+        <text dimColor>No changes detected.</text>
+      </box>
     );
   }
 
@@ -265,11 +257,11 @@ const renderDiffContent = (
             lastLineNumber + MAX_CONTEXT_LINES_WITHOUT_GAP + 1
         ) {
           acc.push(
-            <Box key={`gap-${index}`}>
-              <Text wrap="truncate" color={semanticTheme.text.secondary}>
+            <box key={`gap-${index}`}>
+              <text wrap="truncate" color={semanticTheme.text.secondary}>
                 {'═'.repeat(contentWidth)}
-              </Text>
-            </Box>,
+              </text>
+            </box>,
           );
         }
 
@@ -305,39 +297,28 @@ const renderDiffContent = (
         const displayContent = line.content.substring(baseIndentation);
 
         acc.push(
-          <Box key={lineKey} flexDirection="row">
+          <box key={lineKey} style={{ flexDirection: "row" }}>
             {showLineNumbers && (
-              <Text
-                selectable={false}
-                color={semanticTheme.text.secondary}
-                backgroundColor={
-                  line.type === 'add'
+              <text selectable={false} color={semanticTheme.text.secondary} style={{ backgroundColor: line.type === 'add'
                     ? semanticTheme.background.diff.added
                     : line.type === 'del'
                       ? semanticTheme.background.diff.removed
-                      : undefined
-                }
-              >
+                      : undefined }}>
                 {gutterNumStr.padStart(gutterWidth)}{' '}
-              </Text>
+              </text>
             )}
             {line.type === 'context' ? (
               <>
-                <Text>{prefixSymbol} </Text>
-                <Text wrap="wrap">
+                <text>{prefixSymbol} </text>
+                <text wrap="wrap">
                   {colorizeLine(displayContent, language)}
-                </Text>
+                </text>
               </>
             ) : (
-              <Text
-                backgroundColor={
-                  line.type === 'add'
+              <text style={{ backgroundColor: line.type === 'add'
                     ? semanticTheme.background.diff.added
-                    : semanticTheme.background.diff.removed
-                }
-                wrap="wrap"
-              >
-                <Text
+                    : semanticTheme.background.diff.removed }} wrap="wrap">
+                <text
                   color={
                     line.type === 'add'
                       ? semanticTheme.status.success
@@ -345,11 +326,11 @@ const renderDiffContent = (
                   }
                 >
                   {prefixSymbol}
-                </Text>{' '}
+                </text>{' '}
                 {colorizeLine(displayContent, language)}
-              </Text>
+              </text>
             )}
-          </Box>,
+          </box>,
         );
         return acc;
       }, [])}

@@ -647,104 +647,104 @@ export const MCPManagementDialog: React.FC<MCPManagementDialogProps> = ({
   const renderStepHeader = useCallback(() => {
     const currentStep = getCurrentStep();
     let headerText = (
-      <Box flexDirection="column">
-        <Text color={theme.text.accent} bold>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.accent} bold>
           {t('Manage MCP servers')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {servers.length} {servers.length === 1 ? t('server') : t('servers')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
 
     switch (currentStep) {
       case MCP_MANAGEMENT_STEPS.SERVER_DETAIL:
         headerText = (
-          <Box>
-            <Text color={theme.text.accent} bold>
+          <box>
+            <text color={theme.text.accent} bold>
               {selectedServer?.name || t('Server Detail')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.TOOL_LIST:
         headerText = (
-          <Box flexDirection="column">
-            <Text color={theme.text.accent} bold>
+          <box style={{ flexDirection: "column" }}>
+            <text color={theme.text.accent} bold>
               {t('Tools for {{serverName}}', {
                 serverName: selectedServer?.name || 'Server',
               })}
-            </Text>
-            <Text color={theme.text.secondary}>
+            </text>
+            <text color={theme.text.secondary}>
               ({getServerTools().length}{' '}
               {getServerTools().length === 1 ? t('tool') : t('tools')})
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.TOOL_DETAIL:
         headerText = (
-          <Box flexDirection="column">
-            <Box>
-              <Text color={theme.text.accent} bold>
+          <box style={{ flexDirection: "column" }}>
+            <box>
+              <text color={theme.text.accent} bold>
                 {selectedTool?.name || t('Tool Detail')}
-              </Text>
+              </text>
               {selectedTool?.annotations?.destructiveHint && (
-                <Text color={theme.status.error}>[{t('destructive')}]</Text>
+                <text color={theme.status.error}>[{t('destructive')}]</text>
               )}
               {selectedTool?.annotations?.idempotentHint && (
-                <Text color={theme.status.warning}>[{t('idempotent')}]</Text>
+                <text color={theme.status.warning}>[{t('idempotent')}]</text>
               )}
               {selectedTool?.annotations?.readOnlyHint && (
-                <Text color={theme.status.success}>[{t('read-only')}]</Text>
+                <text color={theme.status.success}>[{t('read-only')}]</text>
               )}
               {selectedTool?.annotations?.openWorldHint && (
-                <Text color={theme.text.primary}>[{t('open-world')}]</Text>
+                <text color={theme.text.primary}>[{t('open-world')}]</text>
               )}
-            </Box>
-            <Text color={theme.text.secondary}>
+            </box>
+            <text color={theme.text.secondary}>
               {selectedTool?.serverName || t('Server')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.RESOURCE_LIST:
         headerText = (
-          <Box flexDirection="column">
-            <Text color={theme.text.accent} bold>
+          <box style={{ flexDirection: "column" }}>
+            <text color={theme.text.accent} bold>
               {t('Resources for {{serverName}}', {
                 serverName: selectedServer?.name || 'Server',
               })}
-            </Text>
-            <Text color={theme.text.secondary}>
+            </text>
+            <text color={theme.text.secondary}>
               ({getServerResources().length}{' '}
               {getServerResources().length === 1
                 ? t('resource')
                 : t('resources')}
               )
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.RESOURCE_DETAIL:
         headerText = (
-          <Box flexDirection="column">
-            <Text color={theme.text.accent} bold wrap="truncate">
+          <box style={{ flexDirection: "column" }}>
+            <text color={theme.text.accent} bold wrap="truncate">
               {selectedResource?.uri || t('Resource Detail')}
-            </Text>
-            <Text color={theme.text.secondary}>
+            </text>
+            <text color={theme.text.secondary}>
               {selectedResource?.serverName || t('Server')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.AUTHENTICATE:
         headerText = (
-          <Box>
-            <Text color={theme.text.accent} bold>
+          <box>
+            <text color={theme.text.accent} bold>
               {t('OAuth Authentication')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
         break;
       case MCP_MANAGEMENT_STEPS.SERVER_LIST:
@@ -766,7 +766,7 @@ export const MCPManagementDialog: React.FC<MCPManagementDialogProps> = ({
   // Render step content
   const renderStepContent = useCallback(() => {
     if (isLoading) {
-      return <Text color={theme.text.secondary}>{t('Loading...')}</Text>;
+      return <text color={theme.text.secondary}>{t('Loading...')}</text>;
     }
 
     const currentStep = getCurrentStep();
@@ -847,9 +847,9 @@ export const MCPManagementDialog: React.FC<MCPManagementDialogProps> = ({
 
       default:
         return (
-          <Box>
-            <Text color={theme.status.error}>{t('Unknown step')}</Text>
-          </Box>
+          <box>
+            <text color={theme.status.error}>{t('Unknown step')}</text>
+          </box>
         );
     }
   }, [
@@ -915,9 +915,9 @@ export const MCPManagementDialog: React.FC<MCPManagementDialogProps> = ({
     }
 
     return (
-      <Box>
-        <Text color={theme.text.secondary}>{footerText}</Text>
-      </Box>
+      <box>
+        <text color={theme.text.secondary}>{footerText}</text>
+      </box>
     );
   }, [getCurrentStep, servers.length]);
 
@@ -935,17 +935,10 @@ export const MCPManagementDialog: React.FC<MCPManagementDialogProps> = ({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      gap={1}
-      padding={1}
-      width="100%"
-    >
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", gap: 1, padding: 1, width: "100%" }}>
       {renderStepHeader()}
       {renderStepContent()}
       {renderStepFooter()}
-    </Box>
+    </box>
   );
 };

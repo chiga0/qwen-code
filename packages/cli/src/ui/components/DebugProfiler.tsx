@@ -31,6 +31,6 @@ export const DebugProfiler = () => {
   }
 
   return (
-    <Text color={theme.status.warning}>Renders: {numRenders.current} </Text>
+    <text color={theme.status.warning}>Renders: {numRenders.current} </text>
   );
 };

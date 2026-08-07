@@ -353,7 +353,7 @@ export const McpServerActionsView = ({
   }, [config, serverName, reload, onStatus]);
 
   if (loading && !server) {
-    return <Text color={theme.text.secondary}>{t('Loading...')}</Text>;
+    return <text color={theme.text.secondary}>{t('Loading...')}</text>;
   }
 
   if (sub === 'authenticate') {

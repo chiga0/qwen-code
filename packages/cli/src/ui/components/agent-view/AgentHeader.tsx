@@ -37,28 +37,21 @@ export const AgentHeader: React.FC<AgentHeaderProps> = ({
     modelName && modelName !== modelId ? `${modelId} (${modelName})` : modelId;
 
   return (
-    <Box
-      flexDirection="column"
-      marginX={2}
-      marginTop={1}
-      borderStyle="round"
-      borderColor={theme.border.default}
-      paddingX={1}
-    >
-      <Text>
-        <Text color={theme.text.secondary}>{'Model:  '}</Text>
-        <Text color={theme.text.primary}>{modelText}</Text>
-      </Text>
-      <Text>
-        <Text color={theme.text.secondary}>{'Path:   '}</Text>
-        <Text color={theme.text.primary}>{displayPath}</Text>
-      </Text>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default }} marginX={2} marginTop={1} paddingX={1}>
+      <text>
+        <text color={theme.text.secondary}>{'Model:  '}</text>
+        <text color={theme.text.primary}>{modelText}</text>
+      </text>
+      <text>
+        <text color={theme.text.secondary}>{'Path:   '}</text>
+        <text color={theme.text.primary}>{displayPath}</text>
+      </text>
       {gitBranch && (
-        <Text>
-          <Text color={theme.text.secondary}>{'Branch: '}</Text>
-          <Text color={theme.text.primary}>{gitBranch}</Text>
-        </Text>
+        <text>
+          <text color={theme.text.secondary}>{'Branch: '}</text>
+          <text color={theme.text.primary}>{gitBranch}</text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };

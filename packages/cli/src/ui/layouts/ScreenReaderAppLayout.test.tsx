@@ -14,48 +14,48 @@ import { StreamingState } from '../types.js';
 const dialogManagerMockState = vi.hoisted(() => ({ lineCount: 1 }));
 
 vi.mock('../components/Notifications.js', () => ({
-  Notifications: () => <Text>Notifications</Text>,
+  Notifications: () => <text>Notifications</text>,
 }));
 
 vi.mock('../components/MainContent.js', () => ({
-  MainContent: () => <Text>MainContent</Text>,
+  MainContent: () => <text>MainContent</text>,
 }));
 
 vi.mock('../components/UpdateNotification.js', () => ({
   UpdateNotification: ({ message }: { message: string }) => (
-    <Text>{`UpdateNotification: ${message}`}</Text>
+    <text>{`UpdateNotification: ${message}`}</text>
   ),
 }));
 
 vi.mock('../components/DialogManager.js', () => ({
   DialogManager: () => (
-    <Text>
+    <text>
       {Array.from(
         { length: dialogManagerMockState.lineCount },
         (_, i) => `DialogManager ${i + 1}`,
       ).join('\n')}
-    </Text>
+    </text>
   ),
 }));
 
 vi.mock('../components/Composer.js', () => ({
-  Composer: () => <Text>Composer</Text>,
+  Composer: () => <text>Composer</text>,
 }));
 
 vi.mock('../components/Footer.js', () => ({
-  Footer: () => <Text>Footer</Text>,
+  Footer: () => <text>Footer</text>,
 }));
 
 vi.mock('../components/ExitWarning.js', () => ({
-  ExitWarning: () => <Text>ExitWarning</Text>,
+  ExitWarning: () => <text>ExitWarning</text>,
 }));
 
 vi.mock('../components/messages/BtwMessage.js', () => ({
-  BtwMessage: () => <Text>BtwMessage</Text>,
+  BtwMessage: () => <text>BtwMessage</text>,
 }));
 
 vi.mock('../components/StickyTodoList.js', () => ({
-  StickyTodoList: () => <Text>StickyTodoList</Text>,
+  StickyTodoList: () => <text>StickyTodoList</text>,
 }));
 
 const baseUIState: Partial<UIState> = {

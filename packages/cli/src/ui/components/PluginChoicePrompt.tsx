@@ -116,27 +116,20 @@ export const PluginChoicePrompt = (props: PluginChoicePromptProps) => {
   }, [plugins, selectedIndex]);
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      width="100%"
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {t('Select a plugin from "{{name}}"', { name: marketplaceName })}
-      </Text>
+      </text>
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {/* Show "more items above" indicator */}
         {hasLess && (
-          <Box>
-            <Text dimColor>
+          <box>
+            <text dimColor>
               {' '}
               ↑ {t('{{count}} more above', { count: String(startIndex) })}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
 
         {visiblePlugins.map((plugin, visibleIndex) => {
@@ -145,52 +138,52 @@ export const PluginChoicePrompt = (props: PluginChoicePromptProps) => {
           const prefix = isSelected ? '❯ ' : '  ';
 
           return (
-            <Box key={plugin.name} flexDirection="column">
-              <Box flexDirection="row">
-                <Text color={isSelected ? theme.text.accent : undefined}>
+            <box key={plugin.name} style={{ flexDirection: "column" }}>
+              <box style={{ flexDirection: "row" }}>
+                <text color={isSelected ? theme.text.accent : undefined}>
                   {prefix}
-                </Text>
-                <Text
+                </text>
+                <text
                   bold={isSelected}
                   color={isSelected ? theme.text.accent : undefined}
                 >
                   {plugin.name}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {/* Show full description only for selected item */}
               {isSelected && plugin.description && (
-                <Box marginLeft={prefixWidth}>
-                  <Text color={theme.text.accent}>{plugin.description}</Text>
-                </Box>
+                <box marginLeft={prefixWidth}>
+                  <text color={theme.text.accent}>{plugin.description}</text>
+                </box>
               )}
-            </Box>
+            </box>
           );
         })}
 
         {/* Show "more items below" indicator */}
         {hasMore && (
-          <Box>
-            <Text dimColor>
+          <box>
+            <text dimColor>
               {' '}
               ↓{' '}
               {t('{{count}} more below', {
                 count: String(plugins.length - startIndex - MAX_VISIBLE_ITEMS),
               })}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-      </Box>
+      </box>
 
-      <Box marginTop={1} flexDirection="row" gap={2}>
-        <Text dimColor>
+      <box marginTop={1} style={{ flexDirection: "row", gap: 2 }}>
+        <text dimColor>
           {t('Use ↑↓ or j/k to navigate, Enter to select, Escape to cancel')}
-        </Text>
+        </text>
         {plugins.length > MAX_VISIBLE_ITEMS && (
-          <Text dimColor>
+          <text dimColor>
             ({selectedIndex + 1}/{plugins.length})
-          </Text>
+          </text>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

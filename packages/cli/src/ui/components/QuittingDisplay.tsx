@@ -21,7 +21,7 @@ export const QuittingDisplay = () => {
   }
 
   return (
-    <Box flexDirection="column" marginBottom={1}>
+    <box style={{ flexDirection: "column" }} marginBottom={1}>
       {uiState.quittingMessages.map((item) => (
         <HistoryItemDisplay
           key={item.id}
@@ -34,6 +34,6 @@ export const QuittingDisplay = () => {
           isPending={false}
         />
       ))}
-    </Box>
+    </box>
   );
 };

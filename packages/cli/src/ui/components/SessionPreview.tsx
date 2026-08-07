@@ -127,38 +127,38 @@ export function SessionPreview(props: SessionPreviewProps) {
   const metaLine = metaParts.join(' · ');
 
   const header = (
-    <Box key="header" paddingX={1}>
-      <Text bold color={theme.text.primary}>
+    <box key="header" paddingX={1}>
+      <text bold color={theme.text.primary}>
         {sessionTitle ?? t('Session Preview')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
   const topSeparator = (
-    <Box key="top-separator">
-      <Text color={theme.border.default}>{'─'.repeat(separatorWidth)}</Text>
-    </Box>
+    <box key="top-separator">
+      <text color={theme.border.default}>{'─'.repeat(separatorWidth)}</text>
+    </box>
   );
   const footerSeparator = (
-    <Box key="footer-separator">
-      <Text color={theme.border.default}>{'─'.repeat(separatorWidth)}</Text>
-    </Box>
+    <box key="footer-separator">
+      <text color={theme.border.default}>{'─'.repeat(separatorWidth)}</text>
+    </box>
   );
   const meta = metaLine ? (
-    <Box key="meta" paddingX={1}>
-      <Text color={theme.text.secondary}>{metaLine}</Text>
-    </Box>
+    <box key="meta" paddingX={1}>
+      <text color={theme.text.secondary}>{metaLine}</text>
+    </box>
   ) : null;
   const footer = (
-    <Box key="footer" paddingX={1}>
-      <Text color={theme.text.secondary}>
+    <box key="footer" paddingX={1}>
+      <text color={theme.text.secondary}>
         {t('Enter to resume · Esc to back')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 
   if (data && !error) {
     return (
-      <Box flexDirection="column" width={boxWidth}>
+      <box style={{ flexDirection: "column", width: boxWidth }}>
         <Static
           key={sessionId}
           items={[
@@ -180,33 +180,33 @@ export function SessionPreview(props: SessionPreviewProps) {
         >
           {(item) => item}
         </Static>
-      </Box>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" width={boxWidth}>
+    <box style={{ flexDirection: "column", width: boxWidth }}>
       {/* Header */}
       {header}
       {topSeparator}
 
       {/* Body */}
       {error ? (
-        <Box paddingY={1} justifyContent="center">
-          <Text color={theme.status.error}>{error}</Text>
-        </Box>
+        <box paddingY={1} style={{ justifyContent: "center" }}>
+          <text color={theme.status.error}>{error}</text>
+        </box>
       ) : (
-        <Box paddingY={1} justifyContent="center">
-          <Text color={theme.text.secondary}>
+        <box paddingY={1} style={{ justifyContent: "center" }}>
+          <text color={theme.text.secondary}>
             {t('Loading session preview...')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
       {/* Footer */}
       {footerSeparator}
       {meta}
       {footer}
-    </Box>
+    </box>
   );
 }

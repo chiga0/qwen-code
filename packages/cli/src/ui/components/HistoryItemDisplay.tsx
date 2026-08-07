@@ -177,7 +177,7 @@ const ClickableThinkMessage: React.FC<{
   );
 
   return (
-    <Box ref={isActive ? ref : undefined}>
+    <box ref={isActive ? ref : undefined}>
       <ThinkMessage
         text={text}
         isPending={isPending}
@@ -187,7 +187,7 @@ const ClickableThinkMessage: React.FC<{
         durationMs={durationMs}
         clickable={clickable}
       />
-    </Box>
+    </box>
   );
 };
 
@@ -267,13 +267,7 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
   const boxWidth = mainAreaWidth || contentWidth;
 
   return (
-    <Box
-      flexDirection="column"
-      key={itemForDisplay.id}
-      marginTop={marginTop}
-      marginLeft={2}
-      marginRight={2}
-    >
+    <box style={{ flexDirection: "column" }} key={itemForDisplay.id} marginTop={marginTop} marginLeft={2} marginRight={2}>
       {/* Render standard message types */}
       {itemForDisplay.type === 'user' && (
         <UserMessage text={itemForDisplay.text} />
@@ -287,7 +281,7 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
       {itemForDisplay.type === 'gemini' && (
         <>
           {showTimestamps && itemForDisplay.timestamp != null && (
-            <Text dimColor>
+            <text dimColor>
               [
               {new Date(itemForDisplay.timestamp).toLocaleTimeString('en-US', {
                 hour12: false,
@@ -296,7 +290,7 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
                 second: '2-digit',
               })}
               ]
-            </Text>
+            </text>
           )}
           <AssistantMessage
             text={itemForDisplay.text}
@@ -414,12 +408,12 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
         />
       )}
       {itemForDisplay.type === 'tool_use_summary' && (
-        <Box flexDirection="row">
-          <Box width={2} flexShrink={0}>
-            <Text dimColor>{ICON.CIRCLE_FILLED}</Text>
-          </Box>
-          <Text dimColor>{itemForDisplay.summary}</Text>
-        </Box>
+        <box style={{ flexDirection: "row" }}>
+          <box style={{ width: 2, flexShrink: 0 }}>
+            <text dimColor>{ICON.CIRCLE_FILLED}</text>
+          </box>
+          <text dimColor>{itemForDisplay.summary}</text>
+        </box>
       )}
       {itemForDisplay.type === 'compression' && (
         <CompressionMessage compression={itemForDisplay.compression} />
@@ -481,11 +475,11 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
         <BtwMessage btw={itemForDisplay.btw} containerWidth={contentWidth} />
       )}
       {itemForDisplay.type === 'user_prompt_submit_blocked' && (
-        <Box flexDirection="column">
-          <Text color={theme.status.warning}>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.status.warning}>
             {`✕ UserPromptSubmit operation blocked by hook:\n${itemForDisplay.reason}\n\nOriginal prompt: ${sanitizeSensitiveText(itemForDisplay.originalPrompt)}`}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
       {itemForDisplay.type === 'stop_hook_loop' && (
         <InfoMessage
@@ -493,16 +487,16 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
         />
       )}
       {itemForDisplay.type === 'stop_hook_system_message' && (
-        <Box flexDirection="column">
-          <Text color={theme.text.primary}> ⎿ Stop says:</Text>
-          <Box marginLeft={4} flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary}> ⎿ Stop says:</text>
+          <box marginLeft={4} style={{ flexDirection: "column" }}>
             <MarkdownDisplay
               text={itemForDisplay.message}
               isPending={false}
               contentWidth={contentWidth - 4}
             />
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
       {itemForDisplay.type === 'memory_saved' && (
         <MemorySavedMessage item={itemForDisplay} />
@@ -525,7 +519,7 @@ const HistoryItemDisplayComponent: React.FC<HistoryItemDisplayProps> = ({
           cause={itemForDisplay.cause}
         />
       )}
-    </Box>
+    </box>
   );
 };
 

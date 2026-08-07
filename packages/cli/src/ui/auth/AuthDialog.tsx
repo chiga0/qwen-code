@@ -303,17 +303,11 @@ export function AuthDialog(): React.JSX.Element {
   // -- Render ---------------------------------------------------------------
 
   return (
-    <Box
-      borderStyle="single"
-      borderColor={theme?.border?.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>{viewTitle}</Text>
+    <box style={{ borderStyle: "single", borderColor: theme?.border?.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>{viewTitle}</text>
 
       {viewLevel === 'main' && (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           <DescriptiveRadioButtonSelect
             items={MAIN_ITEMS}
             initialIndex={mainIndex != null ? mainIndex : defaultMainIndex}
@@ -325,12 +319,12 @@ export function AuthDialog(): React.JSX.Element {
             }}
             itemGap={1}
           />
-        </Box>
+        </box>
       )}
 
       {activeSubMenu && (
         <>
-          <Box marginTop={1}>
+          <box marginTop={1}>
             <DescriptiveRadioButtonSelect
               items={activeSubMenu.items}
               initialIndex={subMenuIndex[viewLevel] ?? 0}
@@ -345,12 +339,12 @@ export function AuthDialog(): React.JSX.Element {
               }}
               itemGap={1}
             />
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme?.text?.secondary}>
+          </box>
+          <box marginTop={1}>
+            <text color={theme?.text?.secondary}>
               {t('Enter to select, ↑↓ to navigate, Esc to go back')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </>
       )}
 
@@ -359,33 +353,33 @@ export function AuthDialog(): React.JSX.Element {
       )}
 
       {(authError || errorMessage) && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{authError || errorMessage}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{authError || errorMessage}</text>
+        </box>
       )}
 
       {viewLevel === 'main' && (
         <>
-          <Box marginY={1}>
-            <Text color={theme.border.default}>{'─'.repeat(80)}</Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.primary}>
+          <box marginY={1}>
+            <text color={theme.border.default}>{'─'.repeat(80)}</text>
+          </box>
+          <box>
+            <text color={theme.text.primary}>
               {t('Terms of Services and Privacy Notice')}:
-            </Text>
-          </Box>
-          <Box>
+            </text>
+          </box>
+          <box>
             <Link
               url="https://qwenlm.github.io/qwen-code-docs/en/users/support/tos-privacy/"
               fallback={false}
             >
-              <Text color={theme.text.secondary} underline>
+              <text color={theme.text.secondary} underline>
                 https://qwenlm.github.io/qwen-code-docs/en/users/support/tos-privacy/
-              </Text>
+              </text>
             </Link>
-          </Box>
+          </box>
         </>
       )}
-    </Box>
+    </box>
   );
 }

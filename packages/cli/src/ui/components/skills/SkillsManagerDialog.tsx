@@ -527,42 +527,28 @@ export function SkillsManagerDialog({
   // -- Render --
   if (loadError) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        paddingX={1}
-        paddingY={1}
-        width="100%"
-      >
-        <Text bold>{t('Manage Skills')}</Text>
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingX={1} paddingY={1}>
+        <text bold>{t('Manage Skills')}</text>
+        <box marginTop={1}>
+          <text color={theme.status.error}>
             {t('Failed to load skills: {{error}}', { error: loadError ?? '' })}
-          </Text>
-        </Box>
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>{t('Press esc to close.')}</Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>{t('Press esc to close.')}</text>
+        </box>
+      </box>
     );
   }
 
   if (skills === null) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        paddingX={1}
-        paddingY={1}
-        width="100%"
-      >
-        <Text bold>{t('Manage Skills')}</Text>
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>{t('Loading skills…')}</Text>
-        </Box>
-      </Box>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingX={1} paddingY={1}>
+        <text bold>{t('Manage Skills')}</text>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>{t('Loading skills…')}</text>
+        </box>
+      </box>
     );
   }
 
@@ -572,16 +558,9 @@ export function SkillsManagerDialog({
   const hasQuery = query.trim().length > 0;
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingX={1}
-      paddingY={1}
-      width="100%"
-    >
-      <Text bold>{t('Manage Skills')}</Text>
-      <Text color={theme.text.secondary}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingX={1} paddingY={1}>
+      <text bold>{t('Manage Skills')}</text>
+      <text color={theme.text.secondary}>
         {hasQuery
           ? t('{{matched}} / {{total}} skills · ', {
               matched: String(matchedCount),
@@ -591,26 +570,26 @@ export function SkillsManagerDialog({
         {t(
           'Space toggle · Enter pick (fill input) · Esc save & exit · workspace scope',
         )}
-      </Text>
+      </text>
 
-      <Box marginTop={1} flexDirection="row">
-        <Text color={hasQuery ? theme.text.accent : theme.text.secondary}>
+      <box marginTop={1} style={{ flexDirection: "row" }}>
+        <text color={hasQuery ? theme.text.accent : theme.text.secondary}>
           {t('Search:')}{' '}
-        </Text>
-        <Text>
+        </text>
+        <text>
           {query || (
-            <Text color={theme.text.secondary} dimColor>
+            <text color={theme.text.secondary} dimColor>
               {t('type to filter…')}
-            </Text>
+            </text>
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {allSkills.length === 0 ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t('No skills are currently available.')}
-          </Text>
+          </text>
         ) : items.length > 0 ? (
           <MultiSelect
             items={items}
@@ -635,23 +614,23 @@ export function SkillsManagerDialog({
             maxItemsToShow={maxItemsToShow}
           />
         ) : unlockedSkills.length === 0 ? (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t(
               'All available skills are locked at a higher scope (see below).',
             )}
-          </Text>
+          </text>
         ) : (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t('No skills match the search.')}
-          </Text>
+          </text>
         )}
-      </Box>
+      </box>
 
       {filteredLocked.length > 0 && (
-        <Box marginTop={1} flexDirection="column">
-          <Text color={theme.text.secondary}>
+        <box marginTop={1} style={{ flexDirection: "column" }}>
+          <text color={theme.text.secondary}>
             {t('Locked by higher-scope settings (cannot toggle here):')}
-          </Text>
+          </text>
           {filteredLocked.map((s) => {
             // Scope identifiers (System / User / SystemDefaults) stay as
             // untranslated technical labels — they refer to settings file
@@ -659,23 +638,23 @@ export function SkillsManagerDialog({
             // the offending entry.
             const scopeName = higher.scopeOf(s.name) ?? t('higher scope');
             return (
-              <Text key={s.name} dimColor wrap="truncate">
+              <text key={s.name} dimColor wrap="truncate">
                 {t('  {{name}} {{description}}  [locked: {{scope}}]', {
                   name: truncate(s.name, NAME_COLUMN).padEnd(NAME_COLUMN),
                   description: truncate(s.description, 60),
                   scope: scopeName,
                 })}
-              </Text>
+              </text>
             );
           })}
-        </Box>
+        </box>
       )}
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary} dimColor>
+      <box marginTop={1}>
+        <text color={theme.text.secondary} dimColor>
           {t('↑/↓ navigate · backspace edits search')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

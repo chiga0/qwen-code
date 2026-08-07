@@ -187,26 +187,18 @@ export function ApprovalModeDialog({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-      height={constrainedHeight}
-      overflow="hidden"
-    >
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%", height: constrainedHeight }} overflow="hidden">
       {mode === 'mode' ? (
-        <Box flexDirection="column" flexGrow={1}>
+        <box style={{ flexDirection: "column", flexGrow: 1 }}>
           {/* Approval Mode Selection */}
-          <Text bold={mode === 'mode'} wrap="truncate">
+          <text bold={mode === 'mode'} wrap="truncate">
             {mode === 'mode' ? '> ' : '  '}
             {t('Approval Mode')}{' '}
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {otherScopeModifiedMessage}
-            </Text>
-          </Text>
-          {showModeSpacer && <Box height={1} />}
+            </text>
+          </text>
+          {showModeSpacer && <box style={{ height: 1 }} />}
           <RadioButtonSelect
             items={modeItems}
             initialIndex={safeInitialModeIndex}
@@ -219,16 +211,16 @@ export function ApprovalModeDialog({
           />
           {/* Warning when workspace setting will override user setting */}
           {showWorkspacePriorityWarning && (
-            <Box marginTop={1}>
-              <Text color={theme.status.warning} wrap="wrap">
+            <box marginTop={1}>
+              <text color={theme.status.warning} wrap="wrap">
                 ⚠{' '}
                 {t(
                   'Workspace approval mode exists and takes priority. User-level change will have no effect.',
                 )}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
-        </Box>
+        </box>
       ) : (
         <ScopeSelector
           onSelect={handleScopeSelect}
@@ -238,14 +230,14 @@ export function ApprovalModeDialog({
         />
       )}
       {showFooterHint && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} wrap="truncate">
+        <box marginTop={1}>
+          <text color={theme.text.secondary} wrap="truncate">
             {mode === 'mode'
               ? t('(Use Enter to select, Tab to configure scope)')
               : t('(Use Enter to apply scope, Tab to go back)')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

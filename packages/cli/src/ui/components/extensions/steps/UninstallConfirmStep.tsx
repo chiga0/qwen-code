@@ -50,22 +50,22 @@ export function UninstallConfirmStep({
 
   if (!selectedExtension) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No extension selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No extension selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Text color={theme.status.error}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <text color={theme.status.error}>
         {t('Are you sure you want to uninstall extension "{{name}}"?', {
           name: getExtensionDisplayName(selectedExtension, getCurrentLanguage()),
         })}
-      </Text>
-      <Text color={theme.status.error}>
+      </text>
+      <text color={theme.status.error}>
         {t('Note: Uninstall permanently removes this extension.')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 }

@@ -39,9 +39,9 @@ const _PrepareLabel: React.FC<PrepareLabelProps> = ({
         ? label.slice(0, MAX_WIDTH) + '...'
         : label;
     return (
-      <Text wrap="wrap" color={textColor}>
+      <text wrap="wrap" color={textColor}>
         {display}
-      </Text>
+      </text>
     );
   }
 
@@ -95,21 +95,17 @@ const _PrepareLabel: React.FC<PrepareLabelProps> = ({
   }
 
   return (
-    <Text color={textColor} wrap="wrap">
+    <text color={textColor} wrap="wrap">
       {before}
       {match
         ? match.split(/(\s+)/).map((part, index) => (
-            <Text
-              key={`match-${index}`}
-              color={theme.background.primary}
-              backgroundColor={theme.text.primary}
-            >
+            <text key={`match-${index}`} color={theme.background.primary} style={{ backgroundColor: theme.text.primary }}>
               {part}
-            </Text>
+            </text>
           ))
         : null}
       {after}
-    </Text>
+    </text>
   );
 };
 

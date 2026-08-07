@@ -297,12 +297,12 @@ export const AgentSelectionStep = ({
 
   if (availableAgents.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>{t('No subagents found.')}</Text>
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>{t('No subagents found.')}</text>
+        <text color={theme.text.secondary}>
           {t("Use '/agents create' to create your first subagent.")}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -319,30 +319,30 @@ export const AgentSelectionStep = ({
     const textColor = isSelected ? theme.text.accent : theme.text.primary;
 
     return (
-      <Box key={`${agent.name}-${agent.level}`} alignItems="center">
-        <Box minWidth={2} flexShrink={0}>
-          <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+      <box key={`${agent.name}-${agent.level}`} style={{ alignItems: "center" }}>
+        <box minWidth={2} style={{ flexShrink: 0 }}>
+          <text color={isSelected ? theme.text.accent : theme.text.primary}>
             {isSelected ? ICON.CIRCLE_FILLED : ' '}
-          </Text>
-        </Box>
-        <Text color={textColor} wrap="truncate">
+          </text>
+        </box>
+        <text color={textColor} wrap="truncate">
           {agent.name}
           {agent.isBuiltin && (
-            <Text color={isSelected ? theme.text.accent : theme.text.secondary}>
+            <text color={isSelected ? theme.text.accent : theme.text.secondary}>
               {' '}
               {t('(built-in)')}
-            </Text>
+            </text>
           )}
           {agent.level === 'user' && projectNames.has(agent.name) && (
-            <Text
+            <text
               color={isSelected ? theme.status.warning : theme.text.secondary}
             >
               {' '}
               {t('(overridden by project level agent)')}
-            </Text>
+            </text>
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   };
 
@@ -354,83 +354,77 @@ export const AgentSelectionStep = ({
     extensionAgents.length;
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* Project Level Agents */}
       {projectAgents.length > 0 && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text color={theme.text.primary} bold>
             {t('Project Level ({{path}})', {
               path: projectAgents[0].filePath?.replace(/\/[^/]+$/, '') || '',
             })}
-          </Text>
-          <Box marginTop={1} flexDirection="column">
+          </text>
+          <box marginTop={1} style={{ flexDirection: "column" }}>
             {projectAgents.map((agent, index) => {
               const isSelected =
                 navigation.currentBlock === 'project' &&
                 navigation.projectIndex === index;
               return renderAgentItem(agent, index, isSelected);
             })}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
 
       {/* User Level Agents */}
       {userAgents.length > 0 && (
-        <Box
-          flexDirection="column"
-          marginBottom={builtinAgents.length > 0 ? 1 : 0}
-        >
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={builtinAgents.length > 0 ? 1 : 0}>
+          <text color={theme.text.primary} bold>
             {t('User Level ({{path}})', {
               path: userAgents[0].filePath?.replace(/\/[^/]+$/, '') || '',
             })}
-          </Text>
-          <Box marginTop={1} flexDirection="column">
+          </text>
+          <box marginTop={1} style={{ flexDirection: "column" }}>
             {userAgents.map((agent, index) => {
               const isSelected =
                 navigation.currentBlock === 'user' &&
                 navigation.userIndex === index;
               return renderAgentItem(agent, index, isSelected);
             })}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
 
       {/* Built-in Agents */}
       {builtinAgents.length > 0 && (
-        <Box
-          flexDirection="column"
-          marginBottom={extensionAgents.length > 0 ? 1 : 0}
-        >
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={extensionAgents.length > 0 ? 1 : 0}>
+          <text color={theme.text.primary} bold>
             {t('Built-in Agents')}
-          </Text>
-          <Box marginTop={1} flexDirection="column">
+          </text>
+          <box marginTop={1} style={{ flexDirection: "column" }}>
             {builtinAgents.map((agent, index) => {
               const isSelected =
                 navigation.currentBlock === 'builtin' &&
                 navigation.builtinIndex === index;
               return renderAgentItem(agent, index, isSelected);
             })}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
 
       {/* Extension Agents */}
       {extensionAgents.length > 0 && (
-        <Box flexDirection="column">
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary} bold>
             {t('Extension Agents')}
-          </Text>
-          <Box marginTop={1} flexDirection="column">
+          </text>
+          <box marginTop={1} style={{ flexDirection: "column" }}>
             {extensionAgents.map((agent, index) => {
               const isSelected =
                 navigation.currentBlock === 'extension' &&
                 navigation.extensionIndex === index;
               return renderAgentItem(agent, index, isSelected);
             })}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
 
       {/* Agent count summary */}
@@ -438,14 +432,14 @@ export const AgentSelectionStep = ({
         userAgents.length > 0 ||
         builtinAgents.length > 0 ||
         extensionAgents.length > 0) && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('Using: {{count}} agents', {
               count: enabledAgentsCount.toString(),
             })}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

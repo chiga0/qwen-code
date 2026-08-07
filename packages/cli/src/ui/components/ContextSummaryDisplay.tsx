@@ -44,7 +44,7 @@ export const ContextSummaryDisplay: React.FC<ContextSummaryDisplayProps> = ({
     blockedMcpServerCount === 0 &&
     openFileCount === 0
   ) {
-    return <Text> </Text>; // Render an empty space to reserve height
+    return <text> </text>; // Render an empty space to reserve height
   }
 
   const openFilesText = (() => {
@@ -122,22 +122,22 @@ export const ContextSummaryDisplay: React.FC<ContextSummaryDisplayProps> = ({
 
   if (isNarrow) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>{t('Using:')}</Text>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>{t('Using:')}</text>
         {summaryParts.map((part, index) => (
-          <Text key={index} color={theme.text.secondary}>
+          <text key={index} color={theme.text.secondary}>
             {'  '}- {part}
-          </Text>
+          </text>
         ))}
-      </Box>
+      </box>
     );
   }
 
   return (
-    <Box>
-      <Text color={theme.text.secondary}>
+    <box>
+      <text color={theme.text.secondary}>
         {t('Using:')} {summaryParts.join(' | ')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

@@ -65,45 +65,38 @@ export const MCPServerApprovalDialog: React.FC<
   ];
 
   return (
-    <Box flexDirection="column">
-      <Box
-        flexDirection="column"
-        borderStyle="round"
-        borderColor={theme.status.warning}
-        padding={1}
-        width="100%"
-        marginLeft={1}
-      >
-        <Box flexDirection="column" marginBottom={1}>
-          <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, padding: 1, width: "100%" }} marginLeft={1}>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text bold color={theme.text.primary}>
             {`Untrusted MCP server in ${source}`}
-          </Text>
-          <Text color={theme.text.primary}>
+          </text>
+          <text color={theme.text.primary}>
             {`This workspace declares an MCP server. Approving lets Qwen Code start it and run its tools. Approval is bound to this exact configuration — if ${source} changes, you will be asked again.`}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={theme.text.primary}>
-            <Text bold>{serverName}</Text>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text color={theme.text.primary}>
+            <text bold>{serverName}</text>
             {`  ${summary}`}
-          </Text>
+          </text>
           {remaining > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Text color={theme.text.secondary}>
+            <box style={{ flexDirection: "column" }} marginTop={1}>
+              <text color={theme.text.secondary}>
                 Approve all will trust these servers:
-              </Text>
+              </text>
               {pendingServers.map((server) => (
-                <Text key={server.name} color={theme.text.secondary}>
+                <text key={server.name} color={theme.text.secondary}>
                   {`  ${server.name}  ${server.summary}`}
-                </Text>
+                </text>
               ))}
-            </Box>
+            </box>
           )}
-        </Box>
+        </box>
 
         <RadioButtonSelect items={options} onSelect={onSelect} isFocused />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

@@ -126,92 +126,77 @@ const MermaidDiagramInternal: React.FC<MermaidDiagramProps> = ({
     image.placeholder
   ) {
     return (
-      <Box
-        paddingLeft={MERMAID_PADDING}
-        flexDirection="column"
-        width={contentWidth}
-        flexShrink={0}
-      >
-        <Text bold color={theme.text.accent}>
+      <box paddingLeft={MERMAID_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+        <text bold color={theme.text.accent}>
           {titleWithSourceHint(visual.title)}
-        </Text>
+        </text>
         <MaxSizedBox
           maxHeight={availableTerminalHeight}
           maxWidth={innerWidth}
           overflowDirection="bottom"
         >
           {image.placeholder.lines.map((line, index) => (
-            <Box key={index}>
-              <Text color={image.placeholder!.color} wrap="truncate-end">
+            <box key={index}>
+              <text color={image.placeholder!.color} wrap="truncate-end">
                 {line}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ))}
         </MaxSizedBox>
-      </Box>
+      </box>
     );
   }
 
   if (image?.kind === 'ansi') {
     return (
-      <Box
-        paddingLeft={MERMAID_PADDING}
-        flexDirection="column"
-        width={contentWidth}
-        flexShrink={0}
-      >
-        <Text bold color={theme.text.accent}>
+      <box paddingLeft={MERMAID_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+        <text bold color={theme.text.accent}>
           {titleWithSourceHint(visual.title)}
-        </Text>
+        </text>
         <MaxSizedBox
           maxHeight={availableTerminalHeight}
           maxWidth={innerWidth}
           overflowDirection="bottom"
         >
           {image.lines.map((line, index) => (
-            <Box key={index}>
-              <Text>{line || ' '}</Text>
-            </Box>
+            <box key={index}>
+              <text>{line || ' '}</text>
+            </box>
           ))}
         </MaxSizedBox>
-      </Box>
+      </box>
     );
   }
 
   return (
-    <Box
-      paddingLeft={MERMAID_PADDING}
-      flexDirection="column"
-      width={contentWidth}
-      flexShrink={0}
-    >
-      <Text bold color={theme.text.accent}>
+    <box paddingLeft={MERMAID_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+      <text bold color={theme.text.accent}>
         {titleWithSourceHint(visual.title)}
-      </Text>
+      </text>
       <MaxSizedBox
         maxHeight={availableTerminalHeight}
         maxWidth={innerWidth}
         overflowDirection="bottom"
       >
         {visual.lines.map((line, index) => (
-          <Box key={index}>
-            <Text color={theme.text.primary}>{line || ' '}</Text>
-          </Box>
+          <box key={index}>
+            <text color={theme.text.primary}>{line || ' '}</text>
+          </box>
         ))}
       </MaxSizedBox>
       {visual.warning && (
-        <Text color={theme.text.secondary} wrap="wrap">
+        <text color={theme.text.secondary} wrap="wrap">
           {visual.warning}
-        </Text>
+        </text>
       )}
       {!isPending &&
         image?.kind === 'unavailable' &&
         image.showReason !== false && (
-          <Text color={theme.text.secondary} wrap="wrap">
+          <text color={theme.text.secondary} wrap="wrap">
             Image rendering unavailable: {image.reason}
-          </Text>
+          </text>
         )}
-    </Box>
+    </box>
   );
 };
 

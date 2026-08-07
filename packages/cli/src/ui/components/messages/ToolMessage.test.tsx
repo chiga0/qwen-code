@@ -31,9 +31,9 @@ vi.mock('../TerminalOutput.js', () => ({
     cursor: { x: number; y: number } | null;
   }) {
     return (
-      <Text>
+      <text>
         MockCursor:({cursor?.x},{cursor?.y})
-      </Text>
+      </text>
     );
   },
 }));
@@ -53,10 +53,10 @@ vi.mock('../AnsiOutput.js', () => ({
       .map((line) => line.map((token) => token.text || '').join(''))
       .join('\n');
     return (
-      <Text>
+      <text>
         MockAnsiOutput:{serialized}:width={maxWidth}:height=
         {availableTerminalHeight ?? 'undef'}
-      </Text>
+      </text>
     );
   },
   ShellStatsBar: function MockShellStatsBar({
@@ -65,7 +65,7 @@ vi.mock('../AnsiOutput.js', () => ({
     displayHeight?: number;
   }) {
     return (
-      <Text>MockShellStatsBar:displayHeight={displayHeight ?? 'undef'}</Text>
+      <text>MockShellStatsBar:displayHeight={displayHeight ?? 'undef'}</text>
     );
   },
 }));
@@ -80,11 +80,11 @@ vi.mock('../TerminalImage.js', () => ({
     image?: { mimeType: string };
     availableTerminalHeight?: number;
   }) => (
-    <Text>
+    <text>
       {image
         ? `MockTerminalImage:${image.mimeType}:height=${availableTerminalHeight ?? 'undef'}`
         : `MockTerminalImage:${data?.filePath}:${data?.mimeType}:height=${availableTerminalHeight ?? 'undef'}`}
-    </Text>
+    </text>
   ),
 }));
 
@@ -97,9 +97,9 @@ vi.mock('../GeminiRespondingSpinner.js', () => ({
   }) => {
     const streamingState = React.useContext(StreamingContext)!;
     if (streamingState === StreamingState.Responding) {
-      return <Text>MockRespondingSpinner</Text>;
+      return <text>MockRespondingSpinner</text>;
     }
-    return nonRespondingDisplay ? <Text>{nonRespondingDisplay}</Text> : null;
+    return nonRespondingDisplay ? <text>{nonRespondingDisplay}</text> : null;
   },
 }));
 vi.mock('./DiffRenderer.js', () => ({
@@ -111,16 +111,16 @@ vi.mock('./DiffRenderer.js', () => ({
     settings?: unknown;
   }) {
     return (
-      <Text>
+      <text>
         MockDiff:{diffContent}
         {settings ? ':withSettings' : ''}
-      </Text>
+      </text>
     );
   },
 }));
 vi.mock('../../utils/MarkdownDisplay.js', () => ({
   MarkdownDisplay: function MockMarkdownDisplay({ text }: { text: string }) {
-    return <Text>MockMarkdown:{text}</Text>;
+    return <text>MockMarkdown:{text}</text>;
   },
 }));
 vi.mock('./ToolConfirmationMessage.js', () => ({
@@ -134,9 +134,9 @@ vi.mock('./ToolConfirmationMessage.js', () => ({
     // echoed so the budget test can verify the context lines are
     // reserved out of the confirmation's height.
     return (
-      <Text>
+      <text>
         MockApprovalPrompt:height={availableTerminalHeight ?? 'undef'}
-      </Text>
+      </text>
     );
   },
 }));

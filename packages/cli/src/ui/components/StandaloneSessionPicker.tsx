@@ -68,7 +68,7 @@ function StandalonePickerScreen({
 
   // Return empty while exiting to prevent visual glitches
   if (isExiting) {
-    return <Box />;
+    return <box />;
   }
 
   return (

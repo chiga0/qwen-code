@@ -44,19 +44,19 @@ export function AgentDeleteStep({
 
   if (!selectedAgent) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No agent selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No agent selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Text color={theme.status.error}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <text color={theme.status.error}>
         {t('Are you sure you want to delete agent "{{name}}"?', {
           name: selectedAgent.name,
         })}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 }

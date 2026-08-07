@@ -134,10 +134,10 @@ export const BackgroundTasksPill: React.FC = () => {
 
   return (
     <>
-      <Text color={theme.text.secondary}> · </Text>
-      <Text inverse={pillFocused}>{label}</Text>
+      <text color={theme.text.secondary}> · </text>
+      <text inverse={pillFocused}>{label}</text>
       {needsApproval && (
-        <Text color={theme.status.warning}>{` ⚠ ${t('needs approval')}`}</Text>
+        <text color={theme.status.warning}>{` ⚠ ${t('needs approval')}`}</text>
       )}
     </>
   );

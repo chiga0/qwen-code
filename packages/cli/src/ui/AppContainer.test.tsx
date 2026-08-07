@@ -107,7 +107,7 @@ function TestContextConsumer() {
   capturedUIActions = useContext(UIActionsContext)!;
   capturedRenderMode = useRenderMode().renderMode;
   capturedThoughtExpanded = useThoughtExpanded();
-  return <Box ref={capturedUIState.mainControlsRef} />;
+  return <box ref={capturedUIState.mainControlsRef} />;
 }
 
 vi.mock('./App.js', () => ({

@@ -99,7 +99,7 @@ export function defaultRenderLine({
   showCursor,
 }: RenderLineOptions): ReactNode {
   if (!isOnCursorLine || !showCursor) {
-    return <Text>{lineText || ' '}</Text>;
+    return <text>{lineText || ' '}</text>;
   }
 
   const len = cpLen(lineText);
@@ -107,10 +107,10 @@ export function defaultRenderLine({
   // Cursor past end of line — append cursor space
   if (cursorCol >= len) {
     return (
-      <Text>
+      <text>
         {lineText}
         {renderSoftwareCursor(' ') + '\u200B'}
-      </Text>
+      </text>
     );
   }
 
@@ -119,11 +119,11 @@ export function defaultRenderLine({
   const after = cpSlice(lineText, cursorCol + 1);
 
   return (
-    <Text>
+    <text>
       {before}
       {renderSoftwareCursor(cursorChar)}
       {after}
-    </Text>
+    </text>
   );
 }
 
@@ -335,7 +335,7 @@ export const BaseTextInput = ({
 
   const resolvedBorderColor = borderColor ?? theme.border.focused;
   const resolvedPrefix = prefix ?? (
-    <Text color={theme.text.accent}>{'> '}</Text>
+    <text color={theme.text.accent}>{'> '}</text>
   );
 
   const columns = process.stdout.columns || 80;
@@ -348,7 +348,7 @@ export const BaseTextInput = ({
     : '─'.repeat(columns);
 
   return (
-    <Box ref={boxRef} flexDirection="column">
+    <box ref={boxRef} style={{ flexDirection: "column" }}>
       {mouseEnabled && isActive && (
         <TextInputMouseController
           linesRef={linesRef}
@@ -356,29 +356,22 @@ export const BaseTextInput = ({
           visibleLineCount={linesToRender.length}
         />
       )}
-      <Text color={resolvedBorderColor} wrap="truncate-end">
+      <text color={resolvedBorderColor} wrap="truncate-end">
         {topBorderLine}
-      </Text>
-      <Box
-        borderStyle="single"
-        borderTop={false}
-        borderBottom={true}
-        borderLeft={false}
-        borderRight={false}
-        borderColor={resolvedBorderColor}
-      >
+      </text>
+      <box style={{ borderStyle: "single", borderColor: resolvedBorderColor }} borderTop={false} borderBottom={true} borderLeft={false} borderRight={false}>
         {resolvedPrefix}
         {/* No background fill: the input area blends into the terminal's own
             background so it stays consistent across terminals and themes. */}
-        <Box flexGrow={1} flexDirection="column" ref={linesRef}>
+        <box style={{ flexGrow: 1, flexDirection: "column" }} ref={linesRef}>
           {buffer.text.length === 0 && placeholder ? (
             showCursor ? (
-              <Text>
+              <text>
                 {renderSoftwareCursor(placeholder.slice(0, 1))}
-                <Text color={theme.text.secondary}>{placeholder.slice(1)}</Text>
-              </Text>
+                <text color={theme.text.secondary}>{placeholder.slice(1)}</text>
+              </text>
             ) : (
-              <Text color={theme.text.secondary}>{placeholder}</Text>
+              <text color={theme.text.secondary}>{placeholder}</text>
             )
           ) : (
             linesToRender.map((lineText, idx) => {
@@ -386,7 +379,7 @@ export const BaseTextInput = ({
               const isOnCursorLine = absoluteVisualIndex === cursorVisualRow;
 
               return (
-                <Box key={idx} height={1}>
+                <box key={idx} style={{ height: 1 }}>
                   {renderLine({
                     lineText,
                     isOnCursorLine,
@@ -397,12 +390,12 @@ export const BaseTextInput = ({
                     buffer,
                     scrollVisualRow,
                   })}
-                </Box>
+                </box>
               );
             })
           )}
-        </Box>
-      </Box>
-    </Box>
+        </box>
+      </box>
+    </box>
   );
 };

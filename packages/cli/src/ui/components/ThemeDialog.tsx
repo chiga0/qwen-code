@@ -196,27 +196,18 @@ export function ThemeDialog({
   const codeBlockHeight = Math.ceil(availableHeightForPanes * 0.6);
   const diffHeight = Math.floor(availableHeightForPanes * 0.4);
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingTop={includePadding ? 1 : 0}
-      paddingBottom={includePadding ? 1 : 0}
-      paddingLeft={1}
-      paddingRight={1}
-      width="100%"
-    >
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingTop={includePadding ? 1 : 0} paddingBottom={includePadding ? 1 : 0} paddingLeft={1} paddingRight={1}>
       {mode === 'theme' ? (
-        <Box flexDirection="row">
+        <box style={{ flexDirection: "row" }}>
           {/* Left Column: Selection */}
-          <Box flexDirection="column" width="45%" paddingRight={2}>
-            <Text bold={mode === 'theme'} wrap="truncate">
+          <box style={{ flexDirection: "column", width: "45%" }} paddingRight={2}>
+            <text bold={mode === 'theme'} wrap="truncate">
               {mode === 'theme' ? '> ' : '  '}
               {t('Select Theme')}{' '}
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {otherScopeModifiedMessage}
-              </Text>
-            </Text>
+              </text>
+            </text>
             <RadioButtonSelect
               items={themeItems}
               initialIndex={safeInitialThemeIndex}
@@ -227,13 +218,13 @@ export function ThemeDialog({
               showScrollArrows={true}
               showNumbers={mode === 'theme'}
             />
-          </Box>
+          </box>
 
           {/* Right Column: Preview */}
-          <Box flexDirection="column" width="55%" paddingLeft={2}>
-            <Text bold color={theme.text.primary}>
+          <box style={{ flexDirection: "column", width: "55%" }} paddingLeft={2}>
+            <text bold color={theme.text.primary}>
               {t('Preview')}
-            </Text>
+            </text>
             {/* Get the Theme object for the highlighted theme, fall back to default if not found */}
             {(() => {
               // For 'auto', show the currently resolved theme (set by onHighlight → applyTheme)
@@ -244,15 +235,7 @@ export function ThemeDialog({
                       highlightedThemeName || DEFAULT_THEME.name,
                     ) || DEFAULT_THEME;
               return (
-                <Box
-                  borderStyle="single"
-                  borderColor={theme.border.default}
-                  paddingTop={includePadding ? 1 : 0}
-                  paddingBottom={includePadding ? 1 : 0}
-                  paddingLeft={1}
-                  paddingRight={1}
-                  flexDirection="column"
-                >
+                <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column" }} paddingTop={includePadding ? 1 : 0} paddingBottom={includePadding ? 1 : 0} paddingLeft={1} paddingRight={1}>
                   {colorizeCode(
                     `# function
 def fibonacci(n):
@@ -264,7 +247,7 @@ def fibonacci(n):
                     codeBlockHeight,
                     colorizeCodeWidth,
                   )}
-                  <Box marginTop={1} />
+                  <box marginTop={1} />
                   <DiffRenderer
                     diffContent={`--- a/util.py
 +++ b/util.py
@@ -277,11 +260,11 @@ def fibonacci(n):
                     theme={previewTheme}
                     settings={settings}
                   />
-                </Box>
+                </box>
               );
             })()}
-          </Box>
-        </Box>
+          </box>
+        </box>
       ) : (
         <ScopeSelector
           onSelect={handleScopeSelect}
@@ -290,13 +273,13 @@ def fibonacci(n):
           initialScope={selectedScope}
         />
       )}
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary} wrap="truncate">
+      <box marginTop={1}>
+        <text color={theme.text.secondary} wrap="truncate">
           {mode === 'theme'
             ? t('(Use Enter to select, Tab to configure scope)')
             : t('(Use Enter to apply scope, Tab to go back)')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

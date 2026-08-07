@@ -25,18 +25,18 @@ export const PlanSummaryDisplay: React.FC<PlanSummaryDisplayProps> = ({
   const messageColor = rejected ? Colors.AccentYellow : Colors.AccentGreen;
 
   return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color={messageColor} wrap="wrap">
+    <box style={{ flexDirection: "column" }}>
+      <box marginBottom={1}>
+        <text color={messageColor} wrap="wrap">
           {message}
-        </Text>
-      </Box>
+        </text>
+      </box>
       <MarkdownDisplay
         text={plan}
         isPending={false}
         availableTerminalHeight={availableHeight}
         contentWidth={childWidth}
       />
-    </Box>
+    </box>
   );
 };

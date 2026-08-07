@@ -647,25 +647,19 @@ export function PermissionsDialog({
   // --- Workspace tab: add directory input ---
   if (activeTab.id === 'workspace' && view === 'ws-add-dir-input') {
     return (
-      <Box flexDirection="column">
-        <Text bold color={theme.text.accent}>
+      <box style={{ flexDirection: "column" }}>
+        <text bold color={theme.text.accent}>
           {t('Add directory to workspace')}
-        </Text>
-        <Box height={1} />
-        <Text color={theme.text.secondary} wrap="wrap">
+        </text>
+        <box style={{ height: 1 }} />
+        <text color={theme.text.secondary} wrap="wrap">
           {t(
             'Qwen Code will be able to read files in this directory and make edits when auto-accept edits is on.',
           )}
-        </Text>
-        <Box height={1} />
-        <Text>{t('Enter the path to the directory:')}</Text>
-        <Box
-          borderStyle="round"
-          borderColor={theme.border.default}
-          paddingLeft={1}
-          paddingRight={1}
-          marginTop={1}
-        >
+        </text>
+        <box style={{ height: 1 }} />
+        <text>{t('Enter the path to the directory:')}</text>
+        <box style={{ borderStyle: "round", borderColor: theme.border.default }} paddingLeft={1} paddingRight={1} marginTop={1}>
           <TextInput
             key={dirInputRemountKey}
             value={newDirInput}
@@ -680,35 +674,35 @@ export function PermissionsDialog({
             isActive={true}
             validationErrors={dirInputError ? [dirInputError] : []}
           />
-        </Box>
+        </box>
         {/* Filesystem completions: ↑/↓ to navigate, Tab to apply */}
         {dirCompletions.length > 0 && (
-          <Box flexDirection="column" marginTop={1} paddingLeft={2}>
+          <box style={{ flexDirection: "column" }} marginTop={1} paddingLeft={2}>
             {dirCompletions.map((completion, idx) => {
               const name = nodePath.basename(completion);
               const isSelected = idx === completionIndex;
               return (
-                <Box key={completion}>
-                  <Text
+                <box key={completion}>
+                  <text
                     bold={isSelected}
                     color={
                       isSelected ? theme.text.primary : theme.text.secondary
                     }
                   >
                     {`${name}/`}
-                  </Text>
-                  <Text color={theme.text.secondary}>{`    directory`}</Text>
-                </Box>
+                  </text>
+                  <text color={theme.text.secondary}>{`    directory`}</text>
+                </box>
               );
             })}
-          </Box>
+          </box>
         )}
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('Tab to complete · Enter to add · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
@@ -719,31 +713,26 @@ export function PermissionsDialog({
     removeDirTarget
   ) {
     return (
-      <Box flexDirection="column">
-        <Box
-          borderStyle="round"
-          borderColor={theme.border.default}
-          flexDirection="column"
-          padding={1}
-        >
-          <Text bold>{t('Remove directory?')}</Text>
-          <Box height={1} />
-          <Box marginLeft={2} flexDirection="column">
-            <Text bold>{removeDirTarget}</Text>
-          </Box>
-          <Box height={1} />
-          <Text>
+      <box style={{ flexDirection: "column" }}>
+        <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1 }}>
+          <text bold>{t('Remove directory?')}</text>
+          <box style={{ height: 1 }} />
+          <box marginLeft={2} style={{ flexDirection: "column" }}>
+            <text bold>{removeDirTarget}</text>
+          </box>
+          <box style={{ height: 1 }} />
+          <text>
             {t(
               'Are you sure you want to remove this directory from the workspace?',
             )}
-          </Text>
-        </Box>
-        <Box marginTop={1} marginLeft={1}>
-          <Text color={theme.text.secondary}>
+          </text>
+        </box>
+        <box marginTop={1} marginLeft={1}>
+          <text color={theme.text.secondary}>
             {t('Enter to confirm · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
@@ -751,25 +740,25 @@ export function PermissionsDialog({
   if (activeTab.id === 'workspace') {
     const initialDirArray = Array.from(initialDirs);
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <TabBar tabs={tabs} activeIndex={activeTabIndex} />
-        <Text color={theme.text.secondary} wrap="wrap">
+        <text color={theme.text.secondary} wrap="wrap">
           {t(
             'Qwen Code can read files in the workspace, and make edits when auto-accept edits is on.',
           )}
-        </Text>
-        <Box height={1} />
+        </text>
+        <box style={{ height: 1 }} />
         {/* Initial (non-removable) dirs: shown inline with dash, same visual level as list */}
         {initialDirArray.map((dir, idx) => (
-          <Box key={dir} marginLeft={2}>
-            <Text color={theme.text.secondary}>{'- '}</Text>
-            <Text>{dir}</Text>
-            <Text color={theme.text.secondary}>
+          <box key={dir} marginLeft={2}>
+            <text color={theme.text.secondary}>{'- '}</text>
+            <text>{dir}</text>
+            <text color={theme.text.secondary}>
               {idx === 0
                 ? t('  (Original working directory)')
                 : t('  (from settings)')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         ))}
         {/* Selectable list: runtime-added dirs + 'Add directory…' at end */}
         <RadioButtonSelect
@@ -781,7 +770,7 @@ export function PermissionsDialog({
           maxItemsToShow={15}
         />
         <FooterHint view={view} />
-      </Box>
+      </box>
     );
   }
 
@@ -789,33 +778,23 @@ export function PermissionsDialog({
 
   if (view === 'add-rule-input') {
     return (
-      <Box flexDirection="column">
-        <Box
-          borderStyle="round"
-          borderColor={theme.border.default}
-          flexDirection="column"
-          padding={1}
-        >
-          <Text bold>
+      <box style={{ flexDirection: "column" }}>
+        <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1 }}>
+          <text bold>
             {t('Add {{type}} permission rule', { type: activeTab.id })}
-          </Text>
-          <Box height={1} />
-          <Text wrap="wrap">
+          </text>
+          <box style={{ height: 1 }} />
+          <text wrap="wrap">
             {t(
               'Permission rules are a tool name, optionally followed by a specifier in parentheses.',
             )}
-          </Text>
-          <Text>
-            {t('e.g.,')} <Text bold>WebFetch</Text> {t('or')}{' '}
-            <Text bold>Bash(ls:*)</Text>
-          </Text>
-          <Box height={1} />
-          <Box
-            borderStyle="round"
-            borderColor={theme.border.default}
-            paddingLeft={1}
-            paddingRight={1}
-          >
+          </text>
+          <text>
+            {t('e.g.,')} <text bold>WebFetch</text> {t('or')}{' '}
+            <text bold>Bash(ls:*)</text>
+          </text>
+          <box style={{ height: 1 }} />
+          <box style={{ borderStyle: "round", borderColor: theme.border.default }} paddingLeft={1} paddingRight={1}>
             <TextInput
               value={newRuleInput}
               onChange={setNewRuleInput}
@@ -823,45 +802,40 @@ export function PermissionsDialog({
               placeholder={t('Enter permission rule…')}
               isActive={true}
             />
-          </Box>
+          </box>
           {ruleInputError && (
             <>
-              <Box height={1} />
-              <Text color={theme.status.error}>{ruleInputError}</Text>
+              <box style={{ height: 1 }} />
+              <text color={theme.status.error}>{ruleInputError}</text>
             </>
           )}
-        </Box>
-        <Box marginTop={1} marginLeft={1}>
-          <Text color={theme.text.secondary}>
+        </box>
+        <box marginTop={1} marginLeft={1}>
+          <text color={theme.text.secondary}>
             {t('Enter to submit · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   if (view === 'add-rule-scope') {
     const scopeItems = getPermScopeItems();
     return (
-      <Box flexDirection="column">
-        <Box
-          borderStyle="round"
-          borderColor={theme.border.default}
-          flexDirection="column"
-          padding={1}
-        >
-          <Text bold>
+      <box style={{ flexDirection: "column" }}>
+        <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1 }}>
+          <text bold>
             {t('Add {{type}} permission rule', { type: activeTab.id })}
-          </Text>
-          <Box height={1} />
-          <Box marginLeft={2} flexDirection="column">
-            <Text bold>{pendingRuleText}</Text>
-            <Text color={theme.text.secondary}>
+          </text>
+          <box style={{ height: 1 }} />
+          <box marginLeft={2} style={{ flexDirection: "column" }}>
+            <text bold>{pendingRuleText}</text>
+            <text color={theme.text.secondary}>
               {describeRule(pendingRuleText)}
-            </Text>
-          </Box>
-          <Box height={1} />
-          <Text>{t('Where should this rule be saved?')}</Text>
+            </text>
+          </box>
+          <box style={{ height: 1 }} />
+          <text>{t('Where should this rule be saved?')}</text>
           <RadioButtonSelect
             items={scopeItems.map((s) => ({
               label: `${s.label}    ${s.description}`,
@@ -872,74 +846,63 @@ export function PermissionsDialog({
             isFocused={true}
             showNumbers={true}
           />
-        </Box>
-        <Box marginTop={1} marginLeft={1}>
-          <Text color={theme.text.secondary}>
+        </box>
+        <box marginTop={1} marginLeft={1}>
+          <text color={theme.text.secondary}>
             {t('Enter to confirm · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   if (view === 'delete-confirm' && deleteTarget) {
     return (
-      <Box flexDirection="column">
-        <Box
-          borderStyle="round"
-          borderColor={theme.border.default}
-          flexDirection="column"
-          padding={1}
-        >
-          <Text bold>
+      <box style={{ flexDirection: "column" }}>
+        <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1 }}>
+          <text bold>
             {t('Delete {{type}} rule?', { type: deleteTarget.type })}
-          </Text>
-          <Box height={1} />
-          <Box marginLeft={2} flexDirection="column">
-            <Text bold>{deleteTarget.rule.raw}</Text>
-            <Text color={theme.text.secondary}>
+          </text>
+          <box style={{ height: 1 }} />
+          <box marginLeft={2} style={{ flexDirection: "column" }}>
+            <text bold>{deleteTarget.rule.raw}</text>
+            <text color={theme.text.secondary}>
               {describeRule(deleteTarget.rule.raw)}
-            </Text>
-            <Text color={theme.text.secondary}>
+            </text>
+            <text color={theme.text.secondary}>
               {scopeLabel(deleteTarget.scope)}
-            </Text>
-          </Box>
-          <Box height={1} />
-          <Text>
+            </text>
+          </box>
+          <box style={{ height: 1 }} />
+          <text>
             {t('Are you sure you want to delete this permission rule?')}
-          </Text>
-        </Box>
-        <Box marginTop={1} marginLeft={1}>
-          <Text color={theme.text.secondary}>
+          </text>
+        </box>
+        <box marginTop={1} marginLeft={1}>
+          <text color={theme.text.secondary}>
             {t('Enter to confirm · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   // --- Default: rule-list view ---
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       <TabBar tabs={tabs} activeIndex={activeTabIndex} />
-      <Text>{activeTab.description}</Text>
+      <text>{activeTab.description}</text>
       {/* Search box */}
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        paddingLeft={1}
-        paddingRight={1}
-        width={60}
-      >
-        <Text color={theme.text.accent}>{'> '}</Text>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, width: 60 }} paddingLeft={1} paddingRight={1}>
+        <text color={theme.text.accent}>{'> '}</text>
         {searchQuery ? (
-          <Text>{searchQuery}</Text>
+          <text>{searchQuery}</text>
         ) : (
-          <Text color={Colors.Gray}>{t('Search…')}</Text>
+          <text color={Colors.Gray}>{t('Search…')}</text>
         )}
-      </Box>
-      <Box height={1} />
+      </box>
+      <box style={{ height: 1 }} />
       {/* Rule list */}
       <RadioButtonSelect
         items={listItems}
@@ -950,7 +913,7 @@ export function PermissionsDialog({
         maxItemsToShow={15}
       />
       <FooterHint view={view} />
-    </Box>
+    </box>
   );
 }
 
@@ -966,39 +929,35 @@ function TabBar({
   activeIndex: number;
 }): React.JSX.Element {
   return (
-    <Box marginBottom={1}>
-      <Text color={theme.text.accent} bold>
+    <box marginBottom={1}>
+      <text color={theme.text.accent} bold>
         {t('Permissions:')}{' '}
-      </Text>
+      </text>
       {tabs.map((tab, i) => (
-        <Box key={tab.id} marginRight={2}>
+        <box key={tab.id} marginRight={2}>
           {i === activeIndex ? (
-            <Text
-              bold
-              backgroundColor={theme.text.accent}
-              color={theme.background.primary}
-            >
+            <text bold style={{ backgroundColor: theme.text.accent }} color={theme.background.primary}>
               {` ${tab.label} `}
-            </Text>
+            </text>
           ) : (
-            <Text color={theme.text.secondary}>{` ${tab.label} `}</Text>
+            <text color={theme.text.secondary}>{` ${tab.label} `}</text>
           )}
-        </Box>
+        </box>
       ))}
-      <Text color={theme.text.secondary}>{t('(←/→ or tab to cycle)')}</Text>
-    </Box>
+      <text color={theme.text.secondary}>{t('(←/→ or tab to cycle)')}</text>
+    </box>
   );
 }
 
 function FooterHint({ view }: { view: DialogView }): React.JSX.Element {
   if (view !== 'rule-list' && view !== 'ws-dir-list') return <></>;
   return (
-    <Box marginTop={1}>
-      <Text color={theme.text.secondary}>
+    <box marginTop={1}>
+      <text color={theme.text.secondary}>
         {t(
           'Press ↑↓ to navigate · Enter to select · Type to search · Esc to cancel',
         )}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 }

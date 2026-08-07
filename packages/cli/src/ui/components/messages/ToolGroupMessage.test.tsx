@@ -63,18 +63,18 @@ vi.mock('./ToolMessage.js', () => ({
         // render in compact mode — surfaced in the mock so tests can
         // assert it was passed for terminal subagent tools.
         return (
-          <Text>
+          <text>
             MockSubagent[{callId}]: focused={String(isFocused)} force=
             {String(Boolean(forceShowResult))}
-          </Text>
+          </text>
         );
       }
 
       return (
-        <Text>
+        <text>
           MockTool[{callId}]: {statusSymbol} {name} - {description} ({emphasis})
           {forceShowResult ? ' [forceShow]' : ''}
-        </Text>
+        </text>
       );
     },
   ),
@@ -90,7 +90,7 @@ vi.mock('./ToolConfirmationMessage.js', () => ({
       confirmationDetails?.type === 'info'
         ? (confirmationDetails as { prompt: string }).prompt
         : confirmationDetails?.title || 'confirm';
-    return <Text>MockConfirmation: {displayText}</Text>;
+    return <text>MockConfirmation: {displayText}</text>;
   },
 }));
 

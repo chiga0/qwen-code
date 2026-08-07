@@ -133,21 +133,21 @@ export function ArenaStopDialog({
       {
         key: 'cleanup',
         value: 'cleanup' as StopAction,
-        title: <Text>Stop and clean up</Text>,
+        title: <text>Stop and clean up</text>,
         description: (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             Remove all worktrees and session files
-          </Text>
+          </text>
         ),
       },
       {
         key: 'preserve',
         value: 'preserve' as StopAction,
-        title: <Text>Stop and preserve artifacts</Text>,
+        title: <text>Stop and preserve artifacts</text>,
         description: (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             Keep worktrees and session files for later inspection
-          </Text>
+          </text>
         ),
       },
     ],
@@ -166,24 +166,18 @@ export function ArenaStopDialog({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold color={theme.text.primary}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold color={theme.text.primary}>
         Stop Arena Session
-      </Text>
+      </text>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           Choose what to do with Arena artifacts:
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         <DescriptiveRadioButtonSelect
           items={items}
           initialIndex={defaultIndex}
@@ -193,21 +187,21 @@ export function ArenaStopDialog({
           isFocused={!isProcessing}
           showNumbers={false}
         />
-      </Box>
+      </box>
 
       {configPreserve && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} dimColor>
+        <box marginTop={1}>
+          <text color={theme.text.secondary} dimColor>
             Default: preserve (agents.arena.preserveArtifacts is enabled)
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           Enter to confirm, Esc to cancel
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

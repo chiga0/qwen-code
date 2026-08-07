@@ -33,25 +33,25 @@ const StatRow: React.FC<{
   });
 
   return (
-    <Box>
-      <Box width={SKILL_NAME_COL_WIDTH}>
-        <Text color={theme.text.link}>{name}</Text>
-      </Box>
-      <Box width={CALLS_COL_WIDTH} justifyContent="flex-end">
-        <Text color={theme.text.primary}>{stats.count}</Text>
-      </Box>
-      <Box width={SUCCESS_COL_WIDTH} justifyContent="flex-end">
-        <Text color={theme.status.success}>{stats.success}</Text>
-      </Box>
-      <Box width={FAIL_COL_WIDTH} justifyContent="flex-end">
-        <Text color={stats.fail > 0 ? theme.status.error : theme.text.primary}>
+    <box>
+      <box style={{ width: SKILL_NAME_COL_WIDTH }}>
+        <text color={theme.text.link}>{name}</text>
+      </box>
+      <box style={{ width: CALLS_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={theme.text.primary}>{stats.count}</text>
+      </box>
+      <box style={{ width: SUCCESS_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={theme.status.success}>{stats.success}</text>
+      </box>
+      <box style={{ width: FAIL_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={stats.fail > 0 ? theme.status.error : theme.text.primary}>
           {stats.fail}
-        </Text>
-      </Box>
-      <Box width={SUCCESS_RATE_COL_WIDTH} justifyContent="flex-end">
-        <Text color={successColor}>{successRate.toFixed(1)}%</Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+      <box style={{ width: SUCCESS_RATE_COL_WIDTH, justifyContent: "flex-end" }}>
+        <text color={successColor}>{successRate.toFixed(1)}%</text>
+      </box>
+    </box>
   );
 };
 
@@ -78,75 +78,54 @@ export const SkillStatsDisplay: React.FC<SkillStatsDisplayProps> = ({
 
   if (activeSkills.length === 0) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        paddingY={1}
-        paddingX={2}
-        width={width}
-      >
-        <Text color={theme.text.primary}>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, width: width }} paddingY={1} paddingX={2}>
+        <text color={theme.text.primary}>
           {t('No skill calls have been made in this session.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      width={width}
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: width }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {t('Skill Stats For Nerds')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
 
-      <Box>
-        <Box width={SKILL_NAME_COL_WIDTH}>
-          <Text bold color={theme.text.primary}>
+      <box>
+        <box style={{ width: SKILL_NAME_COL_WIDTH }}>
+          <text bold color={theme.text.primary}>
             {t('Skill Name')}
-          </Text>
-        </Box>
-        <Box width={CALLS_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: CALLS_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Calls')}
-          </Text>
-        </Box>
-        <Box width={SUCCESS_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: SUCCESS_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('OK')}
-          </Text>
-        </Box>
-        <Box width={FAIL_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: FAIL_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Fail')}
-          </Text>
-        </Box>
-        <Box width={SUCCESS_RATE_COL_WIDTH} justifyContent="flex-end">
-          <Text bold color={theme.text.primary}>
+          </text>
+        </box>
+        <box style={{ width: SUCCESS_RATE_COL_WIDTH, justifyContent: "flex-end" }}>
+          <text bold color={theme.text.primary}>
             {t('Success Rate')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
-      <Box
-        borderStyle="single"
-        borderBottom={true}
-        borderTop={false}
-        borderLeft={false}
-        borderRight={false}
-        borderColor={theme.border.default}
-        width="100%"
-      />
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, width: "100%" }} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false} />
 
       {activeSkills.map(([name, skillStats]) => (
         <StatRow key={name} name={name} stats={skillStats} />
       ))}
-    </Box>
+    </box>
   );
 };

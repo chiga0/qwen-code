@@ -14,15 +14,15 @@ export const ExitWarning: React.FC = () => {
   return (
     <>
       {uiState.dialogsVisible && uiState.ctrlCPressedOnce && (
-        <Box marginTop={1}>
-          <Text color={theme.status.warning}>Press Ctrl+C again to exit.</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.warning}>Press Ctrl+C again to exit.</text>
+        </box>
       )}
 
       {uiState.dialogsVisible && uiState.ctrlDPressedOnce && (
-        <Box marginTop={1}>
-          <Text color={theme.status.warning}>Press Ctrl+D again to exit.</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.warning}>Press Ctrl+D again to exit.</text>
+        </box>
       )}
     </>
   );

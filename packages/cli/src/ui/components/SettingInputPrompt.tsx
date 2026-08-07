@@ -86,20 +86,20 @@ const PasswordInput = ({
   const cursorChar = renderSoftwareCursor(' ');
 
   return (
-    <Box>
-      <Text color={theme.text.accent}>{'> '}</Text>
+    <box>
+      <text color={theme.text.accent}>{'> '}</text>
       {value.length === 0 ? (
-        <Text>
+        <text>
           {cursorChar}
-          <Text dimColor>{placeholder.slice(1)}</Text>
-        </Text>
+          <text dimColor>{placeholder.slice(1)}</text>
+        </text>
       ) : (
-        <Text>
+        <text>
           {displayValue}
           {cursorChar}
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -131,20 +131,14 @@ export const SettingInputPrompt = (props: SettingInputPromptProps) => {
   };
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column" }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {settingName}
-      </Text>
-      <Box marginTop={1}>
-        <Text>{settingDescription}</Text>
-      </Box>
-      <Box marginTop={1} flexDirection="column">
+      </text>
+      <box marginTop={1}>
+        <text>{settingDescription}</text>
+      </box>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {sensitive ? (
           <PasswordInput
             value={value}
@@ -162,10 +156,10 @@ export const SettingInputPrompt = (props: SettingInputPromptProps) => {
             isActive={true}
           />
         )}
-      </Box>
-      <Box marginTop={1}>
-        <Text dimColor>{t('Press Enter to submit, Escape to cancel')}</Text>
-      </Box>
-    </Box>
+      </box>
+      <box marginTop={1}>
+        <text dimColor>{t('Press Enter to submit, Escape to cancel')}</text>
+      </box>
+    </box>
   );
 };

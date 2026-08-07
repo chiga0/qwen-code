@@ -40,48 +40,42 @@ const BtwMessageInternal: React.FC<BtwDisplayProps> = ({
   const contentWidth = Math.max(2, baseWidth - BTW_SELF_CHROME);
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={Colors.AccentYellow}
-      paddingX={1}
-      width="100%"
-    >
-      <Box flexDirection="row">
-        <Text color={Colors.AccentYellow} bold>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: Colors.AccentYellow, width: "100%" }} paddingX={1}>
+      <box style={{ flexDirection: "row" }}>
+        <text color={Colors.AccentYellow} bold>
           {'/btw '}
-        </Text>
-        <Text wrap="wrap" color={Colors.AccentYellow}>
+        </text>
+        <text wrap="wrap" color={Colors.AccentYellow}>
           {btw.question}
-        </Text>
-      </Box>
+        </text>
+      </box>
       {btw.isPending ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Box>
-            <Text color={Colors.AccentYellow}>{'+ '}</Text>
-            <Text color={Colors.AccentYellow}>{t('Answering...')}</Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text dimColor>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <box>
+            <text color={Colors.AccentYellow}>{'+ '}</text>
+            <text color={Colors.AccentYellow}>{t('Answering...')}</text>
+          </box>
+          <box marginTop={1}>
+            <text dimColor>
               {t('Press Escape, Ctrl+C, or Ctrl+D to cancel')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       ) : (
-        <Box flexDirection="column" marginTop={1}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
           <MarkdownDisplay
             text={normalizeCodeFences(btw.answer)}
             isPending={false}
             contentWidth={contentWidth}
           />
-          <Box marginTop={1}>
-            <Text dimColor>
+          <box marginTop={1}>
+            <text dimColor>
               {t('Press Space, Enter, or Escape to dismiss')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };
 

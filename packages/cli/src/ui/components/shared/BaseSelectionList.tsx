@@ -125,7 +125,7 @@ export function BaseSelectionList<
   const numberColumnWidth = String(items.length).length;
 
   return (
-    <Box ref={containerRef} flexDirection="column" gap={itemGap}>
+    <box ref={containerRef} style={{ flexDirection: "column", gap: itemGap }}>
       {mouseEnabled && isFocused && items.length > 0 && (
         <RowMouseController
           containerRef={containerRef}
@@ -138,11 +138,11 @@ export function BaseSelectionList<
       )}
       {/* Use conditional coloring instead of conditional rendering */}
       {showScrollArrows && (
-        <Text
+        <text
           color={scrollOffset > 0 ? theme.text.primary : theme.text.secondary}
         >
           ▲
-        </Text>
+        </text>
       )}
 
       {visibleItems.map((item, index) => {
@@ -174,49 +174,40 @@ export function BaseSelectionList<
         )}.`;
 
         return (
-          <Box
-            key={item.key}
-            alignItems="flex-start"
-            ref={(node) => {
+          <box key={item.key} style={{ alignItems: "flex-start" }} ref={(node) => {
               itemRefs.current[index] = node;
-            }}
-          >
+            }}>
             {/* Radio button indicator */}
-            <Box minWidth={2} flexShrink={0}>
-              <Text
+            <box minWidth={2} style={{ flexShrink: 0 }}>
+              <text
                 color={isSelected ? theme.status.success : theme.text.primary}
                 aria-hidden
               >
                 {isSelected ? '›' : ' '}
-              </Text>
-            </Box>
+              </text>
+            </box>
 
             {/* Item number */}
             {showNumbers && (
-              <Box
-                marginRight={1}
-                flexShrink={0}
-                minWidth={itemNumberText.length}
-                aria-state={{ checked: isSelected }}
-              >
-                <Text color={numberColor}>{itemNumberText}</Text>
-              </Box>
+              <box marginRight={1} style={{ flexShrink: 0 }} minWidth={itemNumberText.length} aria-state={{ checked: isSelected }}>
+                <text color={numberColor}>{itemNumberText}</text>
+              </box>
             )}
 
             {/* Custom content via render prop */}
-            <Box flexGrow={1}>
+            <box style={{ flexGrow: 1 }}>
               {renderItem(item, {
                 isSelected,
                 titleColor,
                 numberColor,
               })}
-            </Box>
-          </Box>
+            </box>
+          </box>
         );
       })}
 
       {showScrollArrows && (
-        <Text
+        <text
           color={
             scrollOffset + maxItemsToShow < items.length
               ? theme.text.primary
@@ -224,8 +215,8 @@ export function BaseSelectionList<
           }
         >
           ▼
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 }

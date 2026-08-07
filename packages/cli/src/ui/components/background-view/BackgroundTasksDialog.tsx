@@ -310,17 +310,17 @@ const ListBody: React.FC<{
   // empty-state text when the last task finishes while the dialog is open.
   if (entries.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Box paddingX={1}>
-          <Text bold>{t('Background tasks')}</Text>
-          <Text color={theme.text.secondary}> (0)</Text>
-        </Box>
-        <Box paddingX={1}>
-          <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <box paddingX={1}>
+          <text bold>{t('Background tasks')}</text>
+          <text color={theme.text.secondary}> (0)</text>
+        </box>
+        <box paddingX={1}>
+          <text color={theme.text.secondary}>
             {t('No tasks currently running')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
@@ -355,18 +355,18 @@ const ListBody: React.FC<{
   const blockingIds = computeUserBlockingIds(entries);
 
   return (
-    <Box flexDirection="column">
-      <Box paddingX={1}>
-        <Text bold>{t('Background tasks')}</Text>
-        <Text color={theme.text.secondary}> ({entries.length})</Text>
-      </Box>
-      <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
+      <box paddingX={1}>
+        <text bold>{t('Background tasks')}</text>
+        <text color={theme.text.secondary}> ({entries.length})</text>
+      </box>
+      <box style={{ flexDirection: "column" }}>
         {hiddenAbove > 0 && (
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>
               {`  ^ ${t('{{count}} more above', { count: String(hiddenAbove) })}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
         {visible.map((entry, visibleIdx) => {
           const idx = windowStart + visibleIdx;
@@ -382,33 +382,33 @@ const ListBody: React.FC<{
               ? treeRowPrefix(entry, treeInfo.get(entry.agentId))
               : '';
           return (
-            <Box key={entryId(entry)} flexDirection="row" paddingX={1}>
-              <Text color={isSelected ? theme.text.accent : undefined}>
+            <box key={entryId(entry)} style={{ flexDirection: "row" }} paddingX={1}>
+              <text color={isSelected ? theme.text.accent : undefined}>
                 {isSelected ? '> ' : '  '}
-              </Text>
+              </text>
               {treePrefix !== '' && (
-                <Text color={theme.text.secondary}>{treePrefix}</Text>
+                <text color={theme.text.secondary}>{treePrefix}</text>
               )}
-              <Text color={labelColor}>
+              <text color={labelColor}>
                 {escapeAnsiCtrlCodes(
                   rowLabel(
                     entry,
                     entry.kind === 'agent' && blockingIds.has(entry.agentId),
                   ),
                 )}
-              </Text>
-            </Box>
+              </text>
+            </box>
           );
         })}
         {hiddenBelow > 0 && (
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>
               {`  v ${t('{{count}} more below', { count: String(hiddenBelow) })}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 
@@ -515,86 +515,86 @@ const DreamDetailBody: React.FC<{
       maxWidth={maxWidth}
       overflowDirection="bottom"
     >
-      <Box>
-        <Text bold color={theme.text.accent}>
+      <box>
+        <text bold color={theme.text.accent}>
           {title}
-        </Text>
-      </Box>
-      <Box>
+        </text>
+      </box>
+      <box>
         {terminal && (
-          <Text color={terminal.color}>
+          <text color={terminal.color}>
             {`${terminal.icon} ${statusVerb(entry.status)} · `}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</Text>
-      </Box>
+        <text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</text>
+      </box>
 
       {entry.sessionCount !== undefined && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Sessions reviewing')}
-            </Text>
-          </Box>
-          <Box>
-            <Text>{String(entry.sessionCount)}</Text>
-          </Box>
+            </text>
+          </box>
+          <box>
+            <text>{String(entry.sessionCount)}</text>
+          </box>
         </Fragment>
       )}
 
       {entry.progressText && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Progress')}
-            </Text>
-          </Box>
-          <Box>
-            <Text wrap="wrap">{entry.progressText}</Text>
-          </Box>
+            </text>
+          </box>
+          <box>
+            <text wrap="wrap">{entry.progressText}</text>
+          </box>
         </Fragment>
       )}
 
       {topics.length > 0 && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Topics touched ({{count}})', {
                 count: String(topics.length),
               })}
-            </Text>
-          </Box>
+            </text>
+          </box>
           {visibleTopics.map((topic) => (
-            <Box key={topic}>
-              <Text>{`  · ${topic}`}</Text>
-            </Box>
+            <box key={topic}>
+              <text>{`  · ${topic}`}</text>
+            </box>
           ))}
           {hiddenTopicCount > 0 && (
-            <Box>
-              <Text
+            <box>
+              <text
                 color={theme.text.secondary}
-              >{`  · +${t('{{count}} more', { count: String(hiddenTopicCount) })}`}</Text>
-            </Box>
+              >{`  · +${t('{{count}} more', { count: String(hiddenTopicCount) })}`}</text>
+            </box>
           )}
         </Fragment>
       )}
 
       {hasError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.error}>
+          <box />
+          <box>
+            <text bold color={theme.status.error}>
               {t('Error')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.error} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.error} wrap="wrap">
               {entry.error}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
 
@@ -608,46 +608,46 @@ const DreamDetailBody: React.FC<{
       */}
       {entry.lockReleaseError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.warning}>
+          <box />
+          <box>
+            <text bold color={theme.status.warning}>
               {t('Lock release warning')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.warning} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.warning} wrap="wrap">
               {entry.lockReleaseError}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.secondary} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.text.secondary} wrap="wrap">
               {t(
                 "Subsequent dreams may be skipped as locked until the next session's staleness sweep cleans the file.",
               )}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
       {entry.metadataWriteError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.warning}>
+          <box />
+          <box>
+            <text bold color={theme.status.warning}>
               {t('Metadata write warning')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.warning} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.warning} wrap="wrap">
               {entry.metadataWriteError}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.secondary} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.text.secondary} wrap="wrap">
               {t(
                 "The scheduler gate did not see this dream's timestamp; the next dream cycle may re-fire sooner than usual.",
               )}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
     </MaxSizedBox>
@@ -779,76 +779,76 @@ const AgentDetailBody: React.FC<{
       maxWidth={maxWidth}
       overflowDirection="bottom"
     >
-      <Box>
-        <Text bold color={theme.text.accent}>
+      <box>
+        <text bold color={theme.text.accent}>
           {title}
-        </Text>
-      </Box>
-      <Box>
+        </text>
+      </box>
+      <box>
         {terminal && (
-          <Text color={terminal.color}>
+          <text color={terminal.color}>
             {`${terminal.icon} ${statusVerb(entry.status)} \u00B7 `}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {dimSubtitleParts.join(' \u00B7 ')}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {parentLine !== undefined && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Parent')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.secondary} wrap="truncate-end">
+            </text>
+          </box>
+          <box>
+            <text color={theme.text.secondary} wrap="truncate-end">
               {`  ${escapeAnsiCtrlCodes(parentLine)}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
 
       {visibleChildAgents.length > 0 && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Sub-agents')}
-              <Text
+              <text
                 color={theme.text.secondary}
-              >{` (${childAgents.length})`}</Text>
-            </Text>
-          </Box>
+              >{` (${childAgents.length})`}</text>
+            </text>
+          </box>
           {visibleChildAgents.map((child) => (
-            <Box key={child.agentId}>
-              <Text color={theme.text.secondary} wrap="truncate-end">
+            <box key={child.agentId}>
+              <text color={theme.text.secondary} wrap="truncate-end">
                 {`  ${statusGlyph(child.status)} ${escapeAnsiCtrlCodes(
                   `${child.subagentType ?? 'agent'} \u2014 ${child.description}`,
                 )} \u00B7 ${elapsedFor(child)}`}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ))}
           {hiddenChildCount > 0 && (
-            <Box>
-              <Text color={theme.text.secondary}>
+            <box>
+              <text color={theme.text.secondary}>
                 {`  \u2026 ${t('{{count}} more', { count: String(hiddenChildCount) })}`}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
         </Fragment>
       )}
 
       {activities.length > 0 && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Progress')}
-            </Text>
-          </Box>
+            </text>
+          </box>
           {shownHistory.map((a, i) => {
             // ASCII `>` is unambiguously one cell wide in every terminal
             // font, so `> ` (2 cells) aligns with the two-space indent on
@@ -867,12 +867,12 @@ const AgentDetailBody: React.FC<{
               Math.max(0, maxWidth - getCachedStringWidth(prefix)),
             );
             return (
-              <Box key={`${a.at}-${i}`}>
-                <Text color={theme.text.secondary}>
+              <box key={`${a.at}-${i}`}>
+                <text color={theme.text.secondary}>
                   {prefix}
                   {label}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
           {liveActivity && (
@@ -883,79 +883,79 @@ const AgentDetailBody: React.FC<{
             // Prefix and label must be ONE string child: MaxSizedBox's wrap
             // layout drops the prefix's trailing space when they arrive as
             // separate segments (`> Shell` → `>Shell`).
-            <Box key="live">
-              <Text color={theme.text.primary}>{`> ${liveLabel}`}</Text>
-            </Box>
+            <box key="live">
+              <text color={theme.text.primary}>{`> ${liveLabel}`}</text>
+            </box>
           )}
         </Fragment>
       )}
 
       {entry.outputFile && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Transcript')}
-            </Text>
-          </Box>
-          <Box>
+            </text>
+          </box>
+          <box>
             {/* `wrap="wrap"`, not `truncate-end`: a real transcript path is
                 ~130 chars and only exists to be copied / `tail -f`'d, so
                 truncating it withholds the one string the section is for. */}
-            <Text color={theme.text.secondary} wrap="wrap">
+            <text color={theme.text.secondary} wrap="wrap">
               {`  ${escapeAnsiCtrlCodes(entry.outputFile)}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
 
       {visiblePromptLines.length > 0 && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Prompt')}
-            </Text>
-          </Box>
+            </text>
+          </box>
           {visiblePromptLines.map((line, i) => (
-            <Box key={`prompt-${i}`}>
-              <Text wrap="truncate-end">
+            <box key={`prompt-${i}`}>
+              <text wrap="truncate-end">
                 {escapeAnsiCtrlCodes(line) || ' '}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ))}
         </Fragment>
       )}
 
       {hasBlockedReason && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.error}>
+          <box />
+          <box>
+            <text bold color={theme.status.error}>
               {t('Resume blocked')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.error} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.error} wrap="wrap">
               {blockedReason}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
 
       {hasError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.error}>
+          <box />
+          <box>
+            <text bold color={theme.status.error}>
               {t('Error')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.error} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.error} wrap="wrap">
               {entry.error}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
     </MaxSizedBox>
@@ -988,55 +988,55 @@ const ShellDetailBody: React.FC<{
       maxWidth={maxWidth}
       overflowDirection="bottom"
     >
-      <Box>
-        <Text bold color={theme.text.accent}>
+      <box>
+        <text bold color={theme.text.accent}>
           {title}
-        </Text>
-      </Box>
-      <Box>
+        </text>
+      </box>
+      <box>
         {terminal && (
-          <Text color={terminal.color}>
+          <text color={terminal.color}>
             {`${terminal.icon} ${statusVerb(entry.status)} \u00B7 `}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {dimSubtitleParts.join(' \u00B7 ')}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
-      <Box />
-      <Box>
-        <Text bold dimColor>
+      <box />
+      <box>
+        <text bold dimColor>
           {t('Working dir')}
-        </Text>
-      </Box>
-      <Box>
-        <Text wrap="truncate-end">{entry.cwd}</Text>
-      </Box>
+        </text>
+      </box>
+      <box>
+        <text wrap="truncate-end">{entry.cwd}</text>
+      </box>
 
-      <Box />
-      <Box>
-        <Text bold dimColor>
+      <box />
+      <box>
+        <text bold dimColor>
           {t('Output file')}
-        </Text>
-      </Box>
-      <Box>
-        <Text wrap="truncate-end">{entry.outputFile}</Text>
-      </Box>
+        </text>
+      </box>
+      <box>
+        <text wrap="truncate-end">{entry.outputFile}</text>
+      </box>
 
       {hasError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.error}>
+          <box />
+          <box>
+            <text bold color={theme.status.error}>
               {t('Error')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.error} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.error} wrap="wrap">
               {entry.error}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
     </MaxSizedBox>
@@ -1080,43 +1080,43 @@ const MonitorDetailBody: React.FC<{
       maxWidth={maxWidth}
       overflowDirection="bottom"
     >
-      <Box>
-        <Text bold color={theme.text.accent}>
+      <box>
+        <text bold color={theme.text.accent}>
           {title}
-        </Text>
-      </Box>
-      <Box>
+        </text>
+      </box>
+      <box>
         {terminal && (
-          <Text color={terminal.color}>
+          <text color={terminal.color}>
             {`${terminal.icon} ${statusVerb(entry.status)} · `}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</Text>
-      </Box>
+        <text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</text>
+      </box>
 
-      <Box />
-      <Box>
-        <Text bold dimColor>
+      <box />
+      <box>
+        <text bold dimColor>
           {t('Command')}
-        </Text>
-      </Box>
-      <Box>
-        <Text wrap="truncate-end">{entry.command}</Text>
-      </Box>
+        </text>
+      </box>
+      <box>
+        <text wrap="truncate-end">{entry.command}</text>
+      </box>
 
       {hasError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={errorColor}>
+          <box />
+          <box>
+            <text bold color={errorColor}>
               {errorIsFailure ? t('Error') : t('Stopped because')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={errorColor} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={errorColor} wrap="wrap">
               {entry.error}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
     </MaxSizedBox>
@@ -1186,45 +1186,45 @@ const WorkflowDetailBody: React.FC<{
       maxWidth={maxWidth}
       overflowDirection="bottom"
     >
-      <Box>
-        <Text bold color={theme.text.accent}>
+      <box>
+        <text bold color={theme.text.accent}>
           {title}
-        </Text>
-      </Box>
-      <Box>
+        </text>
+      </box>
+      <box>
         {terminal && (
-          <Text color={terminal.color}>
+          <text color={terminal.color}>
             {`${terminal.icon} ${statusVerb(entry.status)} · `}
-          </Text>
+          </text>
         )}
-        <Text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</Text>
-      </Box>
+        <text color={theme.text.secondary}>{dimSubtitleParts.join(' · ')}</text>
+      </box>
 
       {entry.meta?.description && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text wrap="wrap">{entry.meta.description}</Text>
-          </Box>
+          <box />
+          <box>
+            <text wrap="wrap">{entry.meta.description}</text>
+          </box>
         </Fragment>
       )}
 
-      <Box />
-      <Box>
-        <Text bold dimColor>
+      <box />
+      <box>
+        <text bold dimColor>
           {t('Phases')}
-        </Text>
-      </Box>
+        </text>
+      </box>
       {entry.phases.length === 0 ? (
-        <Box>
-          <Text dimColor>{t('(no phase recorded yet)')}</Text>
-        </Box>
+        <box>
+          <text dimColor>{t('(no phase recorded yet)')}</text>
+        </box>
       ) : (
         <Fragment>
           {phaseOverflow > 0 && (
-            <Box>
-              <Text dimColor>{`+${phaseOverflow} ${t('more above')}`}</Text>
-            </Box>
+            <box>
+              <text dimColor>{`+${phaseOverflow} ${t('more above')}`}</text>
+            </box>
           )}
           {visiblePhases.map((phaseTitle, i) => {
             const isCurrent =
@@ -1241,11 +1241,11 @@ const WorkflowDetailBody: React.FC<{
             const tokenChip =
               phaseTokens > 0 ? ` · ${formatTokenCount(phaseTokens)}t` : '';
             return (
-              <Box key={`${phaseTitle}-${i}`}>
-                <Text color={isCurrent ? theme.status.success : undefined}>
+              <box key={`${phaseTitle}-${i}`}>
+                <text color={isCurrent ? theme.status.success : undefined}>
                   {`  ${marker} ${phaseTitle}${tokenChip}`}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
           {/* P5 R1 (#6): surface null-sentinel attribution — tokens
@@ -1253,53 +1253,53 @@ const WorkflowDetailBody: React.FC<{
               `null` key. Without this row the entire pre-phase spend is
               hidden in the UI. */}
           {(entry.perPhaseTokens.get(null) ?? 0) > 0 && (
-            <Box>
-              <Text dimColor>
+            <box>
+              <text dimColor>
                 {`  · ${t('(no phase)')} · ${formatTokenCount(
                   entry.perPhaseTokens.get(null) ?? 0,
                 )}t`}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
         </Fragment>
       )}
 
       {entry.recentLogs.length > 0 && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold dimColor>
+          <box />
+          <box>
+            <text bold dimColor>
               {t('Logs')}
-            </Text>
-          </Box>
+            </text>
+          </box>
           {logOverflow > 0 && (
-            <Box>
-              <Text dimColor>{`+${logOverflow} ${t('more above')}`}</Text>
-            </Box>
+            <box>
+              <text dimColor>{`+${logOverflow} ${t('more above')}`}</text>
+            </box>
           )}
           {visibleLogs.map((line, i) => (
-            <Box key={`log-${i}`}>
-              <Text wrap="truncate-end" dimColor>
+            <box key={`log-${i}`}>
+              <text wrap="truncate-end" dimColor>
                 {line}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ))}
         </Fragment>
       )}
 
       {hasError && (
         <Fragment>
-          <Box />
-          <Box>
-            <Text bold color={theme.status.error}>
+          <box />
+          <box>
+            <text bold color={theme.status.error}>
               {t('Error')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.status.error} wrap="wrap">
+            </text>
+          </box>
+          <box>
+            <text color={theme.status.error} wrap="wrap">
               {entry.error}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </Fragment>
       )}
     </MaxSizedBox>
@@ -1770,21 +1770,15 @@ export const BackgroundTasksDialog: React.FC<BackgroundTasksDialogProps> = ({
   }
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.border.default}
-      marginTop={1}
-      paddingX={1}
-    >
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default }} marginTop={1} paddingX={1}>
       {dialogMode === 'list' && (
-        <Box paddingX={1}>
-          <Text bold color={theme.text.accent}>
+        <box paddingX={1}>
+          <text bold color={theme.text.accent}>
             {t('Background tasks')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-      <Box marginTop={dialogMode === 'list' ? 1 : 0} flexDirection="column">
+      <box marginTop={dialogMode === 'list' ? 1 : 0} style={{ flexDirection: "column" }}>
         {dialogMode === 'list' ? (
           <ListBody
             entries={entries}
@@ -1804,17 +1798,17 @@ export const BackgroundTasksDialog: React.FC<BackgroundTasksDialogProps> = ({
             maxWidth={detailContentWidth}
           />
         ) : (
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>{t('No entry to show.')}</Text>
-          </Box>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>{t('No entry to show.')}</text>
+          </box>
         )}
         {approvalActive && approvalConfirmationDetails && (
-          <Box flexDirection="column" marginTop={1} paddingX={1}>
-            <Text bold color={theme.status.warning}>
+          <box style={{ flexDirection: "column" }} marginTop={1} paddingX={1}>
+            <text bold color={theme.status.warning}>
               {selectedApproval?.kind === 'workflow'
                 ? `[workflow] ${t('needs approval')}`
                 : t('Background agent needs approval')}
-            </Text>
+            </text>
             <ToolConfirmationMessage
               confirmationDetails={approvalConfirmationDetails}
               config={config}
@@ -1826,9 +1820,9 @@ export const BackgroundTasksDialog: React.FC<BackgroundTasksDialogProps> = ({
               )}
               compactMode
             />
-          </Box>
+          </box>
         )}
-      </Box>
+      </box>
       {saveActive && workflowSaveTarget && config ? (
         <WorkflowSaveOverlay
           script={workflowSaveTarget.script}
@@ -1838,10 +1832,10 @@ export const BackgroundTasksDialog: React.FC<BackgroundTasksDialogProps> = ({
           onClose={() => setSaveActive(false)}
         />
       ) : (
-        <Box marginTop={1} paddingX={1}>
-          <Text color={theme.text.secondary}>{hints.join(' \u00B7 ')}</Text>
-        </Box>
+        <box marginTop={1} paddingX={1}>
+          <text color={theme.text.secondary}>{hints.join(' \u00B7 ')}</text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

@@ -100,31 +100,27 @@ function ConfigTabBar({
   focused: boolean;
 }): React.JSX.Element {
   return (
-    <Box>
+    <box>
       {CONFIG_TAB_ORDER.map((tab) => {
         const isActive = tab === activeTab;
         return (
-          <Box key={tab} marginRight={2}>
+          <box key={tab} marginRight={2}>
             {isActive ? (
-              <Text
-                bold
-                backgroundColor={theme.text.accent}
-                color={theme.background.primary}
-              >
+              <text bold style={{ backgroundColor: theme.text.accent }} color={theme.background.primary}>
                 {` ${configTabLabel(tab)} `}
-              </Text>
+              </text>
             ) : (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {` ${configTabLabel(tab)} `}
-              </Text>
+              </text>
             )}
-          </Box>
+          </box>
         );
       })}
-      <Text color={theme.text.secondary} dimColor={!focused}>
+      <text color={theme.text.secondary} dimColor={!focused}>
         {focused ? t('(←/→ to switch, ↓ to return)') : t('(↑ to switch tabs)')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 }
 
@@ -1140,28 +1136,22 @@ export function SettingsDialog({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
       <ConfigTabBar activeTab={activeTab} focused={focusZone === 'tabs'} />
-      <Box height={1} />
+      <box style={{ height: 1 }} />
       {activeTab !== 'settings' ? (
-        <Box flexDirection="column" flexGrow={1}>
+        <box style={{ flexDirection: "column", flexGrow: 1 }}>
           {activeTab === 'status' ? (
             systemInfo ? (
               // Outer Box: border (2) + padding (2) = 4 columns of chrome,
               // matching the embedded StatsDialog width below.
               <AboutBox {...systemInfo} width={width ? width - 4 : undefined} />
             ) : statusError ? (
-              <Text color={theme.status.error}>
+              <text color={theme.status.error}>
                 {t('Failed to load status. Press r to retry.')}
-              </Text>
+              </text>
             ) : (
-              <Text color={theme.text.secondary}>{t('Loading status…')}</Text>
+              <text color={theme.text.secondary}>{t('Loading status…')}</text>
             )
           ) : (
             // The Stats tab embeds the full /stats dashboard (Session /
@@ -1190,34 +1180,27 @@ export function SettingsDialog({
               }
             />
           )}
-        </Box>
+        </box>
       ) : mode === 'settings' ? (
-        <Box flexDirection="column" flexGrow={1}>
-          <Box
-            borderStyle="round"
-            borderColor={
-              focusZone === 'search'
+        <box style={{ flexDirection: "column", flexGrow: 1 }}>
+          <box style={{ borderStyle: "round", borderColor: focusZone === 'search'
                 ? theme.border.focused
-                : theme.border.default
-            }
-            paddingX={1}
-            width="100%"
-          >
-            <Text color={theme.text.secondary}>{'⌕ '}</Text>
+                : theme.border.default, width: "100%" }} paddingX={1}>
+            <text color={theme.text.secondary}>{'⌕ '}</text>
             {searchQuery ? (
-              <Text color={theme.text.primary} wrap="truncate">
+              <text color={theme.text.primary} wrap="truncate">
                 {searchQuery}
-              </Text>
+              </text>
             ) : (
-              <Text color={theme.text.secondary}>{t('Search settings…')}</Text>
+              <text color={theme.text.secondary}>{t('Search settings…')}</text>
             )}
-          </Box>
-          <Box height={1} />
-          {showScrollUp && <Text color={theme.text.secondary}>▲</Text>}
+          </box>
+          <box style={{ height: 1 }} />
+          {showScrollUp && <text color={theme.text.secondary}>▲</text>}
           {items.length === 0 && (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {t('No settings match your search.')}
-            </Text>
+            </text>
           )}
           {visibleItems.map((item, idx) => {
             const isActive =
@@ -1317,29 +1300,29 @@ export function SettingsDialog({
             );
 
             return (
-              <Box key={item.value} flexDirection="row" alignItems="center">
-                <Box minWidth={2} flexShrink={0}>
-                  <Text
+              <box key={item.value} style={{ flexDirection: "row", alignItems: "center" }}>
+                <box minWidth={2} style={{ flexShrink: 0 }}>
+                  <text
                     color={
                       isActive ? theme.status.success : theme.text.secondary
                     }
                   >
                     {isActive ? ICON.CIRCLE_FILLED : ''}
-                  </Text>
-                </Box>
-                <Box flexGrow={1} flexShrink={1}>
-                  <Text
+                  </text>
+                </box>
+                <box style={{ flexGrow: 1, flexShrink: 1 }}>
+                  <text
                     color={isActive ? theme.status.success : theme.text.primary}
                     wrap="truncate"
                   >
                     {item.label}
                     {scopeMessage && (
-                      <Text color={theme.text.secondary}> {scopeMessage}</Text>
+                      <text color={theme.text.secondary}> {scopeMessage}</text>
                     )}
-                  </Text>
-                </Box>
-                <Box marginLeft={1} flexShrink={0}>
-                  <Text
+                  </text>
+                </box>
+                <box marginLeft={1} style={{ flexShrink: 0 }}>
+                  <text
                     color={
                       isActive
                         ? theme.status.success
@@ -1350,13 +1333,13 @@ export function SettingsDialog({
                     wrap="truncate"
                   >
                     {displayValue}
-                  </Text>
-                </Box>
-              </Box>
+                  </text>
+                </box>
+              </box>
             );
           })}
-          {showScrollDown && <Text color={theme.text.secondary}>▼</Text>}
-        </Box>
+          {showScrollDown && <text color={theme.text.secondary}>▼</text>}
+        </box>
       ) : (
         <ScopeSelector
           onSelect={handleScopeSelect}
@@ -1366,33 +1349,33 @@ export function SettingsDialog({
         />
       )}
       {activeDescription && mode === 'settings' && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} wrap="truncate-end" italic>
+        <box marginTop={1}>
+          <text color={theme.text.secondary} wrap="truncate-end" italic>
             {activeDescription}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
       {/* Status / Stats tabs surface their own hints (and the tab bar shows
           "↑ to switch tabs"), so only the Settings tab needs this footer. */}
       {activeTab === 'settings' && (
-        <Box marginTop={activeDescription && mode === 'settings' ? 0 : 1}>
-          <Text color={theme.text.secondary} wrap="truncate">
+        <box marginTop={activeDescription && mode === 'settings' ? 0 : 1}>
+          <text color={theme.text.secondary} wrap="truncate">
             {mode === 'settings'
               ? t('(Use Enter to select, Tab to configure scope)')
               : t('(Use Enter to apply scope, Tab to go back)')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
       {activeTab === 'settings' &&
         mode === 'settings' &&
         focusZone === 'list' &&
         showRestartPrompt && (
-          <Text color={theme.status.warning}>
+          <text color={theme.status.warning}>
             {t(
               'To see changes, Qwen Code must be restarted. Press r to exit and apply changes now.',
             )}
-          </Text>
+          </text>
         )}
-    </Box>
+    </box>
   );
 }

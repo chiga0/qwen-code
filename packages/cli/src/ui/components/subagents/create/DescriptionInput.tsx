@@ -143,24 +143,24 @@ export function DescriptionInput({
   );
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box>
-        <Text color={theme.text.secondary}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box>
+        <text color={theme.text.secondary}>
           {t(
             'Describe what this subagent should do and when it should be used. (Be comprehensive for best results)',
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {state.isGenerating ? (
-        <Box>
-          <Box marginRight={1}>
+        <box>
+          <box marginRight={1}>
             <Spinner />
-          </Box>
-          <Text color={theme.text.accent}>
+          </box>
+          <text color={theme.text.accent}>
             {t('Generating subagent configuration...')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : (
         <TextInput
           value={state.userDescription || ''}
@@ -172,6 +172,6 @@ export function DescriptionInput({
           validationErrors={state.validationErrors}
         />
       )}
-    </Box>
+    </box>
   );
 }

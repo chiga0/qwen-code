@@ -122,7 +122,7 @@ describe('DescriptiveRadioButtonSelect', () => {
       items: [
         {
           title: 'Foo Title',
-          description: <Text>Custom node description</Text>,
+          description: <text>Custom node description</text>,
           value: 'foo',
           key: 'foo',
         },

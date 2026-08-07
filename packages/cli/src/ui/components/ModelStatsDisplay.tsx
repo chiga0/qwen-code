@@ -46,21 +46,21 @@ const StatRow: React.FC<StatRowProps> = ({
   isSubtle = false,
   isSection = false,
 }) => (
-  <Box>
-    <Box width={METRIC_COL_WIDTH}>
-      <Text
+  <box>
+    <box style={{ width: METRIC_COL_WIDTH }}>
+      <text
         bold={isSection}
         color={isSection ? theme.text.primary : theme.text.link}
       >
         {isSubtle ? `  ↳ ${title}` : title}
-      </Text>
-    </Box>
+      </text>
+    </box>
     {values.map((value, index) => (
-      <Box width={modelColWidth} key={index}>
-        <Text color={theme.text.primary}>{value}</Text>
-      </Box>
+      <box style={{ width: modelColWidth }} key={index}>
+        <text color={theme.text.primary}>{value}</text>
+      </box>
     ))}
-  </Box>
+  </box>
 );
 
 interface ModelStatsDisplayProps {
@@ -78,17 +78,11 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
 
   if (entries.length === 0) {
     return (
-      <Box
-        borderStyle="round"
-        borderColor={theme.border.default}
-        paddingY={1}
-        paddingX={2}
-        width={width}
-      >
-        <Text color={theme.text.primary}>
+      <box style={{ borderStyle: "round", borderColor: theme.border.default, width: width }} paddingY={1} paddingX={2}>
+        <text color={theme.text.primary}>
           {t('No API calls have been made in this session.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -120,44 +114,30 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-      width={width}
-    >
-      <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: width }} paddingY={1} paddingX={2}>
+      <text bold color={theme.text.accent}>
         {t('Model Stats For Nerds')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
 
       {/* Header */}
-      <Box>
-        <Box width={METRIC_COL_WIDTH}>
-          <Text bold color={theme.text.primary}>
+      <box>
+        <box style={{ width: METRIC_COL_WIDTH }}>
+          <text bold color={theme.text.primary}>
             {t('Metric')}
-          </Text>
-        </Box>
+          </text>
+        </box>
         {entries.map(({ key, label }) => (
-          <Box width={modelColWidth} key={key}>
-            <Text bold color={theme.text.primary}>
+          <box style={{ width: modelColWidth }} key={key}>
+            <text bold color={theme.text.primary}>
               {label}
-            </Text>
-          </Box>
+            </text>
+          </box>
         ))}
-      </Box>
+      </box>
 
       {/* Divider */}
-      <Box
-        borderStyle="single"
-        borderBottom={true}
-        borderTop={false}
-        borderLeft={false}
-        borderRight={false}
-        borderColor={theme.border.default}
-      />
+      <box style={{ borderStyle: "single", borderColor: theme.border.default }} borderBottom={true} borderTop={false} borderLeft={false} borderRight={false} />
 
       {/* API Section */}
       <StatRow
@@ -176,13 +156,13 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
         values={getModelValues((m) => {
           const errorRate = calculateErrorRate(m);
           return (
-            <Text
+            <text
               color={
                 m.api.totalErrors > 0 ? theme.status.error : theme.text.primary
               }
             >
               {m.api.totalErrors.toLocaleString()} ({errorRate.toFixed(1)}%)
-            </Text>
+            </text>
           );
         })}
         modelColWidth={modelColWidth}
@@ -196,7 +176,7 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
         modelColWidth={modelColWidth}
       />
 
-      <Box height={1} />
+      <box style={{ height: 1 }} />
 
       {/* Tokens Section */}
       <StatRow
@@ -208,9 +188,9 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
       <StatRow
         title={t('Total')}
         values={getModelValues((m) => (
-          <Text color={theme.status.warning}>
+          <text color={theme.status.warning}>
             {m.tokens.total.toLocaleString()}
-          </Text>
+          </text>
         ))}
         modelColWidth={modelColWidth}
       />
@@ -227,9 +207,9 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
           values={getModelValues((m) => {
             const cacheHitRate = calculateCacheHitRate(m);
             return (
-              <Text color={theme.status.success}>
+              <text color={theme.status.success}>
                 {m.tokens.cached.toLocaleString()} ({cacheHitRate.toFixed(1)}%)
-              </Text>
+              </text>
             );
           })}
           modelColWidth={modelColWidth}
@@ -251,7 +231,7 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
       />
       {hasPricing && (
         <>
-          <Box height={1} />
+          <box style={{ height: 1 }} />
           <StatRow
             title={t('Cost')}
             values={[]}
@@ -273,6 +253,6 @@ export const ModelStatsDisplay: React.FC<ModelStatsDisplayProps> = ({
           />
         </>
       )}
-    </Box>
+    </box>
   );
 };

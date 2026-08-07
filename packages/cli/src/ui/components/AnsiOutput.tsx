@@ -36,24 +36,15 @@ export const AnsiOutputText: React.FC<AnsiOutputProps> = ({
   return (
     <MaxSizedBox maxHeight={availableTerminalHeight} maxWidth={maxWidth}>
       {lastLines.map((line: AnsiLine, lineIndex: number) => (
-        <Box key={lineIndex}>
+        <box key={lineIndex}>
           {line.length > 0
             ? line.map((token: AnsiToken, tokenIndex: number) => (
-                <Text
-                  key={tokenIndex}
-                  color={token.inverse ? token.bg : token.fg}
-                  backgroundColor={token.inverse ? token.fg : token.bg}
-                  dimColor={token.dim}
-                  bold={token.bold}
-                  italic={token.italic}
-                  underline={token.underline}
-                  wrap="truncate"
-                >
+                <text key={tokenIndex} color={token.inverse ? token.bg : token.fg} style={{ backgroundColor: token.inverse ? token.fg : token.bg }} dimColor={token.dim} bold={token.bold} italic={token.italic} underline={token.underline} wrap="truncate">
                   {token.text}
-                </Text>
+                </text>
               ))
             : null}
-        </Box>
+        </box>
       ))}
     </MaxSizedBox>
   );
@@ -79,12 +70,12 @@ export const ShellStatsBar: React.FC<ShellStatsBarProps> = ({
   }
   if (parts.length === 0) return null;
   return (
-    <Box flexDirection="row" gap={1}>
+    <box style={{ flexDirection: "row", gap: 1 }}>
       {parts.map((part, i) => (
-        <Text key={i} color={theme.text.secondary}>
+        <text key={i} color={theme.text.secondary}>
           {part}
-        </Text>
+        </text>
       ))}
-    </Box>
+    </box>
   );
 };

@@ -40,25 +40,19 @@ export function AuthInProgress({
   }, [onTimeout]);
 
   return (
-    <Box
-      borderStyle="single"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
+    <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
       {timedOut ? (
-        <Text color={theme.status.error}>
+        <text color={theme.status.error}>
           {t('Authentication timed out. Please try again.')}
-        </Text>
+        </text>
       ) : (
-        <Box>
-          <Text>
+        <box>
+          <text>
             <Spinner type="dots" />{' '}
             {t('Waiting for auth... (Press ESC or CTRL+C to cancel)')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

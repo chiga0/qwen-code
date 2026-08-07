@@ -28,32 +28,32 @@ export const InsightProgressMessage: React.FC<InsightProgressMessageProps> = ({
 
   if (error) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.status.error}>✕ {stage}</Text>
-        <Text color={theme.text.secondary}>{error}</Text>
-      </Box>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.status.error}>✕ {stage}</text>
+        <text color={theme.text.secondary}>{error}</text>
+      </box>
     );
   }
 
   if (isComplete) {
     return (
-      <Box flexDirection="row">
-        <Text color={theme.status.success}>✓ {stage}</Text>
-      </Box>
+      <box style={{ flexDirection: "row" }}>
+        <text color={theme.status.success}>✓ {stage}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="row">
-      <Text color={theme.text.accent}>
+    <box style={{ flexDirection: "row" }}>
+      <text color={theme.text.accent}>
         <Spinner type="dots" />
-      </Text>
-      <Text> </Text>
-      <Text color={theme.text.secondary}>{bar} </Text>
-      <Text color={theme.text.accent}>
+      </text>
+      <text> </text>
+      <text color={theme.text.secondary}>{bar} </text>
+      <text color={theme.text.accent}>
         {stage}
         {progress.detail ? ` (${progress.detail})` : ''}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

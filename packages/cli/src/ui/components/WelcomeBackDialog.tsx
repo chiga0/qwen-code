@@ -58,42 +58,35 @@ export function WelcomeBackDialog({
   } = welcomeBackInfo;
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={Colors.AccentBlue}
-      padding={1}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box flexDirection="column" marginBottom={1}>
-        <Text color={Colors.AccentBlue} bold>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: Colors.AccentBlue, padding: 1, width: "100%" }} marginLeft={1}>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
+        <text color={Colors.AccentBlue} bold>
           {t('Welcome back! (Last updated: {{timeAgo}})', {
             timeAgo: timeAgo || '',
           })}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Overall Goal Section */}
       {goalContent && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={Colors.Foreground} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text color={Colors.Foreground} bold>
             {t('Overall Goal:')}
-          </Text>
-          <Box marginTop={1} paddingLeft={2}>
-            <Text color={Colors.Gray}>{goalContent}</Text>
-          </Box>
-        </Box>
+          </text>
+          <box marginTop={1} paddingLeft={2}>
+            <text color={Colors.Gray}>{goalContent}</text>
+          </box>
+        </box>
       )}
 
       {/* Current Plan Section */}
       {totalTasks > 0 && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={Colors.Foreground} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text color={Colors.Foreground} bold>
             {t('Current Plan:')}
-          </Text>
-          <Box marginTop={1} paddingLeft={2}>
-            <Text color={Colors.Gray}>
+          </text>
+          <box marginTop={1} paddingLeft={2}>
+            <text color={Colors.Gray}>
               {t('Progress: {{done}}/{{total}} tasks completed', {
                 done: String(doneCount),
                 total: String(totalTasks),
@@ -102,33 +95,33 @@ export function WelcomeBackDialog({
                 t(', {{inProgress}} in progress', {
                   inProgress: String(inProgressCount),
                 })}
-            </Text>
-          </Box>
+            </text>
+          </box>
 
           {pendingTasks.length > 0 && (
-            <Box flexDirection="column" marginTop={1} paddingLeft={2}>
-              <Text color={Colors.Foreground} bold>
+            <box style={{ flexDirection: "column" }} marginTop={1} paddingLeft={2}>
+              <text color={Colors.Foreground} bold>
                 {t('Pending Tasks:')}
-              </Text>
+              </text>
               {pendingTasks.map((task: string, index: number) => (
-                <Text key={index} color={Colors.Gray}>
+                <text key={index} color={Colors.Gray}>
                   • {task}
-                </Text>
+                </text>
               ))}
-            </Box>
+            </box>
           )}
-        </Box>
+        </box>
       )}
 
       {/* Action Selection */}
-      <Box flexDirection="column" marginTop={1}>
-        <Text bold>{t('What would you like to do?')}</Text>
-        <Text>{t('Choose how to proceed with your session:')}</Text>
-      </Box>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <text bold>{t('What would you like to do?')}</text>
+        <text>{t('Choose how to proceed with your session:')}</text>
+      </box>
 
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <RadioButtonSelect items={options} onSelect={onSelect} isFocused />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }

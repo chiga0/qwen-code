@@ -35,27 +35,23 @@ function tabLabel(id: ExtensionsTab): string {
 }
 
 export const TabBar = ({ tabs, activeTab, canSwitch }: TabBarProps) => (
-  <Box>
+  <box>
     {tabs.map((tab) => {
       const isActive = tab.id === activeTab;
       return (
-        <Box key={tab.id} marginRight={2}>
+        <box key={tab.id} marginRight={2}>
           {isActive ? (
-            <Text
-              bold
-              backgroundColor={theme.text.accent}
-              color={theme.background.primary}
-            >
+            <text bold style={{ backgroundColor: theme.text.accent }} color={theme.background.primary}>
               {` ${tabLabel(tab.id)} `}
-            </Text>
+            </text>
           ) : (
-            <Text color={theme.text.secondary}>{` ${tabLabel(tab.id)} `}</Text>
+            <text color={theme.text.secondary}>{` ${tabLabel(tab.id)} `}</text>
           )}
-        </Box>
+        </box>
       );
     })}
-    <Text color={theme.text.secondary} dimColor={!canSwitch}>
+    <text color={theme.text.secondary} dimColor={!canSwitch}>
       {t('(Tab / ←→ to switch)')}
-    </Text>
-  </Box>
+    </text>
+  </box>
 );

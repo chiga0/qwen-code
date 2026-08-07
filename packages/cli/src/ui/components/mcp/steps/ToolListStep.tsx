@@ -69,11 +69,11 @@ export const ToolListStep: React.FC<ToolListStepProps> = ({
 
   if (tools.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No tools available for this server.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -87,62 +87,62 @@ export const ToolListStep: React.FC<ToolListStepProps> = ({
   };
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* 工具列表 */}
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {displayTools.map((tool, index) => {
           const actualIndex = scrollOffset + index;
           const isSelected = actualIndex === selectedIndex;
           const annotations = getToolAnnotations(tool);
 
           return (
-            <Box key={tool.name}>
+            <box key={tool.name}>
               {/* 选择器 */}
-              <Box minWidth={2}>
-                <Text
+              <box minWidth={2}>
+                <text
                   color={isSelected ? theme.text.accent : theme.text.primary}
                 >
                   {isSelected ? '❯' : ' '}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {/* 工具名称 - 固定宽度 */}
-              <Box width={toolNameWidth}>
-                <Text
+              <box style={{ width: toolNameWidth }}>
+                <text
                   color={isSelected ? theme.text.accent : theme.text.primary}
                   wrap="truncate"
                 >
                   {tool.name}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {/* 显示无效工具警告 */}
               {!tool.isValid && (
-                <Text color={theme.status.warning}>
+                <text color={theme.status.warning}>
                   {t('invalid: {{reason}}', {
                     reason: tool.invalidReason || t('unknown'),
                   })}
-                </Text>
+                </text>
               )}
               {annotations && tool.isValid && (
-                <Text color={theme.text.secondary}>{annotations}</Text>
+                <text color={theme.text.secondary}>{annotations}</text>
               )}
-            </Box>
+            </box>
           );
         })}
-      </Box>
+      </box>
 
       {/* 滚动提示 */}
       {tools.length > VISIBLE_TOOLS_COUNT && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {scrollOffset > 0 ? '↑ ' : '  '}
             {t('{{current}}/{{total}}', {
               current: (selectedIndex + 1).toString(),
               total: tools.length.toString(),
             })}
             {scrollOffset + VISIBLE_TOOLS_COUNT < tools.length ? ' ↓' : ''}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

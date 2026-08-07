@@ -41,10 +41,10 @@ export const IdeTrustChangeDialog = ({ reason }: IdeTrustChangeDialogProps) => {
   }
 
   return (
-    <Box borderStyle="round" borderColor={theme.status.warning} paddingX={1}>
-      <Text color={theme.status.warning}>
+    <box style={{ borderStyle: "round", borderColor: theme.status.warning }} paddingX={1}>
+      <text color={theme.status.warning}>
         {message} Press &apos;r&apos; to restart Gemini to apply the changes.
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

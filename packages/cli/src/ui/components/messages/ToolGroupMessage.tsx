@@ -348,24 +348,24 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
     const readCount = memoryReadCount ?? 0;
     const writeCount = memoryWriteCount ?? 0;
     return (
-      <Box flexDirection="column" width={contentWidth}>
+      <box style={{ flexDirection: "column", width: contentWidth }}>
         {readCount > 0 && (
-          <Box paddingLeft={1}>
-            <Text dimColor>
+          <box paddingLeft={1}>
+            <text dimColor>
               {ICON.CIRCLE_FILLED + ' '}
               Recalled {readCount} {readCount === 1 ? 'memory' : 'memories'}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
         {writeCount > 0 && (
-          <Box paddingLeft={1}>
-            <Text dimColor>
+          <box paddingLeft={1}>
+            <text dimColor>
               {ICON.CIRCLE_FILLED + ' '}
               Wrote {writeCount} {writeCount === 1 ? 'memory' : 'memories'}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-      </Box>
+      </box>
     );
   }
 
@@ -412,8 +412,8 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
     !isMemoryOnlyGroup &&
     ((memoryWriteCount ?? 0) > 0 || (memoryReadCount ?? 0) > 0);
   const memoryBadge = hasMemoryBadge ? (
-    <Box paddingLeft={1}>
-      <Text dimColor>
+    <box paddingLeft={1}>
+      <text dimColor>
         {ICON.CIRCLE_FILLED + ' '}
         {[
           (memoryReadCount ?? 0) > 0 &&
@@ -423,21 +423,21 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
         ]
           .filter(Boolean)
           .join(', ')}
-      </Text>
-    </Box>
+      </text>
+    </box>
   ) : null;
 
   // When all tools are collapsible (pure read/search/list batch),
   // render summary line + memory badge if applicable.
   if (collapsibleTools.length > 0 && nonCollapsibleTools.length === 0) {
     return (
-      <Box flexDirection="column" width={contentWidth}>
+      <box style={{ flexDirection: "column", width: contentWidth }}>
         <CompactToolGroupDisplay
           toolCalls={collapsibleTools}
           contentWidth={contentWidth}
         />
         {memoryBadge}
-      </Box>
+      </box>
     );
   }
 
@@ -480,7 +480,7 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
       : undefined;
 
   return (
-    <Box flexDirection="column" width={contentWidth} gap={0}>
+    <box style={{ flexDirection: "column", width: contentWidth, gap: 0 }}>
       {/* Summary line for collapsible tools (read/search/list) */}
       {collapsibleTools.length > 0 && (
         <CompactToolGroupDisplay
@@ -496,8 +496,8 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
           !toolAwaitingApproval &&
           keyboardFocusedSubagentCallId === tool.callId;
         return (
-          <Box key={tool.callId} flexDirection="column" minHeight={1}>
-            <Box flexDirection="row" alignItems="center">
+          <box key={tool.callId} style={{ flexDirection: "column" }} minHeight={1}>
+            <box style={{ flexDirection: "row", alignItems: "center" }}>
               <ToolMessage
                 {...tool}
                 availableTerminalHeight={availableTerminalHeightPerToolMessage}
@@ -524,7 +524,7 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
                 isFocused={isSubagentFocused}
                 isPending={isPending}
               />
-            </Box>
+            </box>
             {tool.status === ToolCallStatus.Confirming &&
               isConfirming &&
               tool.confirmationDetails && (
@@ -538,9 +538,9 @@ export const ToolGroupMessage: React.FC<ToolGroupMessageProps> = ({
                   contentWidth={confirmationInnerWidth}
                 />
               )}
-          </Box>
+          </box>
         );
       })}
-    </Box>
+    </box>
   );
 };

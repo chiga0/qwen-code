@@ -23,9 +23,9 @@ export const ExtensionDetailStep = ({
 }: ExtensionDetailStepProps) => {
   if (!selectedExtension) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No extension selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No extension selected')}</text>
+      </box>
     );
   }
 
@@ -41,105 +41,105 @@ export const ExtensionDetailStep = ({
   const LABEL_WIDTH = 12;
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
-        <Box>
-          <Box width={LABEL_WIDTH} flexShrink={0}>
-            <Text color={theme.text.primary}>{t('Name:')}</Text>
-          </Box>
-          <Text>{getExtensionDisplayName(ext, locale)}</Text>
-        </Box>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+            <text color={theme.text.primary}>{t('Name:')}</text>
+          </box>
+          <text>{getExtensionDisplayName(ext, locale)}</text>
+        </box>
 
         {description && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Description:')}</Text>
-            </Box>
-            <Text color={theme.text.secondary}>{description}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Description:')}</text>
+            </box>
+            <text color={theme.text.secondary}>{description}</text>
+          </box>
         )}
 
-        <Box>
-          <Box width={LABEL_WIDTH} flexShrink={0}>
-            <Text color={theme.text.primary}>{t('Version:')}</Text>
-          </Box>
-          <Text>{ext.version}</Text>
-        </Box>
+        <box>
+          <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+            <text color={theme.text.primary}>{t('Version:')}</text>
+          </box>
+          <text>{ext.version}</text>
+        </box>
 
-        <Box>
-          <Box width={LABEL_WIDTH} flexShrink={0}>
-            <Text color={theme.text.primary}>{t('Status:')}</Text>
-          </Box>
-          <Text color={activeColor}>{activeString}</Text>
-        </Box>
+        <box>
+          <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+            <text color={theme.text.primary}>{t('Status:')}</text>
+          </box>
+          <text color={activeColor}>{activeString}</text>
+        </box>
 
-        <Box>
-          <Box width={LABEL_WIDTH} flexShrink={0}>
-            <Text color={theme.text.primary}>{t('Path:')}</Text>
-          </Box>
-          <Text>{ext.path}</Text>
-        </Box>
+        <box>
+          <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+            <text color={theme.text.primary}>{t('Path:')}</text>
+          </box>
+          <text>{ext.path}</text>
+        </box>
 
         {ext.installMetadata && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Source:')}</Text>
-            </Box>
-            <Text>{redactUrlCredentials(ext.installMetadata.source)}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Source:')}</text>
+            </box>
+            <text>{redactUrlCredentials(ext.installMetadata.source)}</text>
+          </box>
         )}
 
         {ext.mcpServers && Object.keys(ext.mcpServers).length > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('MCP Servers:')}</Text>
-            </Box>
-            <Text>{Object.keys(ext.mcpServers).join(', ')}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('MCP Servers:')}</text>
+            </box>
+            <text>{Object.keys(ext.mcpServers).join(', ')}</text>
+          </box>
         )}
 
         {ext.commands && ext.commands.length > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Commands:')}</Text>
-            </Box>
-            <Text>{ext.commands.join(', ')}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Commands:')}</text>
+            </box>
+            <text>{ext.commands.join(', ')}</text>
+          </box>
         )}
 
         {ext.skills && ext.skills.length > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Skills:')}</Text>
-            </Box>
-            <Text>{ext.skills.map((s) => s.name).join(', ')}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Skills:')}</text>
+            </box>
+            <text>{ext.skills.map((s) => s.name).join(', ')}</text>
+          </box>
         )}
 
         {ext.agents && ext.agents.length > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Agents:')}</Text>
-            </Box>
-            <Text>{ext.agents.map((a) => a.name).join(', ')}</Text>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Agents:')}</text>
+            </box>
+            <text>{ext.agents.map((a) => a.name).join(', ')}</text>
+          </box>
         )}
 
         {ext.resolvedSettings && ext.resolvedSettings.length > 0 && (
-          <Box flexDirection="column" marginTop={1}>
-            <Box width={LABEL_WIDTH} flexShrink={0}>
-              <Text color={theme.text.primary}>{t('Settings:')}</Text>
-            </Box>
-            <Box flexDirection="column" paddingLeft={2}>
+          <box style={{ flexDirection: "column" }} marginTop={1}>
+            <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+              <text color={theme.text.primary}>{t('Settings:')}</text>
+            </box>
+            <box style={{ flexDirection: "column" }} paddingLeft={2}>
               {ext.resolvedSettings.map((setting) => (
-                <Text key={setting.name}>
+                <text key={setting.name}>
                   - {setting.name}: {setting.value}
-                </Text>
+                </text>
               ))}
-            </Box>
-          </Box>
+            </box>
+          </box>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

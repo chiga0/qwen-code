@@ -137,23 +137,18 @@ const PrefixedTextMessage: React.FC<PrefixedTextMessageProps> = ({
   const prefixWidth = getPrefixWidth(prefix);
 
   return (
-    <Box
-      flexDirection="row"
-      paddingY={0}
-      marginTop={marginTop}
-      alignSelf={alignSelf}
-    >
-      <Box width={prefixWidth} flexShrink={0}>
-        <Text color={prefixColor} aria-label={ariaLabel}>
+    <box style={{ flexDirection: "row" }} paddingY={0} marginTop={marginTop} alignSelf={alignSelf}>
+      <box style={{ width: prefixWidth, flexShrink: 0 }}>
+        <text color={prefixColor} aria-label={ariaLabel}>
           {prefix}
-        </Text>
-      </Box>
-      <Box flexGrow={1}>
-        <Text wrap="wrap" color={textColor}>
+        </text>
+      </box>
+      <box style={{ flexGrow: 1 }}>
+        <text wrap="wrap" color={textColor}>
           {text}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };
 
@@ -177,13 +172,13 @@ const PrefixedMarkdownMessage: React.FC<PrefixedMarkdownMessageProps> = ({
       : availableTerminalHeight;
 
   return (
-    <Box flexDirection="row">
-      <Box width={prefixWidth} flexShrink={0}>
-        <Text color={prefixColor} aria-label={ariaLabel}>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: prefixWidth, flexShrink: 0 }}>
+        <text color={prefixColor} aria-label={ariaLabel}>
           {prefix}
-        </Text>
-      </Box>
-      <Box flexGrow={1} flexDirection="column">
+        </text>
+      </box>
+      <box style={{ flexGrow: 1, flexDirection: "column" }}>
         {text.length > 0 && (
           <MarkdownDisplay
             text={text}
@@ -203,10 +198,10 @@ const PrefixedMarkdownMessage: React.FC<PrefixedMarkdownMessageProps> = ({
           />
         ))}
         {omittedImageCount !== undefined && omittedImageCount > 0 && (
-          <Text dimColor>{formatInlineImageOverflow(omittedImageCount)}</Text>
+          <text dimColor>{formatInlineImageOverflow(omittedImageCount)}</text>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 
@@ -230,7 +225,7 @@ const ContinuationMarkdownMessage: React.FC<
       : availableTerminalHeight;
 
   return (
-    <Box flexDirection="column" paddingLeft={prefixWidth}>
+    <box style={{ flexDirection: "column" }} paddingLeft={prefixWidth}>
       {text.length > 0 && (
         <MarkdownDisplay
           text={text}
@@ -250,9 +245,9 @@ const ContinuationMarkdownMessage: React.FC<
         />
       ))}
       {omittedImageCount !== undefined && omittedImageCount > 0 && (
-        <Text dimColor>{formatInlineImageOverflow(omittedImageCount)}</Text>
+        <text dimColor>{formatInlineImageOverflow(omittedImageCount)}</text>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -341,12 +336,12 @@ const ThinkBody: React.FC<{
   if (!expanded) return null;
 
   return (
-    <Box paddingLeft={2} flexDirection="column">
+    <box paddingLeft={2} style={{ flexDirection: "column" }}>
       <ErrorBoundary
         fallback={(err) => (
-          <Text color={theme.text.secondary} dimColor>
+          <text color={theme.text.secondary} dimColor>
             {sanitizeTerminalText(err.message)}
-          </Text>
+          </text>
         )}
         onError={(error, info) => {
           debugLogger.error(
@@ -362,7 +357,7 @@ const ThinkBody: React.FC<{
           textColor={theme.text.secondary}
         />
       </ErrorBoundary>
-    </Box>
+    </box>
   );
 };
 
@@ -390,10 +385,10 @@ export const ThinkMessage: React.FC<ThinkMessageProps> = ({
       ? t('(click or {{keyHint}} to expand)', { keyHint: toggleKeyHint })
       : t('({{keyHint}} to expand)', { keyHint: toggleKeyHint });
     return (
-      <Text dimColor italic>
+      <text dimColor italic>
         {THINKING_ICON}
         {label} {hint}
-      </Text>
+      </text>
     );
   }
 
@@ -406,12 +401,12 @@ export const ThinkMessage: React.FC<ThinkMessageProps> = ({
       : '';
 
   return (
-    <Box flexDirection="column">
-      <Text dimColor italic>
+    <box style={{ flexDirection: "column" }}>
+      <text dimColor italic>
         {isPending ? THINKING_ICON_PENDING : THINKING_ICON}
         {label}
         {collapseHint}
-      </Text>
+      </text>
       <ThinkBody
         text={text}
         isPending={isPending}
@@ -419,7 +414,7 @@ export const ThinkMessage: React.FC<ThinkMessageProps> = ({
         availableTerminalHeight={availableTerminalHeight}
         contentWidth={contentWidth}
       />
-    </Box>
+    </box>
   );
 };
 

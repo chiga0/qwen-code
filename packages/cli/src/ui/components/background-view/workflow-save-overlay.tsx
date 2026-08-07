@@ -155,81 +155,81 @@ export const WorkflowSaveOverlay: React.FC<WorkflowSaveOverlayProps> = ({
   );
 
   return (
-    <Box flexDirection="column" marginTop={1} paddingX={1}>
-      <Text bold color={theme.text.accent}>
+    <box style={{ flexDirection: "column" }} marginTop={1} paddingX={1}>
+      <text bold color={theme.text.accent}>
         {t('Save workflow')}
-      </Text>
+      </text>
 
       {phase === 'overwrite' ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Text color={theme.status.warning}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text color={theme.status.warning}>
             {t('{{name}}.js already exists in {{scope}} scope.', {
               name,
               scope,
             })}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('Overwrite? Enter / y to confirm · any other key cancels')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : phase === 'saved' ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Text color={theme.status.success}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text color={theme.status.success}>
             {t('Saved to {{path}}', { path: message })}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('Available as /{{name}} on the next session · press any key', {
               name,
             })}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : phase === 'error' ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Text color={theme.status.error}>{message}</Text>
-          <Text color={theme.text.secondary}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text color={theme.status.error}>{message}</text>
+          <text color={theme.text.secondary}>
             {t('Press any key to edit the name')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : (
-        <Box flexDirection="column" marginTop={1}>
-          <Text>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text>
             {t('name')}
             {'  : '}
             {name}
-            <Text color={theme.text.accent}>{'█'}</Text>
+            <text color={theme.text.accent}>{'█'}</text>
             {!name && (
-              <Text color={theme.text.secondary}>{t('(type a name)')}</Text>
+              <text color={theme.text.secondary}>{t('(type a name)')}</text>
             )}
-          </Text>
-          <Text>
+          </text>
+          <text>
             {t('scope')}
             {' : '}
-            <Text
+            <text
               bold={scope === 'project'}
               color={
                 scope === 'project' ? theme.text.accent : theme.text.secondary
               }
             >
               {t('project')}
-            </Text>
+            </text>
             {'   '}
-            <Text
+            <text
               bold={scope === 'user'}
               color={
                 scope === 'user' ? theme.text.accent : theme.text.secondary
               }
             >
               {t('user')}
-            </Text>
-          </Text>
+            </text>
+          </text>
           {liveNameError && (
-            <Text color={theme.status.error}>{liveNameError}</Text>
+            <text color={theme.status.error}>{liveNameError}</text>
           )}
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t('Enter save · Tab scope · Esc cancel')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

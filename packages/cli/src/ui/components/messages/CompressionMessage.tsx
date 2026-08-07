@@ -68,24 +68,24 @@ export function CompressionMessage({
   const text = getCompressionText();
 
   return (
-    <Box flexDirection="row">
-      <Box width={2} flexShrink={0}>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: 2, flexShrink: 0 }}>
         {isPending ? (
           <Spinner type="dots" />
         ) : (
-          <Text color={theme.text.accent}>{ICON.DIAMOND}</Text>
+          <text color={theme.text.accent}>{ICON.DIAMOND}</text>
         )}
-      </Box>
-      <Box flexGrow={1}>
-        <Text
+      </box>
+      <box style={{ flexGrow: 1 }}>
+        <text
           color={
             compression.isPending ? theme.text.accent : theme.status.success
           }
           aria-label={SCREEN_READER_MODEL_PREFIX}
         >
           {text}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

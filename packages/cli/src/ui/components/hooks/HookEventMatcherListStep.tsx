@@ -26,7 +26,7 @@ export function HookEventMatcherListStep({
   const hasMatchers = hook.matcherGroups.length > 0;
 
   return (
-    <Box flexDirection="column" paddingX={1}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
       <HookEventHeader
         title={`${hook.event} - ${t('Matchers')}`}
         description={hook.description}
@@ -46,50 +46,50 @@ export function HookEventMatcherListStep({
             const rowText = `${index + 1}. [${sourceLabel}] ${group.matcher}`;
 
             return (
-              <Box key={`${group.matcher}-${index}`}>
-                <Box minWidth={2}>
-                  <Text
+              <box key={`${group.matcher}-${index}`}>
+                <box minWidth={2}>
+                  <text
                     color={isSelected ? theme.text.accent : theme.text.primary}
                   >
                     {isSelected ? '❯' : ' '}
-                  </Text>
-                </Box>
-                <Box width={leftWidth}>
-                  <Text
+                  </text>
+                </box>
+                <box style={{ width: leftWidth }}>
+                  <text
                     color={isSelected ? theme.text.accent : theme.text.primary}
                     bold={isSelected}
                     wrap="wrap"
                   >
                     {rowText}
-                  </Text>
-                </Box>
-                <Text color={theme.text.secondary}>{countLabel}</Text>
-              </Box>
+                  </text>
+                </box>
+                <text color={theme.text.secondary}>{countLabel}</text>
+              </box>
             );
           })}
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t('Enter to select · Esc to go back')}
-            </Text>
-          </Box>
+            </text>
+          </box>
         </>
       ) : (
         <>
-          <Box>
-            <Text color={theme.text.secondary}>
+          <box>
+            <text color={theme.text.secondary}>
               {t('No hooks configured for this event.')}
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t('To add hooks, edit settings.json directly or ask Qwen.')}
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('Esc to go back')}</Text>
-          </Box>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('Esc to go back')}</text>
+          </box>
         </>
       )}
-    </Box>
+    </box>
   );
 }

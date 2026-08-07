@@ -96,14 +96,14 @@ export class ErrorBoundary extends Component<
       // pulling in the i18n layer here risks a second failure inside the
       // boundary — so keep it a plain, dependency-free English string.
       return (
-        <Box flexDirection="column">
-          <Text color={theme.status.error} bold>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.status.error} bold>
             Something went wrong while rendering.
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {sanitizeTerminalText(error.message)}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     }
     return this.props.children;

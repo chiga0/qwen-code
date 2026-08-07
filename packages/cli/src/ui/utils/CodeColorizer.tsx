@@ -88,7 +88,7 @@ function renderHastNode(
   if (node.type === 'text') {
     // Use the color passed down from parent element, or the theme's default.
     const color = inheritedColor || theme.defaultColor;
-    return <Text color={color}>{node.value}</Text>;
+    return <text color={color}>{node.value}</text>;
   }
 
   // Handle Element Nodes: Determine color and pass it down, don't wrap
@@ -293,18 +293,18 @@ export function colorizeCode(
           );
 
           return (
-            <Box key={index}>
+            <box key={index}>
               {showLineNumbers && (
-                <Text color={activeTheme.colors.Gray} selectable={false}>
+                <text color={activeTheme.colors.Gray} selectable={false}>
                   {`${String(
                     index + firstLineNumber + hiddenLinesCount,
                   ).padStart(padWidth, ' ')} `}
-                </Text>
+                </text>
               )}
-              <Text color={activeTheme.defaultColor} wrap="wrap">
+              <text color={activeTheme.defaultColor} wrap="wrap">
                 {contentToRender}
-              </Text>
-            </Box>
+              </text>
+            </box>
           );
         })}
       </MaxSizedBox>
@@ -325,14 +325,14 @@ export function colorizeCode(
         overflowDirection="top"
       >
         {lines.map((line, index) => (
-          <Box key={index}>
+          <box key={index}>
             {showLineNumbers && (
-              <Text color={activeTheme.defaultColor} selectable={false}>
+              <text color={activeTheme.defaultColor} selectable={false}>
                 {`${String(index + firstLineNumber).padStart(padWidth, ' ')} `}
-              </Text>
+              </text>
             )}
-            <Text color={activeTheme.colors.Gray}>{line}</Text>
-          </Box>
+            <text color={activeTheme.colors.Gray}>{line}</text>
+          </box>
         ))}
       </MaxSizedBox>
     );

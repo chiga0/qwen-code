@@ -25,11 +25,11 @@ const renderParameter = (
   const text = `• ${name}${isRequired ? t('required') : ''}: ${type} ${description ? `- ${description}` : ''}`;
 
   return (
-    <Box key={name}>
-      <Text color={theme.text.secondary} wrap="wrap">
+    <box key={name}>
+      <text color={theme.text.secondary} wrap="wrap">
         {text}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };
 
@@ -43,11 +43,11 @@ const ParametersList: React.FC<{
   const requiredSet = new Set(required);
 
   return (
-    <Box flexDirection="column">
-      <Text color={theme.text.primary} bold>
+    <box style={{ flexDirection: "column" }}>
+      <text color={theme.text.primary} bold>
         {t('Parameters')}:
-      </Text>
-      <Box flexDirection="column" marginLeft={1}>
+      </text>
+      <box style={{ flexDirection: "column" }} marginLeft={1}>
         {Object.entries(properties).map(([name, param]) =>
           renderParameter(
             name,
@@ -55,8 +55,8 @@ const ParametersList: React.FC<{
             requiredSet.has(name),
           ),
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };
 
@@ -69,12 +69,12 @@ const SchemaSummary: React.FC<{ schema: object }> = ({ schema }) => {
   const required = (obj['required'] as string[]) || [];
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* 参数列表 */}
       {properties && Object.keys(properties).length > 0 && (
         <ParametersList properties={properties} required={required} />
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -94,47 +94,47 @@ export const ToolDetailStep: React.FC<ToolDetailStepProps> = ({
 
   if (!tool) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No tool selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No tool selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
       {/* 无效工具警告 */}
       {!tool.isValid && (
-        <Box flexDirection="column" marginBottom={1}>
-          <Text color={theme.status.error} bold>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text color={theme.status.error} bold>
             {t('Warning: This tool cannot be called by the LLM')}
-          </Text>
-          <Text color={theme.status.error}>
+          </text>
+          <text color={theme.status.error}>
             {t('Reason')}: {tool.invalidReason || t('unknown')}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t(
               'Tools must have both name and description to be used by the LLM.',
             )}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
       {/* 工具描述 */}
       {tool.description && (
-        <Box flexDirection="column">
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary} bold>
             {t('Description')}:
-          </Text>
-          <Text wrap="wrap">{tool.description}</Text>
-        </Box>
+          </text>
+          <text wrap="wrap">{tool.description}</text>
+        </box>
       )}
 
       {/* Schema */}
       {tool.schema && (
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <SchemaSummary schema={tool.schema} />
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

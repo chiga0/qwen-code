@@ -190,21 +190,21 @@ export function TextInput({
   const shouldRenderCursor = isActive && cursorVisible;
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box>
-        <Text color={theme.text.accent}>{'> '}</Text>
-        <Box flexGrow={1} flexDirection="column">
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box>
+        <text color={theme.text.accent}>{'> '}</text>
+        <box style={{ flexGrow: 1, flexDirection: "column" }}>
           {buffer.text.length === 0 && placeholder ? (
             shouldRenderCursor ? (
-              <Text>
+              <text>
                 {renderSoftwareCursor(placeholder.slice(0, 1))}
-                <Text color={Colors.Gray}>{placeholder.slice(1)}</Text>
-              </Text>
+                <text color={Colors.Gray}>{placeholder.slice(1)}</text>
+              </text>
             ) : (
-              <Text color={Colors.Gray}>{placeholder}</Text>
+              <text color={Colors.Gray}>{placeholder}</text>
             )
           ) : ellipsizeOverflow && stringWidth(buffer.text) > inputWidth ? (
-            <Text>{ellipsizeMiddle(buffer.text, inputWidth)}</Text>
+            <text>{ellipsizeMiddle(buffer.text, inputWidth)}</text>
           ) : (
             linesToRender.map((lineText, visualIdxInRenderedSet) => {
               const cursorVisualRow = cursorVisualRowAbsolute - scrollVisualRow;
@@ -241,22 +241,22 @@ export function TextInput({
                 }
               }
               return (
-                <Text key={`line-${visualIdxInRenderedSet}`}>{display}</Text>
+                <text key={`line-${visualIdxInRenderedSet}`}>{display}</text>
               );
             })
           )}
-        </Box>
-      </Box>
+        </box>
+      </box>
 
       {validationErrors.length > 0 && (
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {validationErrors.map((error, index) => (
-            <Text key={index} color={theme.status.error}>
+            <text key={index} color={theme.status.error}>
               ⚠ {error}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

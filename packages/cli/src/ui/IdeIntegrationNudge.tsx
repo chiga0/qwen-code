@@ -82,22 +82,15 @@ export function IdeIntegrationNudge({
         }.`;
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.warning}
-      padding={1}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box marginBottom={1} flexDirection="column">
-        <Text>
-          <Text color={theme.status.warning}>{'> '}</Text>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, padding: 1, width: "100%" }} marginLeft={1}>
+      <box marginBottom={1} style={{ flexDirection: "column" }}>
+        <text>
+          <text color={theme.status.warning}>{'> '}</text>
           {`Do you want to connect ${ideName ?? 'your editor'} to Qwen Code?`}
-        </Text>
-        <Text color={theme.text.secondary}>{installText}</Text>
-      </Box>
+        </text>
+        <text color={theme.text.secondary}>{installText}</text>
+      </box>
       <RadioButtonSelect items={OPTIONS} onSelect={onComplete} />
-    </Box>
+    </box>
   );
 }

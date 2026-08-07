@@ -216,7 +216,7 @@ export const AgentChatContent = ({
   const agentModelId = core.modelConfig.model ?? '';
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* Committed message history.
           key includes historyRemountKey: when refreshStatic() clears the
           terminal it bumps the key, forcing Static to remount and re-emit
@@ -266,11 +266,11 @@ export const AgentChatContent = ({
 
       {/* Spinner */}
       {isRunning && (
-        <Box marginX={2} marginTop={1}>
+        <box marginX={2} marginTop={1}>
           <GeminiRespondingSpinner />
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -278,7 +278,7 @@ export const AgentChatContent = ({
 // backing agent/core isn't available (e.g. a race where the registry
 // entry exists but `core` hasn't been attached yet).
 export const AgentChatMissing = ({ label }: { label: string }) => (
-  <Box marginX={2}>
-    <Text color={theme.status.error}>{label}</Text>
-  </Box>
+  <box marginX={2}>
+    <text color={theme.status.error}>{label}</text>
+  </box>
 );

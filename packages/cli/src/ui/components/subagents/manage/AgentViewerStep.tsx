@@ -17,9 +17,9 @@ interface AgentViewerStepProps {
 export const AgentViewerStep = ({ selectedAgent }: AgentViewerStepProps) => {
   if (!selectedAgent) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No agent selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No agent selected')}</text>
+      </box>
     );
   }
 
@@ -28,46 +28,46 @@ export const AgentViewerStep = ({ selectedAgent }: AgentViewerStepProps) => {
   const toolsDisplay = agent.tools ? agent.tools.join(', ') : '*';
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
-        <Box>
-          <Text color={theme.text.primary}>{t('File Path: ')}</Text>
-          <Text>{agent.filePath}</Text>
-        </Box>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <text color={theme.text.primary}>{t('File Path: ')}</text>
+          <text>{agent.filePath}</text>
+        </box>
 
-        <Box>
-          <Text color={theme.text.primary}>{t('Tools: ')}</Text>
-          <Text>{toolsDisplay}</Text>
-        </Box>
+        <box>
+          <text color={theme.text.primary}>{t('Tools: ')}</text>
+          <text>{toolsDisplay}</text>
+        </box>
 
         {agent.model && (
-          <Box>
-            <Text color={theme.text.primary}>{t('Model: ')}</Text>
-            <Text>{agent.model}</Text>
-          </Box>
+          <box>
+            <text color={theme.text.primary}>{t('Model: ')}</text>
+            <text>{agent.model}</text>
+          </box>
         )}
 
         {shouldShowColor(agent.color) && (
-          <Box>
-            <Text color={theme.text.primary}>{t('Color: ')}</Text>
-            <Text color={getColorForDisplay(agent.color)}>{agent.color}</Text>
-          </Box>
+          <box>
+            <text color={theme.text.primary}>{t('Color: ')}</text>
+            <text color={getColorForDisplay(agent.color)}>{agent.color}</text>
+          </box>
         )}
 
-        <Box marginTop={1}>
-          <Text color={theme.text.primary}>{t('Description:')}</Text>
-        </Box>
-        <Box padding={1} paddingBottom={0}>
-          <Text wrap="wrap">{agent.description}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.text.primary}>{t('Description:')}</text>
+        </box>
+        <box style={{ padding: 1 }} paddingBottom={0}>
+          <text wrap="wrap">{agent.description}</text>
+        </box>
 
-        <Box marginTop={1}>
-          <Text color={theme.text.primary}>{t('System Prompt:')}</Text>
-        </Box>
-        <Box padding={1} paddingBottom={0}>
-          <Text wrap="wrap">{agent.systemPrompt}</Text>
-        </Box>
-      </Box>
-    </Box>
+        <box marginTop={1}>
+          <text color={theme.text.primary}>{t('System Prompt:')}</text>
+        </box>
+        <box style={{ padding: 1 }} paddingBottom={0}>
+          <text wrap="wrap">{agent.systemPrompt}</text>
+        </box>
+      </box>
+    </box>
   );
 };

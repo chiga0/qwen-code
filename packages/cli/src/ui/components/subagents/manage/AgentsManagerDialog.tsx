@@ -178,11 +178,11 @@ export function AgentsManagerDialog({
         : undefined;
 
     return (
-      <Box>
-        <Text bold color={headerColor}>
+      <box>
+        <text bold color={headerColor}>
           {getStepHeaderText()}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }, [getCurrentStep, selectedAgent]);
 
@@ -208,9 +208,9 @@ export function AgentsManagerDialog({
     };
 
     return (
-      <Box>
-        <Text color={theme.text.secondary}>{getNavigationInstructions()}</Text>
-      </Box>
+      <box>
+        <text color={theme.text.secondary}>{getNavigationInstructions()}</text>
+      </box>
     );
   }, [getCurrentStep, availableAgents]);
 
@@ -239,7 +239,7 @@ export function AgentsManagerDialog({
         );
       case MANAGEMENT_STEPS.EDIT_TOOLS:
         return (
-          <Box flexDirection="column" gap={1}>
+          <box style={{ flexDirection: "column", gap: 1 }}>
             <ToolSelector
               tools={selectedAgent?.tools || []}
               onSelect={async (tools) => {
@@ -262,11 +262,11 @@ export function AgentsManagerDialog({
               }}
               config={config}
             />
-          </Box>
+          </box>
         );
       case MANAGEMENT_STEPS.EDIT_COLOR:
         return (
-          <Box flexDirection="column" gap={1}>
+          <box style={{ flexDirection: "column", gap: 1 }}>
             <ColorSelector
               color={selectedAgent?.color || 'auto'}
               agentName={selectedAgent?.name || 'Agent'}
@@ -290,7 +290,7 @@ export function AgentsManagerDialog({
                 }
               }}
             />
-          </Box>
+          </box>
         );
       case MANAGEMENT_STEPS.DELETE_CONFIRMATION:
         return (
@@ -302,11 +302,11 @@ export function AgentsManagerDialog({
         );
       default:
         return (
-          <Box>
-            <Text color={theme.status.error}>
+          <box>
+            <text color={theme.status.error}>
               {t('Invalid step: {{step}}', { step: currentStep })}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
     }
   }, [
@@ -322,20 +322,13 @@ export function AgentsManagerDialog({
   ]);
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* Main content wrapped in bounding box */}
-      <Box
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-        width="100%"
-        gap={1}
-      >
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%", gap: 1 }}>
         {renderStepHeader()}
         {renderStepContent()}
         {renderStepFooter()}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }

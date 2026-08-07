@@ -78,23 +78,17 @@ export function ArenaStartDialog({
   };
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>{t('Select Models')}</Text>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>{t('Select Models')}</text>
 
       {modelItems.length === 0 ? (
-        <Box marginTop={1} flexDirection="column">
-          <Text color={theme.status.warning}>
+        <box marginTop={1} style={{ flexDirection: "column" }}>
+          <text color={theme.status.warning}>
             {t('No models available. Please configure models first.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ) : (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           <MultiSelect
             items={modelItems}
             initialIndex={0}
@@ -105,62 +99,62 @@ export function ArenaStartDialog({
             showScrollArrows
             maxItemsToShow={10}
           />
-        </Box>
+        </box>
       )}
 
       {errorMessage && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{errorMessage}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{errorMessage}</text>
+        </box>
       )}
 
       {(hasDisabledQwenOauth || needsMoreModels) && (
-        <Box marginTop={1} flexDirection="column">
+        <box marginTop={1} style={{ flexDirection: "column" }}>
           {hasDisabledQwenOauth && (
-            <Text color={theme.status.warning}>
+            <text color={theme.status.warning}>
               {t('Note: qwen-oauth models are not supported in Arena.')}
-            </Text>
+            </text>
           )}
           {needsMoreModels && (
             <>
-              <Text color={theme.status.warning}>
+              <text color={theme.status.warning}>
                 {t('Arena requires at least 2 models. To add more:')}
-              </Text>
-              <Text color={theme.status.warning}>
+              </text>
+              <text color={theme.status.warning}>
                 {t(
                   '  - Run /auth to set up a Coding Plan (includes multiple models)',
                 )}
-              </Text>
-              <Text color={theme.status.warning}>
+              </text>
+              <text color={theme.status.warning}>
                 {t('  - Or configure modelProviders in settings.json')}
-              </Text>
+              </text>
             </>
           )}
-        </Box>
+        </box>
       )}
 
       {shouldShowMoreModelsHint && (
         <>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t('Configure more models with the modelProviders guide:')}
-            </Text>
-          </Box>
-          <Box marginTop={0}>
+            </text>
+          </box>
+          <box marginTop={0}>
             <Link url={MODEL_PROVIDERS_DOCUMENTATION_URL} fallback={false}>
-              <Text color={theme.text.secondary} underline>
+              <text color={theme.text.secondary} underline>
                 {MODEL_PROVIDERS_DOCUMENTATION_URL}
-              </Text>
+              </text>
             </Link>
-          </Box>
+          </box>
         </>
       )}
 
-      <Box marginTop={1} flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('Space to toggle, Enter to confirm, Esc to cancel')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

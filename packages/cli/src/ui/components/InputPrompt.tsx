@@ -1942,9 +1942,9 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
             : theme.text.primary;
 
         renderedLine.push(
-          <Text key={`token-${segIdx}`} color={color}>
+          <text key={`token-${segIdx}`} color={color}>
             {display}
-          </Text>,
+          </text>,
         );
       });
 
@@ -1954,40 +1954,40 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
         if (ghostText && showCursorOpt && ghostText.text.length > 0) {
           if (ghostText.showCursorBeforeText) {
             renderedLine.push(
-              <Text key="ghost-cursor">{renderSoftwareCursor(' ')}</Text>,
+              <text key="ghost-cursor">{renderSoftwareCursor(' ')}</text>,
             );
             renderedLine.push(
-              <Text key="ghost-rest" color={theme.text.secondary}>
+              <text key="ghost-rest" color={theme.text.secondary}>
                 {ghostText.text}
-              </Text>,
+              </text>,
             );
           } else {
             // First ghost char: software cursor. Rest: dimmed gray.
             const firstChar = ghostText.text[0]!;
             const rest = ghostText.text.slice(firstChar.length);
             renderedLine.push(
-              <Text key="ghost-cursor">{renderSoftwareCursor(firstChar)}</Text>,
+              <text key="ghost-cursor">{renderSoftwareCursor(firstChar)}</text>,
             );
             if (rest.length > 0) {
               renderedLine.push(
-                <Text key="ghost-rest" color={theme.text.secondary}>
+                <text key="ghost-rest" color={theme.text.secondary}>
                   {rest}
-                </Text>,
+                </text>,
               );
             }
           }
-          renderedLine.push(<Text key="ghost-zwsp">{`\u200B`}</Text>);
+          renderedLine.push(<text key="ghost-zwsp">{`\u200B`}</text>);
         } else {
           // Add zero-width space after cursor to prevent Ink from trimming trailing whitespace
           renderedLine.push(
-            <Text key={`cursor-end-${cursorVisualColAbsolute}`}>
+            <text key={`cursor-end-${cursorVisualColAbsolute}`}>
               {showCursorOpt ? renderSoftwareCursor(' ') + '\u200B' : ' \u200B'}
-            </Text>,
+            </text>,
           );
         }
       }
 
-      return <Text>{renderedLine}</Text>;
+      return <text>{renderedLine}</text>;
     },
     [slashCommands],
   );
@@ -2179,26 +2179,26 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
           : undefined;
 
   const prefixNode = (
-    <Text
+    <text
       color={statusColor ?? theme.text.accent}
       aria-label={statusText || undefined}
     >
       {shellModeActive ? (
         reverseSearchActive ? (
-          <Text color={theme.text.link} aria-label={SCREEN_READER_USER_PREFIX}>
+          <text color={theme.text.link} aria-label={SCREEN_READER_USER_PREFIX}>
             (r:){' '}
-          </Text>
+          </text>
         ) : (
           '!'
         )
       ) : commandSearchActive ? (
-        <Text color={theme.text.accent}>(r:) </Text>
+        <text color={theme.text.accent}>(r:) </text>
       ) : approvalModePromptStyle ? (
         approvalModePromptStyle.prefix
       ) : (
         '>'
       )}{' '}
-    </Text>
+    </text>
   );
 
   // Calculate prefix width for physical cursor positioning
@@ -2215,10 +2215,10 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
   return (
     <>
       {attachments.length > 0 && (
-        <Box marginLeft={2} marginBottom={0}>
-          <Text color={theme.text.secondary}>{t('Attachments: ')}</Text>
+        <box marginLeft={2} marginBottom={0}>
+          <text color={theme.text.secondary}>{t('Attachments: ')}</text>
           {attachments.map((att, idx) => (
-            <Text
+            <text
               key={att.id}
               color={
                 isAttachmentMode && idx === selectedAttachmentIndex
@@ -2227,9 +2227,9 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
               }
             >
               [{att.filename}]{idx < attachments.length - 1 ? ' ' : ''}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       )}
       <VoiceIndicator
         status={voiceInput.status}
@@ -2251,7 +2251,7 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
         mouseEnabled={mouseInteractionsEnabled}
       />
       {shouldShowSuggestions && (
-        <Box marginLeft={2} marginRight={2}>
+        <box marginLeft={2} marginRight={2}>
           <SuggestionsDisplay
             suggestions={suggestionDisplayProps.suggestions}
             activeIndex={suggestionDisplayProps.activeIndex}
@@ -2289,17 +2289,17 @@ export const InputPrompt: React.FC<InputPromptProps> = ({
               suggestionsFromExport ? undefined : handleSuggestionSelect
             }
           />
-        </Box>
+        </box>
       )}
       {/* Attachment hints - show when there are attachments and no suggestions visible */}
       {attachments.length > 0 && !shouldShowSuggestions && (
-        <Box marginLeft={2} marginRight={2}>
-          <Text color={theme.text.secondary}>
+        <box marginLeft={2} marginRight={2}>
+          <text color={theme.text.secondary}>
             {isAttachmentMode
               ? t('← → select, Delete to remove, ↓ to exit')
               : t('↑ to manage attachments')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
     </>
   );

@@ -38,35 +38,35 @@ export const QueuedMessageDisplay = ({
   const showHint = hintSeenCountRef.current <= NUM_TIMES_QUEUE_HINT_SHOWN;
 
   return (
-    <Box flexDirection="column" marginTop={1}>
+    <box style={{ flexDirection: "column" }} marginTop={1}>
       {messageQueue
         .slice(0, MAX_DISPLAYED_QUEUED_MESSAGES)
         .map((message, index) => {
           const preview = message.replace(/\s+/g, ' ');
 
           return (
-            <Box key={index} paddingLeft={2} width="100%">
-              <Text dimColor wrap="truncate">
+            <box key={index} paddingLeft={2} style={{ width: "100%" }}>
+              <text dimColor wrap="truncate">
                 {preview}
-              </Text>
-            </Box>
+              </text>
+            </box>
           );
         })}
       {messageQueue.length > MAX_DISPLAYED_QUEUED_MESSAGES && (
-        <Box paddingLeft={2}>
-          <Text dimColor>
+        <box paddingLeft={2}>
+          <text dimColor>
             ... (+
             {messageQueue.length - MAX_DISPLAYED_QUEUED_MESSAGES} more)
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
       {showHint && (
-        <Box paddingLeft={2}>
-          <Text dimColor italic>
+        <box paddingLeft={2}>
+          <text dimColor italic>
             {t('Ctrl+Q to queue · ↑ to edit queued messages')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

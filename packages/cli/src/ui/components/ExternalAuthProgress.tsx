@@ -33,28 +33,22 @@ export function ExternalAuthProgress({
   );
 
   return (
-    <Box
-      borderStyle="single"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>{title}</Text>
+    <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>{title}</text>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text>{message}</Text>
-        {detail ? <Text color={theme.text.secondary}>{detail}</Text> : null}
-      </Box>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text>{message}</text>
+        {detail ? <text color={theme.text.secondary}>{detail}</text> : null}
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('Please wait while authentication completes...')}
-        </Text>
+        </text>
         {onCancel ? (
-          <Text color={theme.text.secondary}>{t('Esc to cancel')}</Text>
+          <text color={theme.text.secondary}>{t('Esc to cancel')}</text>
         ) : null}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }

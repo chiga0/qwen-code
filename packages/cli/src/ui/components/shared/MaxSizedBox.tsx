@@ -197,10 +197,10 @@ export const MaxSizedBox: React.FC<MaxSizedBoxProps> = ({
   const visibleLines = visibleStyledText.map((line, index) => {
     const metadata = lineMetadata.get(line)!;
     return (
-      <Box key={index} flexShrink={0}>
+      <box key={index} style={{ flexShrink: 0 }}>
         {line.length > 0 ? (
           line.map((segment, segIndex) => (
-            <Text
+            <text
               key={segIndex}
               {...segment.props}
               selectionFlow={metadata.flowKey}
@@ -208,38 +208,38 @@ export const MaxSizedBox: React.FC<MaxSizedBoxProps> = ({
               selectionJoiner={metadata.joiner}
             >
               {segment.text}
-            </Text>
+            </text>
           ))
         ) : (
-          <Text
+          <text
             selectable={false}
             selectionFlow={metadata.flowKey}
             selectionBreakAfter={metadata.breakAfter}
             selectionJoiner={metadata.joiner}
           >
             {' '}
-          </Text>
+          </text>
         )}
-      </Box>
+      </box>
     );
   });
 
   return (
-    <Box flexDirection="column" width={maxWidth} flexShrink={0}>
+    <box style={{ flexDirection: "column", width: maxWidth, flexShrink: 0 }}>
       {totalHiddenLines > 0 && overflowDirection === 'top' && (
-        <Text color={theme.text.secondary} wrap="truncate">
+        <text color={theme.text.secondary} wrap="truncate">
           ... first {totalHiddenLines} line{totalHiddenLines === 1 ? '' : 's'}{' '}
           hidden ...
-        </Text>
+        </text>
       )}
       {visibleLines}
       {totalHiddenLines > 0 && overflowDirection === 'bottom' && (
-        <Text color={theme.text.secondary} wrap="truncate">
+        <text color={theme.text.secondary} wrap="truncate">
           ... last {totalHiddenLines} line{totalHiddenLines === 1 ? '' : 's'}{' '}
           hidden ...
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };
 

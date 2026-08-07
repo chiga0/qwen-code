@@ -157,9 +157,9 @@ function SessionListItemView({
     session.titleSource === 'auto' && Boolean(session.customTitle);
 
   return (
-    <Box flexDirection="column" marginBottom={isLast ? 0 : 1}>
-      <Box>
-        <Text
+    <box style={{ flexDirection: "column" }} marginBottom={isLast ? 0 : 1}>
+      <box>
+        <text
           color={
             isSelected
               ? theme.text.accent
@@ -170,9 +170,9 @@ function SessionListItemView({
           bold={isSelected && boldSelectedPrefix}
         >
           {prefix}
-        </Text>
+        </text>
         {isChecked !== undefined && (
-          <Text
+          <text
             color={
               isDisabled
                 ? theme.text.secondary
@@ -185,9 +185,9 @@ function SessionListItemView({
             bold={isChecked}
           >
             {isChecked ? '[x] ' : '[ ] '}
-          </Text>
+          </text>
         )}
-        <Text
+        <text
           color={
             isDisabled
               ? theme.text.secondary
@@ -200,17 +200,17 @@ function SessionListItemView({
           bold={isSelected && !isDisabled}
         >
           {truncatedPrompt}
-        </Text>
-      </Box>
-      <Box paddingLeft={2}>
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box paddingLeft={2}>
+        <text color={theme.text.secondary}>
           {timeAgo}
           {messageText !== undefined && ` · ${messageText}`}
           {session.gitBranch && ` · ${session.gitBranch}`}
           {isDisabled && disabledHint ? ` · ${disabledHint}` : ''}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }
 
@@ -285,40 +285,28 @@ export function SessionPicker(props: SessionPickerProps) {
   }
 
   return (
-    <Box
-      flexDirection="column"
-      width={boxWidth}
-      height={height - 1}
-      overflow="hidden"
-    >
-      <Box
-        flexDirection="column"
-        borderStyle="round"
-        borderColor={theme.border.default}
-        width={boxWidth}
-        height={height - 1}
-        overflow="hidden"
-      >
+    <box style={{ flexDirection: "column", width: boxWidth, height: height - 1 }} overflow="hidden">
+      <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth, height: height - 1 }} overflow="hidden">
         {/* Header row */}
-        <Box paddingX={1}>
-          <Text bold color={theme.text.primary}>
+        <box paddingX={1}>
+          <text bold color={theme.text.primary}>
             {title ?? t('Resume Session')}
-          </Text>
+          </text>
           {picker.filterByBranch && currentBranch && (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {' '}
               {t('(branch: {{branch}})', { branch: currentBranch })}
-            </Text>
+            </text>
           )}
           {picker.searchQuery !== '' && (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {' '}
               {t('({{count}} matches)', {
                 count: String(picker.filteredSessions.length),
               })}
-            </Text>
+            </text>
           )}
-        </Box>
+        </box>
 
         {/* Search row — three states share this row at constant height so
             the visible-item count doesn't shift between them:
@@ -326,41 +314,41 @@ export function SessionPicker(props: SessionPickerProps) {
               - list + non-empty query: "Filter: <query>" (read-only,
                 no caret — user has stopped typing but the filter sticks)
               - list + empty query: "Press / to search" hint */}
-        <Box paddingX={1}>
+        <box paddingX={1}>
           {picker.isSearchActive ? (
             <>
-              <Text color={theme.text.secondary}>{t('Search: ')}</Text>
-              <Text color={theme.text.primary}>
+              <text color={theme.text.secondary}>{t('Search: ')}</text>
+              <text color={theme.text.primary}>
                 {picker.searchQuery}
-                <Text color={theme.text.secondary}>▌</Text>
-              </Text>
+                <text color={theme.text.secondary}>▌</text>
+              </text>
             </>
           ) : picker.searchQuery !== '' ? (
             <>
-              <Text color={theme.text.secondary}>{t('Filter: ')}</Text>
-              <Text color={theme.text.primary}>{picker.searchQuery}</Text>
+              <text color={theme.text.secondary}>{t('Filter: ')}</text>
+              <text color={theme.text.primary}>{picker.searchQuery}</text>
             </>
           ) : (
-            <Text color={theme.text.secondary}>{t('Press / to search')}</Text>
+            <text color={theme.text.secondary}>{t('Press / to search')}</text>
           )}
-        </Box>
+        </box>
 
         {/* Separator */}
-        <Box>
-          <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-        </Box>
+        <box>
+          <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+        </box>
 
         {/* Session list */}
-        <Box flexDirection="column" flexGrow={1} paddingX={1} overflow="hidden">
+        <box style={{ flexDirection: "column", flexGrow: 1 }} paddingX={1} overflow="hidden">
           {!sessionService || picker.isLoading ? (
-            <Box paddingY={1} justifyContent="center">
-              <Text color={theme.text.secondary}>
+            <box paddingY={1} style={{ justifyContent: "center" }}>
+              <text color={theme.text.secondary}>
                 {t('Loading sessions...')}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ) : picker.filteredSessions.length === 0 ? (
-            <Box paddingY={1} justifyContent="center">
-              <Text color={theme.text.secondary}>
+            <box paddingY={1} style={{ justifyContent: "center" }}>
+              <text color={theme.text.secondary}>
                 {picker.searchQuery !== ''
                   ? t('No sessions match "{{query}}"', {
                       query: picker.searchQuery,
@@ -370,8 +358,8 @@ export function SessionPicker(props: SessionPickerProps) {
                         branch: currentBranch ?? '',
                       })
                     : t('No sessions found')}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ) : (
             picker.visibleSessions.map((session, visibleIndex) => {
               const actualIndex = picker.scrollOffset + visibleIndex;
@@ -406,39 +394,39 @@ export function SessionPicker(props: SessionPickerProps) {
               );
             })
           )}
-        </Box>
+        </box>
 
         {/* Separator */}
-        <Box>
-          <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-        </Box>
+        <box>
+          <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+        </box>
 
         {/* Footer */}
-        <Box paddingX={1}>
-          <Box flexDirection="row">
+        <box paddingX={1}>
+          <box style={{ flexDirection: "row" }}>
             {picker.isSearchActive ? (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {t('Type to search · Enter to commit · Esc to clear')}
-              </Text>
+              </text>
             ) : (
               <>
                 {currentBranch && (
-                  <Text color={theme.text.secondary}>
-                    <Text
+                  <text color={theme.text.secondary}>
+                    <text
                       bold={picker.filterByBranch}
                       color={
                         picker.filterByBranch ? theme.text.accent : undefined
                       }
                     >
                       Ctrl+B
-                    </Text>
+                    </text>
                     {t(' to toggle branch · ')}
-                  </Text>
+                  </text>
                 )}
                 {enablePreview && (
-                  <Text color={theme.text.secondary}>
+                  <text color={theme.text.secondary}>
                     {t('Space to preview · ')}
-                  </Text>
+                  </text>
                 )}
                 {enableMultiSelect &&
                   (() => {
@@ -455,23 +443,23 @@ export function SessionPicker(props: SessionPickerProps) {
                       }
                     }
                     return (
-                      <Text color={theme.text.secondary}>
+                      <text color={theme.text.secondary}>
                         {committableCheckedCount > 0
                           ? t('Space to toggle · {{count}} selected · ', {
                               count: String(committableCheckedCount),
                             })
                           : t('Space to select multiple · ')}
-                      </Text>
+                      </text>
                     );
                   })()}
-                <Text color={theme.text.secondary}>
+                <text color={theme.text.secondary}>
                   {t('↑↓ to navigate · Type to search · Esc to cancel')}
-                </Text>
+                </text>
               </>
             )}
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+          </box>
+        </box>
+      </box>
+    </box>
   );
 }

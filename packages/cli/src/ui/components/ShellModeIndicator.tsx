@@ -9,8 +9,8 @@ import { Text } from 'ink';
 import { theme } from '../semantic-colors.js';
 
 export const ShellModeIndicator: React.FC = () => (
-  <Text color={theme.ui.symbol}>
+  <text color={theme.ui.symbol}>
     shell mode enabled
-    <Text color={theme.text.secondary}> (esc to disable)</Text>
-  </Text>
+    <text color={theme.text.secondary}> (esc to disable)</text>
+  </text>
 );

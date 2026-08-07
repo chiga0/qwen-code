@@ -231,101 +231,101 @@ export function CreationSummary({
 
   if (saveSuccess) {
     return (
-      <Box flexDirection="column" gap={1}>
-        <Box>
-          <Text bold color={theme.status.success}>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <box>
+          <text bold color={theme.status.success}>
             {t('✓ Subagent Created Successfully!')}
-          </Text>
-        </Box>
-        <Box>
-          <Text>
+          </text>
+        </box>
+        <box>
+          <text>
             {t('Subagent "{{name}}" has been saved to {{level}} level.', {
               name: state.generatedName,
               level: state.location,
             })}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
-        <Box>
-          <Text color={theme.text.primary}>{t('Name: ')}</Text>
-          <Text color={getColorForDisplay(state.color)}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <text color={theme.text.primary}>{t('Name: ')}</text>
+          <text color={getColorForDisplay(state.color)}>
             {state.generatedName}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box>
-          <Text color={theme.text.primary}>{t('Location: ')}</Text>
-          <Text>
+        <box>
+          <text color={theme.text.primary}>{t('Location: ')}</text>
+          <text>
             {state.location === 'project'
               ? t('Project Level (.qwen/agents/)')
               : t('User Level (~/.qwen/agents/)')}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box>
-          <Text color={theme.text.primary}>{t('Tools: ')}</Text>
-          <Text>{toolsDisplay}</Text>
-        </Box>
+        <box>
+          <text color={theme.text.primary}>{t('Tools: ')}</text>
+          <text>{toolsDisplay}</text>
+        </box>
 
         {shouldShowColor(state.color) && (
-          <Box>
-            <Text color={theme.text.primary}>{t('Color: ')}</Text>
-            <Text color={getColorForDisplay(state.color)}>{state.color}</Text>
-          </Box>
+          <box>
+            <text color={theme.text.primary}>{t('Color: ')}</text>
+            <text color={getColorForDisplay(state.color)}>{state.color}</text>
+          </box>
         )}
 
-        <Box marginTop={1}>
-          <Text color={theme.text.primary}>{t('Description:')}</Text>
-        </Box>
-        <Box padding={1} paddingBottom={0}>
-          <Text wrap="wrap">
+        <box marginTop={1}>
+          <text color={theme.text.primary}>{t('Description:')}</text>
+        </box>
+        <box style={{ padding: 1 }} paddingBottom={0}>
+          <text wrap="wrap">
             {truncateText(state.generatedDescription, 250)}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
-        <Box marginTop={1}>
-          <Text color={theme.text.primary}>{t('System Prompt:')}</Text>
-        </Box>
-        <Box padding={1} paddingBottom={0}>
-          <Text wrap="wrap">
+        <box marginTop={1}>
+          <text color={theme.text.primary}>{t('System Prompt:')}</text>
+        </box>
+        <box style={{ padding: 1 }} paddingBottom={0}>
+          <text wrap="wrap">
             {truncateText(state.generatedSystemPrompt, 250)}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
       {saveError && (
-        <Box flexDirection="column">
-          <Text bold color={theme.status.error}>
+        <box style={{ flexDirection: "column" }}>
+          <text bold color={theme.status.error}>
             {t('✗ Error saving subagent:')}
-          </Text>
-          <Box flexDirection="column" padding={1} paddingBottom={0}>
-            <Text color={theme.status.error} wrap="wrap">
+          </text>
+          <box style={{ flexDirection: "column", padding: 1 }} paddingBottom={0}>
+            <text color={theme.status.error} wrap="wrap">
               {saveError}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
 
       {warnings.length > 0 && (
-        <Box flexDirection="column">
-          <Text bold color={theme.status.warning}>
+        <box style={{ flexDirection: "column" }}>
+          <text bold color={theme.status.warning}>
             {t('Warnings:')}
-          </Text>
-          <Box flexDirection="column" padding={1} paddingBottom={0}>
+          </text>
+          <box style={{ flexDirection: "column", padding: 1 }} paddingBottom={0}>
             {warnings.map((warning, index) => (
-              <Text key={index} color={theme.status.warning} wrap="wrap">
+              <text key={index} color={theme.status.warning} wrap="wrap">
                 • {warning}
-              </Text>
+              </text>
             ))}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

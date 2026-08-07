@@ -21,7 +21,7 @@ import type { IndividualToolCallDisplay } from '../../types.js';
 // height-estimation tests stay in sync with production.
 vi.mock('../shared/ToolStatusIndicator.js', async (importOriginal) => ({
   ...(await importOriginal()),
-  ToolStatusIndicator: () => <Text>•</Text>,
+  ToolStatusIndicator: () => <text>•</text>,
 }));
 
 const NOW = 1_700_000_000_000;

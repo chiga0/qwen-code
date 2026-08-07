@@ -48,7 +48,7 @@ export function EnumSelector({
 
   // Guard against empty options array
   if (!options || options.length === 0) {
-    return <Box />;
+    return <box />;
   }
 
   // Left/right navigation is handled by parent component
@@ -60,26 +60,26 @@ export function EnumSelector({
   const canScrollRight = options.length > 1;
 
   return (
-    <Box flexDirection="row" alignItems="center">
-      <Text
+    <box style={{ flexDirection: "row", alignItems: "center" }}>
+      <text
         color={isActive && canScrollLeft ? Colors.AccentGreen : Colors.Gray}
       >
         {canScrollLeft ? '←' : ' '}
-      </Text>
-      <Text> </Text>
-      <Text
+      </text>
+      <text> </text>
+      <text
         color={isActive ? Colors.AccentGreen : Colors.Foreground}
         bold={isActive}
       >
         {currentOption.label}
-      </Text>
-      <Text> </Text>
-      <Text
+      </text>
+      <text> </text>
+      <text
         color={isActive && canScrollRight ? Colors.AccentGreen : Colors.Gray}
       >
         {canScrollRight ? '→' : ' '}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 }
 

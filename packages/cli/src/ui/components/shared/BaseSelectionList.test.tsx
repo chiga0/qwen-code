@@ -71,7 +71,7 @@ describe('BaseSelectionList', () => {
       (
         item: { value: string; label: string; disabled?: boolean; key: string },
         context: RenderItemContext,
-      ) => <Text color={context.titleColor}>{item.label}</Text>,
+      ) => <text color={context.titleColor}>{item.label}</text>,
     );
 
     const defaultProps: BaseSelectionListProps<
@@ -294,7 +294,7 @@ describe('BaseSelectionList', () => {
 
       mockRenderItem.mockImplementation(
         (item: (typeof longList)[0], context: RenderItemContext) => (
-          <Text color={context.titleColor}>{item.label}</Text>
+          <text color={context.titleColor}>{item.label}</text>
         ),
       );
 

@@ -345,7 +345,7 @@ const SubagentApprovalContext: React.FC<{
   const priorCalls = priorApprovalCalls(data);
   if (priorCalls.length === 0) return null;
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {priorCalls.map((call) => {
         const glyph =
           call.status === 'failed'
@@ -359,17 +359,17 @@ const SubagentApprovalContext: React.FC<{
         const desc = (call.description ?? '').replace(/\s*\n\s*/g, ' ').trim();
         const label = desc ? `${displayName} ${desc}` : displayName;
         return (
-          <Box key={call.callId}>
-            <Text color={theme.text.secondary} wrap="truncate-end">
+          <box key={call.callId}>
+            <text color={theme.text.secondary} wrap="truncate-end">
               {/* sanitizeMultilineForDisplay: bare C0 controls (\r, BS,
                   BEL) pass through the ANSI-sequence escape and this
                   line informs an allow/deny decision. */}
               {`  ${glyph} ${sanitizeMultilineForDisplay(label)}`}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
       })}
-    </Box>
+    </box>
   );
 };
 
@@ -434,14 +434,14 @@ const SubagentExecutionRenderer: React.FC<{
           )
         : availableHeight;
     return (
-      <Box flexDirection="column" paddingLeft={1}>
-        <Box>
-          <Text color={theme.text.secondary}>Approval requested by </Text>
-          <Text bold color={theme.text.accent}>
+      <box style={{ flexDirection: "column" }} paddingLeft={1}>
+        <box>
+          <text color={theme.text.secondary}>Approval requested by </text>
+          <text bold color={theme.text.accent}>
             {agentLabel}
-          </Text>
-          <Text color={theme.text.secondary}>:</Text>
-        </Box>
+          </text>
+          <text color={theme.text.secondary}>:</text>
+        </box>
         <SubagentApprovalContext data={data} />
         <ToolConfirmationMessage
           confirmationDetails={data.pendingConfirmation}
@@ -451,7 +451,7 @@ const SubagentExecutionRenderer: React.FC<{
           compactMode={true}
           config={config}
         />
-      </Box>
+      </box>
     );
   }
   if (data.pendingConfirmation) {
@@ -460,12 +460,12 @@ const SubagentExecutionRenderer: React.FC<{
     // (matches LiveAgentPanel + SubagentScrollbackSummary).
     const agentLabel = escapeAnsiCtrlCodes(data.subagentName || 'agent');
     return (
-      <Box paddingLeft={1}>
-        <Text color={theme.text.secondary} dimColor>
+      <box paddingLeft={1}>
+        <text color={theme.text.secondary} dimColor>
           ◌ Queued approval:{' '}
-        </Text>
-        <Text dimColor>{agentLabel}</Text>
-      </Box>
+        </text>
+        <text dimColor>{agentLabel}</text>
+      </box>
     );
   }
   // Terminal phase: render a single-line scrollback summary so the
@@ -552,15 +552,15 @@ const SubagentScrollbackSummary: React.FC<{
       ? ` · ${escapeAnsiCtrlCodes(data.terminateReason)}`
       : '';
   return (
-    <Box paddingLeft={1}>
-      <Text wrap="truncate-end">
-        <Text color={color}>{`${glyph} `}</Text>
-        <Text bold>{typePrefix}</Text>
-        <Text color={theme.text.secondary}>{safeDescription}</Text>
-        <Text color={theme.text.secondary}>{tail}</Text>
-        <Text color={theme.text.secondary}>{reason}</Text>
-      </Text>
-    </Box>
+    <box paddingLeft={1}>
+      <text wrap="truncate-end">
+        <text color={color}>{`${glyph} `}</text>
+        <text bold>{typePrefix}</text>
+        <text color={theme.text.secondary}>{safeDescription}</text>
+        <text color={theme.text.secondary}>{tail}</text>
+        <text color={theme.text.secondary}>{reason}</text>
+      </text>
+    </box>
   );
 };
 
@@ -582,14 +582,14 @@ const StringResultRenderer: React.FC<{
 
   if (renderAsMarkdown) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <MarkdownDisplay
           text={displayData}
           isPending={false}
           availableTerminalHeight={availableHeight}
           contentWidth={childWidth}
         />
-      </Box>
+      </box>
     );
   }
 
@@ -606,11 +606,11 @@ const StringResultRenderer: React.FC<{
       additionalHiddenLinesCount={sliced.hiddenLinesCount}
       sourceBoundaries={sliced.sourceBoundaries}
     >
-      <Box>
-        <Text wrap="wrap" color={theme.text.primary}>
+      <box>
+        <text wrap="wrap" color={theme.text.primary}>
           {sliced.text}
-        </Text>
-      </Box>
+        </text>
+      </box>
     </MaxSizedBox>
   );
 };
@@ -630,16 +630,16 @@ const DiffResultRenderer: React.FC<{
       : availableHeight;
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {data.truncatedForSession && (
-        <Text color={theme.status.warning} wrap="wrap">
+        <text color={theme.status.warning} wrap="wrap">
           {data.fileDiffTruncated
             ? 'Saved session preview only; full diff omitted from JSONL'
             : 'Saved session preview only; full file contents truncated in JSONL'}
           {data.fileDiffTruncated && typeof data.fileDiffLength === 'number'
             ? ` (${data.fileDiffLength} chars).`
             : '.'}
-        </Text>
+        </text>
       )}
       <DiffRenderer
         diffContent={data.fileDiff}
@@ -648,7 +648,7 @@ const DiffResultRenderer: React.FC<{
         contentWidth={childWidth}
         settings={settings}
       />
-    </Box>
+    </box>
   );
 };
 
@@ -883,8 +883,8 @@ export const ToolMessage: React.FC<ToolMessageProps> = ({
       effectiveDisplayRenderer.type === 'ansi');
 
   return (
-    <Box paddingY={0} flexDirection="column">
-      <Box minHeight={1}>
+    <box paddingY={0} style={{ flexDirection: "column" }}>
+      <box minHeight={1}>
         <ToolStatusIndicator status={status} name={name} />
         <ToolInfo
           name={name}
@@ -893,11 +893,11 @@ export const ToolMessage: React.FC<ToolMessageProps> = ({
           emphasis={emphasis}
         />
         {shouldShowFocusHint && (
-          <Box marginLeft={1} flexShrink={0}>
-            <Text color={theme.text.accent}>
+          <box marginLeft={1} style={{ flexShrink: 0 }}>
+            <text color={theme.text.accent}>
               {isThisShellFocused ? '(Focused)' : '(ctrl+f to focus)'}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
         <ToolElapsedTime
           status={status}
@@ -905,19 +905,19 @@ export const ToolMessage: React.FC<ToolMessageProps> = ({
           timeoutMs={shellTimeoutMs}
         />
         {emphasis === 'high' && <TrailingIndicator />}
-      </Box>
+      </box>
       {visionBridgeNoticeText && (
-        <Box paddingLeft={STATUS_INDICATOR_WIDTH} width="100%">
+        <box paddingLeft={STATUS_INDICATOR_WIDTH} style={{ width: "100%" }}>
           <StringResultRenderer
             data={visionBridgeNoticeText}
             renderAsMarkdown={false}
             childWidth={innerWidth}
           />
-        </Box>
+        </box>
       )}
       {effectiveDisplayRenderer.type !== 'none' && !shouldCollapseResult && (
-        <Box paddingLeft={STATUS_INDICATOR_WIDTH} width="100%">
-          <Box flexDirection="column">
+        <box paddingLeft={STATUS_INDICATOR_WIDTH} style={{ width: "100%" }}>
+          <box style={{ flexDirection: "column" }}>
             {effectiveDisplayRenderer.type === 'todo' && (
               <TodoResultRenderer data={effectiveDisplayRenderer.data} />
             )}
@@ -977,16 +977,12 @@ export const ToolMessage: React.FC<ToolMessageProps> = ({
                 childWidth={innerWidth}
               />
             )}
-          </Box>
-        </Box>
+          </box>
+        </box>
       )}
       {((images?.length ?? 0) > 0 ||
         (omittedImageCount !== undefined && omittedImageCount > 0)) && (
-        <Box
-          paddingLeft={STATUS_INDICATOR_WIDTH}
-          width="100%"
-          flexDirection="column"
-        >
+        <box paddingLeft={STATUS_INDICATOR_WIDTH} style={{ width: "100%", flexDirection: "column" }}>
           {images?.map((image, index) => (
             <TerminalImage
               key={index}
@@ -996,19 +992,19 @@ export const ToolMessage: React.FC<ToolMessageProps> = ({
             />
           ))}
           {omittedImageCount !== undefined && omittedImageCount > 0 && (
-            <Text dimColor>{formatInlineImageOverflow(omittedImageCount)}</Text>
+            <text dimColor>{formatInlineImageOverflow(omittedImageCount)}</text>
           )}
-        </Box>
+        </box>
       )}
       {isThisShellFocused && config && (
-        <Box paddingLeft={STATUS_INDICATOR_WIDTH} marginTop={1}>
+        <box paddingLeft={STATUS_INDICATOR_WIDTH} marginTop={1}>
           <ShellInputPrompt
             activeShellPtyId={activeShellPtyId ?? null}
             focus={embeddedShellFocused}
           />
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };
 
@@ -1039,20 +1035,20 @@ const ToolInfo: React.FC<ToolInfo> = ({
     }
   }, [emphasis]);
   return (
-    <Box flexGrow={1}>
-      <Text wrap="wrap" strikethrough={status === ToolCallStatus.Canceled}>
-        <Text color={nameColor} bold>
+    <box style={{ flexGrow: 1 }}>
+      <text wrap="wrap" strikethrough={status === ToolCallStatus.Canceled}>
+        <text color={nameColor} bold>
           {localizeToolDisplayName(name)}
-        </Text>{' '}
-        <Text color={theme.text.secondary}>{description}</Text>
-      </Text>
-    </Box>
+        </text>{' '}
+        <text color={theme.text.secondary}>{description}</text>
+      </text>
+    </box>
   );
 };
 
 const TrailingIndicator: React.FC = () => (
-  <Text color={theme.text.primary} wrap="truncate">
+  <text color={theme.text.primary} wrap="truncate">
     {' '}
     ←
-  </Text>
+  </text>
 );

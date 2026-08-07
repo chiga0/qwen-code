@@ -72,39 +72,32 @@ export const FolderTrustDialog: React.FC<FolderTrustDialogProps> = ({
   ];
 
   return (
-    <Box flexDirection="column">
-      <Box
-        flexDirection="column"
-        borderStyle="round"
-        borderColor={theme.status.warning}
-        padding={1}
-        width="100%"
-        marginLeft={1}
-      >
-        <Box flexDirection="column" marginBottom={1}>
-          <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, padding: 1, width: "100%" }} marginLeft={1}>
+        <box style={{ flexDirection: "column" }} marginBottom={1}>
+          <text bold color={theme.text.primary}>
             Do you trust this folder?
-          </Text>
-          <Text color={theme.text.primary}>
+          </text>
+          <text color={theme.text.primary}>
             Trusting a folder allows Qwen Code to execute commands it suggests.
             This is a security feature to prevent accidental execution in
             untrusted directories.
-          </Text>
-        </Box>
+          </text>
+        </box>
 
         <RadioButtonSelect
           items={options}
           onSelect={onSelect}
           isFocused={!isRestarting}
         />
-      </Box>
+      </box>
       {isRestarting && (
-        <Box marginLeft={1} marginTop={1}>
-          <Text color={theme.status.warning}>
+        <box marginLeft={1} marginTop={1}>
+          <text color={theme.status.warning}>
             Qwen Code is restarting to apply the trust changes...
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

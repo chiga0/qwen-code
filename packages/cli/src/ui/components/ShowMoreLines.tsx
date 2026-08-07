@@ -31,10 +31,10 @@ export const ShowMoreLines = ({ constrainHeight }: ShowMoreLinesProps) => {
   }
 
   return (
-    <Box>
-      <Text color={theme.text.secondary} wrap="truncate">
+    <box>
+      <text color={theme.text.secondary} wrap="truncate">
         Press ctrl-s to show more lines
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

@@ -27,9 +27,9 @@ export function HandlerListBody({
 
   return (
     <>
-      <Text bold color={theme.text.primary}>
+      <text bold color={theme.text.primary}>
         {t('Configured hooks:')}
-      </Text>
+      </text>
       {configs.map((config, index) => {
         const isSelected = index === selectedIndex;
         const sourceDisplay = getConfigSourceDisplay(config);
@@ -37,37 +37,37 @@ export function HandlerListBody({
         const typeDisplay = formatTypeDisplay(config);
 
         return (
-          <Box key={index}>
-            <Box width={commandWidth}>
-              <Box minWidth={2}>
-                <Text
+          <box key={index}>
+            <box style={{ width: commandWidth }}>
+              <box minWidth={2}>
+                <text
                   color={isSelected ? theme.text.accent : theme.text.primary}
                 >
                   {isSelected ? '❯' : ' '}
-                </Text>
-              </Box>
-              <Text
+                </text>
+              </box>
+              <text
                 color={isSelected ? theme.text.accent : theme.text.primary}
                 bold={isSelected}
                 wrap="wrap"
               >
                 {`${index + 1}. [${typeDisplay}] ${hookDisplay}`}
-              </Text>
-            </Box>
-            <Box width={2} />
-            <Box width={sourceWidth}>
-              <Text color={theme.text.secondary} wrap="wrap">
+              </text>
+            </box>
+            <box style={{ width: 2 }} />
+            <box style={{ width: sourceWidth }}>
+              <text color={theme.text.secondary} wrap="wrap">
                 {sourceDisplay}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         );
       })}
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Enter to select · Esc to go back')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     </>
   );
 }

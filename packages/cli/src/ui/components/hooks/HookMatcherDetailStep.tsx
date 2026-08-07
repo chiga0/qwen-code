@@ -25,7 +25,7 @@ export function HookMatcherDetailStep({
   const hasConfigs = matcherGroup.configs.length > 0;
 
   return (
-    <Box flexDirection="column" paddingX={1}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
       <HookEventHeader
         title={`${hookEvent.event} - ${t('Matcher:')} ${matcherGroup.matcher}`}
         description={hookEvent.description}
@@ -39,16 +39,16 @@ export function HookMatcherDetailStep({
         />
       ) : (
         <>
-          <Box>
-            <Text color={theme.text.secondary}>
+          <box>
+            <text color={theme.text.secondary}>
               {t('No hooks configured for this matcher.')}
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('Esc to go back')}</Text>
-          </Box>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('Esc to go back')}</text>
+          </box>
         </>
       )}
-    </Box>
+    </box>
   );
 }

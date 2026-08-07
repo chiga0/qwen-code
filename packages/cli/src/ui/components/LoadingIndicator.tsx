@@ -117,15 +117,11 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
       : null;
 
   return (
-    <Box paddingLeft={2} flexDirection="column">
+    <box paddingLeft={2} style={{ flexDirection: "column" }}>
       {/* Main loading line */}
-      <Box
-        width="100%"
-        flexDirection={isNarrow ? 'column' : 'row'}
-        alignItems={isNarrow ? 'flex-start' : 'center'}
-      >
-        <Box>
-          <Box marginRight={1}>
+      <box style={{ width: "100%", flexDirection: isNarrow ? 'column' : 'row', alignItems: isNarrow ? 'flex-start' : 'center' }}>
+        <box>
+          <box marginRight={1}>
             <GeminiRespondingSpinner
               nonRespondingDisplay={
                 streamingState === StreamingState.WaitingForConfirmation
@@ -133,26 +129,26 @@ export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
                   : ''
               }
             />
-          </Box>
+          </box>
           {primaryText && (
-            <Text color={theme.text.accent} wrap="truncate-end">
+            <text color={theme.text.accent} wrap="truncate-end">
               {primaryText}
-            </Text>
+            </text>
           )}
           {!isNarrow && cancelAndTimerContent && (
-            <Text color={theme.text.secondary}> {cancelAndTimerContent}</Text>
+            <text color={theme.text.secondary}> {cancelAndTimerContent}</text>
           )}
-        </Box>
-        {!isNarrow && <Box flexGrow={1}>{/* Spacer */}</Box>}
-        {!isNarrow && rightContent && <Box>{rightContent}</Box>}
-      </Box>
+        </box>
+        {!isNarrow && <box style={{ flexGrow: 1 }}>{/* Spacer */}</box>}
+        {!isNarrow && rightContent && <box>{rightContent}</box>}
+      </box>
       {isNarrow && cancelAndTimerContent && (
-        <Box>
-          <Text color={theme.text.secondary}>{cancelAndTimerContent}</Text>
-        </Box>
+        <box>
+          <text color={theme.text.secondary}>{cancelAndTimerContent}</text>
+        </box>
       )}
-      {isNarrow && rightContent && <Box>{rightContent}</Box>}
-    </Box>
+      {isNarrow && rightContent && <box>{rightContent}</box>}
+    </box>
   );
 };
 

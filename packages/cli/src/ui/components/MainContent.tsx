@@ -359,11 +359,11 @@ export const MainContent = () => {
     ({ item }: { item: VpItem }) => {
       if (item.type === 'vp-banner') {
         return (
-          <Box flexDirection="column">
+          <box style={{ flexDirection: "column" }}>
             <AppHeader version={version} />
             <DebugModeNotification />
             <Notifications />
-          </Box>
+          </box>
         );
       }
       const isPending = item.id < 0;
@@ -492,7 +492,7 @@ export const MainContent = () => {
         {(item) => item}
       </Static>
       <OverflowProvider>
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {/*
             Hard Ink backstop on the live (non-<Static>) pending region. The
             estimator's source-line slice (MarkdownDisplay's fitPendingSlice) is
@@ -519,17 +519,12 @@ export const MainContent = () => {
             static confirmation is a single render, so it does not trip Ink's
             from-top full-redraw path the way a streaming table does.
           */}
-          <Box
-            flexDirection="column"
-            flexShrink={0}
-            maxHeight={
+          <box style={{ flexDirection: "column", flexShrink: 0 }} maxHeight={
               uiState.constrainHeight ||
               streamingState === StreamingState.Responding
                 ? availableTerminalHeight || undefined
                 : undefined
-            }
-            overflow="hidden"
-          >
+            } overflow="hidden">
             {pendingHistoryItemsWithSourceCopyOffsets.map(
               ({ item, sourceCopyIndexOffsets }, i) => (
                 <HistoryItemDisplay
@@ -551,9 +546,9 @@ export const MainContent = () => {
                 />
               ),
             )}
-          </Box>
+          </box>
           <ShowMoreLines constrainHeight={uiState.constrainHeight} />
-        </Box>
+        </box>
       </OverflowProvider>
     </>
   );

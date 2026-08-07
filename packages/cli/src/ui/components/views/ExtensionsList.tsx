@@ -20,13 +20,13 @@ export const ExtensionsList = () => {
   const extensions = commandContext.services.config?.getExtensions() || [];
 
   if (extensions.length === 0) {
-    return <Text>No extensions installed.</Text>;
+    return <text>No extensions installed.</text>;
   }
 
   return (
-    <Box flexDirection="column" marginTop={1} marginBottom={1}>
-      <Text>Installed extensions:</Text>
-      <Box flexDirection="column" paddingLeft={2}>
+    <box style={{ flexDirection: "column" }} marginTop={1} marginBottom={1}>
+      <text>Installed extensions:</text>
+      <box style={{ flexDirection: "column" }} paddingLeft={2}>
         {extensions.map((ext) => {
           const state = extensionsUpdateState.get(ext.name);
           const isActive = ext.isActive;
@@ -60,26 +60,26 @@ export const ExtensionsList = () => {
           }
 
           return (
-            <Box key={ext.name} flexDirection="column" marginBottom={1}>
-              <Text>
-                <Text color="cyan">{`${getExtensionDisplayName(ext, getCurrentLanguage())} (v${ext.version})`}</Text>
-                <Text color={activeColor}>{` - ${activeString}`}</Text>
-                {<Text color={stateColor}>{` (${stateText})`}</Text>}
-              </Text>
+            <box key={ext.name} style={{ flexDirection: "column" }} marginBottom={1}>
+              <text>
+                <text color="cyan">{`${getExtensionDisplayName(ext, getCurrentLanguage())} (v${ext.version})`}</text>
+                <text color={activeColor}>{` - ${activeString}`}</text>
+                {<text color={stateColor}>{` (${stateText})`}</text>}
+              </text>
               {ext.resolvedSettings && ext.resolvedSettings.length > 0 && (
-                <Box flexDirection="column" paddingLeft={2}>
-                  <Text>settings:</Text>
+                <box style={{ flexDirection: "column" }} paddingLeft={2}>
+                  <text>settings:</text>
                   {ext.resolvedSettings.map((setting) => (
-                    <Text key={setting.name}>
+                    <text key={setting.name}>
                       - {setting.name}: {setting.value}
-                    </Text>
+                    </text>
                   ))}
-                </Box>
+                </box>
               )}
-            </Box>
+            </box>
           );
         })}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

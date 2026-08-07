@@ -33,9 +33,9 @@ describe('<MaxSizedBox />', () => {
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={10}>
-          <Box>
-            <Text>Hello, World!</Text>
-          </Box>
+          <box>
+            <text>Hello, World!</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -46,15 +46,15 @@ describe('<MaxSizedBox />', () => {
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={2}>
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
-          <Box>
-            <Text>Line 3</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
+          <box>
+            <text>Line 3</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -66,15 +66,15 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={2} overflowDirection="bottom">
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
-          <Box>
-            <Text>Line 3</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
+          <box>
+            <text>Line 3</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -86,9 +86,9 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={10} maxHeight={5}>
-          <Box>
-            <Text wrap="wrap">This is a long line of text</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">This is a long line of text</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -102,12 +102,12 @@ of text`);
     const { stdout } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={10}>
-          <Box>
-            <Text wrap="wrap">hello world</Text>
-          </Box>
-          <Box>
-            <Text>next</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">hello world</text>
+          </box>
+          <box>
+            <text>next</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -121,9 +121,9 @@ of text`);
     const { stdout, lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={2} overflowDirection="bottom">
-          <Box>
-            <Text wrap="wrap">abcdefghijklm</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">abcdefghijklm</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -140,9 +140,9 @@ of text`);
     const { stdout } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={10}>
-          <Box>
-            <Text wrap="wrap">{source}</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">{source}</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -156,12 +156,12 @@ of text`);
     const { stdout } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={8} maxHeight={10}>
-          <Box>
-            <Text wrap="truncate-end" selectable={false}>
+          <box>
+            <text wrap="truncate-end" selectable={false}>
               {'1 '}
-            </Text>
-            <Text wrap="wrap">long content</Text>
-          </Box>
+            </text>
+            <text wrap="wrap">long content</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -178,17 +178,17 @@ And has a line break.
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={20} maxHeight={20}>
-          <Box>
-            <Text>Example</Text>
-          </Box>
-          <Box>
-            <Text>No Wrap: </Text>
-            <Text wrap="wrap">{multilineText}</Text>
-          </Box>
-          <Box>
-            <Text>Longer No Wrap: </Text>
-            <Text wrap="wrap">This part will wrap around.</Text>
-          </Box>
+          <box>
+            <text>Example</text>
+          </box>
+          <box>
+            <text>No Wrap: </text>
+            <text wrap="wrap">{multilineText}</text>
+          </box>
+          <box>
+            <text>Longer No Wrap: </text>
+            <text wrap="wrap">This part will wrap around.</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -216,9 +216,9 @@ Longer No Wrap: This
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={5}>
-          <Box>
-            <Text wrap="wrap">Supercalifragilisticexpialidocious</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">Supercalifragilisticexpialidocious</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -234,12 +234,12 @@ ious`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={undefined}>
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -251,15 +251,15 @@ Line 2`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={2}>
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
-          <Box>
-            <Text>Line 3</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
+          <box>
+            <text>Line 3</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -271,15 +271,15 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={2} overflowDirection="bottom">
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
-          <Box>
-            <Text>Line 3</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
+          <box>
+            <text>Line 3</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -302,9 +302,9 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={5}>
-          <Box>
-            <Text wrap="wrap">你好世界</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">你好世界</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -319,9 +319,9 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={5} maxHeight={5}>
-          <Box>
-            <Text wrap="wrap">🐶🐶🐶🐶🐶</Text>
-          </Box>
+          <box>
+            <text wrap="wrap">🐶🐶🐶🐶🐶</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -337,10 +337,10 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={2} maxHeight={2}>
-          <Box>
-            <Text>No</Text>
-            <Text wrap="wrap">wrap</Text>
-          </Box>
+          <box>
+            <text>No</text>
+            <text wrap="wrap">wrap</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -352,10 +352,10 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={3} maxHeight={2}>
-          <Box>
-            <Text>ABCDE</Text>
-            <Text wrap="wrap">wrap</Text>
-          </Box>
+          <box>
+            <text>ABCDE</text>
+            <text wrap="wrap">wrap</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -367,10 +367,10 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={3} maxHeight={2}>
-          <Box>
-            <Text>{'A\nBCDE'}</Text>
-            <Text wrap="wrap">wrap</Text>
-          </Box>
+          <box>
+            <text>{'A\nBCDE'}</text>
+            <text wrap="wrap">wrap</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -382,10 +382,10 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={3} maxHeight={2}>
-          <Box>
-            <Text>🐶🐶🐶</Text>
-            <Text wrap="wrap">wrap</Text>
-          </Box>
+          <box>
+            <text>🐶🐶🐶</text>
+            <text wrap="wrap">wrap</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -397,18 +397,18 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={3} maxHeight={3}>
-          <Box>
-            <Text>AAA</Text>
-            <Text wrap="wrap">first</Text>
-          </Box>
-          <Box>
-            <Text>BBB</Text>
-            <Text wrap="wrap">second</Text>
-          </Box>
-          <Box>
-            <Text>CCC</Text>
-            <Text wrap="wrap">third</Text>
-          </Box>
+          <box>
+            <text>AAA</text>
+            <text wrap="wrap">first</text>
+          </box>
+          <box>
+            <text>BBB</text>
+            <text wrap="wrap">second</text>
+          </box>
+          <box>
+            <text>CCC</text>
+            <text wrap="wrap">third</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -420,15 +420,15 @@ Line 3`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={2} additionalHiddenLinesCount={5}>
-          <Box>
-            <Text>Line 1</Text>
-          </Box>
-          <Box>
-            <Text>Line 2</Text>
-          </Box>
-          <Box>
-            <Text>Line 3</Text>
-          </Box>
+          <box>
+            <text>Line 1</text>
+          </box>
+          <box>
+            <text>Line 2</text>
+          </box>
+          <box>
+            <text>Line 3</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -442,16 +442,16 @@ Line 3`);
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={10}>
           <>
-            <Box>
-              <Text>Line 1 from Fragment</Text>
-            </Box>
-            <Box>
-              <Text>Line 2 from Fragment</Text>
-            </Box>
+            <box>
+              <text>Line 1 from Fragment</text>
+            </box>
+            <box>
+              <text>Line 2 from Fragment</text>
+            </box>
           </>
-          <Box>
-            <Text>Line 3 direct child</Text>
-          </Box>
+          <box>
+            <text>Line 3 direct child</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -469,9 +469,9 @@ Line 3 direct child`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={10}>
-          <Box>
-            <Text>{THIRTY_LINES}</Text>
-          </Box>
+          <box>
+            <text>{THIRTY_LINES}</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -493,9 +493,9 @@ Line 3 direct child`);
     const { lastFrame } = render(
       <OverflowProvider>
         <MaxSizedBox maxWidth={80} maxHeight={10} overflowDirection="bottom">
-          <Box>
-            <Text>{THIRTY_LINES}</Text>
-          </Box>
+          <box>
+            <text>{THIRTY_LINES}</text>
+          </box>
         </MaxSizedBox>
       </OverflowProvider>,
     );
@@ -516,27 +516,22 @@ Line 3 direct child`);
   // backstop wrapping a padded content box with a flexGrow/overflow body.
   it('keeps rows sequential when an ancestor clamps the column height (#6809)', () => {
     const rows = Array.from({ length: 60 }, (_, i) => (
-      <Box key={i}>
-        <Text>{`line ${i + 1}`}</Text>
-      </Box>
+      <box key={i}>
+        <text>{`line ${i + 1}`}</text>
+      </box>
     ));
 
     const { lastFrame } = render(
       <OverflowProvider>
-        <Box
-          flexDirection="column"
-          flexShrink={0}
-          maxHeight={24}
-          overflow="hidden"
-        >
-          <Box flexDirection="column" padding={1} width={80}>
-            <Box flexGrow={1} flexShrink={1} overflow="hidden" marginBottom={1}>
+        <box style={{ flexDirection: "column", flexShrink: 0 }} maxHeight={24} overflow="hidden">
+          <box style={{ flexDirection: "column", padding: 1, width: 80 }}>
+            <box style={{ flexGrow: 1, flexShrink: 1 }} overflow="hidden" marginBottom={1}>
               <MaxSizedBox maxWidth={80} maxHeight={undefined}>
                 {rows}
               </MaxSizedBox>
-            </Box>
-          </Box>
-        </Box>
+            </box>
+          </box>
+        </box>
       </OverflowProvider>,
     );
 

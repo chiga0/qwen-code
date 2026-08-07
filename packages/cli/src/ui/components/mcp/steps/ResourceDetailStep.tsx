@@ -29,9 +29,9 @@ export const ResourceDetailStep: React.FC<ResourceDetailStepProps> = ({
 
   if (!resource) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No resource selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No resource selected')}</text>
+      </box>
     );
   }
 
@@ -40,73 +40,73 @@ export const ResourceDetailStep: React.FC<ResourceDetailStepProps> = ({
   const showName = friendlyName && friendlyName !== resource.uri;
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
       {/* 资源元信息 */}
-      <Box flexDirection="column">
-        <Box>
-          <Box width={LABEL_WIDTH}>
-            <Text color={theme.text.primary}>{t('URI:')}</Text>
-          </Box>
-          <Box>
-            <Text wrap="wrap">{resource.uri}</Text>
-          </Box>
-        </Box>
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <box style={{ width: LABEL_WIDTH }}>
+            <text color={theme.text.primary}>{t('URI:')}</text>
+          </box>
+          <box>
+            <text wrap="wrap">{resource.uri}</text>
+          </box>
+        </box>
 
         {showName && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Name:')}</Text>
-            </Box>
-            <Box>
-              <Text wrap="wrap">{friendlyName}</Text>
-            </Box>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Name:')}</text>
+            </box>
+            <box>
+              <text wrap="wrap">{friendlyName}</text>
+            </box>
+          </box>
         )}
 
         {resource.mimeType && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('MIME Type:')}</Text>
-            </Box>
-            <Box>
-              <Text wrap="truncate">{resource.mimeType}</Text>
-            </Box>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('MIME Type:')}</text>
+            </box>
+            <box>
+              <text wrap="truncate">{resource.mimeType}</text>
+            </box>
+          </box>
         )}
 
         {typeof resource.size === 'number' && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Size:')}</Text>
-            </Box>
-            <Box>
-              <Text>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Size:')}</text>
+            </box>
+            <box>
+              <text>
                 {t('{{count}} bytes', { count: String(resource.size) })}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         )}
-      </Box>
+      </box>
 
       {/* 资源描述 */}
       {resource.description && (
-        <Box flexDirection="column">
-          <Text color={theme.text.primary} bold>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary} bold>
             {t('Description')}:
-          </Text>
-          <Text wrap="wrap">{resource.description}</Text>
-        </Box>
+          </text>
+          <text wrap="wrap">{resource.description}</text>
+        </box>
       )}
 
       {/* 如何引用：告诉用户在对话里输入 @server:uri 即可注入内容 */}
-      <Box flexDirection="column">
-        <Text color={theme.text.primary} bold>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.primary} bold>
           {t('Reference in chat')}:
-        </Text>
-        <Text color={theme.text.accent}>
+        </text>
+        <text color={theme.text.accent}>
           @{buildMcpResourceRef(resource.serverName, resource.uri)}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

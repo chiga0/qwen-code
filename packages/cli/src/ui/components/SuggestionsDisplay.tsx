@@ -104,9 +104,9 @@ export function SuggestionsDisplay({
 
   if (isLoading) {
     return (
-      <Box width={width}>
-        <Text color="gray">{t('Loading suggestions...')}</Text>
-      </Box>
+      <box style={{ width: width }}>
+        <text color="gray">{t('Loading suggestions...')}</text>
+      </box>
     );
   }
 
@@ -160,7 +160,7 @@ export function SuggestionsDisplay({
         : 0;
 
   return (
-    <Box flexDirection="column" width={width} ref={containerRef}>
+    <box style={{ flexDirection: "column", width: width }} ref={containerRef}>
       {mouseEnabled && onHoverIndex && onSelectIndex && (
         <RowMouseController
           containerRef={containerRef}
@@ -171,32 +171,29 @@ export function SuggestionsDisplay({
         />
       )}
       {showTabBar && availableCategories && (
-        <Box flexDirection="row" marginBottom={1}>
+        <box style={{ flexDirection: "row" }} marginBottom={1}>
           {availableCategories.map((cat, i) => {
             const active = cat === activeCategory;
             return (
-              <Box key={cat} marginLeft={i === 0 ? 0 : 1}>
-                <Text
-                  color={
+              <box key={cat} marginLeft={i === 0 ? 0 : 1}>
+                <text color={
                     active ? theme.background.primary : theme.text.secondary
-                  }
-                  backgroundColor={active ? theme.text.accent : undefined}
-                >
+                  } style={{ backgroundColor: active ? theme.text.accent : undefined }}>
                   {` ${categoryLabel(cat)} `}
-                </Text>
-              </Box>
+                </text>
+              </box>
             );
           })}
           {/* Mention Ctrl+Tab as an alternative since many terminals
               intercept Ctrl+←/→ for word-jump (#8069). */}
-          <Box marginLeft={2}>
-            <Text color={theme.text.secondary}>
+          <box marginLeft={2}>
+            <text color={theme.text.secondary}>
               {t('(Ctrl+Tab / Ctrl+Shift+Tab or Ctrl+←/→ to switch)')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
-      {scrollOffset > 0 && <Text color={theme.text.primary}>▲</Text>}
+      {scrollOffset > 0 && <text color={theme.text.primary}>▲</text>}
 
       {visibleSuggestions.map((suggestion, index) => {
         const originalIndex = startIndex + index;
@@ -221,61 +218,52 @@ export function SuggestionsDisplay({
         );
 
         return (
-          <Box
-            key={`${suggestion.value}-${originalIndex}`}
-            flexDirection="row"
-            ref={(node) => {
+          <box key={`${suggestion.value}-${originalIndex}`} style={{ flexDirection: "row" }} ref={(node) => {
               itemRefs.current[index] = node;
-            }}
-          >
-            <Box width={ACTIVE_MARKER_WIDTH} flexShrink={0}>
-              <Text color={textColor}>{isActive ? '> ' : '  '}</Text>
-            </Box>
-            <Box
+            }}>
+            <box style={{ width: ACTIVE_MARKER_WIDTH, flexShrink: 0 }}>
+              <text color={textColor}>{isActive ? '> ' : '  '}</text>
+            </box>
+            <box
               {...(mode === 'slash' || suggestion.description
                 ? { width: labelColumnWidth, flexShrink: 0 as const }
                 : { flexShrink: 1 as const })}
             >
-              <Box>
+              <box>
                 {labelElement}
                 {suggestion.argumentHint && (
-                  <Text color={theme.text.secondary}>
+                  <text color={theme.text.secondary}>
                     {' '}
                     {suggestion.argumentHint}
-                  </Text>
+                  </text>
                 )}
                 {suggestion.sourceBadge && (
-                  <Text color={textColor}> {suggestion.sourceBadge}</Text>
+                  <text color={textColor}> {suggestion.sourceBadge}</text>
                 )}
-              </Box>
-            </Box>
+              </box>
+            </box>
 
             {suggestion.description && (
-              <Box
-                width={descriptionColumnWidth}
-                flexGrow={1}
-                flexShrink={1}
-                paddingLeft={2}
-              >
-                <Text color={textColor} wrap="truncate-end">
+              <box style={{ width: descriptionColumnWidth, flexGrow: 1, flexShrink: 1 }} paddingLeft={2}>
+                <text color={textColor} wrap="truncate-end">
                   {normalizeDescription(suggestion.description)}
-                </Text>
-              </Box>
+                </text>
+              </box>
             )}
             {isActive && isLong && (
-              <Box>
-                <Text color={Colors.Gray}>{isExpanded ? ' ← ' : ' → '}</Text>
-              </Box>
+              <box>
+                <text color={Colors.Gray}>{isExpanded ? ' ← ' : ' → '}</text>
+              </box>
             )}
-          </Box>
+          </box>
         );
       })}
-      {endIndex < filteredSuggestions.length && <Text color="gray">▼</Text>}
+      {endIndex < filteredSuggestions.length && <text color="gray">▼</text>}
       {filteredSuggestions.length > MAX_SUGGESTIONS_TO_SHOW && (
-        <Text color="gray">
+        <text color="gray">
           ({activeIndex + 1}/{filteredSuggestions.length})
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 }

@@ -181,8 +181,8 @@ export function ToolSelector({
   );
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
         <RadioButtonSelect
           items={toolOptions.map((option) => ({
             key: option.value,
@@ -196,19 +196,19 @@ export function ToolSelector({
           onHighlight={handleHighlight}
           isFocused={true}
         />
-      </Box>
+      </box>
 
       {/* Show help information or tools for selected category */}
       {currentCategory && (
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {currentCategory.id === 'all' ? (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {t('All tools selected, including MCP tools')}
-            </Text>
+            </text>
           ) : currentCategory.tools.length > 0 ? (
             <>
-              <Text color={theme.text.secondary}>{t('Selected tools:')}</Text>
-              <Box flexDirection="column" marginLeft={2}>
+              <text color={theme.text.secondary}>{t('Selected tools:')}</text>
+              <box style={{ flexDirection: "column" }} marginLeft={2}>
                 {(() => {
                   // Filter the already categorized tools to show only those in current category
                   const categoryReadTools = currentCategory.tools.filter(
@@ -224,30 +224,30 @@ export function ToolSelector({
                   return (
                     <>
                       {categoryReadTools.length > 0 && (
-                        <Text color={theme.text.secondary}>
+                        <text color={theme.text.secondary}>
                           • {t('Read-only tools:')}{' '}
                           {categoryReadTools.join(', ')}
-                        </Text>
+                        </text>
                       )}
                       {categoryEditTools.length > 0 && (
-                        <Text color={theme.text.secondary}>
+                        <text color={theme.text.secondary}>
                           • {t('Edit tools:')} {categoryEditTools.join(', ')}
-                        </Text>
+                        </text>
                       )}
                       {categoryExecuteTools.length > 0 && (
-                        <Text color={theme.text.secondary}>
+                        <text color={theme.text.secondary}>
                           • {t('Execution tools:')}{' '}
                           {categoryExecuteTools.join(', ')}
-                        </Text>
+                        </text>
                       )}
                     </>
                   );
                 })()}
-              </Box>
+              </box>
             </>
           ) : null}
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

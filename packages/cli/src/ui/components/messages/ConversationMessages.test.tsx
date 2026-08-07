@@ -23,10 +23,10 @@ vi.mock('../TerminalImage.js', () => ({
     image: { mimeType: string };
     availableTerminalHeight?: number;
   }) => (
-    <Text>
+    <text>
       MockTerminalImage:{image.mimeType}:height=
       {availableTerminalHeight ?? 'undef'}
-    </Text>
+    </text>
   ),
 }));
 

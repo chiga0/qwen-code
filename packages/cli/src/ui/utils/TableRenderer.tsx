@@ -461,7 +461,7 @@ export const TableRenderer: React.FC<TableRendererProps> = ({
 
   // Empty table — nothing to render
   if (colCount === 0) {
-    return <Box />;
+    return <box />;
   }
 
   // Clip the fully-rendered table to `maxHeight` text lines (streaming preview
@@ -756,9 +756,9 @@ export const TableRenderer: React.FC<TableRendererProps> = ({
   // ── Choose format ──
   if (useVerticalFormat) {
     return (
-      <Box marginY={1}>
-        <Text>{clampToMaxHeight(renderVerticalFormat())}</Text>
-      </Box>
+      <box marginY={1}>
+        <text>{clampToMaxHeight(renderVerticalFormat())}</text>
+      </box>
     );
   }
 
@@ -797,16 +797,16 @@ export const TableRenderer: React.FC<TableRendererProps> = ({
     // horizontal header — even if it slightly overflows a very narrow terminal
     // — than to make the box the PR draws immediately vanish.
     return (
-      <Box marginY={1}>
-        <Text>{clampToMaxHeight(renderVerticalFormat())}</Text>
-      </Box>
+      <box marginY={1}>
+        <text>{clampToMaxHeight(renderVerticalFormat())}</text>
+      </box>
     );
   }
 
   // Render as a single Text block to prevent Ink wrapping mid-row
   return (
-    <Box flexDirection="column" marginY={1}>
-      <Text>{clampToMaxHeight(tableLines.join('\n'))}</Text>
-    </Box>
+    <box style={{ flexDirection: "column" }} marginY={1}>
+      <text>{clampToMaxHeight(tableLines.join('\n'))}</text>
+    </box>
   );
 };

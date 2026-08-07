@@ -160,22 +160,22 @@ export const ServerDetailStep: React.FC<ServerDetailStepProps> = ({
 
   if (!server) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No server selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No server selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
       {/* 服务器详情 */}
-      <Box flexDirection="column">
-        <Box>
-          <Box width={LABEL_WIDTH}>
-            <Text color={theme.text.primary}>{t('Status:')}</Text>
-          </Box>
-          <Box>
-            <Text
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <box style={{ width: LABEL_WIDTH }}>
+            <text color={theme.text.primary}>{t('Status:')}</text>
+          </box>
+          <box>
+            <text
               color={
                 statusColor === 'green'
                   ? theme.status.success
@@ -194,16 +194,16 @@ export const ServerDetailStep: React.FC<ServerDetailStepProps> = ({
                   : needsAuth
                     ? t('needs authentication')
                     : t(server.status)}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
 
-        <Box>
-          <Box width={LABEL_WIDTH}>
-            <Text color={theme.text.primary}>{t('Source:')}</Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.primary}>
+        <box>
+          <box style={{ width: LABEL_WIDTH }}>
+            <text color={theme.text.primary}>{t('Source:')}</text>
+          </box>
+          <box>
+            <text color={theme.text.primary}>
               {server.source === 'user'
                 ? t('User Settings')
                 : server.source === 'project'
@@ -213,92 +213,92 @@ export const ServerDetailStep: React.FC<ServerDetailStepProps> = ({
                     : server.source === 'system'
                       ? t('System Settings')
                       : t('Extension')}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
 
-        <Box>
-          <Box width={LABEL_WIDTH}>
-            <Text color={theme.text.primary}>{t('Command:')}</Text>
-          </Box>
-          <Box>
-            <Text wrap="truncate">{formatServerCommand(server)}</Text>
-          </Box>
-        </Box>
+        <box>
+          <box style={{ width: LABEL_WIDTH }}>
+            <text color={theme.text.primary}>{t('Command:')}</text>
+          </box>
+          <box>
+            <text wrap="truncate">{formatServerCommand(server)}</text>
+          </box>
+        </box>
 
         {server.config.cwd && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Working Directory:')}</Text>
-            </Box>
-            <Box>
-              <Text wrap="truncate">{server.config.cwd}</Text>
-            </Box>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Working Directory:')}</text>
+            </box>
+            <box>
+              <text wrap="truncate">{server.config.cwd}</text>
+            </box>
+          </box>
         )}
 
         {!server.isDisabled && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Tools:')}</Text>
-            </Box>
-            <Box>
-              <Text>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Tools:')}</text>
+            </box>
+            <box>
+              <text>
                 {server.toolCount}{' '}
                 {server.toolCount === 1 ? t('tool') : t('tools')}
                 {!!server.invalidToolCount && server.invalidToolCount > 0 && (
-                  <Text color={theme.status.warning}>
+                  <text color={theme.status.warning}>
                     {' '}
                     ({server.invalidToolCount}{' '}
                     {server.invalidToolCount === 1
                       ? t('invalid')
                       : t('invalid')}
                     )
-                  </Text>
+                  </text>
                 )}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         )}
 
         {!server.isDisabled && server.promptCount > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Prompts:')}</Text>
-            </Box>
-            <Box>
-              <Text>{server.promptCount}</Text>
-            </Box>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Prompts:')}</text>
+            </box>
+            <box>
+              <text>{server.promptCount}</text>
+            </box>
+          </box>
         )}
 
         {!server.isDisabled && server.resourceCount > 0 && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.text.primary}>{t('Resources:')}</Text>
-            </Box>
-            <Box>
-              <Text>{server.resourceCount}</Text>
-            </Box>
-          </Box>
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.text.primary}>{t('Resources:')}</text>
+            </box>
+            <box>
+              <text>{server.resourceCount}</text>
+            </box>
+          </box>
         )}
 
         {server.errorMessage && (
-          <Box>
-            <Box width={LABEL_WIDTH}>
-              <Text color={theme.status.error}>{t('Error:')}</Text>
-            </Box>
-            <Box>
-              <Text color={theme.status.error} wrap="wrap">
+          <box>
+            <box style={{ width: LABEL_WIDTH }}>
+              <text color={theme.status.error}>{t('Error:')}</text>
+            </box>
+            <box>
+              <text color={theme.status.error} wrap="wrap">
                 {server.errorMessage}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         )}
-      </Box>
+      </box>
 
       {/* 操作列表 */}
-      <Box>
+      <box>
         <RadioButtonSelect<ServerAction>
           items={actions}
           isFocused={isActive}
@@ -331,7 +331,7 @@ export const ServerDetailStep: React.FC<ServerDetailStepProps> = ({
             }
           }}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

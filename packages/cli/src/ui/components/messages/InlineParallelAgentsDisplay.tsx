@@ -301,21 +301,21 @@ export const InlineParallelAgentsDisplay: React.FC<
   }
 
   return (
-    <Box flexDirection="column" width={contentWidth} paddingX={1}>
-      <Box>
+    <box style={{ flexDirection: "column", width: contentWidth }} paddingX={1}>
+      <box>
         {/* truncate-end keeps the header to 1 line — the backstop budgets it as
             one row; without it a narrow terminal would wrap it and overflow. */}
-        <Text bold color={theme.text.accent} wrap="truncate-end">
+        <text bold color={theme.text.accent} wrap="truncate-end">
           {headerLabel}
-        </Text>
-      </Box>
+        </text>
+      </box>
       {overflowCount > 0 && (
-        <Box>
+        <box>
           {/* Likewise 1 line: the backstop reserves a single row for this. */}
-          <Text color={theme.text.secondary} wrap="truncate-end">
+          <text color={theme.text.secondary} wrap="truncate-end">
             … +{overflowCount} more {overflowCount === 1 ? 'agent' : 'agents'}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
       {/* INVARIANT: header (1) + optional overflow indicator (1) + each AgentRow
           (1) must each render exactly 1 terminal line. The height backstop above
@@ -326,7 +326,7 @@ export const InlineParallelAgentsDisplay: React.FC<
       {visibleRows.map((row) => (
         <AgentRow key={row.agentId} row={row} now={now} />
       ))}
-    </Box>
+    </box>
   );
 };
 
@@ -359,25 +359,25 @@ const AgentRow: React.FC<{ row: RowData; now: number }> = ({ row, now }) => {
   // trailing sits at a different x position and the panel reads as
   // visually noisy.
   return (
-    <Box flexDirection="row">
-      <Box flexShrink={0} marginRight={1}>
-        <Text color={color} wrap="truncate-end">
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ flexShrink: 0 }} marginRight={1}>
+        <text color={color} wrap="truncate-end">
           {glyph}
-        </Text>
-      </Box>
-      <Box flexShrink={0} marginRight={1} width={NAME_COL_WIDTH}>
-        <Text wrap="truncate-end">{displayName}</Text>
-      </Box>
-      <Box flexShrink={1} flexGrow={1} marginRight={1}>
-        <Text color={theme.text.secondary} wrap="truncate-end">
+        </text>
+      </box>
+      <box style={{ flexShrink: 0, width: NAME_COL_WIDTH }} marginRight={1}>
+        <text wrap="truncate-end">{displayName}</text>
+      </box>
+      <box style={{ flexShrink: 1, flexGrow: 1 }} marginRight={1}>
+        <text color={theme.text.secondary} wrap="truncate-end">
           {activity}
-        </Text>
-      </Box>
-      <Box flexShrink={0}>
-        <Text color={theme.text.secondary} wrap="truncate-end">
+        </text>
+      </box>
+      <box style={{ flexShrink: 0 }}>
+        <text color={theme.text.secondary} wrap="truncate-end">
           {trailing}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

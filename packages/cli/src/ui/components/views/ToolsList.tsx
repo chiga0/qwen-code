@@ -22,20 +22,20 @@ export const ToolsList: React.FC<ToolsListProps> = ({
   showDescriptions,
   contentWidth,
 }) => (
-  <Box flexDirection="column">
-    <Text bold color={theme.text.primary}>
+  <box style={{ flexDirection: "column" }}>
+    <text bold color={theme.text.primary}>
       {t('Available Qwen Code CLI tools:')}
-    </Text>
-    <Box height={1} />
+    </text>
+    <box style={{ height: 1 }} />
     {tools.length > 0 ? (
       tools.map((tool) => (
-        <Box key={tool.name} flexDirection="row">
-          <Text color={theme.text.primary}>{'  '}- </Text>
-          <Box flexDirection="column">
-            <Text bold color={theme.text.accent}>
+        <box key={tool.name} style={{ flexDirection: "row" }}>
+          <text color={theme.text.primary}>{'  '}- </text>
+          <box style={{ flexDirection: "column" }}>
+            <text bold color={theme.text.accent}>
               {tool.displayName}
               {showDescriptions ? ` (${tool.name})` : ''}
-            </Text>
+            </text>
             {showDescriptions && tool.description && (
               <MarkdownDisplay
                 contentWidth={contentWidth}
@@ -43,11 +43,11 @@ export const ToolsList: React.FC<ToolsListProps> = ({
                 isPending={false}
               />
             )}
-          </Box>
-        </Box>
+          </box>
+        </box>
       ))
     ) : (
-      <Text color={theme.text.primary}> {t('No tools available')}</Text>
+      <text color={theme.text.primary}> {t('No tools available')}</text>
     )}
-  </Box>
+  </box>
 );

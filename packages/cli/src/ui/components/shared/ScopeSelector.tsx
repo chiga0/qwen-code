@@ -40,12 +40,12 @@ export function ScopeSelector({
   const safeInitialIndex = initialIndex >= 0 ? initialIndex : 0;
 
   return (
-    <Box flexDirection="column">
-      <Text bold={isFocused} wrap="truncate">
+    <box style={{ flexDirection: "column" }}>
+      <text bold={isFocused} wrap="truncate">
         {isFocused ? '> ' : '  '}
         {t('Apply To')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
       <RadioButtonSelect
         items={scopeItems}
         initialIndex={safeInitialIndex}
@@ -54,6 +54,6 @@ export function ScopeSelector({
         isFocused={isFocused}
         showNumbers={isFocused}
       />
-    </Box>
+    </box>
   );
 }

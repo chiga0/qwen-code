@@ -113,20 +113,20 @@ describe.each([false, true])(
       function CursorOwner() {
         cursorRenderCount++;
         useCursor().setCursorPosition({ x: 2, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function Footer() {
         const [multiline, setMultiline] = useState(false);
         updateFooter = () => setMultiline(true);
-        return <Text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</Text>;
+        return <text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -148,7 +148,7 @@ describe.each([false, true])(
       function CursorOwner() {
         cursorRenderCount++;
         useCursor().setCursorPosition({ x: 2, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function StaticOutput() {
@@ -156,7 +156,7 @@ describe.each([false, true])(
         appendStatic = () => setItems(['done']);
         return (
           <Static items={items}>
-            {(item) => <Text key={item}>{item}</Text>}
+            {(item) => <text key={item}>{item}</text>}
           </Static>
         );
       }
@@ -164,10 +164,10 @@ describe.each([false, true])(
       const app = await mount(
         <>
           <StaticOutput />
-          <Box flexDirection="column">
+          <box style={{ flexDirection: "column" }}>
             <CursorOwner />
-            <Text>footer</Text>
-          </Box>
+            <text>footer</text>
+          </box>
         </>,
         capture.stdout,
         incrementalRendering,
@@ -191,20 +191,20 @@ describe.each([false, true])(
       function CursorOwner() {
         cursorRenderCount++;
         useCursor().setCursorPosition({ x: 2, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function Footer() {
         const [multiline, setMultiline] = useState(false);
         updateFooter = () => setMultiline(true);
-        return <Text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</Text>;
+        return <text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -232,14 +232,14 @@ describe.each([false, true])(
         // y=1 — the second row of the 3-line output. With the old bug the
         // escape sequence would move the cursor to y=0 instead.
         useCursor().setCursorPosition({ x: 2, y: 1 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
-          <Text>{'mid\nbottom'}</Text>
-        </Box>,
+          <text>{'mid\nbottom'}</text>
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -266,14 +266,14 @@ describe.each([false, true])(
         const [x, setX] = useState(2);
         moveCursor = () => setX(4);
         useCursor().setCursorPosition({ x, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
-          <Text>footer</Text>
-        </Box>,
+          <text>footer</text>
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -293,14 +293,14 @@ describe.each([false, true])(
         const [x, setX] = useState(2);
         moveCursor = () => setX(4);
         useCursor().setCursorPosition({ x, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
-          <Text>footer</Text>
-        </Box>,
+          <text>footer</text>
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -331,20 +331,20 @@ describe.each([false, true])(
         const [x, setX] = useState(2);
         moveCursor = () => setX(4);
         useCursor().setCursorPosition({ x, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function Footer() {
         const [multiline, setMultiline] = useState(false);
         updateFooter = () => setMultiline(true);
-        return <Text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</Text>;
+        return <text>{multiline ? 'footer-a\nfooter-b' : 'footer'}</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -368,20 +368,20 @@ describe.each([false, true])(
       function CursorOwner() {
         cursorRenderCount++;
         useCursor().setCursorPosition({ x: 2, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function Footer() {
         const [, setVersion] = useState(0);
         updateFooter = () => setVersion((version) => version + 1);
-        return <Text>footer</Text>;
+        return <text>footer</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -404,7 +404,7 @@ describe.each([false, true])(
       function CursorOwner() {
         cursorRenderCount++;
         useCursor().setCursorPosition({ x: 2, y: 0 });
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function CursorBoundary() {
@@ -416,14 +416,14 @@ describe.each([false, true])(
       function Footer() {
         const [value, setValue] = useState('footer');
         updateFooter = () => setValue('footer-updated');
-        return <Text>{value}</Text>;
+        return <text>{value}</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorBoundary />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );
@@ -451,20 +451,20 @@ describe.each([false, true])(
         hideCursor = () => setVisible(false);
         cursorRenderCount++;
         useCursor().setCursorPosition(visible ? { x: 2, y: 0 } : undefined);
-        return <Text>input</Text>;
+        return <text>input</text>;
       }
 
       function Footer() {
         const [value, setValue] = useState('footer');
         updateFooter = () => setValue('footer-updated');
-        return <Text>{value}</Text>;
+        return <text>{value}</text>;
       }
 
       const app = await mount(
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           <CursorOwner />
           <Footer />
-        </Box>,
+        </box>,
         capture.stdout,
         incrementalRendering,
       );

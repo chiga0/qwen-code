@@ -57,8 +57,8 @@ export function ColorSelector({
     colorOptions[0];
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
         <RadioButtonSelect
           items={colorOptions.map((option) => ({
             key: option.id,
@@ -72,14 +72,14 @@ export function ColorSelector({
           onHighlight={handleHighlight}
           isFocused={true}
         />
-      </Box>
+      </box>
 
-      <Box flexDirection="row">
-        <Text color={theme.text.secondary}>Preview:</Text>
-        <Box marginLeft={2}>
-          <Text color={currentColor.value}>{` ${agentName} `}</Text>
-        </Box>
-      </Box>
-    </Box>
+      <box style={{ flexDirection: "row" }}>
+        <text color={theme.text.secondary}>Preview:</text>
+        <box marginLeft={2}>
+          <text color={currentColor.value}>{` ${agentName} `}</text>
+        </box>
+      </box>
+    </box>
   );
 }

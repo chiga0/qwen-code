@@ -46,31 +46,31 @@ export const FeedbackDialog: React.FC = () => {
   );
 
   return (
-    <Box flexDirection="column" marginY={1}>
-      <Box>
-        <Text color="cyan">{ICON.CIRCLE_FILLED + ' '}</Text>
-        <Text bold>{t('How is Qwen doing this session? (optional)')}</Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text color="cyan">
+    <box style={{ flexDirection: "column" }} marginY={1}>
+      <box>
+        <text color="cyan">{ICON.CIRCLE_FILLED + ' '}</text>
+        <text bold>{t('How is Qwen doing this session? (optional)')}</text>
+      </box>
+      <box marginTop={1}>
+        <text color="cyan">
           {FEEDBACK_OPTION_KEYS[FEEDBACK_OPTIONS.GOOD]}:{' '}
-        </Text>
-        <Text>{t('Good')}</Text>
-        <Text> </Text>
-        <Text color="cyan">{FEEDBACK_OPTION_KEYS[FEEDBACK_OPTIONS.BAD]}: </Text>
-        <Text>{t('Bad')}</Text>
-        <Text> </Text>
-        <Text color="cyan">
+        </text>
+        <text>{t('Good')}</text>
+        <text> </text>
+        <text color="cyan">{FEEDBACK_OPTION_KEYS[FEEDBACK_OPTIONS.BAD]}: </text>
+        <text>{t('Bad')}</text>
+        <text> </text>
+        <text color="cyan">
           {FEEDBACK_OPTION_KEYS[FEEDBACK_OPTIONS.FINE]}:{' '}
-        </Text>
-        <Text>{t('Fine')}</Text>
-        <Text> </Text>
-        <Text color="cyan">
+        </text>
+        <text>{t('Fine')}</text>
+        <text> </text>
+        <text color="cyan">
           {FEEDBACK_OPTION_KEYS[FEEDBACK_OPTIONS.DISMISS]}:{' '}
-        </Text>
-        <Text>{t('Dismiss')}</Text>
-        <Text> </Text>
-      </Box>
-    </Box>
+        </text>
+        <text>{t('Dismiss')}</text>
+        <text> </text>
+      </box>
+    </box>
   );
 };

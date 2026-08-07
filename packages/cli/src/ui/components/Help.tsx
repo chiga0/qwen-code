@@ -82,20 +82,11 @@ export const Help: React.FC<HelpProps> = ({
   );
 
   return (
-    <Box flexDirection="column" width={safeWidth}>
-      <Box
-        borderColor={theme.border.default}
-        borderStyle="single"
-        width={safeWidth}
-      >
-        <Box
-          flexDirection="column"
-          paddingX={2}
-          paddingY={1}
-          width={safeWidth - 2}
-        >
+    <box style={{ flexDirection: "column", width: safeWidth }}>
+      <box style={{ borderColor: theme.border.default, borderStyle: "single", width: safeWidth }}>
+        <box style={{ flexDirection: "column", width: safeWidth - 2 }} paddingX={2} paddingY={1}>
           <HelpTabs activeTab={activeTab} />
-          <Box marginTop={1}>
+          <box marginTop={1}>
             {activeTab === 'general' && <GeneralHelp width={bodyWidth} />}
             {activeTab === 'commands' && (
               <CommandsHelp
@@ -113,43 +104,40 @@ export const Help: React.FC<HelpProps> = ({
                 isInteractive={isInteractive}
               />
             )}
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
-              {t('For more help:')} <Text underline>{DOCS_URL}</Text>
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text italic color={theme.text.secondary}>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
+              {t('For more help:')} <text underline>{DOCS_URL}</text>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text italic color={theme.text.secondary}>
               {t('Tab/Shift+Tab to switch tabs  ·  Esc to cancel')}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+            </text>
+          </box>
+        </box>
+      </box>
+    </box>
   );
 };
 
 const HelpTabs: React.FC<{ activeTab: HelpTab }> = ({ activeTab }) => (
-  <Box flexDirection="row">
-    <Text bold color={theme.text.accent}>
+  <box style={{ flexDirection: "row" }}>
+    <text bold color={theme.text.accent}>
       Qwen Code
-    </Text>
-    <Text color={theme.text.secondary}> </Text>
+    </text>
+    <text color={theme.text.secondary}> </text>
     {TAB_DEFS.map(({ tab, labelKey }) => {
       const active = tab === activeTab;
       return (
-        <Box key={tab} marginLeft={1}>
-          <Text
-            color={active ? theme.background.primary : theme.text.primary}
-            backgroundColor={active ? theme.text.accent : undefined}
-          >
+        <box key={tab} marginLeft={1}>
+          <text color={active ? theme.background.primary : theme.text.primary} style={{ backgroundColor: active ? theme.text.accent : undefined }}>
             {` ${t(labelKey)} `}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     })}
-  </Box>
+  </box>
 );
 
 const GeneralHelp: React.FC<{ width: number }> = ({ width }) => {
@@ -177,19 +165,19 @@ const GeneralHelp: React.FC<{ width: number }> = ({ width }) => {
   const colWidth = Math.floor((width - 2) / 2);
 
   return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <box marginBottom={1}>
+        <text color={theme.text.primary}>
           {t(
             'Qwen Code understands your codebase, makes edits with your permission, and executes commands right from your terminal.',
           )}
-        </Text>
-      </Box>
-      <Text bold color={theme.text.primary}>
+        </text>
+      </box>
+      <text bold color={theme.text.primary}>
         {t('Shortcuts')}
-      </Text>
-      <Box flexDirection="row" gap={2}>
-        <Box flexDirection="column" width={colWidth}>
+      </text>
+      <box style={{ flexDirection: "row", gap: 2 }}>
+        <box style={{ flexDirection: "column", width: colWidth }}>
           {left.map(([key, desc]) => (
             <ShortcutRow
               key={key}
@@ -198,8 +186,8 @@ const GeneralHelp: React.FC<{ width: number }> = ({ width }) => {
               width={colWidth}
             />
           ))}
-        </Box>
-        <Box flexDirection="column" width={colWidth}>
+        </box>
+        <box style={{ flexDirection: "column", width: colWidth }}>
           {right.map(([key, desc]) => (
             <ShortcutRow
               key={key}
@@ -208,9 +196,9 @@ const GeneralHelp: React.FC<{ width: number }> = ({ width }) => {
               width={colWidth}
             />
           ))}
-        </Box>
-      </Box>
-    </Box>
+        </box>
+      </box>
+    </box>
   );
 };
 
@@ -219,14 +207,14 @@ const ShortcutRow: React.FC<{
   desc: string;
   width: number;
 }> = ({ shortcutKey, desc, width }) => (
-  <Box flexDirection="row" width={width}>
-    <Box width={KEY_COL_WIDTH} flexShrink={0}>
-      <Text color={theme.text.accent}>{shortcutKey}</Text>
-    </Box>
-    <Text color={theme.text.primary} wrap="truncate">
+  <box style={{ flexDirection: "row", width: width }}>
+    <box style={{ width: KEY_COL_WIDTH, flexShrink: 0 }}>
+      <text color={theme.text.accent}>{shortcutKey}</text>
+    </box>
+    <text color={theme.text.primary} wrap="truncate">
       {truncateText(desc, width - KEY_COL_WIDTH - 1)}
-    </Text>
-  </Box>
+    </text>
+  </box>
 );
 
 const CommandsHelp: React.FC<{
@@ -275,11 +263,11 @@ const CommandsHelp: React.FC<{
 
   if (groups.length === 0) {
     return (
-      <Text color={theme.text.secondary}>
+      <text color={theme.text.secondary}>
         {customOnly
           ? t('No custom commands are currently available.')
           : t('No commands are currently available.')}
-      </Text>
+      </text>
     );
   }
 
@@ -289,15 +277,15 @@ const CommandsHelp: React.FC<{
   );
 
   return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <box marginBottom={1}>
+        <text color={theme.text.primary}>
           {customOnly
             ? t('Browse custom, skill, plugin, and MCP commands:')
             : t('Browse built-in commands:')}
-        </Text>
-      </Box>
-      <Box flexDirection="column" height={COMMAND_LIST_VISIBLE_LINES}>
+        </text>
+      </box>
+      <box style={{ flexDirection: "column", height: COMMAND_LIST_VISIBLE_LINES }}>
         {visibleLines.map((line, index) => {
           const stableKey =
             line.type === 'blank'
@@ -305,7 +293,7 @@ const CommandsHelp: React.FC<{
               : `${line.type}:${line.text}:${index}`;
           return <CommandLine key={stableKey} line={line} />;
         })}
-      </Box>
+      </box>
       {maxScroll > 0 &&
         (() => {
           const totalCommands = lines.filter(
@@ -326,14 +314,14 @@ const CommandsHelp: React.FC<{
           const range =
             firstCmd === lastCmd ? `${firstCmd}` : `${firstCmd}-${lastCmd}`;
           return (
-            <Box marginTop={1}>
-              <Text color={theme.text.secondary}>
+            <box marginTop={1}>
+              <text color={theme.text.secondary}>
                 {t('Use ↑/↓ to scroll')} {`(${range}/${totalCommands})`}
-              </Text>
-            </Box>
+              </text>
+            </box>
           );
         })()}
-    </Box>
+    </box>
   );
 };
 
@@ -348,36 +336,36 @@ const CommandLine: React.FC<{ line: CommandLine }> = ({ line }) => {
   switch (line.type) {
     case 'group':
       return (
-        <Text bold color={theme.text.primary}>
+        <text bold color={theme.text.primary}>
           {line.text}{' '}
-          <Text color={theme.text.secondary}>{`(${line.count})`}</Text>
-        </Text>
+          <text color={theme.text.secondary}>{`(${line.count})`}</text>
+        </text>
       );
     case 'signature':
       return (
-        <Box flexDirection="row">
-          <Text color={theme.text.accent}> {line.text}</Text>
-          {line.meta && <Text color={theme.text.secondary}> {line.meta}</Text>}
-        </Box>
+        <box style={{ flexDirection: "row" }}>
+          <text color={theme.text.accent}> {line.text}</text>
+          {line.meta && <text color={theme.text.secondary}> {line.meta}</text>}
+        </box>
       );
     case 'description':
       return (
-        <Box paddingLeft={4}>
-          <Text color={theme.text.primary} wrap="truncate">
+        <box paddingLeft={4}>
+          <text color={theme.text.primary} wrap="truncate">
             {line.text}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     case 'subcommands':
       return (
-        <Box paddingLeft={4}>
-          <Text color={theme.text.secondary} wrap="truncate">
+        <box paddingLeft={4}>
+          <text color={theme.text.secondary} wrap="truncate">
             {line.text}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     case 'blank':
-      return <Text> </Text>;
+      return <text> </text>;
     default:
       return null;
   }

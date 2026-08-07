@@ -154,23 +154,18 @@ export function ExtensionsManagerDialog({
 
   if (!config) {
     return (
-      <Box flexDirection="column" width={boxWidth}>
-        <Box
-          borderStyle="single"
-          borderColor={theme.border.default}
-          padding={1}
-          width={boxWidth}
-        >
-          <Text color={theme.status.error}>
+      <box style={{ flexDirection: "column", width: boxWidth }}>
+        <box style={{ borderStyle: "single", borderColor: theme.border.default, padding: 1, width: boxWidth }}>
+          <text color={theme.status.error}>
             {t('Extensions are not available in this environment.')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" width={boxWidth}>
+    <box style={{ flexDirection: "column", width: boxWidth }}>
       {consentRequest ? (
         <ConsentPrompt
           prompt={consentRequest.prompt}
@@ -197,19 +192,10 @@ export function ExtensionsManagerDialog({
           terminalWidth={boxWidth}
         />
       ) : null}
-      <Box
-        display={hasPendingRequest ? 'none' : 'flex'}
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        paddingLeft={1}
-        paddingRight={1}
-        width={boxWidth}
-        gap={1}
-      >
+      <box display={hasPendingRequest ? 'none' : 'flex'} style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", width: boxWidth, gap: 1 }} paddingLeft={1} paddingRight={1}>
         <TabBar tabs={TABS} activeTab={activeTab} canSwitch={!tabLocked} />
 
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {activeTab === EXTENSIONS_TABS.DISCOVER && (
             <DiscoverTab
               config={config}
@@ -249,10 +235,10 @@ export function ExtensionsManagerDialog({
               reloadSignal={reloadSignal}
             />
           )}
-        </Box>
+        </box>
 
         {status && (
-          <Text
+          <text
             color={
               status.type === 'error'
                 ? theme.status.error
@@ -264,10 +250,10 @@ export function ExtensionsManagerDialog({
             }
           >
             {status.text}
-          </Text>
+          </text>
         )}
 
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {/* A tab-provided hint wins even while a sub-view is locked, so a
               locked view (e.g. a failed marketplace load offering R to retry)
               can surface its own footer instead of the generic locked text. */}
@@ -275,8 +261,8 @@ export function ExtensionsManagerDialog({
             (tabLocked
               ? t('Enter to select · Esc to go back')
               : footerHint(activeTab))}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

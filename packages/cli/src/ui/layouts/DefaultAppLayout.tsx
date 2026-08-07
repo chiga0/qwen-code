@@ -63,40 +63,34 @@ export const DefaultAppLayout: React.FC = () => {
   }, [activeView, refreshStatic]);
 
   return (
-    <Box flexDirection="column" width={terminalWidth}>
+    <box style={{ flexDirection: "column", width: terminalWidth }}>
       {isAgentTab ? (
         <>
           {/* Agent view: chat history + agent-specific composer */}
           <AgentChatView agentId={activeView} />
-          <Box flexDirection="column" ref={uiState.mainControlsRef}>
+          <box style={{ flexDirection: "column" }} ref={uiState.mainControlsRef}>
             {!uiState.dialogsVisible && uiState.updateInfo && (
               <UpdateNotification message={uiState.updateInfo.message} />
             )}
             <AgentComposer key={activeView} agentId={activeView} />
             <ExitWarning />
-          </Box>
+          </box>
         </>
       ) : (
         <>
           {/* Main view: conversation history + main composer / dialogs */}
           <MainContent />
-          <Box flexDirection="column" ref={uiState.mainControlsRef}>
+          <box style={{ flexDirection: "column" }} ref={uiState.mainControlsRef}>
             {!uiState.dialogsVisible && uiState.updateInfo && (
               <UpdateNotification message={uiState.updateInfo.message} />
             )}
             {uiState.dialogsVisible ? (
-              <Box
-                marginX={2}
-                flexDirection="column"
-                width={uiState.mainAreaWidth}
-                height={dialogHeight}
-                overflow={uiState.constrainHeight ? 'hidden' : undefined}
-              >
+              <box marginX={2} style={{ flexDirection: "column", width: uiState.mainAreaWidth, height: dialogHeight }} overflow={uiState.constrainHeight ? 'hidden' : undefined}>
                 <DialogManager
                   terminalWidth={uiState.terminalWidth}
                   addItem={uiState.historyManager.addItem}
                 />
-              </Box>
+              </box>
             ) : (
               <>
                 {shouldShowStickyTodos && (
@@ -107,12 +101,12 @@ export const DefaultAppLayout: React.FC = () => {
                   />
                 )}
                 {uiState.btwItem && (
-                  <Box marginX={2} width={uiState.mainAreaWidth}>
+                  <box marginX={2} style={{ width: uiState.mainAreaWidth }}>
                     <BtwMessage
                       btw={uiState.btwItem.btw}
                       containerWidth={uiState.mainAreaWidth}
                     />
-                  </Box>
+                  </box>
                 )}
                 <Composer />
               </>
@@ -153,12 +147,12 @@ export const DefaultAppLayout: React.FC = () => {
                 }
               />
             )}
-          </Box>
+          </box>
         </>
       )}
 
       {/* Tab bar: visible whenever in-process agents exist and input is active */}
       {hasAgents && !uiState.dialogsVisible && <AgentTabBar />}
-    </Box>
+    </box>
   );
 };

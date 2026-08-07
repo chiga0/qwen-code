@@ -182,64 +182,52 @@ export const Header: React.FC<HeaderProps> = ({
   ]);
 
   return (
-    <Box
-      flexDirection="row"
-      alignItems="center"
-      marginX={containerMarginX}
-      width={availableTerminalWidth}
-    >
+    <box style={{ flexDirection: "row", alignItems: "center", width: availableTerminalWidth }} marginX={containerMarginX}>
       {/* Left side: ASCII logo (only if enough space) */}
       {showLogo && (
         <>
-          <Box flexShrink={0}>
+          <box style={{ flexShrink: 0 }}>
             {gradientColors ? (
               <Gradient colors={gradientColors}>
-                <Text>{displayLogo}</Text>
+                <text>{displayLogo}</text>
               </Gradient>
             ) : (
-              <Text>{displayLogo}</Text>
+              <text>{displayLogo}</text>
             )}
-          </Box>
+          </box>
           {/* Fixed gap between logo and info panel */}
-          <Box width={logoGap} />
+          <box style={{ width: logoGap }} />
         </>
       )}
 
       {/* Right side: Info panel (flexible width, max 60 in two-column layout) */}
-      <Box
-        flexDirection="column"
-        borderStyle="single"
-        borderColor={theme.border.default}
-        paddingX={infoPanelPaddingX}
-        flexGrow={showLogo ? 0 : 1}
-        width={showLogo ? availableInfoPanelWidth : undefined}
-      >
+      <box style={{ flexDirection: "column", borderStyle: "single", borderColor: theme.border.default, flexGrow: showLogo ? 0 : 1, width: showLogo ? availableInfoPanelWidth : undefined }} paddingX={infoPanelPaddingX}>
         {/* Title line: customBannerTitle (already sanitized) or the default
             ">_ Qwen Code" brand. Version suffix is always appended. */}
-        <Text>
-          <Text bold color={theme.text.accent}>
+        <text>
+          <text bold color={theme.text.accent}>
             {customBannerTitle ? customBannerTitle : '>_ Qwen Code'}
-          </Text>
-          <Text color={theme.text.secondary}> ({versionLabel})</Text>
-        </Text>
+          </text>
+          <text color={theme.text.secondary}> ({versionLabel})</text>
+        </text>
         {/* Subtitle (when set) replaces the blank spacer row. We always
             emit a row here so the auth/model line stays at the same
             vertical position regardless of whether the subtitle is set. */}
         {customBannerSubtitle ? (
-          <Text color={theme.text.secondary}>{customBannerSubtitle}</Text>
+          <text color={theme.text.secondary}>{customBannerSubtitle}</text>
         ) : (
-          <Text> </Text>
+          <text> </text>
         )}
         {/* Auth and Model line */}
-        <Text>
-          <Text color={theme.text.secondary}>{authModelText}</Text>
+        <text>
+          <text color={theme.text.secondary}>{authModelText}</text>
           {showModelHint && (
-            <Text color={theme.text.secondary}>{modelHintText}</Text>
+            <text color={theme.text.secondary}>{modelHintText}</text>
           )}
-        </Text>
+        </text>
         {/* Directory line */}
-        <Text color={theme.text.secondary}>{displayPath}</Text>
-      </Box>
-    </Box>
+        <text color={theme.text.secondary}>{displayPath}</text>
+      </box>
+    </box>
   );
 };

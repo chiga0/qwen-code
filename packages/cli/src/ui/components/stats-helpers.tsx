@@ -91,13 +91,13 @@ export function getCacheColor(rate: number): string {
 export const TableRow: React.FC<{
   cells: Array<{ text: string; width: number; color?: string; bold?: boolean }>;
 }> = ({ cells }) => (
-  <Box>
+  <box>
     {cells.map((cell, i) => (
-      <Box key={i} width={cell.width}>
-        <Text color={cell.color} bold={cell.bold}>
+      <box key={i} style={{ width: cell.width }}>
+        <text color={cell.color} bold={cell.bold}>
           {cell.text}
-        </Text>
-      </Box>
+        </text>
+      </box>
     ))}
-  </Box>
+  </box>
 );

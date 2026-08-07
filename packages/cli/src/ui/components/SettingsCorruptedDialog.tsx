@@ -58,38 +58,31 @@ export const SettingsCorruptedDialog: React.FC<
     : t('Continue with empty settings (esc)');
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.error}
-      padding={1}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box marginBottom={1} flexDirection="column">
-        <Text>
-          <Text color={theme.status.error}>{'> '}</Text>
-          <Text bold color={theme.status.error}>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.error, padding: 1, width: "100%" }} marginLeft={1}>
+      <box marginBottom={1} style={{ flexDirection: "column" }}>
+        <text>
+          <text color={theme.status.error}>{'> '}</text>
+          <text bold color={theme.status.error}>
             {t('Settings file corrupted')}
-          </Text>
-        </Text>
-        <Text color={theme.text.secondary}>
+          </text>
+        </text>
+        <text color={theme.text.secondary}>
           {t(
             'Your settings file had invalid JSON. A copy of the corrupted file has been saved for reference.',
           )}
-        </Text>
-        <Text color={theme.text.secondary}>{corruptedPath}</Text>
-      </Box>
-      <Box flexDirection="column">
-        <Box>
-          <Text>
+        </text>
+        <text color={theme.text.secondary}>{corruptedPath}</text>
+      </box>
+      <box style={{ flexDirection: "column" }}>
+        <box>
+          <text>
             {selectedIndex === EXIT_INDEX ? (
-              <Text color={theme.status.success}>{'> '}</Text>
+              <text color={theme.status.success}>{'> '}</text>
             ) : (
               '  '
             )}
-          </Text>
-          <Text
+          </text>
+          <text
             color={
               selectedIndex === EXIT_INDEX
                 ? theme.status.success
@@ -97,17 +90,17 @@ export const SettingsCorruptedDialog: React.FC<
             }
           >
             {t('Exit and restore corrupted file')}
-          </Text>
-        </Box>
-        <Box>
-          <Text>
+          </text>
+        </box>
+        <box>
+          <text>
             {selectedIndex === CONTINUE_INDEX ? (
-              <Text color={theme.status.success}>{'> '}</Text>
+              <text color={theme.status.success}>{'> '}</text>
             ) : (
               '  '
             )}
-          </Text>
-          <Text
+          </text>
+          <text
             color={
               selectedIndex === CONTINUE_INDEX
                 ? theme.status.success
@@ -115,9 +108,9 @@ export const SettingsCorruptedDialog: React.FC<
             }
           >
             {continueLabel}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          </text>
+        </box>
+      </box>
+    </box>
   );
 };

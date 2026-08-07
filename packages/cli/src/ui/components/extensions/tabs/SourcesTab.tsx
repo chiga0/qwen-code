@@ -433,24 +433,24 @@ export const SourcesTab = ({
 
   if (view === 'install-extension') {
     return (
-      <Box flexDirection="column" gap={1}>
-        <Text color={theme.text.primary} bold>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <text color={theme.text.primary} bold>
           {t('Install Extension')}
-        </Text>
+        </text>
 
-        <Box flexDirection="column">
-          <Text color={theme.text.primary}>{t('Enter extension source:')}</Text>
-          <Text color={theme.text.secondary}>{t('Examples:')}</Text>
-          <Text color={theme.text.secondary}>{' · owner/repo (GitHub)'}</Text>
-          <Text color={theme.text.secondary}>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary}>{t('Enter extension source:')}</text>
+          <text color={theme.text.secondary}>{t('Examples:')}</text>
+          <text color={theme.text.secondary}>{' · owner/repo (GitHub)'}</text>
+          <text color={theme.text.secondary}>
             {' · git@github.com:owner/repo.git (SSH)'}
-          </Text>
-          <Text color={theme.text.secondary}>{' · @scope/name (npm)'}</Text>
-          <Text color={theme.text.secondary}>{' · ./path/to/extension'}</Text>
-        </Box>
+          </text>
+          <text color={theme.text.secondary}>{' · @scope/name (npm)'}</text>
+          <text color={theme.text.secondary}>{' · ./path/to/extension'}</text>
+        </box>
 
         {busy ? (
-          <Text color={theme.text.secondary}>{t('Installing...')}</Text>
+          <text color={theme.text.secondary}>{t('Installing...')}</text>
         ) : (
           <TextInput
             value={input}
@@ -459,34 +459,34 @@ export const SourcesTab = ({
             isActive={isActive}
           />
         )}
-      </Box>
+      </box>
     );
   }
 
   if (view === 'add') {
     return (
-      <Box flexDirection="column" gap={1}>
-        <Text color={theme.text.primary} bold>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <text color={theme.text.primary} bold>
           {t('Add Marketplace')}
-        </Text>
+        </text>
 
-        <Box flexDirection="column">
-          <Text color={theme.text.primary}>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary}>
             {t('Enter marketplace source (Claude format):')}
-          </Text>
-          <Text color={theme.text.secondary}>{t('Examples:')}</Text>
-          <Text color={theme.text.secondary}>{' · owner/repo (GitHub)'}</Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>{t('Examples:')}</text>
+          <text color={theme.text.secondary}>{' · owner/repo (GitHub)'}</text>
+          <text color={theme.text.secondary}>
             {' · git@github.com:owner/repo.git (SSH)'}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {' · https://example.com/marketplace.json'}
-          </Text>
-          <Text color={theme.text.secondary}>{' · ./path/to/marketplace'}</Text>
-        </Box>
+          </text>
+          <text color={theme.text.secondary}>{' · ./path/to/marketplace'}</text>
+        </box>
 
         {busy ? (
-          <Text color={theme.text.secondary}>{t('Adding...')}</Text>
+          <text color={theme.text.secondary}>{t('Adding...')}</text>
         ) : (
           <TextInput
             value={input}
@@ -495,7 +495,7 @@ export const SourcesTab = ({
             isActive={isActive}
           />
         )}
-      </Box>
+      </box>
     );
   }
 
@@ -533,55 +533,55 @@ export const SourcesTab = ({
     ];
 
     return (
-      <Box flexDirection="column" gap={1}>
-        <Box flexDirection="column">
-          <Text color={theme.text.primary} bold>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary} bold>
             {stripUnsafeCharacters(detailSource.name)}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {redactUrlCredentials(detailSource.source)}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
         {detailLoading ? (
-          <Text color={theme.text.secondary}>{t('Loading...')}</Text>
+          <text color={theme.text.secondary}>{t('Loading...')}</text>
         ) : detailConfig ? (
-          <Box flexDirection="column" gap={1}>
-            <Text color={theme.text.primary}>
+          <box style={{ flexDirection: "column", gap: 1 }}>
+            <text color={theme.text.primary}>
               {t('{{count}} available extensions', {
                 count: String(availableCount),
               })}
-            </Text>
+            </text>
 
             {installedHere.length > 0 ? (
-              <Box flexDirection="column">
-                <Text color={theme.text.primary} bold>
+              <box style={{ flexDirection: "column" }}>
+                <text color={theme.text.primary} bold>
                   {t('Installed extensions ({{count}}):', {
                     count: String(installedHere.length),
                   })}
-                </Text>
+                </text>
                 {installedHere.slice(0, INSTALLED_PREVIEW_LIMIT).map((p) => (
-                  <Box key={p.name}>
-                    <Box minWidth={2} flexShrink={0}>
-                      <Text color={theme.status.success}>
+                  <box key={p.name}>
+                    <box minWidth={2} style={{ flexShrink: 0 }}>
+                      <text color={theme.status.success}>
                         {ICON.CIRCLE_FILLED}
-                      </Text>
-                    </Box>
-                    <Text color={theme.text.primary}>
+                      </text>
+                    </box>
+                    <text color={theme.text.primary}>
                       {stripUnsafeCharacters(p.name)}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                 ))}
                 {installedHere.length > INSTALLED_PREVIEW_LIMIT ? (
-                  <Text color={theme.text.secondary}>
+                  <text color={theme.text.secondary}>
                     {t('... and {{count}} more', {
                       count: String(
                         installedHere.length - INSTALLED_PREVIEW_LIMIT,
                       ),
                     })}
-                  </Text>
+                  </text>
                 ) : null}
-              </Box>
+              </box>
             ) : null}
 
             <RadioButtonSelect
@@ -590,15 +590,15 @@ export const SourcesTab = ({
               showNumbers={false}
               onSelect={handleSourceDetailAction}
             />
-          </Box>
+          </box>
         ) : (
-          <Box flexDirection="column" gap={1}>
-            <Text color={theme.status.error}>
+          <box style={{ flexDirection: "column", gap: 1 }}>
+            <text color={theme.status.error}>
               {t('Could not load this marketplace.')}
-            </Text>
-            <Text color={theme.text.secondary}>
+            </text>
+            <text color={theme.text.secondary}>
               {t('Press R to retry · Esc to go back')}
-            </Text>
+            </text>
             <RadioButtonSelect
               items={[
                 {
@@ -611,24 +611,24 @@ export const SourcesTab = ({
               showNumbers={false}
               onSelect={handleSourceDetailAction}
             />
-          </Box>
+          </box>
         )}
-      </Box>
+      </box>
     );
   }
 
   if (view === 'remove-confirm') {
     return (
-      <Box flexDirection="column" gap={1}>
-        <Text color={theme.status.warning}>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <text color={theme.status.warning}>
           {t('Remove marketplace "{{name}}"?', {
             name: stripUnsafeCharacters(detailSource?.name ?? ''),
           })}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t('Y/Enter to confirm · N/Esc to cancel')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -646,30 +646,30 @@ export const SourcesTab = ({
         ? theme.text.link
         : theme.text.primary;
     return (
-      <Box key={`row-${index}`}>
-        <Box minWidth={2} flexShrink={0}>
-          <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+      <box key={`row-${index}`}>
+        <box minWidth={2} style={{ flexShrink: 0 }}>
+          <text color={isSelected ? theme.text.accent : theme.text.primary}>
             {isSelected ? ICON.CIRCLE_FILLED : ' '}
-          </Text>
-        </Box>
-        <Box flexGrow={1}>
-          <Text color={labelColor}>{label}</Text>
-        </Box>
+          </text>
+        </box>
+        <box style={{ flexGrow: 1 }}>
+          <text color={labelColor}>{label}</text>
+        </box>
         {rightText ? (
-          <Text color={theme.text.secondary}>{rightText}</Text>
+          <text color={theme.text.secondary}>{rightText}</text>
         ) : null}
-      </Box>
+      </box>
     );
   };
 
   const sourcesStart = 2;
 
   return (
-    <Box flexDirection="column">
-      <Box flexDirection="column">
-        <Text color={theme.text.accent} bold>
+    <box style={{ flexDirection: "column" }}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.accent} bold>
           {t('Add new')}
-        </Text>
+        </text>
         {renderRow(0, t('+ Install a new extension'), undefined, true)}
         {renderRow(
           1,
@@ -677,13 +677,13 @@ export const SourcesTab = ({
           t('Claude plugin marketplace'),
           true,
         )}
-      </Box>
+      </box>
 
       {sources.length > 0 ? (
-        <Box flexDirection="column" marginTop={1}>
-          <Text color={theme.text.accent} bold>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text color={theme.text.accent} bold>
             {t('Marketplaces')} ({sources.length})
-          </Text>
+          </text>
           {sources.map((source, j) =>
             renderRow(
               sourcesStart + j,
@@ -694,14 +694,14 @@ export const SourcesTab = ({
               `${redactUrlCredentials(source.source)} (${source.type})`,
             ),
           )}
-        </Box>
+        </box>
       ) : (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('No marketplaces added yet.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

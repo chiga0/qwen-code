@@ -82,57 +82,57 @@ export const ResourceListStep: React.FC<ResourceListStepProps> = ({
 
   if (resources.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No resources available for this server.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* 资源列表 */}
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {displayResources.map((resource, index) => {
           const actualIndex = scrollOffset + index;
           const isSelected = actualIndex === selectedIndex;
           const label = getResourceLabel(resource);
 
           return (
-            <Box key={resource.uri}>
+            <box key={resource.uri}>
               {/* 选择器 */}
-              <Box minWidth={2}>
-                <Text
+              <box minWidth={2}>
+                <text
                   color={isSelected ? theme.text.accent : theme.text.primary}
                 >
                   {isSelected ? '❯' : ' '}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {/* 资源 URI - 固定宽度 */}
-              <Box width={uriWidth}>
-                <Text
+              <box style={{ width: uriWidth }}>
+                <text
                   color={isSelected ? theme.text.accent : theme.text.primary}
                   wrap="truncate"
                 >
                   {resource.uri}
-                </Text>
-              </Box>
+                </text>
+              </box>
               {/* 友好名称（若与 URI 不同） */}
               {label && (
-                <Text color={theme.text.secondary} wrap="truncate">
+                <text color={theme.text.secondary} wrap="truncate">
                   {label}
-                </Text>
+                </text>
               )}
-            </Box>
+            </box>
           );
         })}
-      </Box>
+      </box>
 
       {/* 滚动提示 */}
       {resources.length > VISIBLE_RESOURCES_COUNT && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {scrollOffset > 0 ? '↑ ' : '  '}
             {t('{{current}}/{{total}}', {
               current: (selectedIndex + 1).toString(),
@@ -141,9 +141,9 @@ export const ResourceListStep: React.FC<ResourceListStepProps> = ({
             {scrollOffset + VISIBLE_RESOURCES_COUNT < resources.length
               ? ' ↓'
               : ''}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

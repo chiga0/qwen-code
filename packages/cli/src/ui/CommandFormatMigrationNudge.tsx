@@ -59,36 +59,29 @@ export function CommandFormatMigrationNudge({
       : `  • ${tomlFiles.slice(0, 2).join('\n  • ')}\n  • ${t('... and {{count}} more', { count: String(count - 2) })}`;
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.warning}
-      padding={1}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box marginBottom={1} flexDirection="column">
-        <Text>
-          <Text color={theme.status.warning}>{'⚠  '}</Text>
-          <Text bold>{t('Command Format Migration')}</Text>
-        </Text>
-        <Text color={theme.text.secondary}>
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, padding: 1, width: "100%" }} marginLeft={1}>
+      <box marginBottom={1} style={{ flexDirection: "column" }}>
+        <text>
+          <text color={theme.status.warning}>{'⚠  '}</text>
+          <text bold>{t('Command Format Migration')}</text>
+        </text>
+        <text color={theme.text.secondary}>
           {count > 1
             ? t('Found {{count}} TOML command files:', { count: String(count) })
             : t('Found {{count}} TOML command file:', { count: String(count) })}
-        </Text>
-        <Text color={theme.text.secondary}>{fileList}</Text>
-        <Text>{''}</Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>{fileList}</text>
+        <text>{''}</text>
+        <text color={theme.text.secondary}>
           {t(
             'The TOML format is deprecated. Would you like to migrate them to Markdown format?',
           )}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t('(Backups will be created and original files will be preserved)')}
-        </Text>
-      </Box>
+        </text>
+      </box>
       <RadioButtonSelect items={OPTIONS} onSelect={onComplete} />
-    </Box>
+    </box>
   );
 }

@@ -45,8 +45,8 @@ export const CronPill: React.FC<CronPillProps> = ({ count }) => {
 
   const noun = count === 1 ? 'scheduled task' : 'scheduled tasks';
   return (
-    <Text color={theme.text.accent}>
+    <text color={theme.text.accent}>
       {ICON.BULLSEYE} {count} {noun}
-    </Text>
+    </text>
   );
 };

@@ -77,17 +77,10 @@ const StickyTodoListComponent: React.FC<StickyTodoListProps> = ({
   const contentColumnWidth = Math.max(1, width - numberColumnWidth - 6);
 
   return (
-    <Box
-      marginX={2}
-      width={width}
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.border.default}
-      paddingX={1}
-    >
-      <Text color={theme.text.secondary} bold>
+    <box marginX={2} style={{ width: width, flexDirection: "column", borderStyle: "round", borderColor: theme.border.default }} paddingX={1}>
+      <text color={theme.text.secondary} bold>
         {t('Current tasks')}
-      </Text>
+      </text>
       {visibleTodos.map((todo, index) => {
         const todoNumber = todoNumberById.get(todo.id) ?? `${index + 1}.`;
         const itemColor =
@@ -96,39 +89,39 @@ const StickyTodoListComponent: React.FC<StickyTodoListProps> = ({
             : Colors.Foreground;
 
         return (
-          <Box key={todo.id} flexDirection="row" height={1}>
-            <Box width={numberColumnWidth}>
-              <Text color={theme.text.secondary}>{todoNumber}</Text>
-            </Box>
-            <Box width={2}>
-              <Text color={itemColor}>{STATUS_ICONS[todo.status]}</Text>
-            </Box>
-            <Box width={contentColumnWidth}>
-              <Text
+          <box key={todo.id} style={{ flexDirection: "row", height: 1 }}>
+            <box style={{ width: numberColumnWidth }}>
+              <text color={theme.text.secondary}>{todoNumber}</text>
+            </box>
+            <box style={{ width: 2 }}>
+              <text color={itemColor}>{STATUS_ICONS[todo.status]}</text>
+            </box>
+            <box style={{ width: contentColumnWidth }}>
+              <text
                 color={itemColor}
                 strikethrough={todo.status === 'completed'}
                 wrap="truncate-end"
               >
                 {todo.content}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
         );
       })}
       {hiddenTodoCount > 0 && (
-        <Box flexDirection="row" height={1}>
-          <Box width={numberColumnWidth} />
-          <Box width={2} />
-          <Box width={contentColumnWidth}>
-            <Text color={theme.text.secondary} wrap="truncate-end">
+        <box style={{ flexDirection: "row", height: 1 }}>
+          <box style={{ width: numberColumnWidth }} />
+          <box style={{ width: 2 }} />
+          <box style={{ width: contentColumnWidth }}>
+            <text color={theme.text.secondary} wrap="truncate-end">
               {t('... and {{count}} more', {
                 count: String(hiddenTodoCount),
               })}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };
 

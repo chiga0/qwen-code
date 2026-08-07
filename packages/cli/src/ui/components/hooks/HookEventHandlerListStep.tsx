@@ -25,7 +25,7 @@ export function HookEventHandlerListStep({
   const hasConfigs = flatConfigs.length > 0;
 
   return (
-    <Box flexDirection="column" paddingX={1}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
       <HookEventHeader
         title={hook.event}
         description={hook.description}
@@ -36,21 +36,21 @@ export function HookEventHandlerListStep({
         <HandlerListBody configs={flatConfigs} selectedIndex={selectedIndex} />
       ) : (
         <>
-          <Box>
-            <Text color={theme.text.secondary}>
+          <box>
+            <text color={theme.text.secondary}>
               {t('No hooks configured for this event.')}
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t('To add hooks, edit settings.json directly or ask Qwen.')}
-            </Text>
-          </Box>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>{t('Esc to go back')}</Text>
-          </Box>
+            </text>
+          </box>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>{t('Esc to go back')}</text>
+          </box>
         </>
       )}
-    </Box>
+    </box>
   );
 }

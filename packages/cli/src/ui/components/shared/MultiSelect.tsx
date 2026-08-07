@@ -138,9 +138,9 @@ export function MultiSelect<T>({
   );
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {showScrollArrows && hasMoreAbove && (
-        <Text color={theme.text.secondary}>↑ {moreAboveCount} more above</Text>
+        <text color={theme.text.secondary}>↑ {moreAboveCount} more above</text>
       )}
 
       {visibleItems.map((item, index) => {
@@ -169,47 +169,47 @@ export function MultiSelect<T>({
 
         if (item.separator) {
           return (
-            <Box key={item.key} alignItems="flex-start">
+            <box key={item.key} style={{ alignItems: "flex-start" }}>
               {showActiveMarker && (
-                <Box minWidth={2} flexShrink={0}>
-                  <Text color={textColor}>{activeMarker}</Text>
-                </Box>
+                <box minWidth={2} style={{ flexShrink: 0 }}>
+                  <text color={textColor}>{activeMarker}</text>
+                </box>
               )}
-              <Box minWidth={4} flexShrink={0}>
-                <Text> </Text>
-              </Box>
-              <Box flexGrow={1}>
-                <Text color={theme.text.secondary}>{item.label}</Text>
-              </Box>
-            </Box>
+              <box minWidth={4} style={{ flexShrink: 0 }}>
+                <text> </text>
+              </box>
+              <box style={{ flexGrow: 1 }}>
+                <text color={theme.text.secondary}>{item.label}</text>
+              </box>
+            </box>
           );
         }
 
         return (
-          <Box key={item.key} alignItems="flex-start">
+          <box key={item.key} style={{ alignItems: "flex-start" }}>
             {showActiveMarker && (
-              <Box minWidth={2} flexShrink={0}>
-                <Text color={textColor}>{activeMarker}</Text>
-              </Box>
+              <box minWidth={2} style={{ flexShrink: 0 }}>
+                <text color={textColor}>{activeMarker}</text>
+              </box>
             )}
-            <Box minWidth={4} flexShrink={0}>
-              <Text color={textColor}>{checkboxText}</Text>
-            </Box>
+            <box minWidth={4} style={{ flexShrink: 0 }}>
+              <text color={textColor}>{checkboxText}</text>
+            </box>
             {showNumbers && (
-              <Box marginRight={1} minWidth={itemNumberText.length}>
-                <Text color={textColor}>{itemNumberText}</Text>
-              </Box>
+              <box marginRight={1} minWidth={itemNumberText.length}>
+                <text color={textColor}>{itemNumberText}</text>
+              </box>
             )}
-            <Box flexGrow={1}>
-              <Text color={textColor}>{item.label}</Text>
-            </Box>
-          </Box>
+            <box style={{ flexGrow: 1 }}>
+              <text color={textColor}>{item.label}</text>
+            </box>
+          </box>
         );
       })}
 
       {showScrollArrows && hasMoreBelow && (
-        <Text color={theme.text.secondary}>↓ {moreBelowCount} more below</Text>
+        <text color={theme.text.secondary}>↓ {moreBelowCount} more below</text>
       )}
-    </Box>
+    </box>
   );
 }

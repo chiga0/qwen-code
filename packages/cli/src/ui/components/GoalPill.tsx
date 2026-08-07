@@ -134,9 +134,9 @@ export const GoalPill: React.FC<GoalPillProps> = ({ snapshot }) => {
   const elapsed = formatElapsed(elapsedActiveTime(goal, Date.now()));
   const suffix = elapsed ? ` (${elapsed})` : '';
   return (
-    <Text color={visible.color}>
+    <text color={visible.color}>
       {visible.icon} /goal {visible.label}
       {suffix}
-    </Text>
+    </text>
   );
 };

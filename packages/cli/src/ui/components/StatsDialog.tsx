@@ -50,45 +50,42 @@ const StatsTabs: React.FC<{ activeTab: StatsTab; hint?: string }> = ({
   activeTab,
   hint,
 }) => (
-  <Box flexDirection="row">
+  <box style={{ flexDirection: "row" }}>
     {TAB_DEFS.map(({ tab, label }) => {
       const active = tab === activeTab;
       return (
-        <Box key={tab} marginLeft={tab === 'session' ? 0 : 1}>
-          <Text
-            color={active ? theme.background.primary : theme.text.primary}
-            backgroundColor={active ? theme.text.accent : undefined}
-          >
+        <box key={tab} marginLeft={tab === 'session' ? 0 : 1}>
+          <text color={active ? theme.background.primary : theme.text.primary} style={{ backgroundColor: active ? theme.text.accent : undefined }}>
             {` ${label()} `}
-          </Text>
-        </Box>
+          </text>
+        </box>
       );
     })}
     {hint && (
-      <Box marginLeft={2}>
-        <Text color={theme.text.secondary}>{hint}</Text>
-      </Box>
+      <box marginLeft={2}>
+        <text color={theme.text.secondary}>{hint}</text>
+      </box>
     )}
-  </Box>
+  </box>
 );
 
 const RangeIndicator: React.FC<{ range: TimeRange }> = ({ range }) => (
-  <Box flexDirection="row" marginTop={1}>
+  <box style={{ flexDirection: "row" }} marginTop={1}>
     {RANGE_CYCLE.map((r, i) => (
-      <Box key={r}>
-        <Text
+      <box key={r}>
+        <text
           bold={r === range}
           color={r === range ? theme.text.accent : theme.text.secondary}
           underline={r === range}
         >
           {getRangeLabel(r)}
-        </Text>
+        </text>
         {i < RANGE_CYCLE.length - 1 && (
-          <Text color={theme.text.secondary}> · </Text>
+          <text color={theme.text.secondary}> · </text>
         )}
-      </Box>
+      </box>
     ))}
-  </Box>
+  </box>
 );
 
 function buildCurrentSessionRecord(
@@ -231,18 +228,9 @@ export const StatsDialog: React.FC<StatsDialogProps> = ({
         : 'tab \xB7 r dates \xB7 esc';
 
   return (
-    <Box flexDirection="column" width={safeWidth} flexShrink={0}>
-      <Box
-        borderColor={theme.border.default}
-        borderStyle="single"
-        width={safeWidth}
-      >
-        <Box
-          flexDirection="column"
-          paddingX={2}
-          paddingY={1}
-          width={safeWidth - 2}
-        >
+    <box style={{ flexDirection: "column", width: safeWidth, flexShrink: 0 }}>
+      <box style={{ borderColor: theme.border.default, borderStyle: "single", width: safeWidth }}>
+        <box style={{ flexDirection: "column", width: safeWidth - 2 }} paddingX={2} paddingY={1}>
           <StatsTabs
             activeTab={activeTab}
             hint={
@@ -252,15 +240,15 @@ export const StatsDialog: React.FC<StatsDialogProps> = ({
             }
           />
 
-          <Box marginTop={1}>
+          <box marginTop={1}>
             {activeTab === 'session' && <SessionTab />}
             {activeTab !== 'session' && loading && (
-              <Text color={theme.text.secondary}>{t('Loading stats...')}</Text>
+              <text color={theme.text.secondary}>{t('Loading stats...')}</text>
             )}
             {activeTab !== 'session' && !loading && error && (
-              <Text color={theme.status.error}>
+              <text color={theme.status.error}>
                 {t('Failed to load stats. Press r to retry.')}
-              </Text>
+              </text>
             )}
             {activeTab === 'activity' && !loading && data && (
               <ActivityTab
@@ -306,17 +294,17 @@ export const StatsDialog: React.FC<StatsDialogProps> = ({
                 }
               />
             )}
-          </Box>
+          </box>
 
           {activeTab !== 'session' && <RangeIndicator range={range} />}
 
-          <Box marginTop={1}>
-            <Text italic color={theme.text.secondary}>
+          <box marginTop={1}>
+            <text italic color={theme.text.secondary}>
               {hintText}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+            </text>
+          </box>
+        </box>
+      </box>
+    </box>
   );
 };

@@ -188,7 +188,7 @@ describe('SkillReviewDialog', () => {
   // its right-edge glyph.
   it('does not overflow a width-constrained container (right border stays visible)', () => {
     const { lastFrame } = render(
-      <Box width={60} flexDirection="column" overflow="hidden">
+      <box style={{ width: 60, flexDirection: "column" }} overflow="hidden">
         <SkillReviewDialog
           skills={skills}
           onAccept={vi.fn()}
@@ -196,7 +196,7 @@ describe('SkillReviewDialog', () => {
           onClose={vi.fn()}
           onDismiss={vi.fn()}
         />
-      </Box>,
+      </box>,
     );
     const lines = lastFrame()!
       .split('\n')

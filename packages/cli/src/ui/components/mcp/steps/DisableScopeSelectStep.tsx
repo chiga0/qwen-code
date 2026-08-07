@@ -51,38 +51,38 @@ export const DisableScopeSelectStep: React.FC<DisableScopeSelectStepProps> = ({
 
   if (!server) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No server selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No server selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
-        <Text color={theme.text.primary}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.primary}>
           {t('Disable server:')} {server.name}
-        </Text>
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        </text>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('Select where to add the server to the exclude list:')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <RadioButtonSelect<'user' | 'workspace'>
           items={scopes}
           onHighlight={(value: 'user' | 'workspace') => setSelectedScope(value)}
           onSelect={(value: 'user' | 'workspace') => onSelectScope(value)}
         />
-      </Box>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Press Enter to confirm, Esc to cancel')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };

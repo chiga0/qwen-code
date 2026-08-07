@@ -27,20 +27,20 @@ export const DebugModeNotification = () => {
   const isDegraded = isDebugLoggingDegraded();
 
   return (
-    <Box paddingX={1} marginTop={1} flexDirection="column">
-      <Text color={theme.status.warning}>Debug mode enabled</Text>
+    <box paddingX={1} marginTop={1} style={{ flexDirection: "column" }}>
+      <text color={theme.status.warning}>Debug mode enabled</text>
       {isFileLoggingEnabled ? (
-        <Text dimColor>
+        <text dimColor>
           Logging to: {Storage.getDebugLogPath(config.getSessionId())}
-        </Text>
+        </text>
       ) : (
-        <Text dimColor>Debug log file disabled by QWEN_DEBUG_LOG_FILE</Text>
+        <text dimColor>Debug log file disabled by QWEN_DEBUG_LOG_FILE</text>
       )}
       {isDegraded && (
-        <Text dimColor>
+        <text dimColor>
           Warning: Debug logging is degraded (write failures occurred)
-        </Text>
+        </text>
       )}
-    </Box>
+    </box>
   );
 };

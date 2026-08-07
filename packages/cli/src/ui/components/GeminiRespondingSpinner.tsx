@@ -43,9 +43,9 @@ export const GeminiRespondingSpinner: React.FC<
     );
   } else if (nonRespondingDisplay) {
     return isScreenReaderEnabled ? (
-      <Text>{SCREEN_READER_LOADING}</Text>
+      <text>{SCREEN_READER_LOADING}</text>
     ) : (
-      <Text color={theme.text.primary}>{nonRespondingDisplay}</Text>
+      <text color={theme.text.primary}>{nonRespondingDisplay}</text>
     );
   }
   return null;
@@ -77,7 +77,7 @@ export const GeminiSpinner: React.FC<GeminiSpinnerProps> = ({
   }, [isScreenReaderEnabled, isTmux]);
 
   if (isScreenReaderEnabled) {
-    return <Text>{altText}</Text>;
+    return <text>{altText}</text>;
   }
 
   if (isTmux) {
@@ -86,15 +86,15 @@ export const GeminiSpinner: React.FC<GeminiSpinnerProps> = ({
     // Ink forbids <Box> nested inside <Text>. The 2-char fixed-width frames
     // already give us stable layout without an explicit width container.
     return (
-      <Text color={theme.text.primary}>
+      <text color={theme.text.primary}>
         {TMUX_SPINNER_FRAMES[tmuxFrameIndex]}
-      </Text>
+      </text>
     );
   }
 
   return (
-    <Text color={theme.text.primary}>
+    <text color={theme.text.primary}>
       <Spinner type={spinnerType} />
-    </Text>
+    </text>
   );
 };

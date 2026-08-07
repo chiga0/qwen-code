@@ -84,11 +84,11 @@ const ProgressBar: React.FC<{
   }
 
   return (
-    <Text>
-      <Text color={usedColor}>{usedStr}</Text>
-      <Text color={theme.text.secondary}>{freeStr}</Text>
-      <Text color={theme.status.warning}>{bufferStr}</Text>
-    </Text>
+    <text>
+      <text color={usedColor}>{usedStr}</text>
+      <text color={theme.text.secondary}>{freeStr}</text>
+      <text color={theme.status.warning}>{bufferStr}</text>
+    </text>
   );
 };
 
@@ -126,19 +126,19 @@ const CategoryRow: React.FC<{
   const tokenStr = `${formatTokens(tokens)} ${t('tokens')} (${percentageStr}%)`;
 
   return (
-    <Box width={CONTENT_WIDTH}>
-      <Box width={2}>
-        <Text color={symbolColor || theme.text.secondary}>{symbol}</Text>
-      </Box>
-      <Box width={24}>
-        <Text color={theme.text.primary}>{label}</Text>
-      </Box>
-      <Box flexGrow={1} justifyContent="flex-end">
-        <Text color={isOverLimit ? theme.status.error : theme.text.secondary}>
+    <box style={{ width: CONTENT_WIDTH }}>
+      <box style={{ width: 2 }}>
+        <text color={symbolColor || theme.text.secondary}>{symbol}</text>
+      </box>
+      <box style={{ width: 24 }}>
+        <text color={theme.text.primary}>{label}</text>
+      </box>
+      <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+        <text color={isOverLimit ? theme.status.error : theme.text.secondary}>
           {tokenStr}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };
 
@@ -154,22 +154,22 @@ const ThresholdRow: React.FC<{
 }> = ({ label, tokens, isCurrent, hint }) => {
   const tokenStr = `${formatTokens(tokens)} ${t('tokens')}`;
   return (
-    <Box width={CONTENT_WIDTH}>
-      <Box width={2}>
-        <Text color={isCurrent ? theme.status.warning : theme.text.secondary}>
+    <box style={{ width: CONTENT_WIDTH }}>
+      <box style={{ width: 2 }}>
+        <text color={isCurrent ? theme.status.warning : theme.text.secondary}>
           {isCurrent ? '▶' : ' '}
-        </Text>
-      </Box>
-      <Box width={22}>
-        <Text color={theme.text.primary}>{label}</Text>
-      </Box>
-      <Box flexGrow={1} justifyContent="flex-end">
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box style={{ width: 22 }}>
+        <text color={theme.text.primary}>{label}</text>
+      </box>
+      <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+        <text color={theme.text.secondary}>
           {tokenStr}
           {hint ? `  ${hint}` : ''}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };
 
@@ -203,10 +203,10 @@ const CompactionThresholds: React.FC<{
   thresholds: ContextThresholds;
   currentTier: ContextTier;
 }> = ({ thresholds, currentTier }) => (
-  <Box flexDirection="column" marginTop={1}>
-    <Text bold color={theme.text.primary}>
+  <box style={{ flexDirection: "column" }} marginTop={1}>
+    <text bold color={theme.text.primary}>
       {t('Compaction thresholds')}
-    </Text>
+    </text>
     <ThresholdRow
       label={t('Effective window')}
       tokens={thresholds.effectiveWindow}
@@ -226,20 +226,20 @@ const CompactionThresholds: React.FC<{
       tokens={thresholds.hard}
       isCurrent={currentTier === 'hard'}
     />
-    <Box width={CONTENT_WIDTH}>
-      <Box width={2}>
-        <Text> </Text>
-      </Box>
-      <Box width={22}>
-        <Text color={theme.text.primary}>{t('Current tier')}</Text>
-      </Box>
-      <Box flexGrow={1} justifyContent="flex-end">
-        <Text bold color={tierColor(currentTier)}>
+    <box style={{ width: CONTENT_WIDTH }}>
+      <box style={{ width: 2 }}>
+        <text> </text>
+      </box>
+      <box style={{ width: 22 }}>
+        <text color={theme.text.primary}>{t('Current tier')}</text>
+      </box>
+      <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+        <text bold color={tierColor(currentTier)}>
           {currentTier}
-        </Text>
-      </Box>
-    </Box>
-  </Box>
+        </text>
+      </box>
+    </box>
+  </box>
 );
 
 /**
@@ -254,17 +254,17 @@ const DetailRow: React.FC<{
   const tokenStr =
     tokens > 0 ? `${formatTokens(tokens)} ${t('tokens')}` : `0 ${t('tokens')}`;
   return (
-    <Box width={CONTENT_WIDTH} paddingLeft={2}>
-      <Text color={theme.text.secondary}>{'\u2514'} </Text>
-      <Box width={32}>
-        <Text color={theme.text.link}>
+    <box style={{ width: CONTENT_WIDTH }} paddingLeft={2}>
+      <text color={theme.text.secondary}>{'\u2514'} </text>
+      <box style={{ width: 32 }}>
+        <text color={theme.text.link}>
           {truncateName(name, DETAIL_NAME_MAX_LEN)}
-        </Text>
-      </Box>
-      <Box flexGrow={1} justifyContent="flex-end">
-        <Text color={theme.text.secondary}>{tokenStr}</Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+      <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+        <text color={theme.text.secondary}>{tokenStr}</text>
+      </box>
+    </box>
   );
 };
 
@@ -301,56 +301,50 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
   });
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingY={1}
-      paddingX={2}
-    >
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column" }} paddingY={1} paddingX={2}>
       {/* Title */}
-      <Text bold color={theme.text.accent}>
+      <text bold color={theme.text.accent}>
         {t('Context Usage')}
-      </Text>
-      <Box height={1} />
+      </text>
+      <box style={{ height: 1 }} />
 
       {isEstimated ? (
         <>
           {/* No API data yet — show hint instead of progress bar */}
-          <Box marginBottom={1}>
-            <Text color={theme.status.warning} italic>
+          <box marginBottom={1}>
+            <text color={theme.status.warning} italic>
               {t('No API response yet. Send a message to see actual usage.')}
-            </Text>
-          </Box>
+            </text>
+          </box>
 
           {/* Estimated overhead categories */}
-          <Text bold color={theme.text.primary}>
+          <text bold color={theme.text.primary}>
             {t('Estimated pre-conversation overhead')}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('Model')}: {modelName}
             {'  '}
             {t('Context window')}: {formatTokens(contextWindowSize)}{' '}
             {t('tokens')}
-          </Text>
-          <Box height={1} />
+          </text>
+          <box style={{ height: 1 }} />
         </>
       ) : (
         <>
           {/* Model name + context window info */}
-          <Box width={CONTENT_WIDTH} marginBottom={1}>
-            <Text color={theme.text.secondary}>
+          <box style={{ width: CONTENT_WIDTH }} marginBottom={1}>
+            <text color={theme.text.secondary}>
               {t('Model')}: {modelName}
-            </Text>
-            <Box flexGrow={1} justifyContent="flex-end">
-              <Text color={theme.text.secondary}>
+            </text>
+            <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+              <text color={theme.text.secondary}>
                 {t('Context window')}: {formatTokens(contextWindowSize)}{' '}
                 {t('tokens')}
-              </Text>
-            </Box>
-          </Box>
+              </text>
+            </box>
+          </box>
           {/* Progress bar — three segments: used | free | buffer */}
-          <Box width={CONTENT_WIDTH}>
+          <box style={{ width: CONTENT_WIDTH }}>
             <ProgressBar
               usedPercentage={Math.min(percentage, 100)}
               bufferPercentage={
@@ -360,16 +354,16 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
               }
               width={CONTENT_WIDTH}
             />
-          </Box>
+          </box>
           {/* Warning when context exceeds limit */}
           {isOverLimit && (
-            <Box marginBottom={1}>
-              <Text color={theme.status.error}>
+            <box marginBottom={1}>
+              <text color={theme.status.error}>
                 {t('Context exceeds limit! Use /compress or /clear to reduce.')}
-              </Text>
-            </Box>
+              </text>
+            </box>
           )}
-          <Box height={1} />
+          <box style={{ height: 1 }} />
           {/* Legend — same layout as CategoryRow for alignment */}
           <CategoryRow
             symbol={FILLED}
@@ -393,12 +387,12 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
             contextWindowSize={contextWindowSize}
             symbolColor={theme.status.warning}
           />
-          <Box height={1} />
+          <box style={{ height: 1 }} />
 
           {/* Breakdown header */}
-          <Text bold color={theme.text.primary}>
+          <text bold color={theme.text.primary}>
             {t('Usage by category')}
-          </Text>
+          </text>
         </>
       )}
 
@@ -463,10 +457,10 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
         <>
           {/* Built-in tools detail */}
           {sortedBuiltinTools.length > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Text bold color={theme.text.primary}>
+            <box style={{ flexDirection: "column" }} marginTop={1}>
+              <text bold color={theme.text.primary}>
                 {t('Built-in tools')}
-              </Text>
+              </text>
               {sortedBuiltinTools.map((tool) => (
                 <DetailRow
                   key={tool.name}
@@ -474,15 +468,15 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
                   tokens={tool.tokens}
                 />
               ))}
-            </Box>
+            </box>
           )}
 
           {/* MCP Tools detail */}
           {sortedMcpTools.length > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Text bold color={theme.text.primary}>
+            <box style={{ flexDirection: "column" }} marginTop={1}>
+              <text bold color={theme.text.primary}>
                 {t('MCP tools')}
-              </Text>
+              </text>
               {sortedMcpTools.map((tool) => (
                 <DetailRow
                   key={tool.name}
@@ -490,15 +484,15 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
                   tokens={tool.tokens}
                 />
               ))}
-            </Box>
+            </box>
           )}
 
           {/* Memory files detail */}
           {sortedMemoryFiles.length > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Text bold color={theme.text.primary}>
+            <box style={{ flexDirection: "column" }} marginTop={1}>
+              <text bold color={theme.text.primary}>
                 {t('Memory files')}
-              </Text>
+              </text>
               {sortedMemoryFiles.map((file) => (
                 <DetailRow
                   key={file.path}
@@ -506,62 +500,62 @@ export const ContextUsage: React.FC<ContextUsageProps> = ({
                   tokens={file.tokens}
                 />
               ))}
-            </Box>
+            </box>
           )}
 
           {/* Skills detail */}
           {sortedSkills.length > 0 && (
-            <Box flexDirection="column" marginTop={1}>
-              <Text bold color={theme.text.primary}>
+            <box style={{ flexDirection: "column" }} marginTop={1}>
+              <text bold color={theme.text.primary}>
                 {t('Skills')}
-              </Text>
+              </text>
               {sortedSkills.map((skill) => (
-                <Box key={skill.name} flexDirection="column">
-                  <Box width={CONTENT_WIDTH} paddingLeft={2}>
-                    <Text color={theme.text.secondary}>{'\u2514'} </Text>
-                    <Box width={32}>
-                      <Text color={theme.text.link}>
+                <box key={skill.name} style={{ flexDirection: "column" }}>
+                  <box style={{ width: CONTENT_WIDTH }} paddingLeft={2}>
+                    <text color={theme.text.secondary}>{'\u2514'} </text>
+                    <box style={{ width: 32 }}>
+                      <text color={theme.text.link}>
                         {truncateName(skill.name, DETAIL_NAME_MAX_LEN)}
-                      </Text>
+                      </text>
                       {skill.loaded && (
-                        <Text color={theme.status.success}> {t('active')}</Text>
+                        <text color={theme.status.success}> {t('active')}</text>
                       )}
-                    </Box>
-                    <Box flexGrow={1} justifyContent="flex-end">
-                      <Text color={theme.text.secondary}>
+                    </box>
+                    <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+                      <text color={theme.text.secondary}>
                         {formatTokens(skill.tokens)} {t('tokens')}
-                      </Text>
-                    </Box>
-                  </Box>
+                      </text>
+                    </box>
+                  </box>
                   {skill.loaded &&
                     skill.bodyTokens != null &&
                     skill.bodyTokens > 0 && (
-                      <Box width={CONTENT_WIDTH} paddingLeft={4}>
-                        <Text color={theme.text.secondary}>{'  \u2514'} </Text>
-                        <Box width={30}>
-                          <Text color={theme.text.secondary} italic>
+                      <box style={{ width: CONTENT_WIDTH }} paddingLeft={4}>
+                        <text color={theme.text.secondary}>{'  \u2514'} </text>
+                        <box style={{ width: 30 }}>
+                          <text color={theme.text.secondary} italic>
                             {t('body loaded')}
-                          </Text>
-                        </Box>
-                        <Box flexGrow={1} justifyContent="flex-end">
-                          <Text color={theme.status.success}>
+                          </text>
+                        </box>
+                        <box style={{ flexGrow: 1, justifyContent: "flex-end" }}>
+                          <text color={theme.status.success}>
                             +{formatTokens(skill.bodyTokens)} {t('tokens')}
-                          </Text>
-                        </Box>
-                      </Box>
+                          </text>
+                        </box>
+                      </box>
                     )}
-                </Box>
+                </box>
               ))}
-            </Box>
+            </box>
           )}
         </>
       ) : (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} italic>
+        <box marginTop={1}>
+          <text color={theme.text.secondary} italic>
             {t('Run /context detail for per-item breakdown.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

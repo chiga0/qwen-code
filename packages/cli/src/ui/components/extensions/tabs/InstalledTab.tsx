@@ -679,7 +679,7 @@ export const InstalledTab = ({
   );
 
   if (loading) {
-    return <Text color={theme.text.secondary}>{t('Loading...')}</Text>;
+    return <text color={theme.text.secondary}>{t('Loading...')}</text>;
   }
 
   if (view === 'plugin-detail' && selectedItem?.kind === 'plugin') {
@@ -711,14 +711,14 @@ export const InstalledTab = ({
 
   if (items.length === 0) {
     return (
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('No plugins or MCP servers installed.')}
-        </Text>
-        <Text color={theme.text.secondary}>
+        </text>
+        <text color={theme.text.secondary}>
           {t('Use the Discover tab to find and install plugins.')}
-        </Text>
-      </Box>
+        </text>
+      </box>
     );
   }
 
@@ -733,19 +733,19 @@ export const InstalledTab = ({
   const hasBelow = scrollOffset + visibleCount < displayRows.length;
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {hasAbove ? (
-        <Text color={theme.text.secondary}>{t('↑ more above')}</Text>
+        <text color={theme.text.secondary}>{t('↑ more above')}</text>
       ) : null}
       {visibleRows.map((row, i) => {
         if (row.type === 'gap') {
-          return <Box key={`gap-${scrollOffset + i}`} height={1} />;
+          return <box key={`gap-${scrollOffset + i}`} style={{ height: 1 }} />;
         }
         if (row.type === 'header') {
           return (
-            <Text key={`header-${row.group}`} color={theme.text.accent} bold>
+            <text key={`header-${row.group}`} color={theme.text.accent} bold>
               {groupLabel(row.group)} ({row.count})
-            </Text>
+            </text>
           );
         }
         const item = row.item;
@@ -792,33 +792,33 @@ export const InstalledTab = ({
             : theme.text.secondary;
         }
         return (
-          <Box key={item.key}>
-            <Box minWidth={2} flexShrink={0}>
-              <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+          <box key={item.key}>
+            <box minWidth={2} style={{ flexShrink: 0 }}>
+              <text color={isSelected ? theme.text.accent : theme.text.primary}>
                 {marker}
-              </Text>
-            </Box>
-            <Box flexGrow={1}>
-              <Text color={isSelected ? theme.text.accent : theme.text.primary}>
+              </text>
+            </box>
+            <box style={{ flexGrow: 1 }}>
+              <text color={isSelected ? theme.text.accent : theme.text.primary}>
                 {isChild ? '  └ ' : ''}
                 {item.name}
-              </Text>
+              </text>
               {item.isFavorite ? (
-                <Text color={theme.status.warning}> {ICON.STAR}</Text>
+                <text color={theme.status.warning}> {ICON.STAR}</text>
               ) : null}
-            </Box>
-            <Text color={isSelected ? theme.text.accent : theme.text.secondary}>
+            </box>
+            <text color={isSelected ? theme.text.accent : theme.text.secondary}>
               {kindBadge}{' '}
-            </Text>
-            <Text color={isSelected ? theme.text.accent : statusColor}>
+            </text>
+            <text color={isSelected ? theme.text.accent : statusColor}>
               ({statusLabel})
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
       })}
       {hasBelow ? (
-        <Text color={theme.text.secondary}>{t('↓ more below')}</Text>
+        <text color={theme.text.secondary}>{t('↓ more below')}</text>
       ) : null}
-    </Box>
+    </box>
   );
 };

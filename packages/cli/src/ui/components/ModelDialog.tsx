@@ -271,14 +271,14 @@ function DetailRow({
   value: React.ReactNode;
 }): React.JSX.Element {
   return (
-    <Box>
-      <Box minWidth={16} flexShrink={0}>
-        <Text color={theme.text.secondary}>{label}:</Text>
-      </Box>
-      <Box flexGrow={1} flexDirection="row" flexWrap="wrap">
-        <Text>{value}</Text>
-      </Box>
-    </Box>
+    <box>
+      <box minWidth={16} style={{ flexShrink: 0 }}>
+        <text color={theme.text.secondary}>{label}:</text>
+      </box>
+      <box style={{ flexGrow: 1, flexDirection: "row" }} flexWrap="wrap">
+        <text>{value}</text>
+      </box>
+    </box>
   );
 }
 
@@ -400,8 +400,8 @@ export function ModelDialog({
           const isQwenOAuth = t2 === AuthType.QWEN_OAUTH;
 
           const title = (
-            <Text>
-              <Text
+            <text>
+              <text
                 bold
                 color={
                   isQwenOAuth
@@ -412,21 +412,21 @@ export function ModelDialog({
                 }
               >
                 [{t2}]
-              </Text>
-              <Text>{` ${model.label}`}</Text>
+              </text>
+              <text>{` ${model.label}`}</text>
               {model.id !== model.label && (
-                <Text color={theme.text.secondary} italic>
+                <text color={theme.text.secondary} italic>
                   {' '}
                   ({model.id})
-                </Text>
+                </text>
               )}
               {isRuntime && (
-                <Text color={theme.status.warning}> (Runtime)</Text>
+                <text color={theme.status.warning}> (Runtime)</text>
               )}
               {isQwenOAuth && !isRuntime && (
-                <Text color={theme.status.warning}> ({t('Discontinued')})</Text>
+                <text color={theme.status.warning}> ({t('Discontinued')})</text>
               )}
-            </Text>
+            </text>
           );
 
           // Include runtime / discontinued indicator in description
@@ -1020,14 +1020,8 @@ export function ModelDialog({
   const hasModels = MODEL_OPTIONS.length > 0;
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>
         {(isVoiceModelMode
           ? t('Select Voice Model')
           : isVisionModelMode
@@ -1044,28 +1038,28 @@ export function ModelDialog({
             : persistScope === 'user'
               ? t(' (global)')
               : '')}
-      </Text>
+      </text>
 
       {!hasModels ? (
-        <Box marginTop={1} flexDirection="column">
-          <Text color={theme.status.warning}>
+        <box marginTop={1} style={{ flexDirection: "column" }}>
+          <text color={theme.status.warning}>
             {t(
               'No models available for the current authentication type ({{authType}}).',
               {
                 authType: authType ? String(authType) : t('(none)'),
               },
             )}
-          </Text>
-          <Box marginTop={1}>
-            <Text color={theme.text.secondary}>
+          </text>
+          <box marginTop={1}>
+            <text color={theme.text.secondary}>
               {t(
                 'Please configure models in settings.modelProviders or use environment variables.',
               )}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       ) : (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           <DescriptiveRadioButtonSelect
             items={MODEL_OPTIONS}
             onSelect={handleSelect}
@@ -1074,26 +1068,19 @@ export function ModelDialog({
             showNumbers={true}
             maxItemsToShow={maxModelItemsToShow}
           />
-        </Box>
+        </box>
       )}
 
       {highlightedEntry && (
-        <Box marginTop={1} flexDirection="column">
-          <Box
-            borderStyle="single"
-            borderTop
-            borderBottom={false}
-            borderLeft={false}
-            borderRight={false}
-            borderColor={theme.border.default}
-          />
+        <box marginTop={1} style={{ flexDirection: "column" }}>
+          <box style={{ borderStyle: "single", borderColor: theme.border.default }} borderTop borderBottom={false} borderLeft={false} borderRight={false} />
           {highlightedEntry.authType === AuthType.QWEN_OAUTH &&
             !highlightedEntry.isRuntime && (
-              <Box marginTop={1}>
-                <Text color={theme.status.warning}>
+              <box marginTop={1}>
+                <text color={theme.status.warning}>
                   ⚠ {t('Discontinued — switch to Coding Plan or API Key')}
-                </Text>
-              </Box>
+                </text>
+              </box>
             )}
           <DetailRow
             label={t('Modality')}
@@ -1117,22 +1104,22 @@ export function ModelDialog({
               />
             </>
           )}
-        </Box>
+        </box>
       )}
 
       {errorMessage && (
-        <Box marginTop={1} flexDirection="column" paddingX={1}>
-          <Text color={theme.status.error} wrap="wrap">
+        <box marginTop={1} style={{ flexDirection: "column" }} paddingX={1}>
+          <text color={theme.status.error} wrap="wrap">
             ✕ {errorMessage}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
-      <Box marginTop={1} flexDirection="column">
-        <Text color={theme.text.secondary}>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>
           {t('Enter to select, ↑↓ to navigate, Esc to close')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

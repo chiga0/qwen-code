@@ -35,7 +35,7 @@ describe('VimModeContext — Esc key isolation in INSERT mode', () => {
     function Capture() {
       const { setVimMode } = useVimModeActions();
       capturedSetVimMode = setVimMode;
-      return <Text>ok</Text>;
+      return <text>ok</text>;
     }
 
     render(
@@ -60,7 +60,7 @@ describe('VimModeContext — Esc key isolation in INSERT mode', () => {
     function Capture() {
       const { setVimMode } = useVimModeActions();
       refs.push(setVimMode);
-      return <Text>ok</Text>;
+      return <text>ok</text>;
     }
 
     const { rerender } = render(
@@ -88,7 +88,7 @@ describe('VimModeContext — Esc key isolation in INSERT mode', () => {
       const { setVimMode } = useVimModeActions();
       setVimModeRef = setVimMode;
       actionsSpy();
-      return <Text>ok</Text>;
+      return <text>ok</text>;
     }
 
     render(
@@ -122,7 +122,7 @@ describe('VimModeContext — Esc key isolation in INSERT mode', () => {
       const { vimMode } = useVimModeState();
       setVimModeRef = useVimModeActions().setVimMode;
       stateSpy();
-      return <Text>{vimMode}</Text>;
+      return <text>{vimMode}</text>;
     }
 
     render(

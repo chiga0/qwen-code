@@ -609,7 +609,7 @@ describe('ToolConfirmationMessage', () => {
     it('budgets compact edit warnings at the wrapping boundary', () => {
       const availableTerminalHeight = 9;
       const { lastFrame } = renderWithProviders(
-        <Box width={50}>
+        <box style={{ width: 50 }}>
           <ToolConfirmationMessage
             confirmationDetails={{
               ...editConfirmationDetails,
@@ -623,7 +623,7 @@ describe('ToolConfirmationMessage', () => {
             contentWidth={50}
             compactMode={true}
           />
-        </Box>,
+        </box>,
       );
 
       const frame = lastFrame() ?? '';
@@ -639,7 +639,7 @@ describe('ToolConfirmationMessage', () => {
     it('keeps one-line compact bodies within the terminal height', () => {
       const availableTerminalHeight = 5;
       const { lastFrame } = renderWithProviders(
-        <Box width={50}>
+        <box style={{ width: 50 }}>
           <ToolConfirmationMessage
             confirmationDetails={{
               ...editConfirmationDetails,
@@ -656,7 +656,7 @@ describe('ToolConfirmationMessage', () => {
             contentWidth={50}
             compactMode={true}
           />
-        </Box>,
+        </box>,
       );
 
       const frame = lastFrame() ?? '';

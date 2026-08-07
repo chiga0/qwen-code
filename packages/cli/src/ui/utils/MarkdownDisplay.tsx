@@ -513,15 +513,15 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
       } else {
         // Not a table, treat as regular text
         addContentBlock(
-          <Box key={key}>
-            <Text wrap="wrap">
+          <box key={key}>
+            <text wrap="wrap">
               <RenderInline
                 text={line}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
-          </Box>,
+            </text>
+          </box>,
         );
       }
     } else if (inTable && tableSeparatorMatch) {
@@ -590,22 +590,22 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
       // Process current line as normal
       if (line.trim().length > 0) {
         addContentBlock(
-          <Box key={key}>
-            <Text wrap="wrap">
+          <box key={key}>
+            <text wrap="wrap">
               <RenderInline
                 text={line}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
-          </Box>,
+            </text>
+          </box>,
         );
       }
     } else if (hrMatch) {
       addContentBlock(
-        <Box key={key}>
-          <Text dimColor>---</Text>
-        </Box>,
+        <box key={key}>
+          <text dimColor>---</text>
+        </box>,
       );
     } else if (blockquoteMatch && renderVisualBlocks) {
       addContentBlock(
@@ -623,61 +623,61 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
       switch (level) {
         case 1:
           headerNode = (
-            <Text bold color={textColor}>
+            <text bold color={textColor}>
               <RenderInline
                 text={headerText}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
+            </text>
           );
           break;
         case 2:
           headerNode = (
-            <Text bold color={textColor}>
+            <text bold color={textColor}>
               <RenderInline
                 text={headerText}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
+            </text>
           );
           break;
         case 3:
           headerNode = (
-            <Text bold color={textColor}>
+            <text bold color={textColor}>
               <RenderInline
                 text={headerText}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
+            </text>
           );
           break;
         case 4:
           headerNode = (
-            <Text italic color={textColor}>
+            <text italic color={textColor}>
               <RenderInline
                 text={headerText}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
+            </text>
           );
           break;
         default:
           headerNode = (
-            <Text color={textColor}>
+            <text color={textColor}>
               <RenderInline
                 text={headerText}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
+            </text>
           );
           break;
       }
-      if (headerNode) addContentBlock(<Box key={key}>{headerNode}</Box>);
+      if (headerNode) addContentBlock(<box key={key}>{headerNode}</box>);
     } else if (ulMatch) {
       const leadingWhitespace = ulMatch[1];
       const marker = ulMatch[2];
@@ -712,21 +712,21 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
       if (line.trim().length === 0 && !inCodeBlock) {
         if (!lastLineEmpty) {
           contentBlocks.push(
-            <Box key={`spacer-${index}`} height={EMPTY_LINE_HEIGHT} />,
+            <box key={`spacer-${index}`} style={{ height: EMPTY_LINE_HEIGHT }} />,
           );
           lastLineEmpty = true;
         }
       } else {
         addContentBlock(
-          <Box key={key}>
-            <Text wrap="wrap" color={textColor}>
+          <box key={key}>
+            <text wrap="wrap" color={textColor}>
               <RenderInline
                 text={line}
                 textColor={textColor}
                 enableInlineMath={renderVisualBlocks}
               />
-            </Text>
-          </Box>,
+            </text>
+          </box>,
         );
       }
     }
@@ -812,13 +812,13 @@ const MarkdownDisplayInternal: React.FC<MarkdownDisplayProps> = ({
   // plan whose dangerous steps sit past the budget. See #6867.
   if (showTruncationCue) {
     contentBlocks.push(
-      <Text
+      <text
         key={`truncation-cue-${contentBlocks.length}`}
         color={theme.text.secondary}
         wrap="truncate-end"
       >
         {`... ${droppedSourceLines} more line${droppedSourceLines === 1 ? '' : 's'} not shown (viewport too small) ...`}
-      </Text>,
+      </text>,
     );
   }
   return <>{contentBlocks}</>;
@@ -893,11 +893,11 @@ const RenderCodeBlockInternal: React.FC<RenderCodeBlockProps> = ({
       if (MAX_CODE_LINES_WHEN_PENDING < MIN_PREVIEW_LINES) {
         // Not enough space to even show a truncated preview meaningfully
         return (
-          <Box paddingLeft={CODE_BLOCK_PREFIX_PADDING}>
-            <Text color={theme.text.secondary}>
+          <box paddingLeft={CODE_BLOCK_PREFIX_PADDING}>
+            <text color={theme.text.secondary}>
               ... code is being written ...
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
       }
       const truncatedContent = content.slice(0, MAX_CODE_LINES_WHEN_PENDING);
@@ -909,9 +909,9 @@ const RenderCodeBlockInternal: React.FC<RenderCodeBlockProps> = ({
         { settings, startLineNumber },
       );
       return (
-        <Box paddingLeft={CODE_BLOCK_PREFIX_PADDING} flexDirection="column">
+        <box paddingLeft={CODE_BLOCK_PREFIX_PADDING} style={{ flexDirection: "column" }}>
           {colorizedTruncatedCode}
-        </Box>
+        </box>
       );
     }
   }
@@ -925,14 +925,9 @@ const RenderCodeBlockInternal: React.FC<RenderCodeBlockProps> = ({
   );
 
   return (
-    <Box
-      paddingLeft={CODE_BLOCK_PREFIX_PADDING}
-      flexDirection="column"
-      width={contentWidth}
-      flexShrink={0}
-    >
+    <box paddingLeft={CODE_BLOCK_PREFIX_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
       {colorizedCode}
-    </Box>
+    </box>
   );
 };
 
@@ -956,19 +951,14 @@ const RenderPendingMermaidBlockInternal: React.FC<
       : Math.max(0, availableTerminalHeight - 1);
   const previewLines = content.slice(0, maxPreviewLines);
   return (
-    <Box
-      paddingLeft={CODE_BLOCK_PREFIX_PADDING}
-      flexDirection="column"
-      width={contentWidth}
-      flexShrink={0}
-    >
-      <Text color={theme.text.accent}>Mermaid diagram is being written...</Text>
+    <box paddingLeft={CODE_BLOCK_PREFIX_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+      <text color={theme.text.accent}>Mermaid diagram is being written...</text>
       {previewLines.map((line, index) => (
-        <Text key={index} color={theme.text.secondary} wrap="truncate-end">
+        <text key={index} color={theme.text.secondary} wrap="truncate-end">
           {line || ' '}
-        </Text>
+        </text>
       ))}
-    </Box>
+    </box>
   );
 };
 
@@ -1001,40 +991,30 @@ const RenderMathBlockInternal: React.FC<RenderMathBlockProps> = ({
     if (content.length > maxPreviewLines) {
       const previewLines = content.slice(0, maxPreviewLines);
       return (
-        <Box
-          paddingLeft={MATH_BLOCK_PREFIX_PADDING}
-          flexDirection="column"
-          width={contentWidth}
-          flexShrink={0}
-        >
-          <Text bold color={theme.text.accent}>
+        <box paddingLeft={MATH_BLOCK_PREFIX_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+          <text bold color={theme.text.accent}>
             LaTeX block · source: {sourceCopyCommand}
-          </Text>
+          </text>
           {previewLines.map((line, index) => (
-            <Text key={index} color={theme.text.secondary} wrap="truncate-end">
+            <text key={index} color={theme.text.secondary} wrap="truncate-end">
               {line || ' '}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       );
     }
   }
 
   const rendered = renderInlineLatex(content.join(' '));
   return (
-    <Box
-      paddingLeft={MATH_BLOCK_PREFIX_PADDING}
-      flexDirection="column"
-      width={contentWidth}
-      flexShrink={0}
-    >
-      <Text bold color={theme.text.accent}>
+    <box paddingLeft={MATH_BLOCK_PREFIX_PADDING} style={{ flexDirection: "column", width: contentWidth, flexShrink: 0 }}>
+      <text bold color={theme.text.accent}>
         LaTeX block · source: {sourceCopyCommand}
-      </Text>
-      <Text color={theme.text.accent} wrap="wrap">
+      </text>
+      <text color={theme.text.accent} wrap="wrap">
         {rendered}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };
 
@@ -1051,18 +1031,18 @@ const RenderBlockquoteInternal: React.FC<RenderBlockquoteProps> = ({
   textColor = theme.text.primary,
   enableInlineMath = true,
 }) => (
-  <Box paddingLeft={BLOCKQUOTE_PREFIX_PADDING} flexDirection="row">
-    <Text color={theme.text.secondary}>│ </Text>
-    <Box flexGrow={LIST_ITEM_TEXT_FLEX_GROW}>
-      <Text wrap="wrap" color={textColor} italic>
+  <box paddingLeft={BLOCKQUOTE_PREFIX_PADDING} style={{ flexDirection: "row" }}>
+    <text color={theme.text.secondary}>│ </text>
+    <box style={{ flexGrow: LIST_ITEM_TEXT_FLEX_GROW }}>
+      <text wrap="wrap" color={textColor} italic>
         <RenderInline
           text={quoteText}
           textColor={textColor}
           enableInlineMath={enableInlineMath}
         />
-      </Text>
-    </Box>
-  </Box>
+      </text>
+    </box>
+  </box>
 );
 
 const RenderBlockquote = React.memo(RenderBlockquoteInternal);
@@ -1097,23 +1077,20 @@ const RenderListItemInternal: React.FC<RenderListItemProps> = ({
   const indentation = leadingWhitespace.length;
 
   return (
-    <Box
-      paddingLeft={indentation + LIST_ITEM_PREFIX_PADDING}
-      flexDirection="row"
-    >
-      <Box width={prefixWidth}>
-        <Text color={textColor}>{prefix}</Text>
-      </Box>
-      <Box flexGrow={LIST_ITEM_TEXT_FLEX_GROW}>
-        <Text wrap="wrap" color={textColor}>
+    <box paddingLeft={indentation + LIST_ITEM_PREFIX_PADDING} style={{ flexDirection: "row" }}>
+      <box style={{ width: prefixWidth }}>
+        <text color={textColor}>{prefix}</text>
+      </box>
+      <box style={{ flexGrow: LIST_ITEM_TEXT_FLEX_GROW }}>
+        <text wrap="wrap" color={textColor}>
           <RenderInline
             text={effectiveItemText}
             textColor={textColor}
             enableInlineMath={renderVisualBlocks}
           />
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 };
 

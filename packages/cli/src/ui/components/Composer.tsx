@@ -74,7 +74,7 @@ export const Composer = () => {
   );
 
   return (
-    <Box flexDirection="column" marginTop={1}>
+    <box style={{ flexDirection: "column" }} marginTop={1}>
       {!uiState.embeddedShellFocused && !suppressBottomLoadingIndicator && (
         <LoadingIndicator
           // Hide loading phrases when enableLoadingPhrases is explicitly false.
@@ -102,9 +102,9 @@ export const Composer = () => {
        * UI is still suppressed to avoid layout breakage.
        */}
       {!uiState.embeddedShellFocused && suppressBottomLoadingIndicator && (
-        <Box paddingLeft={2}>
-          <Text color={theme.text.secondary}>({t('Esc to cancel')})</Text>
-        </Box>
+        <box paddingLeft={2}>
+          <text color={theme.text.secondary}>({t('Esc to cancel')})</text>
+        </box>
       )}
 
       <QueuedMessageDisplay messageQueue={uiState.messageQueue} />
@@ -154,6 +154,6 @@ export const Composer = () => {
         ) : (
           !isScreenReaderEnabled && <Footer />
         ))}
-    </Box>
+    </box>
   );
 };

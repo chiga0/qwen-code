@@ -27,27 +27,27 @@ vi.mock('ink', async (importOriginal) => {
 });
 
 vi.mock('./components/MainContent.js', () => ({
-  MainContent: () => <Text>MainContent</Text>,
+  MainContent: () => <text>MainContent</text>,
 }));
 
 vi.mock('./components/DialogManager.js', () => ({
-  DialogManager: () => <Text>DialogManager</Text>,
+  DialogManager: () => <text>DialogManager</text>,
 }));
 
 vi.mock('./components/Composer.js', () => ({
-  Composer: () => <Text>Composer</Text>,
+  Composer: () => <text>Composer</text>,
 }));
 
 vi.mock('./components/Notifications.js', () => ({
-  Notifications: () => <Text>Notifications</Text>,
+  Notifications: () => <text>Notifications</text>,
 }));
 
 vi.mock('./components/QuittingDisplay.js', () => ({
-  QuittingDisplay: () => <Text>Quitting...</Text>,
+  QuittingDisplay: () => <text>Quitting...</text>,
 }));
 
 vi.mock('./components/Footer.js', () => ({
-  Footer: () => <Text>Footer</Text>,
+  Footer: () => <text>Footer</text>,
 }));
 
 vi.mock('./components/agent-view/AgentTabBar.js', () => ({

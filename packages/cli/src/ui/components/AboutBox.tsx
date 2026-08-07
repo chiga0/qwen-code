@@ -19,34 +19,24 @@ export const AboutBox: React.FC<AboutBoxProps> = ({ width, ...props }) => {
   const fields = getSystemInfoFields(props);
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width={width}
-    >
-      <Box marginBottom={1}>
-        <Text bold color={theme.text.accent}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: width }}>
+      <box marginBottom={1}>
+        <text bold color={theme.text.accent}>
           {t('Status')}
-        </Text>
-      </Box>
+        </text>
+      </box>
       {fields.map((field) => (
-        <Box
-          key={field.label}
-          flexDirection="row"
-          marginTop={field.label === t('Auth') ? 1 : 0}
-        >
-          <Box width="35%">
-            <Text bold color={theme.text.link}>
+        <box key={field.label} style={{ flexDirection: "row" }} marginTop={field.label === t('Auth') ? 1 : 0}>
+          <box style={{ width: "35%" }}>
+            <text bold color={theme.text.link}>
               {field.label}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.text.primary}>{field.value}</Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+          <box>
+            <text color={theme.text.primary}>{field.value}</text>
+          </box>
+        </box>
       ))}
-    </Box>
+    </box>
   );
 };

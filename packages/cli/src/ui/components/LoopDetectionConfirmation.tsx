@@ -50,40 +50,34 @@ export function LoopDetectionConfirmation({
   ];
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.warning}
-      width="100%"
-      marginLeft={1}
-    >
-      <Box paddingX={1} paddingY={0} flexDirection="column">
-        <Box minHeight={1}>
-          <Box minWidth={3}>
-            <Text color={theme.status.warning} aria-label="Loop detected:">
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, width: "100%" }} marginLeft={1}>
+      <box paddingX={1} paddingY={0} style={{ flexDirection: "column" }}>
+        <box minHeight={1}>
+          <box minWidth={3}>
+            <text color={theme.status.warning} aria-label="Loop detected:">
               ?
-            </Text>
-          </Box>
-          <Box>
-            <Text wrap="truncate-end">
-              <Text color={theme.text.primary} bold>
+            </text>
+          </box>
+          <box>
+            <text wrap="truncate-end">
+              <text color={theme.text.primary} bold>
                 A potential loop was detected
-              </Text>{' '}
-            </Text>
-          </Box>
-        </Box>
-        <Box width="100%" marginTop={1}>
-          <Box flexDirection="column">
-            <Text color={theme.text.secondary}>
+              </text>{' '}
+            </text>
+          </box>
+        </box>
+        <box style={{ width: "100%" }} marginTop={1}>
+          <box style={{ flexDirection: "column" }}>
+            <text color={theme.text.secondary}>
               This can happen due to repetitive tool calls or other model
               behavior. Do you want to keep loop detection enabled or disable it
               for this session?
-            </Text>
-            <Box marginTop={1}>
+            </text>
+            <box marginTop={1}>
               <RadioButtonSelect items={OPTIONS} onSelect={onComplete} />
-            </Box>
-            <Box marginTop={1}>
-              <Text color={theme.text.secondary}>
+            </box>
+            <box marginTop={1}>
+              <text color={theme.text.secondary}>
                 Note: Setting &quot;model.skipLoopDetection&quot; to true in
                 your settings.json disables only the heuristic loop checks for
                 future sessions; the always-on guards (consecutive identical
@@ -91,11 +85,11 @@ export function LoopDetectionConfirmation({
                 tool-call cap) are not affected by it. The cap is tunable via
                 &quot;model.maxToolCallsPerTurn&quot; (0 disables it). Disabling
                 for this session above suppresses everything.
-              </Text>
-            </Box>
-          </Box>
-        </Box>
-      </Box>
-    </Box>
+              </text>
+            </box>
+          </box>
+        </box>
+      </box>
+    </box>
   );
 }

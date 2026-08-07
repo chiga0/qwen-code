@@ -27,13 +27,13 @@ export const MemorySavedMessage: React.FC<MemorySavedMessageProps> = ({
   const label = n === 1 ? 'memory' : 'memories';
 
   return (
-    <Box flexDirection="row">
-      <Box width={2} flexShrink={0}>
-        <Text dimColor>{ICON.CIRCLE_FILLED}</Text>
-      </Box>
-      <Text dimColor>
+    <box style={{ flexDirection: "row" }}>
+      <box style={{ width: 2, flexShrink: 0 }}>
+        <text dimColor>{ICON.CIRCLE_FILLED}</text>
+      </box>
+      <text dimColor>
         {verb} {n} {label}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

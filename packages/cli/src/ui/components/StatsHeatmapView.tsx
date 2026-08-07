@@ -26,18 +26,18 @@ export const HeatmapView: React.FC<{
   };
 
   return (
-    <Box flexDirection="column">
-      <Box marginBottom={1}>
-        <Text bold color={theme.text.primary}>
+    <box style={{ flexDirection: "column" }}>
+      <box marginBottom={1}>
+        <text bold color={theme.text.primary}>
           {t('Activity Heatmap')}
-        </Text>
-        <Text color={theme.text.accent}>
+        </text>
+        <text color={theme.text.accent}>
           {'  '}
           {fmtDate(heatmap.startDate)} - {fmtDate(heatmap.endDate)}
-        </Text>
-      </Box>
-      <Box>
-        <Text color={theme.text.secondary}>{'    '}</Text>
+        </text>
+      </box>
+      <box>
+        <text color={theme.text.secondary}>{'    '}</text>
         {(() => {
           const labelAt = new Map<number, string>();
           for (const cl of heatmap.colLabels) labelAt.set(cl.col, cl.text);
@@ -52,56 +52,47 @@ export const HeatmapView: React.FC<{
             const label = labelAt.get(c);
             if (label && label.length > 2) {
               out.push(
-                <Text key={c} color={theme.text.secondary}>
+                <text key={c} color={theme.text.secondary}>
                   {label.padEnd(4)}
-                </Text>,
+                </text>,
               );
               skipCols = 1;
             } else if (label) {
               out.push(
-                <Text key={c} color={theme.text.secondary}>
+                <text key={c} color={theme.text.secondary}>
                   {label.padEnd(2)}
-                </Text>,
+                </text>,
               );
             } else {
-              out.push(<Text key={c}>{'  '}</Text>);
+              out.push(<text key={c}>{'  '}</text>);
             }
           }
           return out;
         })()}
-      </Box>
+      </box>
       {heatmap.rows.map((row, ri) => (
-        <Box key={ri}>
-          <Text color={theme.text.secondary}>{row.label}</Text>
+        <box key={ri}>
+          <text color={theme.text.secondary}>{row.label}</text>
           {row.cells.map((cell, ci) => (
-            <Text
-              key={ci}
-              backgroundColor={
-                cell.intensity > 0 ? HEATMAP_COLORS[cell.intensity] : undefined
-              }
-              underline={cell.isToday}
-            >
+            <text key={ci} style={{ backgroundColor: cell.intensity > 0 ? HEATMAP_COLORS[cell.intensity] : undefined }} underline={cell.isToday}>
               {cell.char}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       ))}
-      <Text> </Text>
-      <Box>
-        <Text color={theme.text.secondary}>
+      <text> </text>
+      <box>
+        <text color={theme.text.secondary}>
           {'    '}
           {t('Less')}{' '}
-        </Text>
+        </text>
         {([0, 1, 2, 3, 4] as const).map((level) => (
-          <Text
-            key={level}
-            backgroundColor={level > 0 ? HEATMAP_COLORS[level] : undefined}
-          >
+          <text key={level} style={{ backgroundColor: level > 0 ? HEATMAP_COLORS[level] : undefined }}>
             {level === 0 ? '\u00B7\u00B7' : '  '}
-          </Text>
+          </text>
         ))}
-        <Text color={theme.text.secondary}> {t('More')}</Text>
-      </Box>
-    </Box>
+        <text color={theme.text.secondary}> {t('More')}</text>
+      </box>
+    </box>
   );
 };

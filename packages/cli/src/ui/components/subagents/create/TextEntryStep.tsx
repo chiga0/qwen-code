@@ -57,11 +57,11 @@ export function TextEntryStep({
   }, [dispatch, onNext, validate, initialText]);
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
       {description && (
-        <Box>
-          <Text color={theme.text.secondary}>{description}</Text>
-        </Box>
+        <box>
+          <text color={theme.text.secondary}>{description}</text>
+        </box>
       )}
 
       <TextInput
@@ -73,6 +73,6 @@ export function TextEntryStep({
         isActive={!state.isGenerating}
         validationErrors={state.validationErrors}
       />
-    </Box>
+    </box>
   );
 }

@@ -47,9 +47,9 @@ export function ScopeSelectStep({
 
   if (!selectedExtension) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No extension selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No extension selected')}</text>
+      </box>
     );
   }
 
@@ -63,15 +63,15 @@ export function ScopeSelectStep({
         });
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Text color={theme.text.primary}>{title}</Text>
-      <Box>
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <text color={theme.text.primary}>{title}</text>
+      <box>
         <RadioButtonSelect
           items={scopeItems}
           onSelect={handleSelect}
           showNumbers={false}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }

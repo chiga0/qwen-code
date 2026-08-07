@@ -38,9 +38,9 @@ describe('measureElementPosition', () => {
         }
       }, []);
       return (
-        <Box ref={ref}>
-          <Text>hello</Text>
-        </Box>
+        <box ref={ref}>
+          <text>hello</text>
+        </box>
       );
     }
 
@@ -70,11 +70,11 @@ describe('measureElementPosition', () => {
         }
       }, []);
       return (
-        <Box paddingLeft={3} paddingTop={2}>
-          <Box ref={ref}>
-            <Text>nested</Text>
-          </Box>
-        </Box>
+        <box paddingLeft={3} paddingTop={2}>
+          <box ref={ref}>
+            <text>nested</text>
+          </box>
+        </box>
       );
     }
 
@@ -102,14 +102,14 @@ describe('measureElementPosition', () => {
         }
       }, []);
       return (
-        <Box flexDirection="column">
-          <Box height={3}>
-            <Text>sibling above</Text>
-          </Box>
-          <Box ref={ref}>
-            <Text>target</Text>
-          </Box>
-        </Box>
+        <box style={{ flexDirection: "column" }}>
+          <box style={{ height: 3 }}>
+            <text>sibling above</text>
+          </box>
+          <box ref={ref}>
+            <text>target</text>
+          </box>
+        </box>
       );
     }
 

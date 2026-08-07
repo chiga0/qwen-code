@@ -229,56 +229,56 @@ export const AuthenticateStep: React.FC<AuthenticateStepProps> = ({
 
   if (!server) {
     return (
-      <Box>
-        <Text color={theme.status.error}>{t('No server selected')}</Text>
-      </Box>
+      <box>
+        <text color={theme.status.error}>{t('No server selected')}</text>
+      </box>
     );
   }
 
   return (
-    <Box flexDirection="column" gap={1}>
+    <box style={{ flexDirection: "column", gap: 1 }}>
       {/* Server info */}
-      <Box>
-        <Text color={theme.text.secondary}>
+      <box>
+        <text color={theme.text.secondary}>
           {t('Server:')} {server.name}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Progress messages */}
       {messages.length > 0 && (
-        <Box flexDirection="column">
+        <box style={{ flexDirection: "column" }}>
           {messages.map((msg, i) => (
-            <Text key={i} color={theme.text.secondary}>
+            <text key={i} color={theme.text.secondary}>
               {msg}
-            </Text>
+            </text>
           ))}
-        </Box>
+        </box>
       )}
 
       {/* Error message */}
       {authState === 'error' && errorMessage && (
-        <Box>
-          <Text color={theme.status.error}>{errorMessage}</Text>
-        </Box>
+        <box>
+          <text color={theme.status.error}>{errorMessage}</text>
+        </box>
       )}
 
       {authUrl && (
-        <Box>
-          <Text color={theme.text.accent}>
+        <box>
+          <text color={theme.text.accent}>
             {supportsHyperlinks() ? osc8Hyperlink(authUrl) : authUrl}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
 
       {/* Action hints */}
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {authState === 'authenticating' && (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             {t('Authenticating... Please complete the login in your browser.')}
-          </Text>
+          </text>
         )}
         {authState === 'authenticating' && authUrl && (
-          <Text
+          <text
             bold={copyState.status === 'idle'}
             color={
               copyState.status === 'copied'
@@ -295,14 +295,14 @@ export const AuthenticateStep: React.FC<AuthenticateStepProps> = ({
               : copyState.status === 'unsupported'
                 ? t('Cannot write to terminal — copy the URL above manually.')
                 : t('Press c to copy the authorization URL to your clipboard.')}
-          </Text>
+          </text>
         )}
         {authState === 'success' && (
-          <Text color={theme.status.success}>
+          <text color={theme.status.success}>
             {t('Authentication successful.')}
-          </Text>
+          </text>
         )}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

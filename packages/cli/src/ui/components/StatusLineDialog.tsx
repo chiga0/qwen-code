@@ -233,25 +233,18 @@ export function StatusLineDialog({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      paddingX={1}
-      paddingY={1}
-      width="100%"
-    >
-      <Text bold>Configure Status Line</Text>
-      <Text color={theme.text.secondary}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", width: "100%" }} paddingX={1} paddingY={1}>
+      <text bold>Configure Status Line</text>
+      <text color={theme.text.secondary}>
         Select which items to display in the status line.
-      </Text>
+      </text>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text color={theme.text.secondary}>Type to search</Text>
-        <Text>{query ? `> ${query}` : '>'}</Text>
-      </Box>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>Type to search</text>
+        <text>{query ? `> ${query}` : '>'}</text>
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
+      <box marginTop={1} style={{ flexDirection: "column" }}>
         {filteredOptions.length > 0 ? (
           <MultiSelect
             items={filteredOptions}
@@ -264,15 +257,15 @@ export function StatusLineDialog({
             maxItemsToShow={maxItemsToShow}
           />
         ) : (
-          <Text color={theme.text.secondary}>No preset items match.</Text>
+          <text color={theme.text.secondary}>No preset items match.</text>
         )}
-      </Box>
+      </box>
 
-      <Box marginTop={1} flexDirection="column">
-        <Text color={theme.text.secondary}>Preview</Text>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>Preview</text>
         {previewLines.length > 0 ? (
           previewLines.map((line, index) => (
-            <Text
+            <text
               key={`${line}-${index}`}
               color={
                 presetConfig.useThemeColors ? theme.text.accent : undefined
@@ -281,21 +274,21 @@ export function StatusLineDialog({
               wrap="truncate"
             >
               {line}
-            </Text>
+            </text>
           ))
         ) : (
-          <Text color={theme.text.secondary}>
+          <text color={theme.text.secondary}>
             Select at least one item to show a status line.
-          </Text>
+          </text>
         )}
-      </Box>
+      </box>
 
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           Use up/down to navigate, space to select, enter to confirm, esc to
           cancel
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

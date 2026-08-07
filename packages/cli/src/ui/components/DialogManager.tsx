@@ -233,11 +233,11 @@ export const DialogManager = ({
   }
   if (uiState.isThemeDialogOpen) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {uiState.themeError && (
-          <Box marginBottom={1}>
-            <Text color={theme.status.error}>{uiState.themeError}</Text>
-          </Box>
+          <box marginBottom={1}>
+            <text color={theme.status.error}>{uiState.themeError}</text>
+          </box>
         )}
         <ThemeDialog
           onSelect={uiActions.handleThemeSelect}
@@ -246,23 +246,23 @@ export const DialogManager = ({
           availableTerminalHeight={constrainedDialogHeight}
           terminalWidth={mainAreaWidth}
         />
-      </Box>
+      </box>
     );
   }
   if (uiState.isEditorDialogOpen) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         {uiState.editorError && (
-          <Box marginBottom={1}>
-            <Text color={theme.status.error}>{uiState.editorError}</Text>
-          </Box>
+          <box marginBottom={1}>
+            <text color={theme.status.error}>{uiState.editorError}</text>
+          </box>
         )}
         <EditorSettingsDialog
           onSelect={uiActions.handleEditorSelect}
           settings={settings}
           onExit={uiActions.exitEditorDialog}
         />
-      </Box>
+      </box>
     );
   }
   if (uiState.isModelDialogOpen) {
@@ -281,7 +281,7 @@ export const DialogManager = ({
   }
   if (uiState.isSettingsDialogOpen) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <SettingsDialog
           settings={settings}
           onSelect={(settingName) => {
@@ -308,7 +308,7 @@ export const DialogManager = ({
           width={mainAreaWidth}
           config={config}
         />
-      </Box>
+      </box>
     );
   }
   if (uiState.isStatusLineDialogOpen) {
@@ -342,24 +342,24 @@ export const DialogManager = ({
   if (uiState.isApprovalModeDialogOpen) {
     const currentMode = config.getApprovalMode();
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <ApprovalModeDialog
           settings={settings}
           currentMode={currentMode}
           onSelect={uiActions.handleApprovalModeSelect}
           availableTerminalHeight={constrainedDialogHeight}
         />
-      </Box>
+      </box>
     );
   }
   if (uiState.isEffortDialogOpen) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <EffortDialog
           currentEffort={config.getReasoningEffort()}
           onSelect={uiActions.handleEffortSelect}
         />
-      </Box>
+      </box>
     );
   }
   if (uiState.activeArenaDialog === 'start') {
@@ -407,9 +407,9 @@ export const DialogManager = ({
 
   if (uiState.auth.isAuthDialogOpen || uiState.auth.authError) {
     return (
-      <Box flexDirection="column">
+      <box style={{ flexDirection: "column" }}>
         <AuthDialog />
-      </Box>
+      </box>
     );
   }
 

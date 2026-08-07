@@ -21,7 +21,7 @@ const makeItems = (n: number): Item[] =>
   Array.from({ length: n }, (_, i) => ({ id: i, label: `item-${i}` }));
 
 const keyExtractor = (item: Item) => `k-${item.id}`;
-const renderItem = ({ item }: { item: Item }) => <Text>{item.label}</Text>;
+const renderItem = ({ item }: { item: Item }) => <text>{item.label}</text>;
 const estimatedItemHeight = () => 1;
 
 describe('<VirtualizedList />', () => {
@@ -267,7 +267,7 @@ describe('<VirtualizedList />', () => {
       if (item.id === 1) {
         throw new Error('boom');
       }
-      return <Text>{item.label}</Text>;
+      return <text>{item.label}</text>;
     };
 
     // Must not crash the test; a fallback row should be in the frame.

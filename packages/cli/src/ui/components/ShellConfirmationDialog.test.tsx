@@ -114,7 +114,7 @@ describe('ShellConfirmationDialog', () => {
   it('keeps choices visible when wrapped by the constrained layout box', () => {
     const availableTerminalHeight = 10;
     const { lastFrame } = renderWithProviders(
-      <Box height={availableTerminalHeight} overflow="hidden">
+      <box style={{ height: availableTerminalHeight }} overflow="hidden">
         <ShellConfirmationDialog
           request={{
             commands: manyCommands(),
@@ -123,7 +123,7 @@ describe('ShellConfirmationDialog', () => {
           availableTerminalHeight={availableTerminalHeight}
           contentWidth={80}
         />
-      </Box>,
+      </box>,
     );
 
     const frame = lastFrame() ?? '';

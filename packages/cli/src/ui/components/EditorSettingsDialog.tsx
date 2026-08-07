@@ -115,24 +115,18 @@ export function EditorSettingsDialog({
   }
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="row"
-      padding={1}
-      width="100%"
-    >
-      <Box flexDirection="column" width="45%" paddingRight={2}>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "row", padding: 1, width: "100%" }}>
+      <box style={{ flexDirection: "column", width: "45%" }} paddingRight={2}>
         {mode === 'editor' ? (
-          <Box flexDirection="column">
-            <Text bold={mode === 'editor'} wrap="truncate">
+          <box style={{ flexDirection: "column" }}>
+            <text bold={mode === 'editor'} wrap="truncate">
               {mode === 'editor' ? '> ' : '  '}
               {t('Select Editor')}{' '}
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {otherScopeModifiedMessage}
-              </Text>
-            </Text>
-            <Box height={1} />
+              </text>
+            </text>
+            <box style={{ height: 1 }} />
             <RadioButtonSelect
               items={editorItems.map((item) => ({
                 label: item.name,
@@ -145,7 +139,7 @@ export function EditorSettingsDialog({
               isFocused={mode === 'editor'}
               key={selectedScope}
             />
-          </Box>
+          </box>
         ) : (
           <ScopeSelector
             onSelect={handleScopeSelect}
@@ -155,28 +149,28 @@ export function EditorSettingsDialog({
           />
         )}
 
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} wrap="truncate">
+        <box marginTop={1}>
+          <text color={theme.text.secondary} wrap="truncate">
             {mode === 'editor'
               ? t('(Use Enter to select, Tab to configure scope)')
               : t('(Use Enter to apply scope, Tab to go back)')}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
-      <Box flexDirection="column" width="55%" paddingLeft={2}>
-        <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column", width: "55%" }} paddingLeft={2}>
+        <text bold color={theme.text.primary}>
           {t('Editor Preference')}
-        </Text>
-        <Box flexDirection="column" gap={1} marginTop={1}>
-          <Text color={theme.text.secondary}>
+        </text>
+        <box style={{ flexDirection: "column", gap: 1 }} marginTop={1}>
+          <text color={theme.text.secondary}>
             {t(
               'These editors are currently supported. Please note that some editors cannot be used in sandbox mode.',
             )}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('Your preferred editor is:')}{' '}
-            <Text
+            <text
               color={
                 mergedEditorName === 'None'
                   ? theme.status.error
@@ -185,11 +179,11 @@ export function EditorSettingsDialog({
               bold
             >
               {mergedEditorName}
-            </Text>
+            </text>
             .
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          </text>
+        </box>
+      </box>
+    </box>
   );
 }

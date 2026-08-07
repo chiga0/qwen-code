@@ -103,82 +103,59 @@ export const ShellConfirmationDialog: React.FC<
     : options;
 
   return (
-    <Box
-      flexDirection="column"
-      borderStyle="round"
-      borderColor={theme.status.warning}
-      paddingX={1}
-      paddingY={constrainedHeight === undefined ? 1 : 0}
-      width="100%"
-      marginLeft={1}
-      height={constrainedHeight}
-      overflow="hidden"
-    >
-      <Text bold color={theme.text.primary} wrap="truncate">
+    <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.status.warning, width: "100%", height: constrainedHeight }} paddingX={1} paddingY={constrainedHeight === undefined ? 1 : 0} marginLeft={1} overflow="hidden">
+      <text bold color={theme.text.primary} wrap="truncate">
         {t('Shell Command Execution')}
-      </Text>
+      </text>
       {!compactHiddenCommandsLayout && (
-        <Text color={theme.text.primary} wrap="truncate">
+        <text color={theme.text.primary} wrap="truncate">
           {t('A custom command wants to run the following shell commands:')}
-        </Text>
+        </text>
       )}
       {constrainedHeight === undefined ? (
-        <Box
-          flexDirection="column"
-          marginTop={1}
-          marginBottom={1}
-          flexShrink={1}
-        >
-          <Box
-            flexDirection="column"
-            borderStyle="round"
-            borderColor={theme.border.default}
-            paddingX={1}
-          >
+        <box style={{ flexDirection: "column", flexShrink: 1 }} marginTop={1} marginBottom={1}>
+          <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default }} paddingX={1}>
             {commands.map((cmd) => (
-              <Text key={cmd} color={theme.text.link}>
+              <text key={cmd} color={theme.text.link}>
                 {cmd}
-              </Text>
+              </text>
             ))}
-          </Box>
-        </Box>
+          </box>
+        </box>
       ) : commandPreviewHeight !== undefined && commandPreviewHeight > 0 ? (
-        <Box flexDirection="column" flexShrink={1}>
+        <box style={{ flexDirection: "column", flexShrink: 1 }}>
           <MaxSizedBox
             maxHeight={commandPreviewHeight}
             maxWidth={Math.max(1, contentWidth - 8)}
             overflowDirection="top"
           >
             {commands.map((cmd) => (
-              <Box key={cmd}>
-                <Text color={theme.text.link}>{cmd}</Text>
-              </Box>
+              <box key={cmd}>
+                <text color={theme.text.link}>{cmd}</text>
+              </box>
             ))}
           </MaxSizedBox>
-        </Box>
+        </box>
       ) : commandsHidden ? (
-        <Text color={theme.status.warning} wrap="truncate">
+        <text color={theme.status.warning} wrap="truncate">
           {commands.length}{' '}
           {t('shell commands hidden - resize terminal to review')}
-        </Text>
+        </text>
       ) : null}
 
       {!compactHiddenCommandsLayout && (
-        <Box
-          marginBottom={constrainedHeight === undefined ? 1 : 0}
-          flexShrink={0}
-        >
-          <Text color={theme.text.primary}>{t('Do you want to proceed?')}</Text>
-        </Box>
+        <box marginBottom={constrainedHeight === undefined ? 1 : 0} style={{ flexShrink: 0 }}>
+          <text color={theme.text.primary}>{t('Do you want to proceed?')}</text>
+        </box>
       )}
 
-      <Box flexShrink={0}>
+      <box style={{ flexShrink: 0 }}>
         <RadioButtonSelect
           items={visibleOptions}
           onSelect={handleSelect}
           isFocused
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

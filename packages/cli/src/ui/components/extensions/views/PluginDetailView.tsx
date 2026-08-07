@@ -43,14 +43,14 @@ const InfoRow = ({
   label: string;
   children: React.ReactNode;
 }) => (
-  <Box>
-    <Box width={LABEL_WIDTH} flexShrink={0}>
-      <Text color={theme.text.primary}>{label}</Text>
-    </Box>
-    <Box flexGrow={1}>
-      <Text>{children}</Text>
-    </Box>
-  </Box>
+  <box>
+    <box style={{ width: LABEL_WIDTH, flexShrink: 0 }}>
+      <text color={theme.text.primary}>{label}</text>
+    </box>
+    <box style={{ flexGrow: 1 }}>
+      <text>{children}</text>
+    </box>
+  </box>
 );
 
 function componentSummary(ext: Extension): string {
@@ -123,18 +123,18 @@ export const PluginDetailView = ({
   }, [isActive, isFavorite, hasUpdateAvailable, showFavorite]);
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
         <InfoRow label={t('Name:')}>{ext.name}</InfoRow>
         <InfoRow label={t('Version:')}>
           {stripUnsafeCharacters(ext.version ?? '')}
         </InfoRow>
         <InfoRow label={t('Scope:')}>{scope}</InfoRow>
         <InfoRow label={t('Status:')}>
-          <Text color={isActive ? theme.status.success : theme.text.secondary}>
+          <text color={isActive ? theme.status.success : theme.text.secondary}>
             {isActive ? t('active') : t('disabled')}
-          </Text>
-          {isFavorite ? <Text color={theme.status.warning}> ★</Text> : null}
+          </text>
+          {isFavorite ? <text color={theme.status.warning}> ★</text> : null}
         </InfoRow>
         {ext.installMetadata && (
           <InfoRow label={t('Source:')}>
@@ -142,17 +142,17 @@ export const PluginDetailView = ({
           </InfoRow>
         )}
         <InfoRow label={t('Components:')}>{componentSummary(ext)}</InfoRow>
-      </Box>
+      </box>
 
-      <Box flexDirection="column">
-        <Text color={theme.text.secondary}>{t('Actions')}</Text>
+      <box style={{ flexDirection: "column" }}>
+        <text color={theme.text.secondary}>{t('Actions')}</text>
         <RadioButtonSelect
           items={actions}
           isFocused={isFocused}
           showNumbers={false}
           onSelect={onAction}
         />
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 };

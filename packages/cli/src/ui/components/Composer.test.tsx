@@ -49,7 +49,7 @@ vi.mock('./LoadingIndicator.js', () => ({
     taskStartStreamingChars?: number;
     showResponseTokensPerSecond?: boolean;
   }) => (
-    <Text>
+    <text>
       LoadingIndicator
       {currentLoadingPhrase ? `: ${currentLoadingPhrase}` : ''}
       {typeof candidatesTokens === 'number' ? `: ${candidatesTokens}` : ''}
@@ -58,24 +58,24 @@ vi.mock('./LoadingIndicator.js', () => ({
         ? `: chars ${taskStartStreamingChars}`
         : ''}
       {showResponseTokensPerSecond ? ': show t/s' : ''}
-    </Text>
+    </text>
   ),
 }));
 
 vi.mock('./ContextSummaryDisplay.js', () => ({
-  ContextSummaryDisplay: () => <Text>ContextSummaryDisplay</Text>,
+  ContextSummaryDisplay: () => <text>ContextSummaryDisplay</text>,
 }));
 
 vi.mock('./AutoAcceptIndicator.js', () => ({
-  AutoAcceptIndicator: () => <Text>AutoAcceptIndicator</Text>,
+  AutoAcceptIndicator: () => <text>AutoAcceptIndicator</text>,
 }));
 
 vi.mock('./ShellModeIndicator.js', () => ({
-  ShellModeIndicator: () => <Text>ShellModeIndicator</Text>,
+  ShellModeIndicator: () => <text>ShellModeIndicator</text>,
 }));
 
 vi.mock('./InputPrompt.js', () => ({
-  InputPrompt: () => <Text>InputPrompt</Text>,
+  InputPrompt: () => <text>InputPrompt</text>,
   calculatePromptWidths: vi.fn(() => ({
     inputWidth: 80,
     suggestionsWidth: 40,
@@ -84,7 +84,7 @@ vi.mock('./InputPrompt.js', () => ({
 }));
 
 vi.mock('./Footer.js', () => ({
-  Footer: () => <Text>Footer</Text>,
+  Footer: () => <text>Footer</text>,
 }));
 
 vi.mock('./QueuedMessageDisplay.js', () => ({
@@ -95,7 +95,7 @@ vi.mock('./QueuedMessageDisplay.js', () => ({
     return (
       <>
         {messageQueue.map((message, index) => (
-          <Text key={index}>{message}</Text>
+          <text key={index}>{message}</text>
         ))}
       </>
     );

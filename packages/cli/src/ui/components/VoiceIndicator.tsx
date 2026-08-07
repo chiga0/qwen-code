@@ -39,25 +39,25 @@ export function VoiceIndicator({
   }
 
   return (
-    <Box flexDirection="column" paddingLeft={1}>
-      <Box>
+    <box style={{ flexDirection: "column" }} paddingLeft={1}>
+      <box>
         {status === 'recording' ? (
           <>
-            <Text color="redBright">{'● '}</Text>
-            <Text color="cyan">{meter(audioLevel)}</Text>
-            <Text color="gray">{'  ' + t('listening…')}</Text>
+            <text color="redBright">{'● '}</text>
+            <text color="cyan">{meter(audioLevel)}</text>
+            <text color="gray">{'  ' + t('listening…')}</text>
           </>
         ) : status === 'refining' ? (
-          <Text color="yellow">{'◆ ' + t('refining…')}</Text>
+          <text color="yellow">{'◆ ' + t('refining…')}</text>
         ) : (
-          <Text color="yellow">{'◆ ' + t('transcribing…')}</Text>
+          <text color="yellow">{'◆ ' + t('transcribing…')}</text>
         )}
-      </Box>
+      </box>
       {interimText ? (
-        <Text dimColor wrap="truncate-end">
+        <text dimColor wrap="truncate-end">
           {escapeAnsiCtrlCodes(interimText)}
-        </Text>
+        </text>
       ) : null}
-    </Box>
+    </box>
   );
 }

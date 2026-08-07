@@ -69,236 +69,236 @@ export const SessionTab: React.FC = () => {
   const labelWidth = 28;
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* Session ID */}
-      <Box>
-        <Box width={labelWidth}>
-          <Text color={theme.text.secondary}>{t('Session ID:')}</Text>
-        </Box>
-        <Text color={theme.text.primary}>{stats.sessionId}</Text>
-      </Box>
+      <box>
+        <box style={{ width: labelWidth }}>
+          <text color={theme.text.secondary}>{t('Session ID:')}</text>
+        </box>
+        <text color={theme.text.primary}>{stats.sessionId}</text>
+      </box>
 
       {/* Interaction Summary */}
-      <Box flexDirection="column" marginTop={1}>
-        <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <text bold color={theme.text.primary}>
           {t('Interaction Summary')}
-        </Text>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Tool Calls:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>
+        </text>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Tool Calls:')}</text>
+          </box>
+          <text color={theme.text.primary}>
             {metrics.tools.totalCalls} ({' '}
-            <Text color={theme.status.success}>
+            <text color={theme.status.success}>
               ✓ {metrics.tools.totalSuccess}
-            </Text>{' '}
-            <Text color={theme.status.error}>✗ {metrics.tools.totalFail}</Text>{' '}
+            </text>{' '}
+            <text color={theme.status.error}>✗ {metrics.tools.totalFail}</text>{' '}
             )
-          </Text>
-        </Box>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Success Rate:')}</Text>
-          </Box>
-          <Text color={successColor}>{computed.successRate.toFixed(1)}%</Text>
-        </Box>
+          </text>
+        </box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Success Rate:')}</text>
+          </box>
+          <text color={successColor}>{computed.successRate.toFixed(1)}%</text>
+        </box>
         {computed.totalDecisions > 0 && (
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('User Agreement:')}</Text>
-            </Box>
-            <Text color={agreementColor}>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('User Agreement:')}</text>
+            </box>
+            <text color={agreementColor}>
               {computed.agreementRate.toFixed(1)}%{' '}
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 ({computed.totalDecisions} {t('reviewed')})
-              </Text>
-            </Text>
-          </Box>
+              </text>
+            </text>
+          </box>
         )}
         {(metrics.files.totalLinesAdded > 0 ||
           metrics.files.totalLinesRemoved > 0) && (
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('Code Changes:')}</Text>
-            </Box>
-            <Text color={theme.status.success}>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('Code Changes:')}</text>
+            </box>
+            <text color={theme.status.success}>
               +{metrics.files.totalLinesAdded}
-            </Text>
-            <Text color={theme.text.primary}> </Text>
-            <Text color={theme.status.error}>
+            </text>
+            <text color={theme.text.primary}> </text>
+            <text color={theme.status.error}>
               -{metrics.files.totalLinesRemoved}
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-      </Box>
+      </box>
 
       {/* Performance */}
-      <Box flexDirection="column" marginTop={1}>
-        <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <text bold color={theme.text.primary}>
           {t('Performance')}
-        </Text>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Wall Time:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>{formatDuration(wallDuration)}</Text>
-        </Box>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Agent Active:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>
+        </text>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Wall Time:')}</text>
+          </box>
+          <text color={theme.text.primary}>{formatDuration(wallDuration)}</text>
+        </box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Agent Active:')}</text>
+          </box>
+          <text color={theme.text.primary}>
             {formatDuration(computed.agentActiveTime)}
-          </Text>
-        </Box>
-        <Box paddingLeft={2}>
-          <Box width={26}>
-            <Text color={theme.text.secondary}>» {t('API Time:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>
+          </text>
+        </box>
+        <box paddingLeft={2}>
+          <box style={{ width: 26 }}>
+            <text color={theme.text.secondary}>» {t('API Time:')}</text>
+          </box>
+          <text color={theme.text.primary}>
             {formatDuration(computed.totalApiTime)}{' '}
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               ({computed.apiTimePercent.toFixed(1)}%)
-            </Text>
-          </Text>
-        </Box>
-        <Box paddingLeft={2}>
-          <Box width={26}>
-            <Text color={theme.text.secondary}>» {t('Tool Time:')}</Text>
-          </Box>
-          <Text color={theme.text.primary}>
+            </text>
+          </text>
+        </box>
+        <box paddingLeft={2}>
+          <box style={{ width: 26 }}>
+            <text color={theme.text.secondary}>» {t('Tool Time:')}</text>
+          </box>
+          <text color={theme.text.primary}>
             {formatDuration(computed.totalToolTime)}{' '}
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               ({computed.toolTimePercent.toFixed(1)}%)
-            </Text>
-          </Text>
-        </Box>
-      </Box>
+            </text>
+          </text>
+        </box>
+      </box>
 
       {lastGeneration && (
-        <Box flexDirection="column" marginTop={1}>
-          <Text bold color={theme.text.primary}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text bold color={theme.text.primary}>
             {t('Generation Metrics')} ({t('Latest Request')})
-          </Text>
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('Model')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>{lastGeneration.model}</Text>
-          </Box>
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>TTFT:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+          </text>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('Model')}:</text>
+            </box>
+            <text color={theme.text.primary}>{lastGeneration.model}</text>
+          </box>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>TTFT:</text>
+            </box>
+            <text color={theme.text.primary}>
               {formatDuration(lastGeneration.ttftMs)}
-            </Text>
-          </Box>
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('Generation Time')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+            </text>
+          </box>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('Generation Time')}:</text>
+            </box>
+            <text color={theme.text.primary}>
               {formatDuration(lastGeneration.generationDurationMs)}
-            </Text>
-          </Box>
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('Output Tokens')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+            </text>
+          </box>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('Output Tokens')}:</text>
+            </box>
+            <text color={theme.text.primary}>
               {lastGeneration.outputTokens.toLocaleString()}
-            </Text>
-          </Box>
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>TPS:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+            </text>
+          </box>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>TPS:</text>
+            </box>
+            <text color={theme.text.primary}>
               {lastTps === undefined ? '—' : `${lastTps.toFixed(1)} tok/s`}
-            </Text>
-          </Box>
-          <Box paddingLeft={2}>
-            <Box width={26}>
-              <Text color={theme.text.secondary}>» {t('Requests')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>{generation.timedRequests}</Text>
-          </Box>
-          <Box paddingLeft={2}>
-            <Box width={26}>
-              <Text color={theme.text.secondary}>» {t('Average TTFT')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+            </text>
+          </box>
+          <box paddingLeft={2}>
+            <box style={{ width: 26 }}>
+              <text color={theme.text.secondary}>» {t('Requests')}:</text>
+            </box>
+            <text color={theme.text.primary}>{generation.timedRequests}</text>
+          </box>
+          <box paddingLeft={2}>
+            <box style={{ width: 26 }}>
+              <text color={theme.text.secondary}>» {t('Average TTFT')}:</text>
+            </box>
+            <text color={theme.text.primary}>
               {averageTtft === undefined ? '—' : formatDuration(averageTtft)}
-            </Text>
-          </Box>
-          <Box paddingLeft={2}>
-            <Box width={26}>
-              <Text color={theme.text.secondary}>» {t('Session TPS')}:</Text>
-            </Box>
-            <Text color={theme.text.primary}>
+            </text>
+          </box>
+          <box paddingLeft={2}>
+            <box style={{ width: 26 }}>
+              <text color={theme.text.secondary}>» {t('Session TPS')}:</text>
+            </box>
+            <text color={theme.text.primary}>
               {sessionTps === undefined
                 ? '—'
                 : `${sessionTps.toFixed(1)} tok/s`}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
 
       {/* Token Summary */}
-      <Box flexDirection="column" marginTop={1}>
-        <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
+        <text bold color={theme.text.primary}>
           {t('Tokens')}
-        </Text>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Input')}:</Text>
-          </Box>
-          <Text color={theme.status.warning}>
+        </text>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Input')}:</text>
+          </box>
+          <text color={theme.status.warning}>
             {totalInput.toLocaleString()}
-          </Text>
-        </Box>
-        <Box>
-          <Box width={labelWidth}>
-            <Text color={theme.text.secondary}>{t('Output')}:</Text>
-          </Box>
-          <Text color={theme.status.warning}>
+          </text>
+        </box>
+        <box>
+          <box style={{ width: labelWidth }}>
+            <text color={theme.text.secondary}>{t('Output')}:</text>
+          </box>
+          <text color={theme.status.warning}>
             {totalOutput.toLocaleString()}
-          </Text>
-        </Box>
+          </text>
+        </box>
         {totalCached > 0 && (
-          <Box>
-            <Box width={labelWidth}>
-              <Text color={theme.text.secondary}>{t('Cached')}:</Text>
-            </Box>
-            <Text color={theme.status.success}>
+          <box>
+            <box style={{ width: labelWidth }}>
+              <text color={theme.text.secondary}>{t('Cached')}:</text>
+            </box>
+            <text color={theme.status.success}>
               {totalCached.toLocaleString()} ({cacheRate.toFixed(1)}%)
-            </Text>
-          </Box>
+            </text>
+          </box>
         )}
-      </Box>
+      </box>
 
       {/* Models */}
       {Object.keys(metrics.models).length > 0 && (
-        <Box flexDirection="column" marginTop={1}>
-          <Text bold color={theme.text.primary}>
+        <box style={{ flexDirection: "column" }} marginTop={1}>
+          <text bold color={theme.text.primary}>
             {t('Models')}
-          </Text>
+          </text>
           {Object.entries(metrics.models).map(([name, m], i) => (
-            <Box key={name}>
-              <Text color={SERIES_COLORS[i % SERIES_COLORS.length]}>
+            <box key={name}>
+              <text color={SERIES_COLORS[i % SERIES_COLORS.length]}>
                 {ICON.CIRCLE_FILLED + ' '}
-              </Text>
-              <Text color={theme.text.primary}>{name} </Text>
-              <Text color={theme.text.secondary}>
+              </text>
+              <text color={theme.text.primary}>{name} </text>
+              <text color={theme.text.secondary}>
                 {m.api.totalRequests} {t('reqs')} · {t('in')}=
                 {fmtTokens(m.tokens.prompt)} · {t('out')}=
                 {fmtTokens(m.tokens.candidates)}
-              </Text>
-            </Box>
+              </text>
+            </box>
           ))}
-        </Box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 };

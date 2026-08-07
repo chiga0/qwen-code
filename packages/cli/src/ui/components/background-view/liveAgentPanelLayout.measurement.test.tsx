@@ -79,12 +79,12 @@ function ControlsMeasured({
   report(Math.max(0, TERMINAL_HEIGHT - controlsHeight));
 
   return (
-    <Box flexDirection="column" ref={ref}>
-      <Text>main</Text>
+    <box style={{ flexDirection: "column" }} ref={ref}>
+      <text>main</text>
       {entries.map((e) => (
-        <Text key={e.id}>{e.id} · running</Text>
+        <text key={e.id}>{e.id} · running</text>
       ))}
-    </Box>
+    </box>
   );
 }
 

@@ -114,9 +114,9 @@ export function AgentCreationWizard({
     };
 
     return (
-      <Box>
-        <Text bold>{getStepHeaderText()}</Text>
-      </Box>
+      <box>
+        <text bold>{getStepHeaderText()}</text>
+      </box>
     );
   }, [state.currentStep, state.generationMethod]);
 
@@ -153,9 +153,9 @@ export function AgentCreationWizard({
     };
 
     return (
-      <Box>
-        <Text color={theme.text.secondary}>{getNavigationInstructions()}</Text>
-      </Box>
+      <box>
+        <text color={theme.text.secondary}>{getNavigationInstructions()}</text>
+      </box>
     );
   }, [state.currentStep, state.isGenerating, state.generationMethod]);
 
@@ -268,32 +268,25 @@ export function AgentCreationWizard({
         return <CreationSummary {...stepProps} />;
       default:
         return (
-          <Box>
-            <Text color={theme.status.error}>
+          <box>
+            <text color={theme.status.error}>
               {t('Invalid step: {{step}}', {
                 step: state.currentStep.toString(),
               })}
-            </Text>
-          </Box>
+            </text>
+          </box>
         );
     }
   }, [stepProps, state, config, handleNext, dispatch]);
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       {/* Main content wrapped in bounding box */}
-      <Box
-        borderStyle="single"
-        borderColor={theme.border.default}
-        flexDirection="column"
-        padding={1}
-        width="100%"
-        gap={1}
-      >
+      <box style={{ borderStyle: "single", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%", gap: 1 }}>
         {renderStepHeader()}
         {renderStepContent()}
         {renderStepFooter()}
-      </Box>
-    </Box>
+      </box>
+    </box>
   );
 }

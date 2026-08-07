@@ -26,64 +26,64 @@ export function HooksDisabledStep({
         });
 
   return (
-    <Box flexDirection="column" paddingX={1}>
+    <box style={{ flexDirection: "column" }} paddingX={1}>
       {/* Title */}
-      <Box marginBottom={1}>
-        <Text bold color={theme.status.warning}>
+      <box marginBottom={1}>
+        <text bold color={theme.status.warning}>
           {t('Hook Configuration - Disabled')}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Main message */}
-      <Box marginBottom={1}>
-        <Text color={theme.text.primary}>
+      <box marginBottom={1}>
+        <text color={theme.text.primary}>
           {t(
             'All hooks are currently disabled. You have {{count}} that are not running.',
             {
               count: hooksText,
             },
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Explanation */}
-      <Box flexDirection="column" marginBottom={1}>
-        <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column" }} marginBottom={1}>
+        <text bold color={theme.text.primary}>
           {t('When hooks are disabled:')}
-        </Text>
+        </text>
         {/* Note: Using middle dot (·) as bullet character. This is consistent with
             other CLI components. If a design system evolves, consider extracting
             to a shared constant or using a BulletList component. */}
-        <Box>
-          <Text color={theme.text.secondary}>
+        <box>
+          <text color={theme.text.secondary}>
             {`  · ${t('No hook commands will execute')}`}
-          </Text>
-        </Box>
-        <Box>
-          <Text color={theme.text.secondary}>
+          </text>
+        </box>
+        <box>
+          <text color={theme.text.secondary}>
             {`  · ${t('StatusLine will not be displayed')}`}
-          </Text>
-        </Box>
-        <Box>
-          <Text color={theme.text.secondary}>
+          </text>
+        </box>
+        <box>
+          <text color={theme.text.secondary}>
             {`  · ${t('Tool operations will proceed without hook validation')}`}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
 
       {/* How to re-enable */}
-      <Box marginBottom={1}>
-        <Text color={theme.text.secondary}>
+      <box marginBottom={1}>
+        <text color={theme.text.secondary}>
           {t(
             'To re-enable hooks, remove "disableAllHooks" from settings.json or ask Qwen Code.',
           )}
-        </Text>
-      </Box>
+        </text>
+      </box>
 
       {/* Footer hint */}
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>{t('Esc to close')}</Text>
-      </Box>
-    </Box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>{t('Esc to close')}</text>
+      </box>
+    </box>
   );
 }

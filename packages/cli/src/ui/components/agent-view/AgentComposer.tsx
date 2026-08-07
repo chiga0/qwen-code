@@ -252,15 +252,15 @@ export const AgentComposer: React.FC<AgentComposerProps> = ({ agentId }) => {
       : (statusColor ?? theme.border.focused);
 
   const prefixNode = (
-    <Text color={statusColor ?? theme.text.accent}>
+    <text color={statusColor ?? theme.text.accent}>
       {approvalModePromptStyle.prefix}{' '}
-    </Text>
+    </text>
   );
   const prefixWidth = 2; // "> " or "* " = 2 chars
 
   return (
     <StreamingContext.Provider value={streamingState}>
-      <Box flexDirection="column" marginTop={1}>
+      <box style={{ flexDirection: "column" }} marginTop={1}>
         {/* Loading indicator — mirrors main Composer but reads agent's
             streaming state via the overridden StreamingContext. */}
         <LoadingIndicator
@@ -274,9 +274,9 @@ export const AgentComposer: React.FC<AgentComposerProps> = ({ agentId }) => {
 
         {/* Terminal status for completed/failed agents */}
         {statusLabel && (
-          <Box marginLeft={2}>
-            <Text color={statusLabel.color}>{statusLabel.text}</Text>
-          </Box>
+          <box marginLeft={2}>
+            <text color={statusLabel.color}>{statusLabel.text}</text>
+          </box>
         )}
 
         <QueuedMessageDisplay messageQueue={messageQueue} />
@@ -303,7 +303,7 @@ export const AgentComposer: React.FC<AgentComposerProps> = ({ agentId }) => {
           }
           terminalWidth={terminalWidth}
         />
-      </Box>
+      </box>
     </StreamingContext.Provider>
   );
 };

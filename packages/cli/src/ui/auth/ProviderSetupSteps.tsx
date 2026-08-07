@@ -28,19 +28,19 @@ import { normalizeModelIds } from './useAuth.js';
 // ---------------------------------------------------------------------------
 
 const NAV_HINT_SELECT = () => (
-  <Box marginTop={1}>
-    <Text color={theme?.text?.secondary}>
+  <box marginTop={1}>
+    <text color={theme?.text?.secondary}>
       {t('Enter to select, ↑↓ to navigate, Esc to go back')}
-    </Text>
-  </Box>
+    </text>
+  </box>
 );
 
 const NAV_HINT_INPUT = () => (
-  <Box marginTop={1}>
-    <Text color={theme.text.secondary}>
+  <box marginTop={1}>
+    <text color={theme.text.secondary}>
       {t('Enter to submit, Esc to go back')}
-    </Text>
-  </Box>
+    </text>
+  </box>
 );
 
 function resolveDocumentationUrl(
@@ -69,13 +69,13 @@ function BaseUrlSelectStep({
     key: opt.id,
     title: t(opt.label),
     label: t(opt.label),
-    description: <Text color={theme.text.secondary}>{opt.url}</Text>,
+    description: <text color={theme.text.secondary}>{opt.url}</text>,
     value: opt.url,
   }));
 
   return (
     <>
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <DescriptiveRadioButtonSelect
           items={items}
           initialIndex={flow.state.baseUrlOptionIndex}
@@ -83,7 +83,7 @@ function BaseUrlSelectStep({
           onHighlight={flow.highlightBaseUrl}
           itemGap={1}
         />
-      </Box>
+      </box>
       <NAV_HINT_SELECT />
     </>
   );
@@ -101,13 +101,13 @@ function BaseUrlInputStep({
   documentationUrl?: string;
 }): React.JSX.Element {
   return (
-    <Box marginTop={1} flexDirection="column">
-      <Box marginTop={1}>
-        <Text color={theme.text.primary}>
+    <box marginTop={1} style={{ flexDirection: "column" }}>
+      <box marginTop={1}>
+        <text color={theme.text.primary}>
           {t('Enter the API endpoint for this protocol.')}
-        </Text>
-      </Box>
-      <Box marginTop={1}>
+        </text>
+      </box>
+      <box marginTop={1}>
         <TextInput
           key="base-url-input"
           value={flow.state.baseUrl}
@@ -117,21 +117,21 @@ function BaseUrlInputStep({
             flow.state.baseUrlPlaceholder || 'https://api.openai.com/v1'
           }
         />
-      </Box>
+      </box>
       {flow.state.baseUrlError && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{flow.state.baseUrlError}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{flow.state.baseUrlError}</text>
+        </box>
       )}
       {documentationUrl && (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           <Link url={documentationUrl} fallback={false}>
-            <Text color={theme.text.link}>{t('Documentation')}</Text>
+            <text color={theme.text.link}>{t('Documentation')}</text>
           </Link>
-        </Box>
+        </box>
       )}
       <NAV_HINT_INPUT />
-    </Box>
+    </box>
   );
 }
 
@@ -149,17 +149,17 @@ function ApiKeyStep({
   const docUrl = resolveDocumentationUrl(config, flow.state.baseUrl);
 
   return (
-    <Box marginTop={1} flexDirection="column">
+    <box marginTop={1} style={{ flexDirection: "column" }}>
       {docUrl && (
-        <Box marginTop={1}>
+        <box marginTop={1}>
           <Link url={docUrl} fallback={false}>
-            <Text color={theme.text.link}>
+            <text color={theme.text.link}>
               {t('Documentation')}: {docUrl}
-            </Text>
+            </text>
           </Link>
-        </Box>
+        </box>
       )}
-      <Box marginTop={1}>
+      <box marginTop={1}>
         <TextInput
           key="api-key-input"
           value={flow.state.apiKey}
@@ -167,14 +167,14 @@ function ApiKeyStep({
           onSubmit={() => flow.submitApiKey(flow.state.apiKey)}
           placeholder={config.apiKeyPlaceholder ?? 'sk-...'}
         />
-      </Box>
+      </box>
       {flow.state.apiKeyError && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{flow.state.apiKeyError}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{flow.state.apiKeyError}</text>
+        </box>
       )}
       <NAV_HINT_INPUT />
-    </Box>
+    </box>
   );
 }
 
@@ -407,15 +407,15 @@ function ModelIdsStep({
 
   if (hasSelectableModels) {
     return (
-      <Box marginTop={1} flexDirection="column">
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+      <box marginTop={1} style={{ flexDirection: "column" }}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t(
               'Enter model IDs directly. Use commas to configure multiple models.',
             )}
-          </Text>
-        </Box>
-        <Box marginTop={1}>
+          </text>
+        </box>
+        <box marginTop={1}>
           <TextInput
             key="model-ids-input"
             value={customModelIdsText}
@@ -431,19 +431,19 @@ function ModelIdsStep({
             height={3}
             isActive={focusedModelIndex === MODEL_CUSTOM_INPUT_FOCUS_INDEX}
           />
-        </Box>
-        <Box marginTop={0}>
-          <Text color={theme.text.secondary}>
+        </box>
+        <box marginTop={0}>
+          <text color={theme.text.secondary}>
             {t(
               'Checked recommended models are applied on submit but not copied into the input.',
             )}
-          </Text>
-        </Box>
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>{t('Recommended models')}</Text>
-        </Box>
-        <Box marginTop={0} flexDirection="column">
-          <Text color={theme.text.secondary}>{t('Search')}</Text>
+          </text>
+        </box>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>{t('Recommended models')}</text>
+        </box>
+        <box marginTop={0} style={{ flexDirection: "column" }}>
+          <text color={theme.text.secondary}>{t('Search')}</text>
           <TextInput
             key="model-search-input"
             value={modelSearchQuery}
@@ -463,8 +463,8 @@ function ModelIdsStep({
             placeholder="search"
             isActive={focusedModelIndex === MODEL_SEARCH_INPUT_FOCUS_INDEX}
           />
-        </Box>
-        <Box marginTop={1} flexDirection="column">
+        </box>
+        <box marginTop={1} style={{ flexDirection: "column" }}>
           {visibleModelOptions.length > 0 ? (
             visibleModelOptions.map((item, visibleIndex) => {
               const modelIndex = recommendedScrollOffset + visibleIndex;
@@ -476,52 +476,52 @@ function ModelIdsStep({
                   ? theme.text.accent
                   : theme.text.primary;
               return (
-                <Box key={item.key} alignItems="flex-start">
-                  <Box minWidth={4} flexShrink={0}>
-                    <Text color={textColor}>
+                <box key={item.key} style={{ alignItems: "flex-start" }}>
+                  <box minWidth={4} style={{ flexShrink: 0 }}>
+                    <text color={textColor}>
                       {isSelected ? ICON.RADIO_FILLED : ICON.CIRCLE_EMPTY}
-                    </Text>
-                  </Box>
-                  <Box flexGrow={1}>
-                    <Text color={textColor}>{item.label}</Text>
-                  </Box>
-                </Box>
+                    </text>
+                  </box>
+                  <box style={{ flexGrow: 1 }}>
+                    <text color={textColor}>{item.label}</text>
+                  </box>
+                </box>
               );
             })
           ) : (
-            <Text color={theme.text.secondary}>
+            <text color={theme.text.secondary}>
               {t('No recommended models match.')}
-            </Text>
+            </text>
           )}
-        </Box>
+        </box>
         {flow.state.modelIdsError && (
-          <Box marginTop={1}>
-            <Text color={theme.status.error}>{flow.state.modelIdsError}</Text>
-          </Box>
+          <box marginTop={1}>
+            <text color={theme.status.error}>{flow.state.modelIdsError}</text>
+          </box>
         )}
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t(
               'Enter to submit, ↑↓/Tab to switch input, search, and recommendations, Space to toggle recommendations, Esc to go back',
             )}
-          </Text>
-        </Box>
-      </Box>
+          </text>
+        </box>
+      </box>
     );
   }
 
   return (
-    <Box marginTop={1} flexDirection="column">
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+    <box marginTop={1} style={{ flexDirection: "column" }}>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {defaultIds
             ? t('Enter model IDs separated by commas. Examples: {{modelIds}}', {
                 modelIds: defaultIds,
               })
             : t('Enter model IDs separated by commas.')}
-        </Text>
-      </Box>
-      <Box marginTop={1}>
+        </text>
+      </box>
+      <box marginTop={1}>
         <TextInput
           key="model-ids-input"
           value={flow.state.modelIds}
@@ -529,14 +529,14 @@ function ModelIdsStep({
           onSubmit={() => flow.submitModelIds()}
           placeholder={defaultIds || 'model-id-1, model-id-2'}
         />
-      </Box>
+      </box>
       {flow.state.modelIdsError && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{flow.state.modelIdsError}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{flow.state.modelIdsError}</text>
+        </box>
       )}
       <NAV_HINT_INPUT />
-    </Box>
+    </box>
   );
 }
 
@@ -565,90 +565,90 @@ function AdvancedConfigStep({
   const ctxIdx = modalityEnabled ? 6 : 2;
 
   return (
-    <Box marginTop={1} flexDirection="column">
-      <Box marginTop={1}>
-        <Text color={theme.text.primary}>
+    <box marginTop={1} style={{ flexDirection: "column" }}>
+      <box marginTop={1}>
+        <text color={theme.text.primary}>
           {t('Optional: configure advanced generation settings.')}
-        </Text>
-      </Box>
-      <Box marginTop={1} marginLeft={2}>
-        <Text
+        </text>
+      </box>
+      <box marginTop={1} marginLeft={2}>
+        <text
           color={focusedConfigIndex === 0 ? theme.status.success : undefined}
         >
           {cursor(0)} {checkmark(thinkingEnabled)} {t('Enable thinking')}
-        </Text>
-      </Box>
-      <Box marginTop={0} marginLeft={4}>
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box marginTop={0} marginLeft={4}>
+        <text color={theme.text.secondary}>
           {t(
             'Allows the model to perform extended reasoning before responding.',
           )}
-        </Text>
-      </Box>
-      <Box marginTop={1} marginLeft={2}>
-        <Text
+        </text>
+      </box>
+      <box marginTop={1} marginLeft={2}>
+        <text
           color={focusedConfigIndex === 1 ? theme.status.success : undefined}
         >
           {cursor(1)} {checkmark(modalityEnabled)} {t('Enable modality')}
-        </Text>
-      </Box>
-      <Box marginTop={0} marginLeft={4}>
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box marginTop={0} marginLeft={4}>
+        <text color={theme.text.secondary}>
           {t('Enables multimodal input capabilities (image, video, etc.).')}
-        </Text>
-      </Box>
+        </text>
+      </box>
       {modalityEnabled && (
-        <Box marginTop={0} marginLeft={6}>
-          <Text
+        <box marginTop={0} marginLeft={6}>
+          <text
             color={focusedConfigIndex === 2 ? theme.status.success : undefined}
           >
             {cursor(2)} {checkmark(modalityImage)} {'Image  '}
-          </Text>
-          <Text
+          </text>
+          <text
             color={focusedConfigIndex === 3 ? theme.status.success : undefined}
           >
             {cursor(3)} {checkmark(modalityVideo)} {'Video  '}
-          </Text>
-          <Text
+          </text>
+          <text
             color={focusedConfigIndex === 4 ? theme.status.success : undefined}
           >
             {cursor(4)} {checkmark(modalityAudio)} {'Audio  '}
-          </Text>
-          <Text
+          </text>
+          <text
             color={focusedConfigIndex === 5 ? theme.status.success : undefined}
           >
             {cursor(5)} {checkmark(modalityPdf)} {'PDF'}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-      <Box marginTop={1} marginLeft={2}>
-        <Text
+      <box marginTop={1} marginLeft={2}>
+        <text
           color={
             focusedConfigIndex === ctxIdx ? theme.status.success : undefined
           }
         >
           {cursor(ctxIdx)} {t('Context window')}:{' '}
-        </Text>
+        </text>
         <TextInput
           value={contextWindowSize}
           onChange={flow.changeContextWindowSize}
           placeholder="auto"
           isActive={focusedConfigIndex === ctxIdx}
         />
-      </Box>
-      <Box marginTop={0} marginLeft={4}>
-        <Text color={theme.text.secondary}>
+      </box>
+      <box marginTop={0} marginLeft={4}>
+        <text color={theme.text.secondary}>
           {t('Max input tokens (leave empty to auto-detect from model name).')}
-        </Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t(
             '↑↓ to navigate, Space to toggle, Enter to continue, Esc to go back',
           )}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }
 
@@ -658,21 +658,21 @@ function AdvancedConfigStep({
 
 function ReviewStep({ flow }: { flow: ProviderSetupFlow }): React.JSX.Element {
   return (
-    <Box marginTop={1} flexDirection="column">
-      <Box marginTop={1}>
-        <Text color={theme.text.primary}>
+    <box marginTop={1} style={{ flexDirection: "column" }}>
+      <box marginTop={1}>
+        <text color={theme.text.primary}>
           {t('The following JSON will be saved to settings.json:')}
-        </Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text>{flow.state.previewJson}</Text>
-      </Box>
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+        </text>
+      </box>
+      <box marginTop={1}>
+        <text>{flow.state.previewJson}</text>
+      </box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Enter to save, Esc to go back')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }
 
@@ -763,14 +763,14 @@ export function ProviderSetupSteps({
       );
       return (
         <>
-          <Box marginTop={1}>
+          <box marginTop={1}>
             <DescriptiveRadioButtonSelect
               items={items}
               initialIndex={0}
               onSelect={flow.selectProtocol}
               itemGap={1}
             />
-          </Box>
+          </box>
           <NAV_HINT_SELECT />
         </>
       );

@@ -65,7 +65,7 @@ export function ApiKeyInput({
   );
 
   return (
-    <Box flexDirection="column">
+    <box style={{ flexDirection: "column" }}>
       <TextInput
         value={apiKey}
         onChange={setApiKey}
@@ -73,25 +73,25 @@ export function ApiKeyInput({
         ellipsizeOverflow
       />
       {error && (
-        <Box marginTop={1}>
-          <Text color={theme.status.error}>{error}</Text>
-        </Box>
+        <box marginTop={1}>
+          <text color={theme.status.error}>{error}</text>
+        </box>
       )}
-      <Box marginTop={1}>
-        <Text>{plan.helpText}</Text>
-      </Box>
-      <Box marginTop={0}>
+      <box marginTop={1}>
+        <text>{plan.helpText}</text>
+      </box>
+      <box marginTop={0}>
         <Link url={plan.apiKeyUrl} fallback={false}>
-          <Text color={theme.text.link} underline>
+          <text color={theme.text.link} underline>
             {plan.apiKeyUrl}
-          </Text>
+          </text>
         </Link>
-      </Box>
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary}>
+      </box>
+      <box marginTop={1}>
+        <text color={theme.text.secondary}>
           {t('Enter to submit, Esc to go back')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

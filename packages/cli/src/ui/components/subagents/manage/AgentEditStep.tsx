@@ -90,8 +90,8 @@ export function EditOptionsStep({
   );
 
   return (
-    <Box flexDirection="column" gap={1}>
-      <Box flexDirection="column">
+    <box style={{ flexDirection: "column", gap: 1 }}>
+      <box style={{ flexDirection: "column" }}>
         <RadioButtonSelect
           items={editOptions.map((option) => ({
             key: option.id,
@@ -105,20 +105,20 @@ export function EditOptionsStep({
           onHighlight={handleHighlight}
           isFocused={true}
         />
-      </Box>
+      </box>
 
       {error && (
-        <Box flexDirection="column">
-          <Text bold color={theme.status.error}>
+        <box style={{ flexDirection: "column" }}>
+          <text bold color={theme.status.error}>
             {t('✗ Error:')}
-          </Text>
-          <Box flexDirection="column" padding={1} paddingBottom={0}>
-            <Text color={theme.status.error} wrap="wrap">
+          </text>
+          <box style={{ flexDirection: "column", padding: 1 }} paddingBottom={0}>
+            <text color={theme.status.error} wrap="wrap">
               {error}
-            </Text>
-          </Box>
-        </Box>
+            </text>
+          </box>
+        </box>
       )}
-    </Box>
+    </box>
   );
 }

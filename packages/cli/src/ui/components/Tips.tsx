@@ -43,10 +43,10 @@ export const Tips: React.FC = () => {
   const selectedTip = useMemo(() => pickStartupTip(), []);
 
   return (
-    <Box marginLeft={2} marginRight={2}>
-      <Text color={theme.text.secondary}>
+    <box marginLeft={2} marginRight={2}>
+      <text color={theme.text.secondary}>
         {t('Tips:')} {t(selectedTip)}
-      </Text>
-    </Box>
+      </text>
+    </box>
   );
 };

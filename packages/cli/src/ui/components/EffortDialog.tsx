@@ -67,21 +67,15 @@ export function EffortDialog({
   );
 
   return (
-    <Box
-      borderStyle="round"
-      borderColor={theme.border.default}
-      flexDirection="column"
-      padding={1}
-      width="100%"
-    >
-      <Text bold>
+    <box style={{ borderStyle: "round", borderColor: theme.border.default, flexDirection: "column", padding: 1, width: "100%" }}>
+      <text bold>
         {'> '}
         {t('Reasoning Effort')}{' '}
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {t('(applied across all providers; clamped per model)')}
-        </Text>
-      </Text>
-      <Box height={1} />
+        </text>
+      </text>
+      <box style={{ height: 1 }} />
       <RadioButtonSelect
         items={items}
         initialIndex={initialIndex}
@@ -90,17 +84,17 @@ export function EffortDialog({
         showNumbers
       />
       {!currentEffort && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary} wrap="truncate">
+        <box marginTop={1}>
+          <text color={theme.text.secondary} wrap="truncate">
             {t('No effort configured — using the model/provider default.')}
-          </Text>
-        </Box>
+          </text>
+        </box>
       )}
-      <Box marginTop={1}>
-        <Text color={theme.text.secondary} wrap="truncate">
+      <box marginTop={1}>
+        <text color={theme.text.secondary} wrap="truncate">
           {t('(Use Enter to select, Esc to cancel)')}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }

@@ -22,9 +22,9 @@ vi.mock('./GeminiRespondingSpinner.js', () => ({
   }) => {
     const streamingState = React.useContext(StreamingContext)!;
     if (streamingState === StreamingState.Responding) {
-      return <Text>MockRespondingSpinner</Text>;
+      return <text>MockRespondingSpinner</text>;
     } else if (nonRespondingDisplay) {
-      return <Text>{nonRespondingDisplay}</Text>;
+      return <text>{nonRespondingDisplay}</text>;
     }
     return null;
   },
@@ -150,7 +150,7 @@ describe('<LoadingIndicator />', () => {
   });
 
   it('should render rightContent when provided', () => {
-    const rightContent = <Text>Extra Info</Text>;
+    const rightContent = <text>Extra Info</text>;
     const { lastFrame } = renderWithContext(
       <LoadingIndicator {...defaultProps} rightContent={rightContent} />,
       StreamingState.Responding,
@@ -223,7 +223,7 @@ describe('<LoadingIndicator />', () => {
       const { lastFrame } = renderWithContext(
         <LoadingIndicator
           {...defaultProps}
-          rightContent={<Text>Right</Text>}
+          rightContent={<text>Right</text>}
         />,
         StreamingState.Responding,
         120,
@@ -240,7 +240,7 @@ describe('<LoadingIndicator />', () => {
       const { lastFrame } = renderWithContext(
         <LoadingIndicator
           {...defaultProps}
-          rightContent={<Text>Right</Text>}
+          rightContent={<text>Right</text>}
         />,
         StreamingState.Responding,
         79,

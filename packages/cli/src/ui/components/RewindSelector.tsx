@@ -68,9 +68,9 @@ function TurnItemView({
   const truncatedPrompt = truncateText(promptText, maxPromptWidth);
 
   return (
-    <Box flexDirection="column" marginBottom={isLast ? 0 : 1}>
-      <Box>
-        <Text
+    <box style={{ flexDirection: "column" }} marginBottom={isLast ? 0 : 1}>
+      <box>
+        <text
           color={
             isSelected
               ? theme.text.accent
@@ -81,16 +81,16 @@ function TurnItemView({
           bold={isSelected}
         >
           {prefix}
-        </Text>
-        <Text color={theme.text.secondary}>{`#${turnNumber} `}</Text>
-        <Text
+        </text>
+        <text color={theme.text.secondary}>{`#${turnNumber} `}</text>
+        <text
           color={isSelected ? theme.text.accent : theme.text.primary}
           bold={isSelected}
         >
           {truncatedPrompt}
-        </Text>
-      </Box>
-    </Box>
+        </text>
+      </box>
+    </box>
   );
 }
 
@@ -352,20 +352,15 @@ export function RewindSelector({
 
   if (userTurns.length === 0) {
     return (
-      <Box flexDirection="column" width={boxWidth}>
-        <Box
-          flexDirection="column"
-          borderStyle="round"
-          borderColor={theme.border.default}
-          width={boxWidth}
-        >
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>
+      <box style={{ flexDirection: "column", width: boxWidth }}>
+        <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth }}>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>
               {t('No user turns to rewind to.')}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+            </text>
+          </box>
+        </box>
+      </box>
     );
   }
 
@@ -376,42 +371,37 @@ export function RewindSelector({
       boxWidth - 10,
     );
     return (
-      <Box flexDirection="column" width={boxWidth}>
-        <Box
-          flexDirection="column"
-          borderStyle="round"
-          borderColor={theme.border.default}
-          width={boxWidth}
-        >
-          <Box paddingX={1}>
-            <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column", width: boxWidth }}>
+        <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth }}>
+          <box paddingX={1}>
+            <text bold color={theme.text.primary}>
               {t('Rewind Conversation')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-          </Box>
-          <Box paddingX={1} flexDirection="column">
-            <Box marginBottom={1}>
-              <Text color={theme.text.primary}>{t('Rewind to: ')}</Text>
-              <Text color={theme.text.accent} bold>
+            </text>
+          </box>
+          <box>
+            <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+          </box>
+          <box paddingX={1} style={{ flexDirection: "column" }}>
+            <box marginBottom={1}>
+              <text color={theme.text.primary}>{t('Rewind to: ')}</text>
+              <text color={theme.text.accent} bold>
                 {promptPreview}
-              </Text>
-            </Box>
+              </text>
+            </box>
             {loadingDiff ? (
-              <Text color={theme.text.secondary}>
+              <text color={theme.text.secondary}>
                 {t('Computing file changes...')}
-              </Text>
+              </text>
             ) : isRestoring ? (
-              <Text color={theme.text.secondary}>{t('Restoring...')}</Text>
+              <text color={theme.text.secondary}>{t('Restoring...')}</text>
             ) : (
-              <Box flexDirection="column">
+              <box style={{ flexDirection: "column" }}>
                 {restoreOptions.map((option, idx) => {
                   const isSelected = idx === restoreOptionIndex;
                   const prefix = isSelected ? '› ' : '  ';
                   return (
-                    <Box key={option.key}>
-                      <Text
+                    <box key={option.key}>
+                      <text
                         color={
                           isSelected ? theme.text.accent : theme.text.primary
                         }
@@ -419,26 +409,26 @@ export function RewindSelector({
                       >
                         {prefix}
                         {option.label}
-                      </Text>
+                      </text>
                       {option.detail && (
-                        <Text color={theme.text.secondary}>
+                        <text color={theme.text.secondary}>
                           {' '}
                           {option.detail}
-                        </Text>
+                        </text>
                       )}
-                    </Box>
+                    </box>
                   );
                 })}
                 {restoreOptions.some(
                   (o) => o.key === 'code' || o.key === 'both',
                 ) ? (
-                  <Box marginTop={1}>
-                    <Text color={theme.text.secondary} dimColor>
+                  <box marginTop={1}>
+                    <text color={theme.text.secondary} dimColor>
                       {t(
                         'Rewinding does not affect files edited manually or via shell commands.',
                       )}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                 ) : (
                   // No file-restore options were offered. Most likely either
                   // (a) the chosen turn has no captured edits, or (b) the
@@ -447,27 +437,27 @@ export function RewindSelector({
                   // "Restore code" path is not actionable for this turn —
                   // surface that explicitly so the user is not left
                   // wondering why the option is missing.
-                  <Box marginTop={1}>
-                    <Text color={theme.text.secondary} dimColor>
+                  <box marginTop={1}>
+                    <text color={theme.text.secondary} dimColor>
                       {t(
                         'File restore is unavailable for this turn (no captured file changes, or this turn predates the current session).',
                       )}
-                    </Text>
-                  </Box>
+                    </text>
+                  </box>
                 )}
-              </Box>
+              </box>
             )}
-          </Box>
-          <Box>
-            <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-          </Box>
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>
+          </box>
+          <box>
+            <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+          </box>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>
               {t('↑↓ to navigate · Enter to select · Esc to go back')}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+            </text>
+          </box>
+        </box>
+      </box>
     );
   }
 
@@ -478,81 +468,64 @@ export function RewindSelector({
       boxWidth - 10,
     );
     return (
-      <Box flexDirection="column" width={boxWidth}>
-        <Box
-          flexDirection="column"
-          borderStyle="round"
-          borderColor={theme.border.default}
-          width={boxWidth}
-        >
-          <Box paddingX={1}>
-            <Text bold color={theme.text.primary}>
+      <box style={{ flexDirection: "column", width: boxWidth }}>
+        <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth }}>
+          <box paddingX={1}>
+            <text bold color={theme.text.primary}>
               {t('Rewind Conversation')}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-          </Box>
-          <Box paddingX={1} flexDirection="column">
-            <Box marginBottom={1}>
-              <Text color={theme.text.primary}>{t('Rewind to: ')}</Text>
-              <Text color={theme.text.accent} bold>
+            </text>
+          </box>
+          <box>
+            <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+          </box>
+          <box paddingX={1} style={{ flexDirection: "column" }}>
+            <box marginBottom={1}>
+              <text color={theme.text.primary}>{t('Rewind to: ')}</text>
+              <text color={theme.text.accent} bold>
                 {promptPreview}
-              </Text>
-            </Box>
-            <Text color={theme.status.warning}>
+              </text>
+            </box>
+            <text color={theme.status.warning}>
               {t(
                 'This will remove all conversation after this turn. The prompt will be pre-populated in the input for editing.',
               )}
-            </Text>
-          </Box>
-          <Box>
-            <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-          </Box>
-          <Box paddingX={1}>
-            <Text color={theme.text.secondary}>
+            </text>
+          </box>
+          <box>
+            <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+          </box>
+          <box paddingX={1}>
+            <text color={theme.text.secondary}>
               {t('Enter/Y to confirm · Esc/N to go back')}
-            </Text>
-          </Box>
-        </Box>
-      </Box>
+            </text>
+          </box>
+        </box>
+      </box>
     );
   }
 
   // Pick-list phase
   return (
-    <Box
-      flexDirection="column"
-      width={boxWidth}
-      height={height - 1}
-      overflow="hidden"
-    >
-      <Box
-        flexDirection="column"
-        borderStyle="round"
-        borderColor={theme.border.default}
-        width={boxWidth}
-        height={height - 1}
-        overflow="hidden"
-      >
+    <box style={{ flexDirection: "column", width: boxWidth, height: height - 1 }} overflow="hidden">
+      <box style={{ flexDirection: "column", borderStyle: "round", borderColor: theme.border.default, width: boxWidth, height: height - 1 }} overflow="hidden">
         {/* Header */}
-        <Box paddingX={1}>
-          <Text bold color={theme.text.primary}>
+        <box paddingX={1}>
+          <text bold color={theme.text.primary}>
             {t('Rewind Conversation')}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {' '}
             {t('({{count}} turns)', { count: String(userTurns.length) })}
-          </Text>
-        </Box>
+          </text>
+        </box>
 
         {/* Separator */}
-        <Box>
-          <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-        </Box>
+        <box>
+          <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+        </box>
 
         {/* Turn list */}
-        <Box flexDirection="column" flexGrow={1} paddingX={1} overflow="hidden">
+        <box style={{ flexDirection: "column", flexGrow: 1 }} paddingX={1} overflow="hidden">
           {visibleTurns.map((item, visibleIndex) => {
             const actualIndex = scrollOffset + visibleIndex;
             return (
@@ -569,20 +542,20 @@ export function RewindSelector({
               />
             );
           })}
-        </Box>
+        </box>
 
         {/* Separator */}
-        <Box>
-          <Text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</Text>
-        </Box>
+        <box>
+          <text color={theme.border.default}>{'─'.repeat(boxWidth - 2)}</text>
+        </box>
 
         {/* Footer */}
-        <Box paddingX={1}>
-          <Text color={theme.text.secondary}>
+        <box paddingX={1}>
+          <text color={theme.text.secondary}>
             {t('↑↓ to navigate · Enter to select · Esc to cancel')}
-          </Text>
-        </Box>
-      </Box>
-    </Box>
+          </text>
+        </box>
+      </box>
+    </box>
   );
 }

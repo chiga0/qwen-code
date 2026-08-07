@@ -37,14 +37,14 @@ export const SessionSummaryDisplay: React.FC<SessionSummaryDisplayProps> = ({
         width={width}
       />
       {hasMessages && canResume && (
-        <Box marginTop={1}>
-          <Text color={theme.text.secondary}>
+        <box marginTop={1}>
+          <text color={theme.text.secondary}>
             {t('To continue this session, run')}{' '}
-            <Text color={theme.text.accent}>
+            <text color={theme.text.accent}>
               qwen --resume {stats.sessionId}
-            </Text>
-          </Text>
-        </Box>
+            </text>
+          </text>
+        </box>
       )}
     </>
   );

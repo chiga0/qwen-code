@@ -340,17 +340,17 @@ export const ExtensionActionsView = ({
       items.findIndex((item) => item.value === scope),
     );
     return (
-      <Box flexDirection="column" gap={1}>
-        <Box flexDirection="column">
-          <Text color={theme.text.primary}>
+      <box style={{ flexDirection: "column", gap: 1 }}>
+        <box style={{ flexDirection: "column" }}>
+          <text color={theme.text.primary}>
             {t('Change scope for "{{name}}":', { name: extension.name })}
-          </Text>
-          <Text color={theme.text.secondary}>
+          </text>
+          <text color={theme.text.secondary}>
             {t('Current: {{scope}}', { scope: items[currentIndex].label })}
-          </Text>
-        </Box>
+          </text>
+        </box>
         {scopeBusy ? (
-          <Text color={theme.text.secondary}>{t('Changing scope...')}</Text>
+          <text color={theme.text.secondary}>{t('Changing scope...')}</text>
         ) : (
           <RadioButtonSelect
             items={items}
@@ -360,16 +360,16 @@ export const ExtensionActionsView = ({
             onSelect={(value) => void handleScope(value)}
           />
         )}
-      </Box>
+      </box>
     );
   }
 
   if (sub === 'uninstall-confirm') {
     if (uninstallBusy) {
       return (
-        <Text color={theme.text.secondary}>
+        <text color={theme.text.secondary}>
           {t('Uninstalling "{{name}}"...', { name: extension.name })}
-        </Text>
+        </text>
       );
     }
     return (

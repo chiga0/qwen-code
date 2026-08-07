@@ -56,14 +56,14 @@ vi.mock('ink', async () => {
 vi.mock('./AppHeader.js', () => ({
   AppHeader: ({ version }: { version: string }) => {
     appHeaderSpy(version);
-    return <Text>{`APP_HEADER:${version}`}</Text>;
+    return <text>{`APP_HEADER:${version}`}</text>;
   },
 }));
 
 vi.mock('./HistoryItemDisplay.js', () => ({
   HistoryItemDisplay: (props: { item: { id: number } }) => {
     historyItemDisplayPropsSpy(props);
-    return <Text>{`HISTORY:${props.item.id}`}</Text>;
+    return <text>{`HISTORY:${props.item.id}`}</text>;
   },
 }));
 
@@ -82,20 +82,20 @@ vi.mock('./ShowMoreLines.js', async () => {
       // Non-overlapping markers so a `toContain('SHOW_MORE')` substring
       // assertion can't accidentally match the disconnected case.
       return (
-        <Text>
+        <text>
           {overflow === undefined ? 'OVERFLOW_DISCONNECTED' : 'SHOW_MORE'}
-        </Text>
+        </text>
       );
     },
   };
 });
 
 vi.mock('./Notifications.js', () => ({
-  Notifications: () => <Text>NOTIFICATIONS</Text>,
+  Notifications: () => <text>NOTIFICATIONS</text>,
 }));
 
 vi.mock('./DebugModeNotification.js', () => ({
-  DebugModeNotification: () => <Text>DEBUG_NOTIFICATION</Text>,
+  DebugModeNotification: () => <text>DEBUG_NOTIFICATION</text>,
 }));
 
 vi.mock('../selection/use-text-selection.js', () => ({
@@ -118,7 +118,7 @@ vi.mock('./shared/ScrollableList.js', async () => {
       return (
         <>
           {props.data.map((item) => (
-            <Text key={item.id}>{`VP_ITEM:${item.id}`}</Text>
+            <text key={item.id}>{`VP_ITEM:${item.id}`}</text>
           ))}
           {props.data.map((item, index) => props.renderItem({ item, index }))}
         </>

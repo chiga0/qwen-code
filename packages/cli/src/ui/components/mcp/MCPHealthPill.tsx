@@ -39,8 +39,8 @@ export const MCPHealthPill: React.FC = () => {
   if (!label) return null;
   return (
     <>
-      <Text color={theme.text.secondary}> · </Text>
-      <Text color={theme.status.warning}>{label}</Text>
+      <text color={theme.text.secondary}> · </text>
+      <text color={theme.status.warning}>{label}</text>
     </>
   );
 };

@@ -58,9 +58,9 @@ const RenderedTerminalImage: React.FC<
 
   if (result.kind === 'unavailable') {
     return (
-      <Text color={theme.text.secondary} wrap="wrap">
+      <text color={theme.text.secondary} wrap="wrap">
         {unavailableText}
-      </Text>
+      </text>
     );
   }
   if (result.kind === 'ansi') {
@@ -71,9 +71,9 @@ const RenderedTerminalImage: React.FC<
         overflowDirection="bottom"
       >
         {result.lines.map((line, index) => (
-          <Box key={index}>
-            <Text>{line || ' '}</Text>
-          </Box>
+          <box key={index}>
+            <text>{line || ' '}</text>
+          </box>
         ))}
       </MaxSizedBox>
     );
@@ -85,11 +85,11 @@ const RenderedTerminalImage: React.FC<
       overflowDirection="bottom"
     >
       {result.placeholder.lines.map((line, index) => (
-        <Box key={index}>
-          <Text color={result.placeholder.color} wrap="truncate-end">
+        <box key={index}>
+          <text color={result.placeholder.color} wrap="truncate-end">
             {line}
-          </Text>
-        </Box>
+          </text>
+        </box>
       ))}
     </MaxSizedBox>
   );
@@ -121,9 +121,9 @@ const FileTerminalImage: React.FC<FileTerminalImageProps> = ({
 
   if (!safePath) {
     return (
-      <Text color={theme.status.error}>
+      <text color={theme.status.error}>
         Refusing to display an image outside the current workspace.
-      </Text>
+      </text>
     );
   }
   if (!result) return null;
@@ -167,7 +167,7 @@ const InlineTerminalImage: React.FC<InlineTerminalImageProps> = ({
   );
 
   if (!prepared.result) {
-    return <Text color={theme.text.secondary}>{prepared.fallbackText}</Text>;
+    return <text color={theme.text.secondary}>{prepared.fallbackText}</text>;
   }
   return (
     <RenderedTerminalImage
