@@ -245,7 +245,12 @@ export interface ShellExecutionResult {
   /** The process ID of the spawned shell. */
   pid: number | undefined;
   /** The method used to execute the shell command. */
-  executionMethod: 'lydell-node-pty' | 'node-pty' | 'child_process' | 'none';
+  executionMethod:
+    | 'lydell-node-pty'
+    | 'node-pty'
+    | 'bun-terminal'
+    | 'child_process'
+    | 'none';
 }
 
 /** A handle for an ongoing shell execution. */
@@ -2260,9 +2265,7 @@ export class ShellExecutionService {
                   error,
                   aborted: abortSignal.aborted,
                   pid: ptyProcess.pid,
-                  executionMethod:
-                    (ptyInfo?.name as 'node-pty' | 'lydell-node-pty') ??
-                    'node-pty',
+                  executionMethod: ptyInfo?.name ?? 'node-pty',
                 });
               } finally {
                 disposeForegroundPtyResources();
@@ -2666,8 +2669,7 @@ export class ShellExecutionService {
               aborted: false,
               promoted: true,
               pid: ptyProcess.pid,
-              executionMethod:
-                (ptyInfo?.name as 'node-pty' | 'lydell-node-pty') ?? 'node-pty',
+              executionMethod: ptyInfo?.name ?? 'node-pty',
             });
           } finally {
             try {

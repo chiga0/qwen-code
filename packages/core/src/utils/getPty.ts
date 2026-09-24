@@ -9,7 +9,7 @@ import { getErrorMessage } from './errors.js';
 export type PtyImplementation = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   module: any;
-  name: 'lydell-node-pty' | 'node-pty';
+  name: 'lydell-node-pty' | 'node-pty' | 'bun-terminal';
 } | null;
 
 export interface PtyProcess {
@@ -41,12 +41,32 @@ export interface PtyLoadResult {
  * callers that only need the backend use getPty().
  */
 export const loadPty = async (): Promise<PtyLoadResult> => {
-  // Bun can load @lydell/node-pty, but it hangs under Desktop's runtime.
   if ('bun' in process.versions) {
+    // ConPTY under Bun is unmeasured, and the Windows host-lifecycle work in
+    // conpty-host.ts drives node-pty internals a Bun backend does not have.
+    if (process.platform === 'win32') {
+      return {
+        impl: null,
+        loadError:
+          'the PTY backend is disabled under the Bun runtime; use the Node runtime',
+      };
+    }
+    // Bun can load @lydell/node-pty, but its first spawn never delivers output
+    // and never exits, so neither packaged backend is usable here.
+    if (
+      typeof (globalThis as { Bun?: { Terminal?: unknown } }).Bun?.Terminal !==
+      'function'
+    ) {
+      return {
+        impl: null,
+        loadError:
+          'this Bun runtime has no Bun.Terminal primitive; use the Node runtime',
+      };
+    }
+    const { spawn } = await import('./bun-pty.js');
     return {
-      impl: null,
-      loadError:
-        'the PTY backend is disabled under the Bun runtime; use the Node runtime',
+      impl: { module: { spawn }, name: 'bun-terminal' },
+      loadError: null,
     };
   }
 

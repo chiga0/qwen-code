@@ -38,31 +38,82 @@ function markBunRuntime(): () => void {
   };
 }
 
+// loadPty() gates the Bun backend on the primitive itself, not on the version
+// marker, so the "backend exists" arm needs a stand-in for it. Nothing here is
+// called: the test only asserts which backend loadPty() resolves.
+function stubBunTerminal(): () => void {
+  const globalWithBun = globalThis as { Bun?: unknown };
+  const original = globalWithBun.Bun;
+
+  globalWithBun.Bun = { Terminal: class {}, spawn: () => ({}) };
+
+  return () => {
+    if (original === undefined) {
+      delete globalWithBun.Bun;
+    } else {
+      globalWithBun.Bun = original;
+    }
+  };
+}
+
+function markPlatform(platform: string): () => void {
+  const original = Object.getOwnPropertyDescriptor(process, 'platform')!;
+
+  Object.defineProperty(process, 'platform', {
+    value: platform,
+    configurable: true,
+  });
+
+  return () => {
+    Object.defineProperty(process, 'platform', original);
+  };
+}
+
 describe('getPty', () => {
-  it('falls back when running under Bun', async () => {
+  it('resolves null when this Bun build has no Terminal primitive', async () => {
     const restoreBun = markBunRuntime();
 
     try {
+      const { impl, loadError } = await loadPty();
+
+      expect(impl).toBeNull();
+      expect(loadError).toMatch(/no Bun\.Terminal primitive/);
+      // The registry's contract: no rejection, no throwing arm.
       await expect(getPty()).resolves.toBeNull();
     } finally {
       restoreBun();
     }
   });
 
-  it('records why the Bun runtime has no backend while still resolving null', async () => {
+  it('returns the Bun terminal backend when the primitive exists', async () => {
     const restoreBun = markBunRuntime();
+    const restoreGlobal = stubBunTerminal();
 
     try {
       const { impl, loadError } = await loadPty();
 
-      // Bun *can* load @lydell/node-pty; it is switched off because it hangs.
-      // The reason has to say that, not claim a backend the user would then
-      // try to install.
+      expect(loadError).toBeNull();
+      expect(impl?.name).toBe('bun-terminal');
+      expect(typeof impl?.module.spawn).toBe('function');
+    } finally {
+      restoreGlobal();
+      restoreBun();
+    }
+  });
+
+  it('keeps the Bun runtime disabled on Windows, where ConPTY is unmeasured', async () => {
+    const restoreBun = markBunRuntime();
+    const restoreGlobal = stubBunTerminal();
+    const restorePlatform = markPlatform('win32');
+
+    try {
+      const { impl, loadError } = await loadPty();
+
       expect(impl).toBeNull();
       expect(loadError).toMatch(/disabled under the Bun runtime/);
-      // The registry's contract: no rejection, no throwing arm.
-      await expect(getPty()).resolves.toBeNull();
     } finally {
+      restorePlatform();
+      restoreGlobal();
       restoreBun();
     }
   });
@@ -82,7 +133,7 @@ describe('getPty', () => {
     expect(failures[0]).toMatch(/native module failed to dlopen: pty\.node/);
     expect(failures[1]).toMatch(/node-pty/);
     // ...and not another arm's reason.
-    expect(loadError).not.toMatch(/Bun runtime/);
+    expect(loadError).not.toMatch(/Bun/);
   });
 
   it("keeps each call's own reason when another call lands in between", async () => {
@@ -98,7 +149,7 @@ describe('getPty', () => {
     try {
       const bun = await loadPty();
       expect(bun.impl).toBeNull();
-      expect(bun.loadError).toMatch(/disabled under the Bun runtime/);
+      expect(bun.loadError).toMatch(/no Bun\.Terminal primitive/);
     } finally {
       restoreBun();
     }
@@ -109,7 +160,7 @@ describe('getPty', () => {
     expect(failed.loadError).toMatch(
       /native module failed to dlopen: pty\.node/,
     );
-    expect(failed.loadError).not.toMatch(/Bun runtime/);
+    expect(failed.loadError).not.toMatch(/Bun/);
   });
 
   it("does not reuse a previous call's reason for a later failure", async () => {
@@ -117,7 +168,7 @@ describe('getPty', () => {
 
     try {
       const bun = await loadPty();
-      expect(bun.loadError).toMatch(/Bun runtime/);
+      expect(bun.loadError).toMatch(/no Bun\.Terminal primitive/);
     } finally {
       restoreBun();
     }
@@ -128,6 +179,6 @@ describe('getPty', () => {
     expect(later.loadError).toMatch(
       /native module failed to dlopen: pty\.node/,
     );
-    expect(later.loadError).not.toMatch(/Bun runtime/);
+    expect(later.loadError).not.toMatch(/Bun/);
   });
 });
