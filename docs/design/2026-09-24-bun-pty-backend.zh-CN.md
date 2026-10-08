@@ -312,7 +312,7 @@ Bun"、"records why the Bun runtime has no backend"）必须重写：在 POSIX �
 
 第 1—6 步在 darwin 上本地实测；第 7—8 步是只能在别处跑的门禁。
 
-1. 本地端到端腿（`scripts/check-bun-pty.mjs`，14 项检查：用 `stty size` 验初始几
+1. 本地端到端腿（`bun scripts/check-bun-pty.mjs`，14 项检查：用 `stty size` 验初始几
    何、写入透传、resize 可见性、resize 校验、自然退出码、
    `SIGTERM`/`SIGKILL`/`SIGHUP` 形状、裸调 `kill()` 的默认值、pid 存活、两个并发
    pty 无串扰、连续 20 次 spawn、进程组取消、无残留子进程）：**在 Bun 1.3.14 与
@@ -330,7 +330,8 @@ Bun"、"records why the Bun runtime has no backend"）必须重写：在 POSIX �
    不是 node-pty 的。脚本最后一次改动只是修正注释、不改行为，改完后两条腿又各跑了
    一次：Bun 1.3.14 下 14/14，Bun 1.4.0 下 14/14。
 2. 成对比较，每次比较只变一个变量（后端）：同样这些检查在 Node 24.19.0 下用
-   `@lydell/node-pty` 再跑一遍——**三条臂（Bun 1.3.14、Bun 1.4.0、Node）均
+   `@lydell/node-pty` 再跑一遍，由 `node scripts/check-bun-pty.mjs --control`
+   产出——该参数只把适配器换成打包后端，断言一条不动——**三条臂（Bun 1.3.14、Bun 1.4.0、Node）均
    14/14**，且把 pid 与运行时标签归一化之后 Bun 与 Node 的日志逐行相同；唯一仍然不
    同的是点名后端的 `SUMMARY` 那一行。正是这条对照臂把决定 12 从"读 node-pty 源码
    得出的推论"变成了实测：在 node-pty 下同一个探针报告 `pgid == pid`、组 `SIGTERM`
@@ -340,6 +341,8 @@ Bun"、"records why the Bun runtime has no backend"）必须重写：在 POSIX �
    端下子进程的 `TERM` 都取自 `name` 选项，`PWD` 都取自 `cwd`。排空顺序用 5000 行
    突发实测：每一行都在 `proc.exited` resolve 之前送达，这正是决定 4 所依赖的；
    terminal 自己的退出回调更晚触发，且报 code 0、无信号，印证决定 2。
+   两条臂在 main 合入本分支之后又各跑了一遍：均 14/14，归一化后的日志仍然只在
+   `SUMMARY` 那一行不同。
 3. 生产路径，两条臂：`ShellExecutionService.execute` 驱动一个真实 tty。在 Bun
    1.3.14 与 1.4.0 下它上报 `executionMethod: "bun-terminal"`、一个真实的
    `/dev/ttys00N`、配置的 `30 100` 几何被子进程遵守，取消返回 `aborted: true` 且
@@ -352,8 +355,8 @@ Bun"、"records why the Bun runtime has no backend"）必须重写：在 POSIX �
    `SIGTERM` 落地、零存活孙进程、`{exitCode: 0, signal: 15}`。
 5. 在 Node 下执行 `cd packages/core && npx vitest run src/utils/getPty.test.ts
 src/utils/bun-pty.test.ts src/services/shellExecutionService.test.ts
-src/services/web-terminal-registry.test.ts`：四个文件 **245 条测试全通过**
-   （适配层 20、加载器 6、shell 服务 175、web 终端 44）。对适配层的变异——`kill()`
+src/services/web-terminal-registry.test.ts`：在 main 合入本分支之后重跑，四个文件
+   **250 条测试全通过**（适配层 20、加载器 6、shell 服务 180、web 终端 44）。对适配层的变异——`kill()`
    默认值、`TERM` 优先级、流控缓冲块、`toExitInfo` 的信号分支、`detached` 选项——
    每一处都至少让一条用例失败，所以这套绿测不是空转。
 6. `npm run build && npm run typecheck` 退出 0；对每个改动文件的 scoped ESLint 零

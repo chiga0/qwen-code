@@ -355,7 +355,7 @@ not just the one that names the primitive.
 
 Steps 1–6 were measured locally on darwin; 7–8 are the gates that run elsewhere.
 
-1. Local end-to-end leg (`scripts/check-bun-pty.mjs`, 14 checks: initial geometry
+1. Local end-to-end leg (`bun scripts/check-bun-pty.mjs`, 14 checks: initial geometry
    via `stty size`, write-through, resize visibility, resize validation, natural
    exit code, `SIGTERM`/`SIGKILL`/`SIGHUP` shapes, the bare `kill()` default, live
    pid, two concurrent ptys with no cross-talk, 20 sequential spawns,
@@ -378,7 +378,9 @@ Steps 1–6 were measured locally on darwin; 7–8 are the gates that run elsewh
    change — both legs were run once more against it: 14/14 under Bun 1.3.14 and
    14/14 under Bun 1.4.0.
 2. Matched pair, one variable per comparison (the backend): the same checks
-   against `@lydell/node-pty` on Node 24.19.0 — **14/14 on all three arms** (Bun
+   against `@lydell/node-pty` on Node 24.19.0, produced by
+   `node scripts/check-bun-pty.mjs --control`, which swaps the adapter for the
+   packaged backend and leaves every assertion untouched — **14/14 on all three arms** (Bun
    1.3.14, Bun 1.4.0, Node), and the Bun and Node logs are line-identical once
    pids and the runtime label are normalised; the only line that still differs is
    the `SUMMARY`, which names the backend. The control arm is what turns Decision
@@ -392,6 +394,8 @@ Steps 1–6 were measured locally on darwin; 7–8 are the gates that run elsewh
    5000-line burst: every line is delivered before `proc.exited` resolves, which
    is what Decision 4 relies on; the terminal's own exit callback fires later and
    reports code 0 with no signal, confirming Decision 2.
+   Both arms were re-run after main was merged into this branch: 14/14 each,
+   and the normalised logs still differ only in the `SUMMARY` line.
 3. Production path, both arms: `ShellExecutionService.execute` driving a real tty.
    Under Bun 1.3.14 and Bun 1.4.0 it reports
    `executionMethod: "bun-terminal"`, a real `/dev/ttys00N`, the configured
@@ -407,9 +411,10 @@ Steps 1–6 were measured locally on darwin; 7–8 are the gates that run elsewh
    grandchildren, and `{exitCode: 0, signal: 15}`.
 5. `cd packages/core && npx vitest run src/utils/getPty.test.ts
 src/utils/bun-pty.test.ts src/services/shellExecutionService.test.ts
-src/services/web-terminal-registry.test.ts` under Node: **245 tests pass**
-   across the four files (20 adapter, 6 loader, 175 shell service, 44 web
-   terminal). Mutations of the adapter — the `kill()` default, the `TERM`
+src/services/web-terminal-registry.test.ts` under Node, re-run after main was
+   merged into this branch: **250 tests pass** across the four files (20 adapter,
+   6 loader, 180 shell service, 44 web terminal). Mutations of the adapter — the
+   `kill()` default, the `TERM`
    precedence, the flow-control buffering block, `toExitInfo`'s signal branch and
    the `detached` option — each fail at least one case, so the suite is not
    vacuously green.

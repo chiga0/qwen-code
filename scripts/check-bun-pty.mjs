@@ -9,19 +9,39 @@
 // cannot notice a Bun release changing Bun.Terminal or Bun.spawn semantics.
 // This script runs the adapter against actual ptys under an actual Bun and
 // asserts absolute expectations. It needs no dependencies: run it with
-// `bun scripts/check-bun-pty.mjs` from the repository root.
+// `bun scripts/check-bun-pty.mjs` from the repository root, or with
+// `node scripts/check-bun-pty.mjs --control` for the node-pty comparison arm.
 
+import { spawnSync } from 'node:child_process';
+
+// `--control` runs the identical checks against the packaged node-pty backend
+// under Node. The design doc's process-group decision rests on that comparison,
+// so the gate has to be able to produce it rather than only describe it.
+const CONTROL = process.argv.includes('--control');
 // Read through globalThis, not the bare identifier: this file is linted with the
 // repo's Node-script globals, where `Bun` is not defined.
 const Bun = globalThis.Bun;
-if (!Bun) {
-  console.error('check-bun-pty: this gate must run under bun');
-  process.exit(1);
+
+let spawn;
+let runtime;
+if (CONTROL) {
+  ({ spawn } = await import('@lydell/node-pty'));
+  runtime = `node ${process.version} backend=@lydell/node-pty`;
+} else {
+  if (!Bun) {
+    console.error('check-bun-pty: this gate must run under bun');
+    process.exit(1);
+  }
+  ({ spawn } = await import('../packages/core/src/utils/bun-pty.ts'));
+  runtime = `bun ${Bun.version} backend=bun-terminal`;
 }
 
-const { spawn } = await import('../packages/core/src/utils/bun-pty.ts');
+// The probes below shell out to `ps`; which runtime does it must not change
+// what they observe.
+const shOut = (script) =>
+  spawnSync('/bin/sh', ['-c', script], { encoding: 'utf8' }).stdout.trim();
 
-console.log(`RUNTIME bun ${Bun.version}`);
+console.log(`RUNTIME ${runtime}`);
 
 const ENV = { PATH: process.env.PATH, HOME: '/tmp', TERM: 'xterm-256color' };
 const SPAWN_OPTIONS = {
@@ -304,11 +324,9 @@ for (const [name, signal, want] of [
   while (!output.includes('GROUP_READY') && Date.now() < readyDeadline) {
     await sleep(25);
   }
-  const ps = (script) =>
-    Bun.spawnSync(['/bin/sh', '-c', script]).stdout.toString().trim();
   const pid = pty.pid;
-  const pgid = ps(`ps -o pgid= -p ${pid}`);
-  const kids = ps(
+  const pgid = shOut(`ps -o pgid= -p ${pid}`);
+  const kids = shOut(
     `ps -o pid=,ppid= -ax | awk '$2==${pid} && $1!=${pid} {print $1}'`,
   )
     .split('\n')
@@ -320,7 +338,7 @@ for (const [name, signal, want] of [
     groupTermLanded = false;
   }
   await sleep(1000);
-  const alive = kids.filter((kid) => ps(`ps -o pid= -p ${kid}`) === kid);
+  const alive = kids.filter((kid) => shOut(`ps -o pid= -p ${kid}`) === kid);
   report(
     'process-group-cancel',
     output.includes('GROUP_READY') &&
@@ -338,16 +356,10 @@ await sleep(500);
 // command line, which contains the pattern text, so the `^…$` anchors are what
 // keep it from matching itself; the `[s]leep` spelling is the same guard restated
 // for a probe run without them.
-const strays = Bun.spawnSync([
-  '/bin/sh',
-  '-c',
-  "ps -o args= -ax | grep -cE '^[s]leep 3[01]$' || true",
-])
-  .stdout.toString()
-  .trim();
+const strays = shOut("ps -o args= -ax | grep -cE '^[s]leep 3[01]$' || true");
 report('no-stray-children', strays === '0', `sleepProcs=${strays}`);
 
 console.log(
-  `SUMMARY runtime=bun ${Bun.version} failed=${failures.length} names=${failures.join(',') || 'none'}`,
+  `SUMMARY runtime=${runtime} failed=${failures.length} names=${failures.join(',') || 'none'}`,
 );
 process.exit(failures.length ? 1 : 0);
