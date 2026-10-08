@@ -196,6 +196,7 @@ interface ChatEditorProps {
   ) => boolean | void;
   onInputTextChange?: (text: string) => void;
   onAttachmentsChange?: (hasAttachments: boolean) => void;
+  btwEnabled?: boolean;
   onCycleMode?: () => void;
   cycleModeOnTab?: boolean;
   onToggleShortcuts?: () => void;
@@ -238,6 +239,8 @@ interface ChatEditorProps {
   onOpenGitDiff?: () => void;
   /** Opens the commit dialog. */
   onOpenCommit?: () => void;
+  /** Opens the worktree manager. */
+  onOpenWorktrees?: () => void;
   /** Opens the commit history graph. */
   onOpenLog?: () => void;
   /** Workspace name shown in the pane composer's `workspace` toolbar chip. */
@@ -253,6 +256,7 @@ interface ChatEditorProps {
   showChatWidthToggle?: boolean;
   chatWidthToggleMin?: number;
   visibleToolbarActions?: readonly ComposerToolbarAction[];
+  liveVoicePortalContainer?: HTMLElement | null;
   /**
    * Where the composer's context chips (workspace selector, git branch) land.
    * `toolbar` (default) keeps both in the composer toolbar. `below` moves both
@@ -1385,6 +1389,7 @@ export const ChatEditor = memo(
       onSubmit,
       onInputTextChange,
       onAttachmentsChange,
+      btwEnabled = false,
       onCycleMode,
       cycleModeOnTab = false,
       onToggleShortcuts,
@@ -1417,6 +1422,7 @@ export const ChatEditor = memo(
       gitStatus,
       onOpenGitDiff,
       onOpenCommit,
+      onOpenWorktrees,
       onOpenLog,
       workspaceName,
       workspaceTitle,
@@ -1425,6 +1431,7 @@ export const ChatEditor = memo(
       showChatWidthToggle = true,
       chatWidthToggleMin,
       visibleToolbarActions,
+      liveVoicePortalContainer,
       contextChipPlacement = 'toolbar',
       tokenCount = 0,
       contextWindow = 0,
@@ -1888,6 +1895,25 @@ export const ChatEditor = memo(
       },
       [core, focusComposer],
     );
+    const handleAddMenuBtw = () => {
+      if (
+        !btwEnabled ||
+        disabled ||
+        isPreparing ||
+        core.shellMode ||
+        core.pendingImageBatchCount > 0 ||
+        core.handle.hasAttachments()
+      ) {
+        return;
+      }
+      const text = core.getText();
+      const prefix = /^\s*\/btw(?=\s|$)/i;
+      const nextText = prefix.test(text)
+        ? text.replace(prefix, '/btw')
+        : `/btw ${text}`;
+      if (nextText !== text) core.setText(nextText);
+      focusComposer();
+    };
     const handleUploadPickerChange = useCallback(
       (event: ReactChangeEvent<HTMLInputElement>) => {
         const files = Array.from(event.target.files ?? []);
@@ -2395,9 +2421,11 @@ export const ChatEditor = memo(
             onOpenChange={setBranchPickerOpen}
             workspaceCwd={selectedWorkspace?.cwd ?? ''}
             gitCwd={gitCwd}
+            gitSessionId={gitCwd ? sessionId : undefined}
             status={gitStatus}
             onOpenDiff={onOpenGitDiff}
             onOpenCommit={onOpenCommit}
+            onOpenWorktrees={onOpenWorktrees}
             onOpenLog={onOpenLog}
           >
             <button
@@ -3350,6 +3378,20 @@ export const ChatEditor = memo(
                       skillsLoading={skillsLoading}
                       skillsLoadError={skillsLoadError}
                       skillsLoaded={skillsLoaded}
+                      btw={
+                        btwEnabled && !core.shellMode
+                          ? {
+                              onSelect: handleAddMenuBtw,
+                              disabledReason:
+                                core.hasAttachments ||
+                                core.pendingImageBatchCount > 0
+                                  ? t('composerAdd.btw.textOnly')
+                                  : isPreparing
+                                    ? t('common.loading')
+                                    : undefined,
+                            }
+                          : undefined
+                      }
                       plan={
                         showPlanInAddMenu
                           ? {
@@ -3741,6 +3783,7 @@ export const ChatEditor = memo(
                 {showToolbarAction('voice') && (
                   <>
                     <LiveVoiceButton
+                      portalContainer={liveVoicePortalContainer}
                       hideInactiveTrigger={
                         isMobile && Boolean(showAddMenuAction)
                       }

@@ -23,7 +23,9 @@ import {
   FolderClosedIcon,
   FolderOpenIcon,
   Globe2Icon,
+  InboxIcon,
 } from 'lucide-react';
+import { Empty, EmptyMedia, EmptyDescription } from '../ui/empty';
 import { useI18n } from '../../i18n';
 import { formatDateTime } from '../../utils/formatDateTime';
 import {
@@ -120,9 +122,11 @@ export interface WorkspaceHeaderActionsContext {
 }
 
 interface WorkspaceSectionProps {
+  additionalSessions?: readonly DaemonSessionSummary[];
   workspace: DaemonWorkspaceCapability;
   remote?: boolean;
   renderHeader?: (expanded: boolean) => ReactNode;
+  hideHeader?: boolean;
   client: DaemonClient;
   reloadToken: number;
   untrustedLabel: string;
@@ -140,6 +144,7 @@ interface WorkspaceSectionProps {
   searchQuery?: string;
   expanded?: boolean;
   autoExpandKey?: string;
+  forceAutoExpand?: boolean;
   onExpandedChange?: (expanded: boolean) => void;
   renderSessions?: boolean;
   /**
@@ -153,6 +158,12 @@ interface WorkspaceSectionProps {
     session: DaemonSessionSummary,
     options?: { searchSnippet?: string | undefined },
   ) => ReactNode;
+  pendingSession?: {
+    key: string;
+    sessionId?: string;
+    sourceId?: string;
+    node: ReactNode;
+  };
   mapSession?: (session: DaemonSessionSummary) => DaemonSessionSummary;
   showSessionDetails?: boolean;
   /**
@@ -226,9 +237,11 @@ interface WorkspaceSectionProps {
 }
 
 export function WorkspaceSection({
+  additionalSessions,
   workspace,
   remote = false,
   renderHeader,
+  hideHeader = false,
   client,
   reloadToken,
   untrustedLabel,
@@ -246,9 +259,11 @@ export function WorkspaceSection({
   searchQuery = '',
   expanded: controlledExpanded,
   autoExpandKey,
+  forceAutoExpand = false,
   onExpandedChange,
   renderSessions = true,
   renderSession,
+  pendingSession,
   mapSession,
   showSessionDetails = true,
   headerActions,
@@ -285,6 +300,7 @@ export function WorkspaceSection({
   const [detailsOpen, setDetailsOpen] = useState(false);
   const [showAllSessions, setShowAllSessions] = useState(false);
   const [gitStatus, setGitStatus] = useState<DaemonWorkspaceGitStatus>();
+  const fulfilledPendingSessions = useRef(new Set<string>());
   const channelCatalogLoadRequestId = useRef(0);
   const { t } = useI18n();
   const expanded = controlledExpanded ?? internalExpanded;
@@ -315,11 +331,11 @@ export function WorkspaceSection({
     if (
       controlledExpanded === undefined &&
       autoExpandKey &&
-      !hasWorkspaceExpansionPreference(workspace.id)
+      (forceAutoExpand || !hasWorkspaceExpansionPreference(workspace.id))
     ) {
       setInternalExpanded(true);
     }
-  }, [autoExpandKey, controlledExpanded, workspace.id]);
+  }, [autoExpandKey, controlledExpanded, forceAutoExpand, workspace.id]);
 
   const sessionsEnabled = renderSessions && !disabled;
   const sessionsVisible = expanded || Boolean(searchQuery.trim());
@@ -641,6 +657,21 @@ export function WorkspaceSection({
         .join('|'),
     [sessions],
   );
+  const pendingSessionMatched = Boolean(
+    pendingSession &&
+      sessions.some(
+        (session) =>
+          (pendingSession.sessionId !== undefined &&
+            session.sessionId === pendingSession.sessionId) ||
+          (pendingSession.sourceId !== undefined &&
+            session.sourceId === pendingSession.sourceId),
+      ),
+  );
+  useEffect(() => {
+    if (!pendingSession) fulfilledPendingSessions.current.clear();
+    else if (pendingSessionMatched)
+      fulfilledPendingSessions.current.add(pendingSession.key);
+  }, [pendingSession, pendingSessionMatched]);
   const contentSearchHits = useSessionContentSearch(
     sessionsEnabled ? client : undefined,
     workspace.cwd,
@@ -649,7 +680,16 @@ export function WorkspaceSection({
   );
   const searchedSessions = useMemo(() => {
     const query = searchQuery.trim().toLowerCase();
-    const scoped = sessions.map((session) => mapSession?.(session) ?? session);
+    const mapped = sessions.map((session) => mapSession?.(session) ?? session);
+    // Only a merge with collaboration rows is re-sorted, so the daemon's own
+    // order stands for everyone who has none.
+    const timeOf = (session: DaemonSessionSummary) =>
+      Date.parse(session.updatedAt ?? session.createdAt ?? '') || 0;
+    const newestFirst = (a: DaemonSessionSummary, b: DaemonSessionSummary) =>
+      timeOf(b) - timeOf(a);
+    const scoped = additionalSessions?.length
+      ? [...mapped, ...additionalSessions].sort(newestFirst)
+      : mapped;
     if (!query) return scoped;
     const localMatches = scoped.filter((session) => {
       const label = (session.displayName || '').toLowerCase();
@@ -668,7 +708,14 @@ export function WorkspaceSection({
       sourceType,
       mapSession,
     );
-  }, [contentSearchHits, mapSession, searchQuery, sessions, sourceType]);
+  }, [
+    additionalSessions,
+    contentSearchHits,
+    mapSession,
+    searchQuery,
+    sessions,
+    sourceType,
+  ]);
   const renderSessionWithSnippet = (session: DaemonSessionSummary) =>
     renderSession(session, {
       // Explicit options override renderSessionRow's guarded default, so
@@ -832,7 +879,7 @@ export function WorkspaceSection({
   );
   return (
     <div className={styles.section}>
-      {overviewEnabled && !renderHeader && !disabled ? (
+      {hideHeader ? null : overviewEnabled && !renderHeader && !disabled ? (
         <WorkspaceDetailsTooltip
           label={workspaceLabel(workspace)}
           cwd={workspace.ssh ? sshWorkspaceLabel(workspace.ssh) : gitPollCwd}
@@ -883,6 +930,11 @@ export function WorkspaceSection({
         (expanded || Boolean(searchQuery.trim())) &&
         !disabled && (
           <div className={styles.sessions}>
+            {pendingSession &&
+            !pendingSessionMatched &&
+            !fulfilledPendingSessions.current.has(pendingSession.key)
+              ? pendingSession.node
+              : null}
             {loadError ? (
               <div className={styles.error} role="status">
                 {loadErrorLabel}
@@ -903,7 +955,18 @@ export function WorkspaceSection({
               // A source switch swaps the query key; until the new source's
               // page settles there is no data yet, so the "no sessions" notice
               // would flash for a whole fetch round-trip.
-              sessionsLoading && sessionsPage === undefined ? null : (
+              pendingSession ||
+              (sessionsLoading &&
+                sessionsPage === undefined) ? null : hideHeader ? (
+                <Empty className="gap-2 py-8">
+                  <EmptyMedia className="mb-0 text-muted-foreground/40">
+                    <InboxIcon size={40} strokeWidth={1} aria-hidden="true" />
+                  </EmptyMedia>
+                  <EmptyDescription className="text-xs">
+                    {noSessionsLabel}
+                  </EmptyDescription>
+                </Empty>
+              ) : (
                 <div className={styles.empty}>{noSessionsLabel}</div>
               )
             ) : channelSessionGroups ? (

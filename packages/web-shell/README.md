@@ -3,6 +3,36 @@
 Qwen Code Web Shell 是面向浏览器的 daemon 会话终端 UI，可以作为 React
 组件嵌入到其他项目中。
 
+## Managed 工具结果
+
+`ManagedAgentWebShell` 与 `createJavaManagedAgentProvider` 支持 Java O3 工具结果。
+只有 Session 返回 `capabilities.artifacts: true` 时才提供输出入口；它不启用
+Shell 执行。卡片区分执行、捕获与交付状态，面板按固定版本分页读取原始 bytes，
+当前账号的内容读取权由 metadata 响应独立决定。此路径不使用 daemon 文件 API。
+
+宿主应提供包含租户及账号身份的 `productScope`，身份切换时同步更新它；刷新同一
+账号的短期 token 则继续使用动态 `getHeaders`。所有 metadata、range 和下载请求
+都经过注入的 `fetch`、`getHeaders` 与 `credentials`。跨源 gateway 需要允许带
+`Range`/`If-Match` 的鉴权 GET，并向浏览器暴露 `ETag`、`Content-Range` 和
+`Content-Length`；不要对 bytes 响应重新压缩或变换。
+
+支持 `showSaveFilePicker` 的浏览器默认把下载流直接写入用户选择的文件。其他宿主
+可提供 `saveArtifact(artifact, { signal, openStream })` 回调，在用户操作中取得
+可写目标后调用 `openStream()`，再用带 `signal` 的 `pipeTo` 保存。导出的
+`ManagedArtifactSave` 定义这一接口。回调必须传播取消和失败，并保持背压；不要用
+`blob()`/`arrayBuffer()` 聚合完整下载，也不要把 token 放进 URL。没有流式保存能力
+时只提供有界读取，并明确显示下载不可用。
+
+## 更新
+
+支持更新的服务会在后台检查并下载新版本，准备好后才在侧栏显示（双栏在「更多」中，单栏在版本号旁）
+「更新」按钮。点击后应用更新并重启服务，连接恢复后自动刷新当前任务页面。
+重启会结束正在运行的工作。更新目标是连接的服务，远程连接时也是远程机器上的安装。
+
+支持具备进程替换能力的 macOS/Linux CLI 服务，以及独立安装或受管理的全局 npm
+安装。关闭 `general.enableAutoUpdate`、旧服务、桌面 shell、不支持的安装及嵌入式
+服务不显示按钮。临时配对连接也不提供更新入口。使用自定义 `sidebar.footer.items` 时，通过 `update` 项控制此功能。
+
 ## 开发网页预览
 
 独立 Web Shell 的右侧面板提供「网页预览」。先通过终端启动开发服务器，
@@ -45,6 +75,70 @@ iframe 仍需宿主的防嵌入策略保护。
 daemon 自身。页面的防嵌入策略可能要求使用外部打开。远程开发目前需要
 浏览器可访问的地址或已有端口转发；预览不会自动把浏览器的 `localhost`
 转成远程 daemon 地址，也不会转发 daemon 凭据。
+
+## 宿主接管产物与代码高亮
+
+`onRightPanelOpen` 同步返回 `false` 时继续 Web Shell 原生打开逻辑；返回
+`true` 或 `undefined` 时由宿主接管，保持旧版无返回值回调的行为。
+未提供回调时仍使用原生行为，`onFileReviewOpen` 保持更高优先级。
+该回调处理右侧面板请求；原生直接外部打开的记录链接仍走外部链接能力。
+
+`filterArtifact(artifact, { turnId, sourceSessionId })` 返回是否展示消息末尾的
+产物卡片。过滤先于折叠数量计算，并应用于主会话、分屏和嵌套会话。
+它不删除产物记录、不改变会话产物同步结果，也不隐藏文件变更卡片。
+
+```tsx
+<WebShell
+  {...connectionProps}
+  onRightPanelOpen={(request) => {
+    if (request.kind !== 'artifact') return false;
+    openHostPreview(request);
+    return true;
+  }}
+  filterArtifact={(artifact) => artifact.id !== hiddenArtifactId}
+/>
+```
+
+预览组件可从独立入口复用高亮服务，无需导入聊天 UI 或样式：
+
+```ts
+import { highlightCode } from '@qwen-code/web-shell/code-highlighter';
+
+const html = await highlightCode({
+  code: 'SELECT id FROM orders',
+  language: 'sql',
+  theme: 'dark', // 或 'light'
+});
+```
+
+返回高亮 HTML；未知语言、纯文本、超出已有大小限制或高亮失败返回 `null`，
+宿主应回退为转义的纯文本。服务复用同一模块实例的 Shiki、语言加载和缓存，
+不暴露可变的高亮器实例。独立 JavaScript realm 或重复打包的模块不共享实例。
+样式和 HTML 的安全渲染由宿主负责。
+
+## 实时语音中的屏幕共享
+
+无需启动原生 Live Host。在 Web Shell 设置中启用 Live Voice 并配置支持图像输入的
+实时模型，点击 Live Voice 后会直接接入新的语音会话，再点击「共享屏幕」。
+浏览器需要支持屏幕共享，
+并通过 HTTPS 或 localhost 等安全上下文访问；共享范围由浏览器选择器决定。
+
+共享后画面自动作为当前语音对话的持续上下文，无需填写目标或额外开始观察。
+可直接问「这个是什么意思」「下一步怎么做」。画面与麦克风进入同一条模型连接，
+画面到达本身不会请求模型回复，也不会启动单独的目标监控模型。
+画面中的文字仅作观察证据；用户要求执行操作时仍由执行 Agent 处理。
+
+默认每秒采样一帧，包括内容未变的画面；单帧最多 190 KiB，网络拥塞时丢弃过期帧，
+不会累积截图队列。每张图像紧随新的音频帧发送；麦克风静音或音频暂停期间仅保留最新画面，恢复音频后继续。
+这是近实时画面上下文，不是逐帧视频分析。模型需要支持所选实时接口的图像输入，
+图像输入会产生对应的模型用量。截图不会由 Live Feed 保存为图片文件。
+
+停止共享会立即停止后续图像输入，语音可以继续。挂断会关闭面板并释放浏览器麦克风；
+再次点击 Live Voice 会创建新会话。关闭页面或断开连接也会
+停止共享。请保持页面和通话开启；浏览器后台节流或休眠可能中断采样，连续 15 秒
+没有收到画面会停止 Live Feed 并提示重新共享。旧 daemon 继续支持按需截图，
+界面会明确提示不支持实时画面。停止共享后的历史画面仍可能属于对话上下文，
+不能当作当前屏幕。默认不会自动解说或主动提醒。
 
 ## 环境要求
 
@@ -420,6 +514,7 @@ daemon 参数的完整含义和配置方式见
 | `onSessionArtifactsChange` | `(change: WebShellSessionArtifactsChange) => void`                                                                                    | Session Artifact 初始恢复或变化后返回当前完整快照与 turn 投影                                                                                  |
 | `onAssistantTurnSettled`   | `(event: WebShellAssistantTurnSettledEvent) => void`                                                                                  | daemon 权威终态提交后触发；多个 provider 可能重复上报，宿主按 `(sessionId, promptId)` 去重                                                     |
 | `settings`                 | `WebShellSettingsOptions`                                                                                                             | 可选。控制原生 `/settings` 页面的呈现；见 [原生设置呈现](#原生设置呈现)。                                                                      |
+| `showToolCalls`            | `boolean`                                                                                                                             | 是否展示用户消息旁的工具调用入口；默认 `false`，独立页面设置为 `true`。                                                                        |
 | `modelManagement`          | `WebShellModelManagementOptions`                                                                                                      | 可选。控制 WebShell 内模型新增/删除交互，默认均允许；见 [模型增删交互](#模型增删交互)。                                                        |
 
 移动访问二维码入口由 `header.showMobileAccess?: boolean` 控制，默认隐藏，适用于主聊天和分屏页头。独立入口 `main.tsx` 显式设为 `true`，保留本地 Qwen Code 用户的入口。
@@ -561,6 +656,48 @@ daemon 不净化它读到的文件。该配置只从 User / System / SystemDefau
 
 自定义内容仍使用内置的展开、收起行为，`expanded` 会随状态更新；文件夹行右侧的内置操作不会渲染。
 未提供 `lockWorkspaceCwd` 时，该 renderer 不会执行。
+
+## 左侧导航与嵌入布局
+
+**Breaking change（不兼容变更）**：省略 `sidebar` 从隐藏侧栏改为展示首页；省略导航／底部菜单列表从默认全部改为仅新建任务／收起。旧宿主若要保持隐藏，传 `sidebar={false}`；若要保留原菜单，显式填写 `primaryNav.items` 和 `footer.items`。窄屏品牌默认显示，需隐藏时设置 `branding.hideWhenCompact: true`。
+
+侧栏采用自动布局，不需要配置 `layout`。宿主不传 `sidebar`、传 `true` 或空配置时，
+默认仅首页：展示 300px 二级栏，不展示一级图标栏。显式配置其他可用导航项后，
+自动展示首页及这些一级入口。`sidebar: false` 或 `enabled: false` 仍完全隐藏侧栏。
+`primaryNav.items` 默认仅 `['newTask']`，`footer.items` 默认仅 `['collapse']`；
+独立 Web Shell 显式开启现有完整入口。宿主例如配置
+`sidebar={{ primaryNav: { items: ['newTask', 'plugins'] } }}` 即显示首页和插件的一级栏。
+未配置列表不再默认开放所有功能；宿主原有显式列表及 renderer 继续生效。
+
+双栏模式下，桌面端左侧包含常驻图标栏和可收起的首页栏。
+首页保留新建任务、置顶和项目会话；
+主要功能入口直接显示在图标栏；底部只保留「更多」与「展开／收起」，
+版本号、设置、主题及其他已启用底部操作收进「更多」，关闭菜单不中断更新检查或本地文件连接。
+仅首页时收起／展开按钮放在二级底部，收起保留原有 56px 窄条与悬浮会话面板。存在一级栏时按钮只放一级底部，所有二级栏均无此按钮；收起后二级完全隐藏，仅剩 56px 一级栏。点击首页或一级展开按钮恢复会话栏，点击功能图标打开对应的现有页面。
+收起／展开及 Cmd/Ctrl+B 只改变侧栏显隐，保留当前页面、URL 和未保存的表单内容，不创建新会话或清除聊天草稿。
+
+宿主现有 `sidebar` 配置保持有效：`false` 同时隐藏两栏，`primaryNav.items` 和
+`footer.items` 继续控制内置入口；自定义品牌、导航及底部 renderer 保留在首页的宽区域。
+仅首页时收起保留原有窄条与悬浮会话面板。Live 在嵌入模式默认关闭。双栏默认二级栏 300px，加一级图标栏 56px，总宽 356px；
+单栏默认 300px。已有保存宽度优先，保存值仍表示侧栏总宽度，展开时至少为单栏 220px、双栏 276px；不对已有值直接增加 56px。分屏入口和分屏自动折叠使用容器宽度 1024px，分屏侧栏空间阈值为容器 1200px。
+环境面板的停靠断点不计入图标栏的 56px（由消息区让出这部分宽度），因此面板停靠的窗口宽度阈值与仅首页侧栏一致——例如 1440px 窗口仍可停靠。
+
+双栏的「频道」入口同时展示按工作区文件夹分组的频道会话、归档和右侧设置页。
+文件夹保留展开收起、搜索与会话操作；工作区管理、添加及文件夹行操作仅在首页展示。
+点击会话后右侧切为详情，再点击一级「频道」图标可重新打开管理页；左栏标题下显示分隔线，
+不再提供齿轮入口，右侧标题为「设置」，双栏频道设置页不显示返回按钮。
+单栏仍保留原任务／频道切换和直接管理入口。旧服务不支持来源元数据，或宿主
+关闭来源切换、隐藏频道入口时，继续使用原有入口和筛选行为。
+
+双栏开启 `sidebar.showLive` 且 `primaryNav.items` 允许 `live` 时，Live 作为独立一级项，
+左侧展示现有语音通话入口和平铺 Live 会话，不再增加会话目录，右侧默认展示原「设置 → 实验性」中的 Qwen Live 设置。
+点击会话展示详情，再次点击 Live 回到设置；导航本身不开麦，切换页面不结束通话。
+Live 和频道右侧标题都为「设置」，左栏标题与首页品牌名共用字号、字重和分隔线留白。Live 表单使用限宽单列对齐布局。开关、地址、Key、模型、音色与快捷键先暂存，再由一个保存按钮统一提交；原生启用在保存时确认，取消或失败保留草稿。需要填写 Key 时在字段名称后显示红色星号。
+二级栏隐藏或抽屉关闭时，语音入口回到输入框。全局设置在此时移除重复卡片；单栏、隐藏侧栏或未开放 Live 入口的宿主继续保留原设置入口。
+频道图标为 MessagesSquare，Live 图标为 AudioLines；不新增通话或归档能力。
+
+窄嵌入容器使用容器内抽屉，首页默认显示商标与品牌名；宿主可通过 `branding: false` 或 `branding.hideWhenCompact: true` 隐藏。抽屉不依赖宿主浏览器窗口宽度；宿主原有抽屉 API 仍可使用。
+高度不足时图标栏可滚动。功能页表单的挂载行为沿用原页面，不承诺跨页面保留未保存的编辑。
 
 ## 原生设置呈现
 
@@ -772,9 +909,10 @@ const result = await shellRef.current?.navigateToMessage({
 启用后，显式初始会话目标 props 优先于 URL，后续目标 props 变化 replace 地址；
 宿主必须停止自行写 history，避免双重控制。`lockWorkspaceCwd` 仍是宿主约束。
 
-基础路径下支持 `/session/<id>`、`/plugins`、`/channels`、`/scheduled-tasks`、
+基础路径下支持 `/session/<id>`、`/plugins`、`/channels`、`/live`、`/scheduled-tasks`、
 `/goals` 和 `/settings`。会话保留原有 `workspace` / `context` 协议，页面仅定位
 页面，设置不持久化分类或作用域。无关参数（包括宿主的实例参数）和 fragment 保留。
+路由可用性遵守宿主显式传入的菜单列表；省略列表时的仅首页默认布局，不限制既有设置、插件、目标等页面 URL。`/live` 仍要求存在可用 Live 导航入口。
 主动导航新增历史，重复点击不新增；浏览器前进后退恢复页面和会话。页面来源保存在
 history.state，直接打开或复制到新标签页的页面没有来源时返回空白聊天，不创建会话。
 

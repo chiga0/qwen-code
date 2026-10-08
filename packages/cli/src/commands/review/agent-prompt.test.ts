@@ -47,6 +47,7 @@ import {
   writeStderrLine,
   writeStderrLineSafe,
 } from '../../utils/stdioHelpers.js';
+import yargs from 'yargs';
 import {
   DEADLINE_ENV,
   RESERVE_ENV,
@@ -4925,6 +4926,13 @@ describe('verify and reverse-audit briefs — the Step 4/5 methodology, in code'
     expect(p).toContain('go read the claimed source first');
   });
 
+  it('wires capture-tui into the verify brief — the producer its rendering claims cite', () => {
+    // The brief teaches terminal-rendering claims to run `review capture-tui`;
+    // if the block drops out of the prompt the command exists with no consumer.
+    const p = buildRoleBrief(PLAN, 'verify');
+    expect(p).toContain('"${QWEN_CODE_CLI:-qwen}" review capture-tui');
+  });
+
   it('the verify brief carries the #9789 do-not-refute list and the constructible rejection bar', () => {
     // The recall leak the finder-side RECALL rule closes has a verifier half:
     // "silence is better than noise" read as a confidence bar lets Step 4 drop
@@ -8671,7 +8679,9 @@ describe('the fix audit (--role fix-audit) — Step 6B, not a re-review', () => 
       expect(m).not.toBeNull();
       const list = readFileSync(m![1], 'utf8');
       // The `fixed` subset — and ONLY it: a skipped finding has no edit.
-      expect(list).toContain('2 with outcome `fixed`');
+      expect(list).toContain(
+        '## Findings recorded as `fixed` — 2 (every `fixed` outcome in the artifact; one fixed earlier has no hunk here)',
+      );
       expect(list).toContain('### f1 — [Critical] src/f1.ts:42');
       expect(list).toContain('### f3 — [Critical] src/f3.ts:42');
       expect(list).not.toContain('f2');
@@ -8691,6 +8701,43 @@ describe('the fix audit (--role fix-audit) — Step 6B, not a re-review', () => 
       expect(wasDeliveredVerbatim(printed, recorded.get(keys[0])!)).toBe(true);
       expect(readFileSync(briefPath(plan, keys[0]), 'utf8')).toContain(
         '**You write nothing.**',
+      );
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  it('reaches the fix-audit build through the CLI boundary, --hunks included', async () => {
+    // Every other case here calls the handler with a hand-built argv, so the
+    // handler's own `argv['hunks']` read is pinned, but the yargs OPTION is
+    // not: declared with the wrong type (a boolean turns the path into
+    // `true`), the build refuses and Step 6B reports "Fix audit: not run" on
+    // every run while the handler-level cases stay green. Only real argv
+    // through the command definition reaches that.
+    const { plan, findings, hunks, dir } = setup({});
+    try {
+      await yargs([
+        'agent-prompt',
+        '--plan',
+        plan,
+        '--role',
+        'fix-audit',
+        '--findings',
+        findings,
+        '--hunks',
+        hunks,
+      ])
+        .command(agentPromptCommand)
+        .exitProcess(false)
+        .parseAsync();
+      const printed = (writeStdoutLine as unknown as Mock).mock
+        .calls[0][0] as string;
+      const m = /^read_file\(file_path="([^"]*\.findings\.md)"\)$/m.exec(
+        printed,
+      );
+      expect(m).not.toBeNull();
+      expect(readFileSync(m![1], 'utf8')).toContain(
+        '+  if (hops < MAX_SUBAGENT_DEPTH_LIMIT) {',
       );
     } finally {
       rmSync(dir, { recursive: true, force: true });
@@ -8826,7 +8873,7 @@ describe('the fix audit (--role fix-audit) — Step 6B, not a re-review', () => 
     }
   });
 
-  it('carries the fix witness and the fixer note when the artifact has them, and every location', () => {
+  it('carries the fix witness, the fix constraint and the fixer note when the artifact has them, and every location', () => {
     const rendered = (renderFixAuditInput as (a: unknown, h: string) => string)(
       [
         {
@@ -8840,6 +8887,7 @@ describe('the fix audit (--role fix-audit) — Step 6B, not a re-review', () => 
             { file: 'src/route.ts' },
           ],
           fixWitness: 'registry.test.ts › two runtimes, one callId',
+          fixConstraint: 'callId restarts per conversation',
           outcome: 'fixed',
           outcomeNote: 'keyed by (callId, runtimeId)',
         },
@@ -8857,6 +8905,9 @@ describe('the fix audit (--role fix-audit) — Step 6B, not a re-review', () => 
     );
     expect(rendered).toContain(
       'Fix witness: registry.test.ts › two runtimes, one callId',
+    );
+    expect(rendered).toContain(
+      'Fix constraint: callId restarts per conversation',
     );
     expect(rendered).toContain("Fixer's note: keyed by (callId, runtimeId)");
   });

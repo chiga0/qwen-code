@@ -11,6 +11,8 @@ import { useCallback, useEffect, useState } from 'react';
 import { DaemonWorkspaceProvider } from '@qwen-code/web-shell/daemon-react-sdk';
 import { BrowserTurnNotifications } from './browser-turn-notifications';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { createJavaManagedAgentProvider } from './components/managed/java-managed-agent-provider';
+import type { ManagedAgentProvider } from './components/managed/managed-agent-provider';
 import { StandaloneAuth } from './components/StandaloneAuth';
 import { RootErrorFallback } from './components/RootErrorFallback';
 import { WorkspaceSessionProvider } from './components/WorkspaceSessionProvider';
@@ -25,6 +27,12 @@ import { normalizeLanguage, type WebShellLanguage } from './i18n';
 import { WebShellThemeId, type WebShellTheme } from './themeContext';
 import { DEFAULT_BRAND_NAME, type WebShellResolvedBrand } from './brandContext';
 import { inferStandaloneBasePath } from './utils/sessionPath';
+import { isDesktopShell } from './utils/externalOpen';
+import {
+  DEFAULT_FOOTER_ITEMS,
+  DEFAULT_PRIMARY_NAV_ITEMS,
+  DESKTOP_DEFAULT_FOOTER_ITEMS,
+} from './components/sidebar/WebShellSidebar';
 
 import 'katex/dist/katex.min.css';
 import './styles/standalone.css';
@@ -171,6 +179,20 @@ function getInitialLanguage(): WebShellLanguage | undefined {
   return readStoredLanguage();
 }
 
+function getDevelopmentManagedAgentProvider():
+  | ManagedAgentProvider
+  | undefined {
+  if (!import.meta.env.DEV) return undefined;
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('managedProvider') !== 'java') return undefined;
+  const tenantId = params.get('tenant')?.trim() || 'local-java-demo';
+  return createJavaManagedAgentProvider({
+    baseUrl: window.location.origin,
+    getHeaders: () => ({ 'X-Qwen-Tenant-Id': tenantId }),
+    productScope: tenantId,
+  });
+}
+
 export function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
   const macosOverlayTitlebar = hasMacOSOverlayTitlebar();
   // The entry's own opinion — an explicit URL param or a stored in-app
@@ -195,6 +217,9 @@ export function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
   );
   const [navigationBasePath] = useState(() =>
     inferStandaloneBasePath(window.location.pathname),
+  );
+  const [managedAgentProvider] = useState(() =>
+    getDevelopmentManagedAgentProvider(),
   );
   const baseUrl = DAEMON_BASE_URL || window.location.origin;
   // One-shot ?theme=/?language=/?lang= params are consumed by the useState
@@ -320,7 +345,23 @@ export function StandaloneApp({ daemonToken }: { daemonToken?: string }) {
                 onLanguageChange: handleLanguageChange,
                 onLanguageResolved: handleLanguageResolved,
                 onBrandResolved: handleBrandResolved,
-                sidebar: { enabled: true, showLive: true },
+                managedAgentProvider,
+                sidebar: {
+                  enabled: true,
+                  showLive: true,
+                  // Built from the sidebar's own defaults so a new entry
+                  // (e.g. Agents) cannot silently drop out of the standalone
+                  // shell.
+                  primaryNav: {
+                    items: DEFAULT_PRIMARY_NAV_ITEMS,
+                  },
+                  footer: {
+                    items: isDesktopShell()
+                      ? DESKTOP_DEFAULT_FOOTER_ITEMS
+                      : DEFAULT_FOOTER_ITEMS,
+                  },
+                },
+                showToolCalls: true,
                 className: macosOverlayTitlebar
                   ? MACOS_TITLEBAR_CLASS
                   : undefined,

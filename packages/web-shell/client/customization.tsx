@@ -1,3 +1,4 @@
+import type { ArtifactFilter } from './components/artifacts/TurnOutputs';
 import {
   createContext,
   useContext,
@@ -491,6 +492,11 @@ export interface WebShellAtItem {
   iconTooltip?: string;
   insertText?: string;
   composerTag?: WebShellComposerTag;
+  /**
+   * Makes the item an action instead of a reference: choosing it removes the
+   * typed `@query` and calls this, inserting nothing.
+   */
+  onSelect?: () => void;
 }
 
 export type WebShellBuiltinAtProviderId =
@@ -532,6 +538,11 @@ export interface WebShellAtProvider {
   order?: number;
   tabs?: readonly WebShellAtProviderTab[];
   renderItem?: WebShellAtItemRenderer;
+  /**
+   * Claims a typed `@query` that names no category, so it searches this
+   * provider instead of falling back to files.
+   */
+  claimsTypedQuery?(query: string): boolean;
   search(params: {
     query: string;
     signal: AbortSignal;
@@ -692,6 +703,7 @@ export type LoadingPhrasesResolver = (
 ) => readonly string[] | undefined | null;
 
 export interface WebShellCustomization {
+  filterArtifact?: ArtifactFilter;
   artifact?: WebShellArtifactCustomization;
   /** Host-specific label for the Ask User Question free-text choice. */
   askUserFreeTextLabel?: string;
