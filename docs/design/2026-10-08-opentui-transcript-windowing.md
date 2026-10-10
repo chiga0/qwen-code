@@ -166,13 +166,28 @@ catches up with it, and the compensation owed is exactly zero.
 
 A window move is the other case, and it does owe one. When `start` decreases, the
 items coming in above the viewport were standing in for `topPad` spacer rows
-charged at `ESTIMATED_ITEM_ROWS`, and the frame that measures them shrinks the
-table above the reader by the difference. The painted content slides up by that
-many rows while the scroll position stays where it was, so a six-row wheel tick
-over two-row turns travelled two rows. The hook now records the identity of each
-item an upward window move pulled in, along with the rows the table charged it,
-and the frame that first measures one subtracts what it turned out to cost from
-`scrollTop`. Identities, not indices, for the reason Decision 2 gives.
+charged at whatever the height table said — `ESTIMATED_ITEM_ROWS` for one never
+mounted, a recorded height for one coming back — and the frame that measures them
+shrinks the table above the reader by the difference. The painted content slides
+up by that many rows while the scroll position stays where it was, so a six-row
+wheel tick over two-row turns travelled two rows. The hook now records the
+identity of each item an upward window move pulled in, along with the rows the
+table charged it, and the frame that measures one subtracts what it turned out to
+cost from `scrollTop`. Identities, not indices, for the reason Decision 2 gives.
+
+What says a spacer above the reader was charged wrong is that charge, not the
+table, so it is spent on the measurement that answers it whether or not the table
+has seen the item before. The case that turns on is a recorded height going stale
+while its item is unmounted: a resize re-wraps every off-window turn, ctrl+O
+flips every card at once, and Decision 2 clears the table for neither, so the
+turn comes back charging the rows it used to paint and the reader moves with
+nothing written back. A charge kept past the measurement that answered it is the
+same error from the other side — the next height change of an already-mounted
+item would settle from a provenance that was never a pull-in. For that reason an
+identity the previous commit already had mounted is never charged at all: its
+rows are painted, not standing in for spacer. That last one bites only when the
+index space shifts under the charging loop, as a `task-end` splice does, but the
+frame then writes `scrollTop` with no scroll input at all.
 
 That write goes through the sticky-aware setter, which recomputes
 `_hasManualScroll` from wherever it lands — the failure the unconditional
@@ -238,8 +253,8 @@ Unit tests:
   top-anchored pane mounts the head and not the tail, and both stay under 400
   elements. A fourth pins that a host-less pane still measures real heights on a
   frame, and goes red when the host lookup is moved back ahead of the measuring
-  loop. Replacing the slice with `items.slice(0)` fails all four and six of the
-  ten on the harness below.
+  loop. Replacing the slice with `items.slice(0)` fails all four and seven of
+  the thirteen on the harness below.
 - The same file gained a scroll-host harness for the frame-driven half, which
   jsdom cannot otherwise reach: it installs both the host the view walks up to
   and the laid-out tree it reads back onto the DOM nodes the JSX mock produces.
@@ -248,9 +263,11 @@ Unit tests:
   is the other; dropping `- host.content.y` fails three tests. Spacers forward
   their `height` prop as `data-height` so a test can read them, and the JSX mock
   counts elements so a test can tell a re-render from no re-render.
-- Ten tests run against that harness. Each fails under at least one of the
+- Thirteen tests run against that harness. Each fails under at least one of the
   mutants below, and the picker test below has one of its own; the tree is
-  restored byte-identical after every run.
+  restored byte-identical after every run. The victim lists were measured before
+  the last three tests existed, so they name ten; those three carry the last
+  three mutants, each measured to kill exactly its own.
   - charging the height delta of an item that was already measured — the
     correction Decision 5 removes — → `records real heights without moving the
 scroll position`, `travels the whole distance over turns shorter than the
@@ -278,6 +295,14 @@ waiting for a frame`, `sizes the window from the host viewport, not the height
 prop`, `drops the frame and scroll-bar subscriptions on unmount`
   - dropping `- host.content.y` from Decision 4's offset, or ignoring the height
     table in the offsets memo → three and five of the above respectively
+  - settling only for an item the height table has never seen, so a recorded
+    height that went stale while its item was off-window moves the reader with
+    nothing written back → `settles a turn whose recorded height went stale while
+it was off-window`
+  - keeping a charge past the measurement that answered it → `spends a charge on
+the measurement that answers it, not on a later one`
+  - charging an identity the previous commit already had mounted → `never charges
+a turn the previous commit already had mounted`
 - No mutant targets `keeps the reading position across a resize` specifically —
   only the neighbour-key one above reaches it, and that one breaks everything
   that reads a measured height. The width-change clear of the height table it was
@@ -288,7 +313,7 @@ prop`, `drops the frame and scroll-bar subscriptions on unmount`
   and not the tail. Removing `initialAnchor="top"` fails it and nothing else.
   Its `@opentui/react` mock also gained the `useRenderer` export the windowing
   hook reads; without it the five Space-to-preview tests throw.
-- The whole `src/ui/opentui` suite passes (1712 tests over 84 files).
+- The whole `src/ui/opentui` suite passes (1715 tests over 84 files).
 
 Real machine (opentui leg under Bun, 100x32 pty, `--resume` of the reported
 session, before/after built from the same tree with only this change applied):

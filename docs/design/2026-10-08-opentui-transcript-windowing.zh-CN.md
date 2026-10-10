@@ -63,7 +63,9 @@ ink 不会碰到这个问题。它的转录是虚拟化的（`virtualEstimatedIt
 
 测量循环能看到的每个条目都已挂载，而已挂载的条目本就以刚读到的那个高度绘制着。两个 spacer 都取自「窗口内变化影响不到」的偏移：`topPad` 是 `offsets[start]`，只累加窗口之前的条目；`bottomPad` 是 `total - offsets[end]`，而修正窗口内某个条目会让 `total` 与 `offsets[end]` 变化同样的量。所以当高度表追上真实布局时，画面并没有移动，应付的补偿恰好为零。
 
-窗口移动是另一种情况，它确实欠一笔补偿。当 `start` 减小时，从视口上方进入的那些条目原本是顶替 `topPad` 占位行的、按 `ESTIMATED_ITEM_ROWS` 计费；测量它们的那一帧会把读者上方的表缩小这个差值。画面内容因此向上滑动这么多行，而滚动位置原地不动 —— 于是在两行一轮的轮次上，一次六行的滚轮跳动只走了两行。hook 现在会记下一次向上窗口移动拉进来的每个条目的身份、以及高度表当时给它计费的行数，而第一次测量到某个条目的那一帧会把它实际花掉的行数从 `scrollTop` 里扣掉。记的是身份而不是下标，理由同决定 2。
+窗口移动是另一种情况，它确实欠一笔补偿。当 `start` 减小时，从视口上方进入的那些条目原本是顶替 `topPad` 占位行的、按高度表当时的说法计费 —— 从未挂载过的按 `ESTIMATED_ITEM_ROWS`，重新回来的按它记录过的高度；测量它们的那一帧会把读者上方的表缩小这个差值。画面内容因此向上滑动这么多行，而滚动位置原地不动 —— 于是在两行一轮的轮次上，一次六行的滚轮跳动只走了两行。hook 现在会记下一次向上窗口移动拉进来的每个条目的身份、以及高度表当时给它计费的行数，而测量到某个条目的那一帧会把它实际花掉的行数从 `scrollTop` 里扣掉。记的是身份而不是下标，理由同决定 2。
+
+说明「读者上方某段占位行计费错了」的是这笔计费本身，不是高度表，所以它由回应它的那次测量消费掉，无论表此前是否见过这个条目。让这一点成为必需的情形是：一个条目在窗口外时，它记录过的高度失效了 —— 改终端宽度会让每个窗口外的轮次重新换行，ctrl+O 会一次性翻转所有卡片，而决定 2 两种情况都不清表，于是这个轮次回来时仍按它过去绘制的行数计费，读者被移动了却没有任何回写。反过来，把一笔计费保留到回应它的那次测量之后是同一个错误的另一面：一个已挂载条目下一次高度变化会按一个从来不是「被拉入窗口」的来源去结算。因此，上一个 commit 就已经挂载的身份根本不计费：它的行数是绘制出来的，不是顶替占位行的。最后这一条只在计费循环脚下的下标空间发生位移时才会咬人 —— `task-end` 就是按下标 splice 的 —— 但那时帧会在完全没有滚动输入的情况下写 `scrollTop`。
 
 这次写入走的仍是感知 sticky 的 setter，而该 setter 会按落点重算 `_hasManualScroll` —— 那正是上面那个无条件修正犯的错：把视图留在尾部上方一行，就让 shell 的底部钉住在整个会话余下时间里都失效。所以它带 guard：只有当写入前和写入后的位置都严格在尾部上方时才触发。那种情况下读者自己的滚动早已把钉住关掉了，所以这次结算无法改变钉住正在做的事。在尾部 —— 钉住生效的地方 —— 什么都不写，也什么都不欠：进入的条目在读者下方，不在上方。
 
@@ -86,9 +88,9 @@ boundary 位于条目的 `<box>` 内部而不是外面。测量环节已不再�
 单元测试：
 
 - `transcript-window.test.ts`（10 条）钉住偏移前缀和、空转录、恰好放进视口、滚动夹紧、两侧 overscan、跨底边界的条目、混合高度下的 spacer 运算，以及上限。
-- `transcript-view.test.tsx` 新增三条针对 2000 条会话的无宿主窗口化测试：默认视图挂载尾部而不挂载头部，锚定顶部的面板挂载头部而不挂载尾部，两者元素数都低于 400。第四条钉住无宿主面板在 frame 上仍然测量真实高度，把宿主查找挪回测量循环之前会让它变红。把切片换成 `items.slice(0)` 会让这四条、外加下面 harness 上十条里的六条失败。
+- `transcript-view.test.tsx` 新增三条针对 2000 条会话的无宿主窗口化测试：默认视图挂载尾部而不挂载头部，锚定顶部的面板挂载头部而不挂载尾部，两者元素数都低于 400。第四条钉住无宿主面板在 frame 上仍然测量真实高度，把宿主查找挪回测量循环之前会让它变红。把切片换成 `items.slice(0)` 会让这四条、外加下面 harness 上十三条里的七条失败。
 - 同一文件新增了针对「frame 驱动的那一半」的滚动宿主 harness —— jsdom 否则根本到不了那里：它把视图上溯的宿主、以及视图回读的已布局树，都装到 JSX mock 产出的 DOM 节点上。宿主的 `content.y` 携带滚动位移、而 `root.y` 是一个非零静态值，所以决定 4 那个偏移的两个操作数都不为零、也都不是对方；删掉 `- host.content.y` 会让三条测试失败。spacer 把自己的 `height` prop 转发成 `data-height`，测试因此读得到它；JSX mock 会统计元素数，测试因此能区分「重渲染了」和「没重渲染」。
-- 十条测试跑在这个 harness 上。每一条都至少被下面某个变异杀死，下面那条选择器测试也有自己的变异；每次跑完树都按字节还原。
+- 十三条测试跑在这个 harness 上。每一条都至少被下面某个变异杀死，下面那条选择器测试也有自己的变异；每次跑完树都按字节还原。下面各条的受害清单是在最后三条测试出现之前测出来的，所以写的是十条；那三条对应清单末尾的三个变异，每个都实测只杀死它自己那一条。
   - 对本来就已测量过的条目结算高度差 —— 也就是决定 5 移除掉的那个修正 → `records real heights without moving the scroll position`、`travels the whole distance over turns shorter than the estimate`
   - 对本来就已挂载的条目（而不只对窗口刚拉进来的那个）结算滚动位置 → `travels the whole distance over turns shorter than the estimate`
   - 完全不结算 → `travels the whole distance over turns shorter than the estimate`
@@ -100,9 +102,12 @@ boundary 位于条目的 `<box>` 内部而不是外面。测量环节已不再�
   - 无条件 bump `revision` → 又是那条共享 id 的测试，通过它的渲染计数
   - 去掉滚动条订阅 → `answers a scrollbar jump without waiting for a frame`、`sizes the window from the host viewport, not the height prop`、`drops the frame and scroll-bar subscriptions on unmount`
   - 从决定 4 的偏移里删掉 `- host.content.y`，或在偏移 memo 里无视高度表 → 分别让上面三条、五条失败
+  - 只对高度表从未见过的条目结算，于是一个在窗口外期间记录高度已失效的条目会移动读者、却没有任何回写 → `settles a turn whose recorded height went stale while it was off-window`
+  - 把一笔计费保留到回应它的那次测量之后 → `spends a charge on the measurement that answers it, not on a later one`
+  - 给上一个 commit 就已经挂载的身份计费 → `never charges a turn the previous commit already had mounted`
 - 没有任何变异是专门针对 `keeps the reading position across a resize` 的 —— 只有上面那条「相邻条目键」能波及它，而那个变异会打破一切读测量高度的测试。它当初针对的「改宽度时清空高度表」已经不存在，而 hook 现在根本看不到宽度。它作为决定 2「改宽度不清空这张表」的行为钉保留，不作为变异证明。
 - `session-picker.test.tsx` 新增一条测试：40 条记录的预览挂载头部而不挂载尾部。删掉 `initialAnchor="top"` 会让它、且只让它失败。它的 `@opentui/react` mock 也补上了窗口化 hook 要读的 `useRenderer` 导出；缺了它，五条 Space-to-preview 测试会抛异常。
-- 整个 `src/ui/opentui` 套件通过（84 个文件、1712 条测试）。
+- 整个 `src/ui/opentui` 套件通过（84 个文件、1715 条测试）。
 
 实机（Bun 下的 opentui 腿，100x32 pty，`--resume` 所报会话；修复前后由同一棵树构建，只施加本次改动）：
 
