@@ -321,9 +321,12 @@ function useTranscriptWindow(
     // is settled on the frame that measures them.
     for (let index = win.start; index < painted.start; index++) {
       const key = itemKey(items[index]);
-      if (!pulledIn.has(key)) {
-        pulledIn.set(key, (offsets[index + 1] ?? 0) - (offsets[index] ?? 0));
-      }
+      // An identity the previous commit already mounted is not a pull-in: its
+      // rows are painted, not charged to a spacer. Skipping it is what keeps a
+      // `task-end` splice above the window — which shifts the index space this
+      // loop walks — from charging items that never left the screen.
+      if (nodesRef.current.has(key) || pulledIn.has(key)) continue;
+      pulledIn.set(key, (offsets[index + 1] ?? 0) - (offsets[index] ?? 0));
     }
   } else {
     // A jump lands somewhere the painted state says nothing about, so there is
@@ -383,16 +386,20 @@ function useTranscriptWindow(
         if (laidOut === undefined) continue;
         const key = itemKey(item);
         const rows = Math.round(laidOut) + itemMarginTop(item.kind);
-        const known = measured.get(key);
-        if (known === rows) continue;
-        measured.set(key, rows);
-        revised = true;
+        // Consumed on every measurement, not only the first: a height recorded
+        // before the item left the window can go stale while it is unmounted (a
+        // resize, or ctrl+O flipping every card at once), so what says the
+        // spacer above the reader was charged wrong is the charge itself.
         const charged = entered.get(key);
-        if (known === undefined && charged !== undefined) {
+        if (charged !== undefined) {
           entered.delete(key);
           // The spacer rows this item replaced, minus the rows it paints.
           owed += charged - rows;
         }
+        const known = measured.get(key);
+        if (known === rows) continue;
+        measured.set(key, rows);
+        revised = true;
       }
 
       // Measuring needs only the root; the settlement and the window sync need

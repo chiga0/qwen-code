@@ -932,7 +932,7 @@ describe('OpenTuiTranscriptView scroll host', () => {
   }) {
     let width = opts.width ?? 100;
     const rows = opts.rows;
-    const items = opts.items ?? session;
+    let items = opts.items ?? session;
     const viewportRows = opts.viewportRows ?? 24;
     const propRows = opts.propRows ?? viewportRows;
     const view = render(
@@ -1017,6 +1017,18 @@ describe('OpenTuiTranscriptView scroll host', () => {
     };
     install();
 
+    const paint = () =>
+      act(() => {
+        view.rerender(
+          <OpenTuiTranscriptView
+            items={items}
+            availableWidth={width}
+            availableTerminalHeight={propRows}
+          />,
+        );
+        install();
+      });
+
     /** The ids the view has mounted, in transcript order. */
     const mounted = () =>
       [...(view.container.textContent ?? '').matchAll(/TURN_(\d+)/g)].map(
@@ -1042,18 +1054,15 @@ describe('OpenTuiTranscriptView scroll host', () => {
           host.scrollTop = top;
           for (const fn of [...changed]) fn();
         }),
-      setWidth: (next: number) =>
-        act(() => {
-          width = next;
-          view.rerender(
-            <OpenTuiTranscriptView
-              items={items}
-              availableWidth={width}
-              availableTerminalHeight={propRows}
-            />,
-          );
-          install();
-        }),
+      setWidth: (next: number) => {
+        width = next;
+        paint();
+      },
+      /** A new item list — what a `task-end` splice does to the transcript. */
+      setItems: (next: readonly LiveHistoryItem[]) => {
+        items = next;
+        paint();
+      },
       mounted,
       /** The top and bottom spacer heights the window is padding with. */
       spacers: () => {
@@ -1146,6 +1155,90 @@ describe('OpenTuiTranscriptView scroll host', () => {
     view.frame();
     view.frame();
     expect(before - Number(view.mounted()[0])).toBe(3);
+  });
+
+  it('settles a turn whose recorded height went stale while it was off-window', () => {
+    const rows = Array.from({ length: 2000 }, () => 8);
+    const view = mountHosted({ rows });
+    view.frame();
+    view.jump(900);
+    view.frame();
+    const read = Number(view.mounted()[0]);
+
+    // A screen down evicts the top of that band, and the height table keeps the
+    // nine rows it recorded rather than dropping them.
+    view.jump(view.host.scrollTop + 24);
+    view.frame();
+    expect(Number(view.mounted()[0])).toBeGreaterThan(read);
+
+    // ctrl+O collapses every card at once, so what the evicted turn paints
+    // changes with nothing mounted to re-measure it — the disagreement a resize
+    // leaves behind in exactly the same way.
+    rows[read] = 2;
+
+    // Wheeling back up pulls it in above the viewport, where the render body
+    // charges it the nine rows the table still records while it paints three.
+    // The table under the reader shrinks by the difference, so the reading
+    // position has to move with it or the tick travels less than it was told.
+    const before = view.host.scrollTop - 24;
+    view.jump(before);
+    expect(view.mounted()[0]).toBe(String(read).padStart(4, '0'));
+    view.frame();
+    expect(view.host.scrollTop).toBe(before - 6);
+  });
+
+  it('spends a charge on the measurement that answers it, not on a later one', () => {
+    const rows = Array.from({ length: 2000 }, () => 8);
+    const view = mountHosted({ rows });
+    view.frame();
+    view.jump(900);
+    view.frame();
+    const read = Number(view.mounted()[0]);
+    view.jump(view.host.scrollTop + 24);
+    view.frame();
+    view.jump(view.host.scrollTop - 24);
+    view.frame();
+    const settled = view.host.scrollTop;
+    expect(view.mounted()[0]).toBe(String(read).padStart(4, '0'));
+
+    // The turn came back at exactly the height the table recorded, so its
+    // charge is spent and nothing is owed. Growing it now that it is mounted
+    // owes nothing either: a charge kept past the measurement that answered it
+    // would settle here from a provenance that was never a pull-in, walking the
+    // reader twelve rows downhill with no scroll input at all.
+    rows[read] = 20;
+    view.frame();
+    expect(view.host.scrollTop).toBe(settled);
+  });
+
+  it('never charges a turn the previous commit already had mounted', () => {
+    const rows = Array.from({ length: 2000 }, () => 8);
+    const view = mountHosted({ rows });
+    view.frame();
+    view.jump(900);
+    view.frame();
+    view.jump(view.host.scrollTop + 24);
+    view.frame();
+    const painted = view.mounted();
+    const before = view.host.scrollTop;
+
+    // `task-end` splices a card out by index, so the render body walks the new
+    // index space against the previous window's bound and the range it charges
+    // can name a turn that never left the screen. Which turn that is depends on
+    // how far the splice shifts the offsets, so it is read off the mount rather
+    // than assumed — and asserted to have been painted beforehand, which is the
+    // whole condition under test.
+    view.setItems(
+      session.filter((_item, index) => index !== 10 && index !== 11),
+    );
+    const still = Number(view.mounted()[0]);
+    expect(painted).toContain(String(still).padStart(4, '0'));
+
+    // Growing it owes nothing: it is painted at the height the frame reads, and
+    // charging it would settle twelve rows onto a reader who never scrolled.
+    rows[still] = 20;
+    view.frame();
+    expect(view.host.scrollTop).toBe(before);
   });
 
   it('keeps a separate height slot for two live items sharing one id', () => {
