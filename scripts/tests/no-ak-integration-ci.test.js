@@ -969,7 +969,10 @@ describe('no-AK integration CI wiring', () => {
     expect(diagnostic).toContain(
       '--retry=0 --bail=1 --maxWorkers=1 --minWorkers=1',
     );
-    expect(diagnostic).not.toContain('--testNamePattern');
+    expect(diagnostic).toContain(
+      '--testNamePattern="^observes the truncated Windows installer with a bounded public trace$"',
+    );
+    expect(diagnostic).toContain('qwen-preview-installer-trace-*/**');
     expect(diagnostic).not.toContain('npm run test:ci');
     expect(diagnostic).not.toContain('npm run build');
     expect(diagnostic).toContain("if: '${{ always() }}'");

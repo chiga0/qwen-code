@@ -716,3 +716,127 @@ describe('Windows profile additions contract (portable map checks)', () => {
     expect(() => assertWindowsProfilePreserved(cold, before, after)).toThrow();
   });
 });
+
+it.skipIf(!windows)(
+  'observes the truncated Windows installer with a bounded public trace',
+  () => {
+    const f = fixture();
+    try {
+      const evidence = mkdtempSync(
+        path.join(
+          process.env.RUNNER_TEMP || tmpdir(),
+          'qwen-preview-installer-trace-',
+        ),
+      );
+      f.initializeProfile();
+      const archive = path.join(f.root, 'broken.zip');
+      const input = Buffer.from('504b0304', 'hex');
+      writeFileSync(archive, input);
+      writeFileSync(path.join(evidence, 'broken.zip'), input);
+      const sourceBefore = readFileSync(installer);
+      writeFileSync(path.join(evidence, 'source-installer.ps1'), sourceBefore);
+      const wrapper = path.join(f.root, 'trace-installer.ps1');
+      const wrapperSource = [
+        "$ErrorActionPreference = 'Stop'",
+        "[Console]::Error.WriteLine('QWEN_TRACE_PHASE=BEFORE_PUBLIC_INSTALLER')",
+        'Set-PSDebug -Trace 1',
+        'try {',
+        `  & ${psQuote(installer)} -Archive ${psQuote(archive)} -Dir ${psQuote(f.dir)}`,
+        "  [Console]::Error.WriteLine('QWEN_TRACE_PHASE=PUBLIC_INSTALLER_RETURNED')",
+        '} catch {',
+        "  [Console]::Error.WriteLine('QWEN_TRACE_PHASE=PUBLIC_INSTALLER_THROW: ' + $_.Exception.ToString())",
+        '  throw',
+        '} finally { Set-PSDebug -Off }',
+        '',
+      ].join('\r\n');
+      writeFileSync(wrapper, wrapperSource);
+      writeFileSync(path.join(evidence, 'trace-installer.ps1'), wrapperSource);
+      const originalArgs = f.installArgs(archive);
+      const args = [
+        '-NoProfile',
+        '-NonInteractive',
+        '-ExecutionPolicy',
+        'Bypass',
+        '-File',
+        wrapper,
+      ];
+      writeFileSync(
+        path.join(evidence, 'preview-before.json'),
+        JSON.stringify(tree(f.dir), null, 2),
+      );
+      const start = process.hrtime.bigint();
+      console.info(
+        JSON.stringify({
+          state: 'WINDOWS_PUBLIC_TRACE_START_NOT_ORIGINAL_FILE_QUALIFICATION',
+          powershell,
+          args,
+          originalArgs,
+          timeoutMs: 90000,
+          evidence,
+        }),
+      );
+      const result = spawnSync(powershell, args, {
+        cwd: f.root,
+        env: f.env,
+        timeout: 90000,
+      });
+      const actualWallMs = Number(process.hrtime.bigint() - start) / 1e6;
+      const error = result.error
+        ? Object.fromEntries(
+            Object.getOwnPropertyNames(result.error).map((key) => [
+              key,
+              result.error[key],
+            ]),
+          )
+        : null;
+      writeFileSync(
+        path.join(evidence, 'stdout.log'),
+        result.stdout || Buffer.alloc(0),
+      );
+      writeFileSync(
+        path.join(evidence, 'stderr.log'),
+        result.stderr || Buffer.alloc(0),
+      );
+      writeFileSync(
+        path.join(evidence, 'spawn-result.json'),
+        JSON.stringify({ ...result, error }, null, 2),
+      );
+      const receipt = {
+        state: 'WINDOWS_PUBLIC_TRACE_OBSERVATION_NOT_ORIGINAL_15S_CONTRACT',
+        powershell,
+        args,
+        originalArgs,
+        cwd: f.root,
+        timeoutMs: 90000,
+        actualWallMs,
+        pid: result.pid,
+        status: result.status,
+        signal: result.signal,
+        error,
+        sourceSha256Before: hash(sourceBefore),
+        sourceSha256After: hash(readFileSync(installer)),
+        inputHex: input.toString('hex'),
+        stdoutBytes: result.stdout?.length ?? 0,
+        stderrBytes: result.stderr?.length ?? 0,
+        evidence,
+      };
+      writeFileSync(
+        path.join(evidence, 'RECEIPT.json'),
+        JSON.stringify(receipt, null, 2),
+      );
+      console.info(JSON.stringify(receipt));
+      writeFileSync(
+        path.join(evidence, 'preview-after.json'),
+        JSON.stringify(tree(f.dir), null, 2),
+      );
+      assert.equal(receipt.sourceSha256After, receipt.sourceSha256Before);
+      assert.equal(result.error, undefined, JSON.stringify(receipt));
+      assert.equal(result.signal, null, JSON.stringify(receipt));
+      assert.equal(typeof result.status, 'number', JSON.stringify(receipt));
+      assert.notEqual(result.status, 0, JSON.stringify(receipt));
+    } finally {
+      rmSync(f.root, { recursive: true, force: true });
+    }
+  },
+  120_000,
+);

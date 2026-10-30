@@ -132,7 +132,7 @@ jobs:
           npm run test:ci
 
   preview-launch-diagnostic:
-    name: 'Preview launcher and installer preservation'
+    name: 'Bounded public installer trace (diagnostic only)'
     if: '${{ inputs.preview_launch_diagnostic }}'
     runs-on: 'windows-2022'
     timeout-minutes: 15
@@ -163,15 +163,17 @@ jobs:
       - name: 'Install dependencies without workspace builds'
         shell: 'bash'
         run: 'corepack pnpm install --frozen-lockfile --ignore-scripts --prefer-offline --reporter=append-only'
-      - name: 'Run the preview installer preservation file'
+      - name: 'Observe only the truncated installer trace'
         shell: 'bash'
         run: |-
           set -euo pipefail
-          node node_modules/vitest/vitest.mjs run scripts/tests/opentui-preview-install.test.js --config scripts/tests/vitest.config.ts --retry=0 --bail=1 --maxWorkers=1 --minWorkers=1 --dangerouslyIgnoreUnhandledErrors=false 2>&1 | tee -a "$RUNNER_TEMP/preview-launch-diagnostic.log"
+          node node_modules/vitest/vitest.mjs run scripts/tests/opentui-preview-install.test.js --config scripts/tests/vitest.config.ts --testNamePattern="^observes the truncated Windows installer with a bounded public trace$" --retry=0 --bail=1 --maxWorkers=1 --minWorkers=1 --dangerouslyIgnoreUnhandledErrors=false 2>&1 | tee -a "$RUNNER_TEMP/preview-launch-diagnostic.log"
       - name: 'Save launcher diagnostic output'
         if: '${{ always() }}'
         uses: 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02'
         with:
           name: 'preview-launch-diagnostic-${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}'
-          path: '${{ runner.temp }}/preview-launch-diagnostic.log'
+          path: |-
+            ${{ runner.temp }}/preview-launch-diagnostic.log
+            ${{ runner.temp }}/qwen-preview-installer-trace-*/**
           if-no-files-found: 'warn'

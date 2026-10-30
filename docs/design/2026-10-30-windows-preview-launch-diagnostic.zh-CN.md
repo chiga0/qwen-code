@@ -26,7 +26,7 @@
 
 这表示先建立 profile 已初始化、旧安装可公开启动的初态，再测试安装器保护；不能证明全新 HOME 不会收到 PowerShell host 写入。安装前用例包含 fixture setup 的一次 readiness 启动，再执行原有两种诊断/检查启动，仍为零次安装器且无重试。其他保护用例的每个 Windows fixture 也恰好执行一次 readiness 启动。
 
-现有 `windows-runner-smoke.yml` 保留布尔输入 `preview_launch_diagnostic`，默认 `false`。默认完整 ECS 任务及其预装 Node 路径保持。`true` 模式现在**一次运行完整 preview 安装器测试文件**（12 个安装器/诊断用例加七个便携合同用例），不使用测试名过滤；它不再表示只运行单个零安装器工作流任务。完整文件包含安装前用例及原保护场景，保留各自断言和声明的平台跳过，不运行全仓测试或构建 workspaces。当前文件注册 19 个用例，预期 Windows 执行 16 个并声明三个 POSIX 跳过，仍以实际验证为准。
+现有 `windows-runner-smoke.yml` 保留布尔输入 `preview_launch_diagnostic`，默认 `false`。默认完整 ECS 任务及其预装 Node 路径保持。在下文独立 trace 候选之前，`true` 模式**一次运行完整 preview 安装器测试文件**（12 个安装器/诊断用例加七个便携合同用例），不使用测试名过滤；它不再表示只运行单个零安装器工作流任务。完整文件包含安装前用例及原保护场景，保留各自断言和声明的平台跳过，不运行全仓测试或构建 workspaces。该保护候选注册 19 个用例，预期 Windows 范围是执行 16 个并声明三个 POSIX 跳过，仍以实际验证为准。
 
 该聚焦 hosted `windows-2022` 任务使用 Node 22、共享 Windows 环境 action、精确 checkout 验证、冻结且带 `--ignore-scripts` 的依赖安装、零重试、单 worker、15 分钟限制及始终上传的日志。工作流元测试保护用例选择、错误传播及原默认 ECS 路径。五文件改动仅涉及 fixture/诊断测试、工作流、对应元测试和这两份设计文档。
 
@@ -34,6 +34,14 @@
 
 通过 `scripts/tests/vitest.config.ts` 运行完整脚本测试及工作流元测试文件，并执行格式和适用的静态检查。macOS 可以验证 POSIX 场景与工作流接线；Windows 专用用例在此跳过不能算 Windows 证据。
 
-审查后，在精确候选分支调用工作流并设置 `preview_launch_diagnostic=true`。记录真实 checkout、runner、Node、PowerShell，检查原始启动记录，报告完整文件实际通过/失败/跳过数量。首个 raw 启动仍须满足原 `OLD_PREVIEW` oracle，之后才运行严格检查；安装器场景仍必须满足安装树保护及 staging 断言。新用户数据加精确派生新增合同的 Windows 结果仍未验证，不能从便携 map 测试推定 hosted Windows 或安装器已通过。
+完整保护验证与当前仅 trace 分支不同：需审查并调用恢复完整文件选择的精确候选。记录真实 checkout、runner、Node、PowerShell，检查原始启动记录，报告完整文件实际通过/失败/跳过数量。首个 raw 启动仍须满足原 `OLD_PREVIEW` oracle，之后才运行严格检查；安装器场景仍必须满足安装树保护及 staging 断言。新用户数据加精确派生新增合同的 Windows 结果仍未验证，不能从便携 map 测试推定 hosted Windows 或安装器已通过。
 
 hosted Windows 不是原 ECS 主机。新的完整文件成功只能资格化已记录候选/环境下的 fixture 与保护测试文件，不代表全部 Windows 产品行为通过，也不改变原 ECS 结果。本改动不改变生产默认值、renderer、release 或安装器行为。
+
+## 独立 90 秒公开 trace 诊断（尚未运行）
+
+`b8c4` 的真实 Windows 运行 `41043639528` 已通过安装前用例及新派生域守卫；截断归档安装用例随后在原 15000ms `spawnSync` 超时，结果为 1P、1F、3 个声明跳过、14 个 bail 未达。原失败保留。日志没有保存该 subprocess 的 stdout/stderr/status/signal 或独立耗时，因此根因仍未知。4B ZIP 的 `ZipFile.OpenRead` 位于 `Expand-Archive` 前，不能推定已到解压阶段；Archive 分支不发网络请求。
+
+诊断源码文件现在注册 20 个用例，但该独立诊断候选只选择一个新增、明确命名的观察用例，不再运行已通过的安装前用例或完整保护文件。复用 owned fixture、一次 readiness、相同 4B ZIP 与原生产脚本 bytes。owned PowerShell wrapper 使用公开 `Set-PSDebug -Trace 1`，通过调用运算符向原安装器传同样 Archive/Dir 参数，记录进入、返回或抛错阶段。它不同于原直接 `-File installer` 调用。90 秒仅为这次观察上限，120 秒为诊断用例上限；不修改任何原业务用例的 15 秒预算、不重试、不新增输入配置。
+
+完整原始 stdout/stderr bytes、完整 spawn result、实际 wall time、status/signal/error、前后 preview 图、脚本和 4B 输入保存在 RUNNER_TEMP 的独立目录，并由 always-upload artifact 保存。结果断言前先写 receipt。若 90 秒仍超时如实失败；若 trace 以非零退出，也仅表示观察用例取得一次终态，不证明原 15 秒调用或保护业务通过。最后一条 trace 只是最后观测到的源码位置，不等于已证明阻塞 syscall、infra 或产品 bug。默认 false ECS 路径、生产安装器及旧失败不变；该分支 true 模式临时精确选择诊断用例，元测试同步这个有限范围。
