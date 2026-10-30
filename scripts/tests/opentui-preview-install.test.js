@@ -45,17 +45,71 @@ function tree(root) {
   const entries = {};
   const visit = (file) => {
     const stat = lstatSync(file);
-    const row = { mode: stat.mode & 0o777 };
+    const row = {
+      mode: stat.mode & 0o777,
+      fullMode: stat.mode,
+      type: stat.isSymbolicLink()
+        ? 'link'
+        : stat.isDirectory()
+          ? 'directory'
+          : stat.isFile()
+            ? 'regular'
+            : 'other',
+    };
     if (stat.isSymbolicLink()) row.link = readlinkSync(file);
     else if (stat.isDirectory()) {
       row.directory = true;
       for (const child of readdirSync(file).sort())
         visit(path.join(file, child));
-    } else row.sha256 = hash(readFileSync(file));
+    } else {
+      assert.equal(stat.isFile(), true, file);
+      row.bytes = stat.size;
+      row.sha256 = hash(readFileSync(file));
+    }
     entries[path.relative(root, file)] = row;
   };
   visit(root);
   return entries;
+}
+
+const windowsProfileCache = path.join(
+  'AppData',
+  'Local',
+  'Microsoft',
+  'Windows',
+  'PowerShell',
+  'StartupProfileData-NonInteractive',
+);
+const windowsProfileAdditions = new Map([
+  [path.dirname(path.dirname(path.dirname(windowsProfileCache))), 'directory'],
+  [path.dirname(path.dirname(windowsProfileCache)), 'directory'],
+  [path.dirname(windowsProfileCache), 'directory'],
+  [windowsProfileCache, 'regular'],
+]);
+
+function assertWindowsProfilePreserved(cold, baseline, current) {
+  for (const [entry, original] of Object.entries(cold)) {
+    assert.deepEqual(current[entry], original, entry);
+  }
+  for (const [entry, original] of Object.entries(baseline)) {
+    assert.deepEqual(current[entry], original, entry);
+  }
+  const additions = {};
+  for (const [entry, row] of Object.entries(current)) {
+    if (Object.hasOwn(baseline, entry)) continue;
+    assert.equal(Object.hasOwn(cold, entry), false, entry);
+    assert.equal(windowsProfileAdditions.has(entry), true, entry);
+    assert.equal(row.type, windowsProfileAdditions.get(entry), entry);
+    assert.equal(Object.hasOwn(row, 'link'), false, entry);
+    for (let parent = path.dirname(entry); ; parent = path.dirname(parent)) {
+      const key = parent === '.' ? '' : parent;
+      assert.equal(current[key]?.type, 'directory', key);
+      assert.equal(Object.hasOwn(current[key], 'link'), false, key);
+      if (key === '') break;
+    }
+    additions[entry] = row;
+  }
+  return additions;
 }
 
 function put(file, content, executable = false) {
@@ -265,7 +319,28 @@ function fixture() {
     },
     assertProtected() {
       expect(tree(protectedRoot)).toEqual(initialProtected);
-      expect(tree(path.join(root, 'home'))).toEqual(initialHome);
+      const currentHome = tree(path.join(root, 'home'));
+      if (windows) {
+        console.info(
+          JSON.stringify({
+            state: 'WINDOWS_USERDATA_PRESERVATION_WITH_EXACT_DERIVED_ADDITIONS',
+            coldHome,
+            initializedHome: initialHome,
+            currentHome,
+            derivedBefore: Object.fromEntries(
+              [...windowsProfileAdditions.keys()]
+                .filter((entry) => Object.hasOwn(initialHome, entry))
+                .map((entry) => [entry, initialHome[entry]]),
+            ),
+            derivedAfter: Object.fromEntries(
+              [...windowsProfileAdditions.keys()]
+                .filter((entry) => Object.hasOwn(currentHome, entry))
+                .map((entry) => [entry, currentHome[entry]]),
+            ),
+          }),
+        );
+        assertWindowsProfilePreserved(coldHome, initialHome, currentHome);
+      } else expect(currentHome).toEqual(initialHome);
       expect(process.env.PATH).toBe(initialPath);
       expect(readFileSync(path.join(dir, 'outside-preview-data'), 'utf8')).toBe(
         'PRESERVE_SIBLING\n',
@@ -565,3 +640,79 @@ it.skipIf(windows)(
     });
   },
 );
+
+describe('Windows profile additions contract (portable map checks)', () => {
+  const directory = {
+    type: 'directory',
+    mode: 0o755,
+    fullMode: 0o40755,
+    directory: true,
+  };
+  const file = {
+    type: 'regular',
+    mode: 0o644,
+    fullMode: 0o100644,
+    bytes: 4,
+    sha256: hash('USER'),
+  };
+  const baseline = () => ({
+    '': { ...directory },
+    '.profile': { ...file },
+    AppData: { ...directory },
+    [path.join('AppData', 'Local')]: { ...directory },
+    [path.join('AppData', 'Roaming')]: { ...directory },
+  });
+  const withAdditions = () => ({
+    ...baseline(),
+    ...Object.fromEntries(
+      [...windowsProfileAdditions].map(([entry, type]) => [
+        entry,
+        { ...(type === 'directory' ? directory : file) },
+      ]),
+    ),
+  });
+
+  it('accepts only the four observed new typed entries', () => {
+    const before = baseline();
+    const after = withAdditions();
+    expect(
+      Object.keys(assertWindowsProfilePreserved(before, before, after)).sort(),
+    ).toEqual([...windowsProfileAdditions.keys()].sort());
+  });
+
+  it.each([
+    'profile mutation',
+    'unrelated addition',
+    'cache directory',
+    'cache link',
+    'ancestor link',
+    'existing cache mutation',
+  ])('rejects %s', (kind) => {
+    const cold = baseline();
+    const before = baseline();
+    const after = withAdditions();
+    if (kind === 'profile mutation') after['.profile'].sha256 = hash('CHANGED');
+    if (kind === 'unrelated addition') after['unrelated.txt'] = { ...file };
+    if (kind === 'cache directory')
+      after[windowsProfileCache] = { ...directory };
+    if (kind === 'cache link')
+      after[windowsProfileCache] = {
+        type: 'link',
+        mode: 0o777,
+        fullMode: 0o120777,
+        link: 'elsewhere',
+      };
+    if (kind === 'ancestor link')
+      after[path.dirname(windowsProfileCache)] = {
+        type: 'link',
+        mode: 0o777,
+        fullMode: 0o120777,
+        link: 'elsewhere',
+      };
+    if (kind === 'existing cache mutation') {
+      before[windowsProfileCache] = { ...file };
+      after[windowsProfileCache].sha256 = hash('CHANGED');
+    }
+    expect(() => assertWindowsProfilePreserved(cold, before, after)).toThrow();
+  });
+});

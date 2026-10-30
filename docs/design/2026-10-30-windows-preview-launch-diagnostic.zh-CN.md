@@ -18,11 +18,15 @@
 
 后续 `329ccc` 候选尝试将 `APPDATA`、`LOCALAPPDATA` 指向两个任意 owned 环境路径。真实 known-folder 观测中 LocalApplicationData 为空，ApplicationData 仍位于 HOME 下，因此精确路由断言在安装器执行前失败。保留该失败。移除缺乏依据的环境覆盖、额外目录和路由相等断言；六条 raw 诊断记录仍是观测，不作为重定向合同。
 
-下一候选在每个 Windows fixture 中完成 seed 后、任何归档创建或安装器调用前，只通过原有严格公开旧启动器检查初始化一次。要求输出精确为 `OLD_PREVIEW`、status 为 0、stderr 为空。将完整冷 HOME 图、初始化后 HOME 图以及全部新增条目保存到结构化测试日志。每个原有冷图条目的类型、mode、hash、link target 均须保持。之后才一次冻结包含全部初始化内容的 HOME 作为保护基线。初始化由 fixture 返回的方法承载，在 `withFixture` 现有 `try` 内、测试动作前只调用一次，因此 readiness 或原条目检查失败也会进入原 `finally` 清理 owned 根目录；不捕获或吞掉首个错误。HOME 与 USERPROFILE 仍为同一 owned 目录，不拆分 profile，不排除缓存。后续归档、安装器和启动操作保留原完整 HOME 比较。如果 OS 状态之后仍变化，用例继续失败，不刷新基线、不重试。
+下一候选在每个 Windows fixture 中完成 seed 后、任何归档创建或安装器调用前，只通过原有严格公开旧启动器检查初始化一次。要求输出精确为 `OLD_PREVIEW`、status 为 0、stderr 为空。将完整冷 HOME 图、初始化后 HOME 图以及全部新增条目保存到结构化测试日志。每个原有冷图条目的类型、mode、hash、link target 均须保持。之后才一次冻结包含全部初始化内容的 HOME 作为保护基线。初始化由 fixture 返回的方法承载，在 `withFixture` 现有 `try` 内、测试动作前只调用一次，因此 readiness 或原条目检查失败也会进入原 `finally` 清理 owned 根目录；不捕获或吞掉首个错误。HOME 与 USERPROFILE 仍为同一 owned 目录，不拆分 profile，不排除缓存。后续 `575d` 的真实 Windows 运行仍失败：readiness 仅新增 AppData、Local、Roaming，之后零安装器的两次启动又新增 Microsoft、Windows、PowerShell 目录和 `StartupProfileData-NonInteractive` 文件。保留原 whole-HOME 失败，不再增加 warmup 或等待来追求缓存稳定。
+
+新合同明确为用户数据保护加精确 OS 派生新增域，不再声称整个 HOME 完全相同。冷图与初始化基线中的全部已有条目（包括已存在的同名缓存）仍要求类型、完整 mode、文件 bytes/hash 或 link target 完全相同。只允许两份基线均无的四个精确相对路径新增：`AppData/Local/Microsoft`、其下 `Windows`、其下 `PowerShell` 三个目录及其下 `StartupProfileData-NonInteractive` 常规文件。父链必须为真实目录，不跟随链接；同名目录冒充文件、任何链接、其他新增、修改或删除均拒绝。完整冷图、初始化图、当前图及派生域 before/after 行单独保存到结构化日志。常规文件记录 lstat 类型、完整 mode、bytes、SHA；目录记录类型和完整 mode，没有文件内容 bytes/SHA。
+
+实际零安装器控制说明这些路径可在 host 启动期间出现，不能证明唯一写入者 PID。若安装器也写入同一精确新增域，纯图比较无法区分；本合同不作这一归因。便携合同测试用同一个真实验证 helper，正向验证仅四个精确新增，负向验证 `.profile` 改动、无关新增、冒名目录、缓存链接、父链链接及基线已有缓存变化。所有四次历史失败保持失败。
 
 这表示先建立 profile 已初始化、旧安装可公开启动的初态，再测试安装器保护；不能证明全新 HOME 不会收到 PowerShell host 写入。安装前用例包含 fixture setup 的一次 readiness 启动，再执行原有两种诊断/检查启动，仍为零次安装器且无重试。其他保护用例的每个 Windows fixture 也恰好执行一次 readiness 启动。
 
-现有 `windows-runner-smoke.yml` 保留布尔输入 `preview_launch_diagnostic`，默认 `false`。默认完整 ECS 任务及其预装 Node 路径保持。`true` 模式现在**一次运行包含 12 个已注册用例的完整 preview 安装器测试文件**，不使用测试名过滤；它不再表示只运行单个零安装器工作流任务。完整文件包含安装前用例及原保护场景，保留各自断言和声明的平台跳过，不运行全仓测试或构建 workspaces。
+现有 `windows-runner-smoke.yml` 保留布尔输入 `preview_launch_diagnostic`，默认 `false`。默认完整 ECS 任务及其预装 Node 路径保持。`true` 模式现在**一次运行完整 preview 安装器测试文件**（12 个安装器/诊断用例加七个便携合同用例），不使用测试名过滤；它不再表示只运行单个零安装器工作流任务。完整文件包含安装前用例及原保护场景，保留各自断言和声明的平台跳过，不运行全仓测试或构建 workspaces。当前文件注册 19 个用例，预期 Windows 执行 16 个并声明三个 POSIX 跳过，仍以实际验证为准。
 
 该聚焦 hosted `windows-2022` 任务使用 Node 22、共享 Windows 环境 action、精确 checkout 验证、冻结且带 `--ignore-scripts` 的依赖安装、零重试、单 worker、15 分钟限制及始终上传的日志。工作流元测试保护用例选择、错误传播及原默认 ECS 路径。五文件改动仅涉及 fixture/诊断测试、工作流、对应元测试和这两份设计文档。
 
@@ -30,6 +34,6 @@
 
 通过 `scripts/tests/vitest.config.ts` 运行完整脚本测试及工作流元测试文件，并执行格式和适用的静态检查。macOS 可以验证 POSIX 场景与工作流接线；Windows 专用用例在此跳过不能算 Windows 证据。
 
-审查后，在精确候选分支调用工作流并设置 `preview_launch_diagnostic=true`。记录真实 checkout、runner、Node、PowerShell，检查原始启动记录，报告完整文件实际通过/失败/跳过数量。首个 raw 启动仍须满足原 `OLD_PREVIEW` oracle，之后才运行严格检查；安装器场景仍必须满足安装树保护及 staging 断言。initialized-profile 候选的 Windows 结果与缓存稳定性仍未验证，不能从准备工作或此前启动器输出已恢复推定。
+审查后，在精确候选分支调用工作流并设置 `preview_launch_diagnostic=true`。记录真实 checkout、runner、Node、PowerShell，检查原始启动记录，报告完整文件实际通过/失败/跳过数量。首个 raw 启动仍须满足原 `OLD_PREVIEW` oracle，之后才运行严格检查；安装器场景仍必须满足安装树保护及 staging 断言。新用户数据加精确派生新增合同的 Windows 结果仍未验证，不能从便携 map 测试推定 hosted Windows 或安装器已通过。
 
 hosted Windows 不是原 ECS 主机。新的完整文件成功只能资格化已记录候选/环境下的 fixture 与保护测试文件，不代表全部 Windows 产品行为通过，也不改变原 ECS 结果。本改动不改变生产默认值、renderer、release 或安装器行为。
