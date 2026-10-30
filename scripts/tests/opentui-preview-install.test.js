@@ -85,6 +85,10 @@ function fixture() {
   put(path.join(protectedRoot, '.profile'), 'ORIGINAL_PATH_CONFIG\n');
   put(path.join(root, 'home', '.profile'), 'OWNED_HOME_PROFILE\n');
   mkdirSync(path.join(root, 'tmp'));
+  if (windows) {
+    mkdirSync(path.join(root, 'tmp', 'roaming-appdata'));
+    mkdirSync(path.join(root, 'tmp', 'local-appdata'));
+  }
   const env = {
     PATH: process.env.PATH,
     HOME: path.join(root, 'home'),
@@ -97,6 +101,8 @@ function fixture() {
           SystemRoot: process.env.SystemRoot,
           ComSpec: process.env.ComSpec,
           PATHEXT: process.env.PATHEXT,
+          APPDATA: path.join(root, 'tmp', 'roaming-appdata'),
+          LOCALAPPDATA: path.join(root, 'tmp', 'local-appdata'),
         }
       : { LC_ALL: 'C' }),
   };
@@ -280,7 +286,7 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
           '-NoProfile',
           '-NonInteractive',
           '-Command',
-          `[Console]::Error.WriteLine('QWEN_DIAG_PATHEXT=' + $env:PATHEXT); [Console]::Error.WriteLine('QWEN_DIAG_COMSPEC=' + $env:ComSpec); [Console]::Error.WriteLine('QWEN_DIAG_SYSTEMROOT=' + $env:SystemRoot); [Console]::Error.WriteLine('QWEN_DIAG_PS=' + $PSVersionTable.PSVersion); & ${psQuote(path.join(f.live, 'bin', 'qwen.cmd'))}; exit $LASTEXITCODE`,
+          `[Console]::Error.WriteLine('QWEN_DIAG_PATHEXT=' + $env:PATHEXT); [Console]::Error.WriteLine('QWEN_DIAG_COMSPEC=' + $env:ComSpec); [Console]::Error.WriteLine('QWEN_DIAG_SYSTEMROOT=' + $env:SystemRoot); [Console]::Error.WriteLine('QWEN_DIAG_PS=' + $PSVersionTable.PSVersion); [Console]::Error.WriteLine('QWEN_DIAG_KNOWN_LOCALAPPDATA=' + [Environment]::GetFolderPath([System.Environment+SpecialFolder]::LocalApplicationData)); [Console]::Error.WriteLine('QWEN_DIAG_KNOWN_APPDATA=' + [Environment]::GetFolderPath([System.Environment+SpecialFolder]::ApplicationData)); & ${psQuote(path.join(f.live, 'bin', 'qwen.cmd'))}; exit $LASTEXITCODE`,
         ];
         const raw = spawnSync(powershell, args, {
           env: f.env,
@@ -314,6 +320,8 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
             ComSpec: f.env.ComSpec ?? null,
             HOME: f.env.HOME,
             USERPROFILE: f.env.USERPROFILE,
+            APPDATA: f.env.APPDATA,
+            LOCALAPPDATA: f.env.LOCALAPPDATA,
             TMP: f.env.TMP,
             TEMP: f.env.TEMP,
           },
@@ -329,8 +337,15 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
         const witnesses = raw.stderr
           .split(/\r?\n/)
           .filter((line) => line !== '');
-        expect(witnesses, evidence).toHaveLength(4);
-        for (const name of ['PATHEXT', 'COMSPEC', 'SYSTEMROOT', 'PS']) {
+        expect(witnesses, evidence).toHaveLength(6);
+        for (const name of [
+          'PATHEXT',
+          'COMSPEC',
+          'SYSTEMROOT',
+          'PS',
+          'KNOWN_LOCALAPPDATA',
+          'KNOWN_APPDATA',
+        ]) {
           const prefix = `QWEN_DIAG_${name}=`;
           const values = witnesses.filter((line) => line.startsWith(prefix));
           expect(values, evidence).toHaveLength(1);
@@ -338,6 +353,12 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
             'string',
           );
         }
+        expect(witnesses, evidence).toContain(
+          `QWEN_DIAG_KNOWN_LOCALAPPDATA=${f.env.LOCALAPPDATA}`,
+        );
+        expect(witnesses, evidence).toContain(
+          `QWEN_DIAG_KNOWN_APPDATA=${f.env.APPDATA}`,
+        );
         // Same original seed and env; the checked launch also detects PowerShell errors.
         f.assertOld();
         f.assertNoStaging();
