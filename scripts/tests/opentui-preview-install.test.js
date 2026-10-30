@@ -93,7 +93,11 @@ function fixture() {
     TMP: path.join(root, 'tmp'),
     TEMP: path.join(root, 'tmp'),
     ...(windows
-      ? { SystemRoot: process.env.SystemRoot, ComSpec: process.env.ComSpec }
+      ? {
+          SystemRoot: process.env.SystemRoot,
+          ComSpec: process.env.ComSpec,
+          PATHEXT: process.env.PATHEXT,
+        }
       : { LC_ALL: 'C' }),
   };
   const initialPath = process.env.PATH;

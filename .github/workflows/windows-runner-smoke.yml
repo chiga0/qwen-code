@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       preview_launch_diagnostic:
-        description: 'Run only the pre-install Windows launcher diagnostic'
+        description: 'Run focused Windows preview launcher and installer tests'
         type: boolean
         default: false
 
@@ -132,7 +132,7 @@ jobs:
           npm run test:ci
 
   preview-launch-diagnostic:
-    name: 'Preview launcher diagnostic (no installer)'
+    name: 'Preview launcher and installer preservation'
     if: '${{ inputs.preview_launch_diagnostic }}'
     runs-on: 'windows-2022'
     timeout-minutes: 15
@@ -163,11 +163,11 @@ jobs:
       - name: 'Install dependencies without workspace builds'
         shell: 'bash'
         run: 'corepack pnpm install --frozen-lockfile --ignore-scripts --prefer-offline --reporter=append-only'
-      - name: 'Run only the pre-install launcher diagnostic'
+      - name: 'Run the preview installer preservation file'
         shell: 'bash'
         run: |-
           set -euo pipefail
-          node node_modules/vitest/vitest.mjs run scripts/tests/opentui-preview-install.test.js --config scripts/tests/vitest.config.ts --testNamePattern='qualifies the seeded Windows launcher before invoking any installer' --retry=0 --bail=1 --maxWorkers=1 --minWorkers=1 --dangerouslyIgnoreUnhandledErrors=false 2>&1 | tee -a "$RUNNER_TEMP/preview-launch-diagnostic.log"
+          node node_modules/vitest/vitest.mjs run scripts/tests/opentui-preview-install.test.js --config scripts/tests/vitest.config.ts --retry=0 --bail=1 --maxWorkers=1 --minWorkers=1 --dangerouslyIgnoreUnhandledErrors=false 2>&1 | tee -a "$RUNNER_TEMP/preview-launch-diagnostic.log"
       - name: 'Save launcher diagnostic output'
         if: '${{ always() }}'
         uses: 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02'

@@ -964,11 +964,12 @@ describe('no-AK integration CI wiring', () => {
     expect(diagnostic).toContain('QWEN_DIAG_HEAD=%s');
     expect(diagnostic).toContain('tee -a');
     expect(diagnostic).toContain(
-      'qualifies the seeded Windows launcher before invoking any installer',
+      'vitest.mjs run scripts/tests/opentui-preview-install.test.js',
     );
     expect(diagnostic).toContain(
       '--retry=0 --bail=1 --maxWorkers=1 --minWorkers=1',
     );
+    expect(diagnostic).not.toContain('--testNamePattern');
     expect(diagnostic).not.toContain('npm run test:ci');
     expect(diagnostic).not.toContain('npm run build');
     expect(diagnostic).toContain("if: '${{ always() }}'");
