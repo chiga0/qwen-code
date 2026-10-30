@@ -121,12 +121,27 @@ function fixture() {
             '-NoProfile',
             '-NonInteractive',
             '-Command',
-            `& ${psQuote(entry(live))}; exit $LASTEXITCODE`,
+            `$ErrorActionPreference = 'Stop'; & ${psQuote(entry(live))}; if ($null -eq $LASTEXITCODE) { throw 'Launcher did not report a native exit code' }; exit $LASTEXITCODE`,
           ],
           { env },
         )
       : checked(entry(live), [], { env });
-    expect(result.status).toBe(0);
+    const evidence = JSON.stringify({
+      platform: process.platform,
+      node: process.version,
+      powershell,
+      status: result.status,
+      stdout: result.stdout,
+      stderr: result.stderr,
+      PATHPresent: typeof env.PATH === 'string',
+      PATHEXT: env.PATHEXT ?? null,
+      parentPATHEXT: process.env.PATHEXT ?? null,
+      SystemRoot: env.SystemRoot ?? null,
+      ComSpec: env.ComSpec ?? null,
+    });
+    expect(result.status, evidence).toBe(0);
+    expect(result.stderr.trim(), evidence).toBe('');
+    expect(result.stdout.trim(), evidence).not.toBe('');
     return result.stdout.trim();
   };
   const installArgs = (archive) =>
@@ -253,6 +268,79 @@ function rejected(result) {
 }
 
 describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservation`, () => {
+  it.skipIf(!windows)(
+    'qualifies the seeded Windows launcher before invoking any installer',
+    async () => {
+      await withFixture(async (f) => {
+        const args = [
+          '-NoProfile',
+          '-NonInteractive',
+          '-Command',
+          `[Console]::Error.WriteLine('QWEN_DIAG_PATHEXT=' + $env:PATHEXT); [Console]::Error.WriteLine('QWEN_DIAG_COMSPEC=' + $env:ComSpec); [Console]::Error.WriteLine('QWEN_DIAG_SYSTEMROOT=' + $env:SystemRoot); [Console]::Error.WriteLine('QWEN_DIAG_PS=' + $PSVersionTable.PSVersion); & ${psQuote(path.join(f.live, 'bin', 'qwen.cmd'))}; exit $LASTEXITCODE`,
+        ];
+        const raw = spawnSync(powershell, args, {
+          env: f.env,
+          encoding: 'utf8',
+          timeout: 15000,
+        });
+        const evidence = JSON.stringify({
+          state: 'WINDOWS_OLD_LAUNCHER_PREINSTALL_OBSERVATION_NOT_PRODUCT',
+          installerInvoked: false,
+          powershell,
+          args,
+          platform: process.platform,
+          arch: process.arch,
+          node: process.version,
+          status: raw.status,
+          signal: raw.signal,
+          error: raw.error
+            ? {
+                name: raw.error.name,
+                message: raw.error.message,
+                code: raw.error.code,
+              }
+            : null,
+          stdout: raw.stdout,
+          stderr: raw.stderr,
+          env: {
+            PATHPresent: typeof f.env.PATH === 'string',
+            PATHEXT: f.env.PATHEXT ?? null,
+            parentPATHEXT: process.env.PATHEXT ?? null,
+            SystemRoot: f.env.SystemRoot ?? null,
+            ComSpec: f.env.ComSpec ?? null,
+            HOME: f.env.HOME,
+            USERPROFILE: f.env.USERPROFILE,
+            TMP: f.env.TMP,
+            TEMP: f.env.TEMP,
+          },
+        });
+        console.info(evidence);
+        assert.equal(raw.error, undefined, evidence);
+        assert.equal(raw.signal, null, evidence);
+        expect(typeof raw.status, evidence).toBe('number');
+        expect(raw.status, evidence).toBe(0);
+        expect(typeof raw.stdout, evidence).toBe('string');
+        expect(typeof raw.stderr, evidence).toBe('string');
+        expect(raw.stdout.trim(), evidence).toBe('OLD_PREVIEW');
+        const witnesses = raw.stderr
+          .split(/\r?\n/)
+          .filter((line) => line !== '');
+        expect(witnesses, evidence).toHaveLength(4);
+        for (const name of ['PATHEXT', 'COMSPEC', 'SYSTEMROOT', 'PS']) {
+          const prefix = `QWEN_DIAG_${name}=`;
+          const values = witnesses.filter((line) => line.startsWith(prefix));
+          expect(values, evidence).toHaveLength(1);
+          expect(typeof values[0].slice(prefix.length), evidence).toBe(
+            'string',
+          );
+        }
+        // Same original seed and env; the checked launch also detects PowerShell errors.
+        f.assertOld();
+        f.assertNoStaging();
+      });
+    },
+  );
+
   it.each(['truncated', 'bad-format'])(
     'rejects %s archives without deleting the prior executable or data',
     async (kind) => {
