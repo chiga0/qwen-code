@@ -38,7 +38,7 @@
 
 hosted Windows 不是原 ECS 主机。新的完整文件成功只能资格化已记录候选/环境下的 fixture 与保护测试文件，不代表全部 Windows 产品行为通过，也不改变原 ECS 结果。本改动不改变生产默认值、renderer、release 或安装器行为。
 
-## Windows host 启动预算候选（尚未运行）
+## Windows host 启动预算候选与已观测失败
 
 业务候选以 `b8c4` 为父提交，保留完整文件的 true-mode 选择及原无过滤元测试；不包含独立 trace 分支的新诊断用例、过滤器或 wrapper。`b8c4` 的运行 `41043639528` 是 1P、1F、3 个声明跳过、14 个 bail 未达：安装前用例已通过，但原直接 `-File` 截断归档调用在 15 秒超时。原失败保持。
 
@@ -47,3 +47,13 @@ hosted Windows 不是原 ECS 主机。新的完整文件成功只能资格化已
 据此为 Windows PowerShell host 调用保留合理启动余量：现有 checked helper 只在 Windows 将 15 秒改为 60 秒；POSIX 仍为 15 秒。九个 Windows 可执行保护用例显式设 120 秒，容纳依序 readiness、归档构造、原直接安装器和旧启动器检查；POSIX 仍继承原 90 秒配置或环境覆盖。独立 raw 安装前观测的 15 秒不变，工作流仍为 15 分钟。这里选择余量是工程预算调整，不是证明原首因或需要时长，更不是增加重试。
 
 生产脚本、4B/错误归档、原 `-File` argv、退出码拒绝、旧安装树、用户条目及精确派生新增域、PATH、兄弟目录和 staging 断言完全不变。下一必须在新精确候选上真实执行完整 19 用例；预期 Windows 16 执行、3 个 POSIX 跳过仍以实际结果为准。若 60 秒仍超时就保留失败，不自动再加时。该候选不声称原 15 秒合同通过或整个迁移完成。
+
+## Owned 模块分析缓存候选（尚未运行）
+
+`feba764` 的[后续 Windows 运行](https://github.com/chiga0/qwen-code/actions/runs/41048926251/job/124039861107) 通过了零安装器的安装前场景。截断归档场景到达语义非零拒绝、旧安装树比较、`OLD_PREVIEW` 重启及无 staging 断言，随后在未改的 HOME 守卫失败：`AppData/Local/Microsoft/Windows/PowerShell/ModuleAnalysisCache` 是预期域外新增常规文件。原初始化条目保持不变。写入者 PID 仍未知，文件名不能证明安装器或 PowerShell 归属。完整文件结果为 1 通过、1 失败、3 个声明的 POSIX 跳过及 14 个 bail 未达。保留原失败和四路径新增域。
+
+[Microsoft 的 Windows PowerShell 5.1 官方文档](https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.core/about/about_windows_powershell_5.1?view=powershell-5.1#module-analysis-cache) 明确支持在启动前将 `PSModuleAnalysisCachePath` 设为可写完整文件名，并说明模块导入后可由后台线程写缓存。每个 Windows fixture 使用该受支持控制，指向现有 owned `root/tmp/ModuleAnalysisCache`。不禁用缓存、不使用 `NUL`、不增加 warmup、不改 HOME/USERPROFILE。文档支持候选路由机制，不证明此前文件的写入者。
+
+保留原六条 raw stderr 观测，增加第七条 `MODULE_ANALYSIS_CACHE`，由实际 PowerShell 子进程读取其环境。要求总共恰好七条、每个名称一条，并将新增记录值与计划的 owned 完整路径严格比较；结构化证据也记录配置路径。原字段仍允许空值，但新增路由值不能偏离计划。该受支持路径在 fixture readiness、raw 启动和安装器启动前均已设置。它是正常可写缓存位置，是否生成缓存是可选观测，不通过额外模块导入或 sleep 强制生成。
+
+不将 ModuleAnalysisCache 加入 HOME 白名单；四个精确允许新增域、全部已有条目检查、安装器脚本/参数、timeout 预算、PATH 与 staging 保护均不变。新 Windows 运行必须资格化实际 child 值及原完整 HOME 保护；仅环境见证通过不能证明保护通过。该三文件候选尚未运行，不把任何历史失败改成通过。
