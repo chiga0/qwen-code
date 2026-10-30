@@ -37,3 +37,13 @@
 审查后，在精确候选分支调用工作流并设置 `preview_launch_diagnostic=true`。记录真实 checkout、runner、Node、PowerShell，检查原始启动记录，报告完整文件实际通过/失败/跳过数量。首个 raw 启动仍须满足原 `OLD_PREVIEW` oracle，之后才运行严格检查；安装器场景仍必须满足安装树保护及 staging 断言。新用户数据加精确派生新增合同的 Windows 结果仍未验证，不能从便携 map 测试推定 hosted Windows 或安装器已通过。
 
 hosted Windows 不是原 ECS 主机。新的完整文件成功只能资格化已记录候选/环境下的 fixture 与保护测试文件，不代表全部 Windows 产品行为通过，也不改变原 ECS 结果。本改动不改变生产默认值、renderer、release 或安装器行为。
+
+## Windows host 启动预算候选（尚未运行）
+
+业务候选以 `b8c4` 为父提交，保留完整文件的 true-mode 选择及原无过滤元测试；不包含独立 trace 分支的新诊断用例、过滤器或 wrapper。`b8c4` 的运行 `41043639528` 是 1P、1F、3 个声明跳过、14 个 bail 未达：安装前用例已通过，但原直接 `-File` 截断归档调用在 15 秒超时。原失败保持。
+
+独立 `f7afa` trace 运行 `41046485345` 仅观察成功：相同 4B ZIP、未改生产脚本的不同 wrapper invocation 在 18.7142938 秒取得 status 1、signal null、无 spawn error，trace 到 `ZipFile.OpenRead` 的 Central Directory 损坏异常和 stage/lock 清理路径。它没有逐阶段时间，不能定位原 15 秒耗在哪，也不能把 trace 当原调用通过。
+
+据此为 Windows PowerShell host 调用保留合理启动余量：现有 checked helper 只在 Windows 将 15 秒改为 60 秒；POSIX 仍为 15 秒。九个 Windows 可执行保护用例显式设 120 秒，容纳依序 readiness、归档构造、原直接安装器和旧启动器检查；POSIX 仍继承原 90 秒配置或环境覆盖。独立 raw 安装前观测的 15 秒不变，工作流仍为 15 分钟。这里选择余量是工程预算调整，不是证明原首因或需要时长，更不是增加重试。
+
+生产脚本、4B/错误归档、原 `-File` argv、退出码拒绝、旧安装树、用户条目及精确派生新增域、PATH、兄弟目录和 staging 断言完全不变。下一必须在新精确候选上真实执行完整 19 用例；预期 Windows 16 执行、3 个 POSIX 跳过仍以实际结果为准。若 60 秒仍超时就保留失败，不自动再加时。该候选不声称原 15 秒合同通过或整个迁移完成。

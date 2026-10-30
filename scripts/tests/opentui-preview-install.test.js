@@ -121,7 +121,7 @@ function put(file, content, executable = false) {
 function checked(command, args, options) {
   const result = spawnSync(command, args, {
     encoding: 'utf8',
-    timeout: 15000,
+    timeout: windows ? 60_000 : 15_000,
     ...options,
   });
   assert.equal(result.error, undefined, String(result.error));
@@ -449,6 +449,7 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
         f.assertNoStaging();
       });
     },
+    windows ? 120_000 : undefined,
   );
 
   it.each(['truncated', 'bad-format'])(
@@ -467,85 +468,112 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
         f.assertNoStaging();
       });
     },
+    windows ? 120_000 : undefined,
   );
 
-  it('rejects an extractable package missing the launcher/runtime structure', async () => {
-    await withFixture(async (f) => {
-      rejected(f.install(f.archive('invalid-structure', 'invalid')));
-      f.assertOld();
-      f.assertNoStaging();
-    });
-  });
+  it(
+    'rejects an extractable package missing the launcher/runtime structure',
+    async () => {
+      await withFixture(async (f) => {
+        rejected(f.install(f.archive('invalid-structure', 'invalid')));
+        f.assertOld();
+        f.assertNoStaging();
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 
-  it('rejects an archive with an unexpected top-level member before activation', async () => {
-    await withFixture(async (f) => {
-      rejected(f.install(f.archive('outside', 'outside')));
-      f.assertOld();
-      expect(existsSync(path.join(f.dir, 'unexpected-top-level'))).toBe(false);
-      f.assertNoStaging();
-    });
-  });
+  it(
+    'rejects an archive with an unexpected top-level member before activation',
+    async () => {
+      await withFixture(async (f) => {
+        rejected(f.install(f.archive('outside', 'outside')));
+        f.assertOld();
+        expect(existsSync(path.join(f.dir, 'unexpected-top-level'))).toBe(
+          false,
+        );
+        f.assertNoStaging();
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 
-  it('activates a complete preview and leaves classic entry, PATH config and siblings alone', async () => {
-    await withFixture(async (f) => {
-      const result = f.install(f.archive('complete'));
-      expect(result.status, result.stderr).toBe(0);
-      expect(f.launch()).toBe('NEW_PREVIEW');
-      expect(
-        readFileSync(path.join(f.live, 'userdata-sentinel.txt'), 'utf8'),
-      ).toBe('NEW_PREVIEW_USERDATA_甲\n');
-      expect(
-        existsSync(path.join(f.live, 'bun', windows ? 'bun.exe' : 'bin/bun')),
-      ).toBe(true);
-      f.assertNoStaging();
-    });
-  });
+  it(
+    'activates a complete preview and leaves classic entry, PATH config and siblings alone',
+    async () => {
+      await withFixture(async (f) => {
+        const result = f.install(f.archive('complete'));
+        expect(result.status, result.stderr).toBe(0);
+        expect(f.launch()).toBe('NEW_PREVIEW');
+        expect(
+          readFileSync(path.join(f.live, 'userdata-sentinel.txt'), 'utf8'),
+        ).toBe('NEW_PREVIEW_USERDATA_甲\n');
+        expect(
+          existsSync(path.join(f.live, 'bun', windows ? 'bun.exe' : 'bin/bun')),
+        ).toBe(true);
+        f.assertNoStaging();
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 
-  it('rejects a non-directory live destination without removing its contents', async () => {
-    await withFixture(async (f) => {
-      const file = f.archive('non-directory');
-      rmSync(f.live, { recursive: true });
-      writeFileSync(f.live, 'OWNED_EXISTING_FILE\n');
-      const before = tree(f.live);
-      rejected(f.install(file));
-      expect(tree(f.live)).toEqual(before);
-      f.assertNoStaging();
-    });
-  });
+  it(
+    'rejects a non-directory live destination without removing its contents',
+    async () => {
+      await withFixture(async (f) => {
+        const file = f.archive('non-directory');
+        rmSync(f.live, { recursive: true });
+        writeFileSync(f.live, 'OWNED_EXISTING_FILE\n');
+        const before = tree(f.live);
+        rejected(f.install(file));
+        expect(tree(f.live)).toEqual(before);
+        f.assertNoStaging();
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 
-  it('rejects a live symlink or junction without touching its target', async () => {
-    await withFixture(async (f) => {
-      const file = f.archive('linked');
-      const external = path.join(f.root, 'owned-other-install');
-      mkdirSync(external);
-      put(path.join(external, 'userdata'), 'LINK_TARGET_DATA\n');
-      const before = tree(external);
-      rmSync(f.live, { recursive: true });
-      symlinkSync(external, f.live, windows ? 'junction' : 'dir');
-      const link = readlinkSync(f.live);
-      rejected(f.install(file));
-      expect(lstatSync(f.live).isSymbolicLink()).toBe(true);
-      expect(readlinkSync(f.live)).toBe(link);
-      expect(tree(external)).toEqual(before);
-      f.assertNoStaging();
-    });
-  });
+  it(
+    'rejects a live symlink or junction without touching its target',
+    async () => {
+      await withFixture(async (f) => {
+        const file = f.archive('linked');
+        const external = path.join(f.root, 'owned-other-install');
+        mkdirSync(external);
+        put(path.join(external, 'userdata'), 'LINK_TARGET_DATA\n');
+        const before = tree(external);
+        rmSync(f.live, { recursive: true });
+        symlinkSync(external, f.live, windows ? 'junction' : 'dir');
+        const link = readlinkSync(f.live);
+        rejected(f.install(file));
+        expect(lstatSync(f.live).isSymbolicLink()).toBe(true);
+        expect(readlinkSync(f.live)).toBe(link);
+        expect(tree(external)).toEqual(before);
+        f.assertNoStaging();
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 
-  it('rejects an occupied install lock without modifying the active install or lock owner', async () => {
-    await withFixture(async (f) => {
-      const file = f.archive('occupied-lock');
-      const lock = path.join(f.dir, '.qwen-preview-install.lock');
-      if (windows) writeFileSync(lock, 'OTHER_INSTALLER\n');
-      else {
-        mkdirSync(lock);
-        put(path.join(lock, 'owner'), 'OTHER_INSTALLER\n');
-      }
-      const before = tree(lock);
-      rejected(f.install(file));
-      f.assertOld();
-      expect(tree(lock)).toEqual(before);
-    });
-  });
+  it(
+    'rejects an occupied install lock without modifying the active install or lock owner',
+    async () => {
+      await withFixture(async (f) => {
+        const file = f.archive('occupied-lock');
+        const lock = path.join(f.dir, '.qwen-preview-install.lock');
+        if (windows) writeFileSync(lock, 'OTHER_INSTALLER\n');
+        else {
+          mkdirSync(lock);
+          put(path.join(lock, 'owner'), 'OTHER_INSTALLER\n');
+        }
+        const before = tree(lock);
+        rejected(f.install(file));
+        f.assertOld();
+        expect(tree(lock)).toEqual(before);
+      });
+    },
+    windows ? 120_000 : undefined,
+  );
 });
 
 it.skipIf(windows)(
