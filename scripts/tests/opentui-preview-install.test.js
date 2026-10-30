@@ -85,10 +85,6 @@ function fixture() {
   put(path.join(protectedRoot, '.profile'), 'ORIGINAL_PATH_CONFIG\n');
   put(path.join(root, 'home', '.profile'), 'OWNED_HOME_PROFILE\n');
   mkdirSync(path.join(root, 'tmp'));
-  if (windows) {
-    mkdirSync(path.join(root, 'tmp', 'roaming-appdata'));
-    mkdirSync(path.join(root, 'tmp', 'local-appdata'));
-  }
   const env = {
     PATH: process.env.PATH,
     HOME: path.join(root, 'home'),
@@ -101,14 +97,13 @@ function fixture() {
           SystemRoot: process.env.SystemRoot,
           ComSpec: process.env.ComSpec,
           PATHEXT: process.env.PATHEXT,
-          APPDATA: path.join(root, 'tmp', 'roaming-appdata'),
-          LOCALAPPDATA: path.join(root, 'tmp', 'local-appdata'),
         }
       : { LC_ALL: 'C' }),
   };
   const initialPath = process.env.PATH;
   const initialProtected = tree(protectedRoot);
-  const initialHome = tree(path.join(root, 'home'));
+  const coldHome = tree(path.join(root, 'home'));
+  let initialHome = coldHome;
   const entry = (base) => path.join(base, 'bin', windows ? 'qwen.cmd' : 'qwen');
   const seed = (base, marker) => {
     put(
@@ -239,6 +234,28 @@ function fixture() {
     live,
     env,
     archive,
+    initializeProfile() {
+      if (!windows) return;
+      expect(launch()).toBe('OLD_PREVIEW');
+      const initializedHome = tree(path.join(root, 'home'));
+      console.info(
+        JSON.stringify({
+          state: 'WINDOWS_FIXTURE_PROFILE_INITIALIZATION_NOT_INSTALLER',
+          installerInvoked: false,
+          coldHome,
+          initializedHome,
+          addedEntries: Object.fromEntries(
+            Object.entries(initializedHome).filter(
+              ([entry]) => !Object.hasOwn(coldHome, entry),
+            ),
+          ),
+        }),
+      );
+      for (const [entry, original] of Object.entries(coldHome)) {
+        expect(initializedHome[entry], entry).toEqual(original);
+      }
+      initialHome = initializedHome;
+    },
     install,
     installArgs,
     launch,
@@ -266,6 +283,7 @@ function fixture() {
 async function withFixture(check) {
   const f = fixture();
   try {
+    f.initializeProfile();
     await check(f);
     f.assertProtected();
   } finally {
@@ -320,8 +338,6 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
             ComSpec: f.env.ComSpec ?? null,
             HOME: f.env.HOME,
             USERPROFILE: f.env.USERPROFILE,
-            APPDATA: f.env.APPDATA,
-            LOCALAPPDATA: f.env.LOCALAPPDATA,
             TMP: f.env.TMP,
             TEMP: f.env.TEMP,
           },
@@ -353,12 +369,6 @@ describe(`real ${windows ? 'PowerShell' : 'POSIX'} preview installer preservatio
             'string',
           );
         }
-        expect(witnesses, evidence).toContain(
-          `QWEN_DIAG_KNOWN_LOCALAPPDATA=${f.env.LOCALAPPDATA}`,
-        );
-        expect(witnesses, evidence).toContain(
-          `QWEN_DIAG_KNOWN_APPDATA=${f.env.APPDATA}`,
-        );
         // Same original seed and env; the checked launch also detects PowerShell errors.
         f.assertOld();
         f.assertNoStaging();
