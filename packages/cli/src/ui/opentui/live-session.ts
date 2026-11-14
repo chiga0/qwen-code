@@ -1227,6 +1227,14 @@ export async function* livePromptEvents(
       abort.aborted ||
       (sharedRound && !isCurrentSession())
     ) {
+      if (
+        pending.length === 0 &&
+        !streamFailed &&
+        !abort.aborted &&
+        isCurrentSession()
+      ) {
+        void client.consumePendingMemoryTaskPromises();
+      }
       void sharedRound?.close();
       return;
     }
@@ -1911,6 +1919,18 @@ export async function* livePromptEvents(
               : 'ok',
       };
       if (resp) {
+        if (
+          !shared &&
+          !call.nativeAttemptsObserved &&
+          call.status !== 'cancelled' &&
+          !call.request.isClientInitiated &&
+          isCurrentSession()
+        ) {
+          client.recordCompletedToolCall(
+            call.request.name,
+            call.request.args as Record<string, unknown>,
+          );
+        }
         const final = finalResponses[index];
         responseParts.push(...final.responseParts);
         if (
